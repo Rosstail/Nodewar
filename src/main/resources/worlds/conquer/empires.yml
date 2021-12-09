@@ -1,0 +1,71 @@
+carcino:
+    options:
+        display: "&dCarcino"
+        default-empire: carcino
+        region: carcino
+        max-resistance: 900
+        is-vulnerable: false
+        can-attack:
+            - front-carcino
+            - front-carcino-frelia
+            - front-carcino-rausten
+
+frelia:
+    options:
+        display: "&aFrelia"
+        default-empire: frelia
+        region: frelia
+        max-resistance: 900
+        is-vulnerable: false
+        can-attack:
+            - front-frelia
+            - front-carcino-frelia
+            - front-frelia-renais
+       
+grado:
+    options:
+        display: "&cGrado"
+        default-empire: grado
+        region: grado
+        max-resistance: 900
+        is-vulnerable: false
+        can-attack:
+            - front-grado
+            - front-grado-jehanna
+            - front-grado-renais
+
+jehanna:
+    options:
+        display: "&eJehanna"
+        default-empire: jehanna
+        region: jehanna
+        max-resistance: 900
+        is-vulnerable: false
+        can-attack:
+            - front-jehanna
+            - front-jehanna-rausten
+            - front-grado-jehanna
+        
+rausten:
+    options:
+        display: "&5Rausten"
+        default-empire: rausten
+        region: rausten
+        max-resistance: 900
+        is-vulnerable: false
+        can-attack:
+            - front-rausten
+            - front-jehanna-rausten
+            - front-carcino-rausten
+ 
+renais:
+    options:
+        display: "&bRenais"
+        default-empire: renais
+        region: renais
+        max-resistance: 900
+        is-vulnerable: false
+        can-attack:
+            - front-renais
+            - front-frelia-renais
+            - front-grado-renais

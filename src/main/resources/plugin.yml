@@ -1,0 +1,21 @@
+name: Conquest
+version: 0.2
+description: Conquest plugin
+api-version: 1.13
+author: Rosstail
+website: https://www.spigotmc.org/resources/
+softdepend:
+  - PlaceholderAPI
+  - WorldGuard
+  - Karma
+main: fr.rosstail.conquest.Conquest
+commands:
+  conquest:
+    description: Display default command
+    usage: /conquest
+    permission-message: You don't have permission !
+    permission: conquest
+
+permissions:
+  conquest:
+    default: true

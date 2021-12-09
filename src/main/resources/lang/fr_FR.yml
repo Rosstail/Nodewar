@@ -1,0 +1,20 @@
+by-player-only: '[Conquest] Cette commande doit être lancée par un joueur.'
+disconnected-player: '[Conquest] Le joueur ciblé est déconnecté.'
+too-few-arguments: '&cTrop peu d''arguments.'
+  wrong-value: '&cValeur erronée. Tapez /FE_Character help pour rester informé.'
+
+help:
+  - "|============================ CONQUEST HELP ============================|"
+  - " &c* &fconquest admin &8: &7Affiche les commandes administrateur."
+  - " &c* &fconquest empire &8: &7Affiche les commandes d'empire."
+admin-help:
+  - "|========================= CONQUEST ADMIN HELP =========================|"
+  - " &c* &fconquest admin conquest &8: &cOP &8- &7Gestion du système de territoire via GUI."
+  - " &c* &fconquest admin player %player% &8: &cOP &8- &7Gestion d'un joueur via GUI."
+  - " &c* &fconquest admin empire set %player% set %empire% &8: &cOP &8- &7Attribue l'empire sélectionné au joueur."
+  - " &c* &fconquest admin empire %player% remove &8: &cOP &8- &7laisse le joueur sans empire."
+empire-help:
+  - "|========================= CONQUEST EMPIRE HELP =========================|"
+  - " &c* &fconquest empire join %empire% &8: &7Rejoindre l'empire spécifié."
+  - " &c* &fconquest empire leave &8: &7Quittez votre empire actuel."
+  - " &c* &fconquest empire list &8: &7Affichez une interface pour rejoindre un empire ou vous informer."

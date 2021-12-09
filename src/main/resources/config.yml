@@ -1,0 +1,16 @@
+mysql:
+  connector: none #can be mariadb / mysql / none
+  host: localhost
+  port: 3306
+  database: database_name
+  username: root
+  password: ""
+
+general:
+  lang: en_EN
+  delay-between-database-updates: 300
+  use-action-bar-on-actions: true
+  debug-messages: true
+
+empires:
+  none-display: "&7None"

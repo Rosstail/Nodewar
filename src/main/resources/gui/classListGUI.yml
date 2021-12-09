@@ -1,0 +1,398 @@
+gui:
+    size: 6
+    display: "&8&nDefault"
+    pages:
+        0:
+            display: "&8&nSummary"
+            slots:
+                journeyman-summary:
+                    location:
+                        x: 0
+                        y: 0
+                    display: "&2&nJourneyman's Classes"
+                    material: STONE_AXE
+                    change-page: true
+                    lore:
+                        - "&fPath of Journeyman"
+                    page: 1
+                soldier-summary:
+                    location:
+                        x: 2
+                        y: 0
+                    display: "&c&nSoldier's Archetype"
+                    material: STONE_SHOVEL
+                    change-page: true
+                    page: 2
+                mage-summary:
+                    location:
+                        x: 4
+                        y: 0
+                    display: "&9&nMagic is everything !"
+                    material: BOOK
+                    change-page: true
+                    page: 3
+                villager-summary:
+                    location:
+                        x: 6
+                        y: 0
+                    display: "&5&nA greater purpose"
+                    material: IRON_HOE
+                    change-page: true
+                    page: 4
+                priest-summary:
+                    location:
+                        x: 8
+                        y: 0
+                    display: "&f&nBe faithful"
+                    material: BEACON
+                    change-page: true
+                    page: 5
+                lord-summary:
+                    location:
+                        x: 1
+                        y: 1
+                    display: "&6&nLong live the King."
+                    material: DIAMOND_SWORD
+                    custom-model-data: 1
+                    change-page: true
+                    page: 6
+                next-page:
+                    location:
+                        x: 8
+                        y: 5
+                    material: GREEN_CONCRETE
+                    display: "&fNext page"
+                    change-page: true
+                    page: 1
+        1:
+            display: "&2&nJourneyman's classes"
+            slots:
+                journeyman:
+                    location:
+                        x: 4
+                        y: 0
+                    display: "%fe_class_display%"
+                    material: STONE_AXE
+                    class: journeyman
+                fighter:
+                    location:
+                        x: 2
+                        y: 2
+                    display: "%fe_class_display%"
+                    material: IRON_AXE
+                    custom-model-data: 1
+                    class: fighter
+                pirate:
+                    location:
+                        x: 6
+                        y: 2
+                    display: "%fe_class_display%"
+                    material: SPRUCE_BOAT
+                    class: pirate
+                hero:
+                    location:
+                        x: 1
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: SHIELD
+                    class: hero
+                warrior:
+                    location:
+                        x: 4
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: NETHERITE_AXE
+                    class: warrior
+                berserker:
+                    location:
+                        x: 7
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: NETHERITE_AXE
+                    class: berserker
+                previous-page:
+                    location:
+                        x: 0
+                        y: 5
+                    material: ORANGE_CONCRETE
+                    display: "&fPrevious page"
+                    change-page: true
+                    page: 0
+                next-page:
+                    location:
+                        x: 8
+                        y: 5
+                    material: GREEN_CONCRETE
+                    display: "&fNext page"
+                    change-page: true
+                    page: 2
+        2:
+            display: "&c&nSoldier's Archetype"
+            slots:
+                recruit:
+                    location:
+                        x: 4
+                        y: 0
+                    display: "%fe_class_display%"
+                    material: STONE_SHOVEL
+                    class: recruit
+                cavalier:
+                    location:
+                        x: 2
+                        y: 2
+                    display: "%fe_class_display%"
+                    material: LEATHER_HORSE_ARMOR
+                    class: cavalier
+                musketeer:
+                    location:
+                        x: 4
+                        y: 3
+                    display: "%fe_class_display%"
+                    material: STONE_HOE
+                    class: musketeer
+                knight:
+                    location:
+                        x: 6
+                        y: 2
+                    display: "%fe_class_display%"
+                    material: IRON_CHESTPLATE
+                    class: knight
+                paladin:
+                    location:
+                        x: 1
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: IRON_HORSE_ARMOR
+                    class: paladin
+                great-knight:
+                    location:
+                        x: 4
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: DIAMOND_HORSE_ARMOR
+                    class: great-knight
+                general:
+                    location:
+                        x: 7
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: NETHERITE_CHESTPLATE
+                    class: general
+                previous-page:
+                    location:
+                        x: 0
+                        y: 5
+                    material: ORANGE_CONCRETE
+                    display: "&fPrevious page"
+                    change-page: true
+                    page: 1
+                next-page:
+                    location:
+                        x: 8
+                        y: 5
+                    material: GREEN_CONCRETE
+                    display: "&fNext page"
+                    change-page: true
+                    page: 3
+        3:
+            display: "&9&nMagic is everything !"
+            slots:
+                pupil:
+                    location:
+                        x: 4
+                        y: 0
+                    display: "%fe_class_display%"
+                    material: BOOK
+                    class: pupil
+                mage:
+                    location:
+                        x: 2
+                        y: 2
+                    display: "%fe_class_display%"
+                    material: FIRE_CHARGE
+                    class: mage
+                shaman:
+                    location:
+                        x: 6
+                        y: 2
+                    display: "%fe_class_display%"
+                    material: ENDER_PEARL
+                    class: shaman
+                mage-knight:
+                    location:
+                        x: 1
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: GOLDEN_HORSE_ARMOR
+                    class: mage-knight
+                sage:
+                    location:
+                        x: 3
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: ENCHANTED_BOOK
+                    class: sage
+                druid:
+                    location:
+                        x: 5
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: END_CRYSTAL
+                    class: druid
+                summoner:
+                    location:
+                        x: 7
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: ROTTEN_FLESH
+                    class: summoner
+                previous-page:
+                    location:
+                        x: 0
+                        y: 5
+                    material: ORANGE_CONCRETE
+                    display: "&fPrevious page"
+                    change-page: true
+                    page: 2
+                next-page:
+                    location:
+                        x: 8
+                        y: 5
+                    material: GREEN_CONCRETE
+                    display: "&fNext page"
+                    change-page: true
+                    page: 4
+        4:
+            display: "&5&nA greater purpose"
+            slots:
+                villager:
+                    location:
+                        x: 4
+                        y: 0
+                    display: "%fe_class_display%"
+                    material: IRON_HOE
+                    class: villager
+                archer:
+                    location:
+                        x: 2
+                        y: 2
+                    display: "%fe_class_display%"
+                    material: BOW
+                    class: archer
+                thief:
+                    location:
+                        x: 6
+                        y: 2
+                    display: "%fe_class_display%"
+                    material: IRON_SWORD
+                    class: thief
+                sniper:
+                    location:
+                        x: 1
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: CROSSBOW
+                    class: sniper
+                spy:
+                    location:
+                        x: 4
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: KNOWLEDGE_BOOK
+                    class: spy
+                assassin:
+                    location:
+                        x: 7
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: LEATHER_HELMET
+                    class: assassin
+                previous-page:
+                    location:
+                        x: 0
+                        y: 5
+                    material: ORANGE_CONCRETE
+                    display: "&fPrevious page"
+                    change-page: true
+                    page: 3
+                next-page:
+                    location:
+                        x: 8
+                        y: 5
+                    material: GREEN_CONCRETE
+                    display: "&fNext page"
+                    change-page: true
+                    page: 5
+        5:
+            display: "&f&nBe faithful"
+            slots:
+                monk:
+                    location:
+                        x: 4
+                        y: 0
+                    display: "%fe_class_display%"
+                    material: QUARTZ
+                    class: monk
+                priest:
+                    location:
+                        x: 4
+                        y: 2
+                    display: "%fe_class_display%"
+                    material: BEACON
+                    class: priest
+                bishop:
+                    location:
+                        x: 4
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: TOTEM_OF_UNDYING
+                    class: bishop
+                previous-page:
+                    location:
+                        x: 0
+                        y: 5
+                    material: ORANGE_CONCRETE
+                    display: "&fPrevious page"
+                    change-page: true
+                    page: 4
+                next-page:
+                    location:
+                        x: 8
+                        y: 5
+                    material: GREEN_CONCRETE
+                    display: "&fNext page"
+                    change-page: true
+                    page: 6
+        6:
+            display: "&6&nLong live the King."
+            slots:
+                noble:
+                    location:
+                        x: 4
+                        y: 0
+                    display: "%fe_class_display%"
+                    material: IRON_SWORD
+                    class: noble
+                lord:
+                    location:
+                        x: 4
+                        y: 2
+                    display: "%fe_class_display%"
+                    material: DIAMOND_SWORD
+                    class: lord
+                great-lord:
+                    location:
+                        x: 4
+                        y: 4
+                    display: "%fe_class_display%"
+                    material: DIAMOND_SWORD
+                    custom-model-data: 1
+                    class: great-lord
+                previous-page:
+                    location:
+                        x: 0
+                        y: 5
+                    material: ORANGE_CONCRETE
+                    display: "&fPrevious page"
+                    change-page: true
+                    page: 5

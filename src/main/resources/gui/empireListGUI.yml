@@ -1,0 +1,32 @@
+gui:
+    size: 6
+    display: "&8&nEmpires"
+    slots:
+        coalition:
+            location:
+                x: 0
+                y: 0
+            display: "&cCoalition"
+            material: RED_BANNER
+            lore:
+                - "&f&oCoalition, Destruction !"
+            empire: coalition
+        empire:
+            location:
+                x: 8
+                y: 0
+            display: "&6Empire"
+            lore:
+                - "&f&oThe enemies of the Empire must perish !"
+            material: YELLOW_BANNER
+            empire: empire
+        order:
+            location:
+                x: 4
+                y: 5
+            display: "&aOrder"
+            lore:
+                - "&f&oThe Order will rule over Olydri, the Order is infinite !"
+                - "&f&oThe Order is infinite, the Order will rule over Olydri !"
+            material: GREEN_BANNER
+            empire: order
