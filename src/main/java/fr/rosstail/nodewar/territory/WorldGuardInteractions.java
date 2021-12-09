@@ -1,4 +1,4 @@
-package fr.rosstail.conquest.territory;
+package fr.rosstail.nodewar.territory;
 
 import java.util.HashMap;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;

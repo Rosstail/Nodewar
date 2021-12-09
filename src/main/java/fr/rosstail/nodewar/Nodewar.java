@@ -1,18 +1,18 @@
-package fr.rosstail.conquest;
+package fr.rosstail.nodewar;
 
 import com.rosstail.karma.Karma;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import fr.rosstail.conquest.character.commandhandlers.ConquestCommands;
-import fr.rosstail.conquest.character.eventhandler.KarmaListener;
-import fr.rosstail.conquest.character.eventhandler.PlayerEventHandler;
-import fr.rosstail.conquest.character.empires.Empire;
-import fr.rosstail.conquest.required.DataBase;
-import fr.rosstail.conquest.required.FileResourcesUtils;
-import fr.rosstail.conquest.required.lang.LangManager;
-import fr.rosstail.conquest.required.lang.PAPIExpansion;
-import fr.rosstail.conquest.territory.zonehandlers.Territory;
-import fr.rosstail.conquest.territory.eventhandlers.ConquestEventsListener;
-import fr.rosstail.conquest.territory.eventhandlers.WGRegionEventsListener;
+import fr.rosstail.nodewar.character.commandhandlers.NodewarCommands;
+import fr.rosstail.nodewar.character.eventhandler.KarmaListener;
+import fr.rosstail.nodewar.character.eventhandler.PlayerEventHandler;
+import fr.rosstail.nodewar.character.empires.Empire;
+import fr.rosstail.nodewar.required.DataBase;
+import fr.rosstail.nodewar.required.FileResourcesUtils;
+import fr.rosstail.nodewar.required.lang.LangManager;
+import fr.rosstail.nodewar.required.lang.PAPIExpansion;
+import fr.rosstail.nodewar.territory.zonehandlers.Territory;
+import fr.rosstail.nodewar.territory.eventhandlers.NodewarEventsListener;
+import fr.rosstail.nodewar.territory.eventhandlers.WGRegionEventsListener;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -27,35 +27,35 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public class Conquest extends JavaPlugin implements Listener
+public class Nodewar extends JavaPlugin implements Listener
 {
     private static final Logger log;
     private static Economy econ;
     private static Permission perms;
     private static Chat chat;
-    private static Conquest instance;
+    private static Nodewar instance;
     private static String dimName;
     DataBase database;
     
-    public Conquest() {
+    public Nodewar() {
         this.database = DataBase.gets(this);
     }
     
     public void onLoad() {
     }
     
-    public static Conquest getInstance() {
-        return Conquest.instance;
+    public static Nodewar getInstance() {
+        return Nodewar.instance;
     }
     
     public static String getDimName() {
-        return Conquest.dimName;
+        return Nodewar.dimName;
     }
     
     public void onEnable() {
-        Conquest.instance = this;
-        Conquest.dimName = Conquest.instance.getName().toLowerCase();
-        if (!new File("plugins/Conquest/config.yml").exists()) {
+        fr.rosstail.nodewar.Nodewar.instance = this;
+        fr.rosstail.nodewar.Nodewar.dimName = fr.rosstail.nodewar.Nodewar.instance.getName().toLowerCase();
+        if (!new File("plugins/Nodewar/config.yml").exists()) {
             System.out.println("Preparing default config.yml");
             this.saveDefaultConfig();
         }
@@ -64,17 +64,17 @@ public class Conquest extends JavaPlugin implements Listener
         if (karma != null) {
             KarmaListener listener = new KarmaListener(karma);
             this.getServer().getPluginManager().registerEvents(listener, karma);
-            System.out.println("[CONQUEST] Karma is OK");
+            System.out.println("[NODEWAR] Karma is OK");
         } else {
-            System.out.println("[CONQUEST] Karma is NULL");
+            System.out.println("[NODEWAR] Karma is NULL");
         }
 
         WorldGuardPlugin wgPlugin = this.getWGPlugin();
         if (wgPlugin != null) {
             WGRegionEventsListener wgRegionEventsListener = new WGRegionEventsListener(this);
-            ConquestEventsListener conquestEventsListener = new ConquestEventsListener();
+            NodewarEventsListener nodewarEventsListener = new NodewarEventsListener();
             this.getServer().getPluginManager().registerEvents(wgRegionEventsListener, wgPlugin);
-            this.getServer().getPluginManager().registerEvents(conquestEventsListener, this);
+            this.getServer().getPluginManager().registerEvents(nodewarEventsListener, this);
         }
         this.initDefaultConfigs();
         LangManager.initCurrentLang();
@@ -91,7 +91,7 @@ public class Conquest extends JavaPlugin implements Listener
             this.setupPermissions();
         }
         else {
-            Conquest.log.severe(String.format("[" + this.getName() + "] Didn't found Vault.", this.getDescription().getName()));
+            fr.rosstail.nodewar.Nodewar.log.severe(String.format("[" + this.getName() + "] Didn't found Vault.", this.getDescription().getName()));
         }
         Bukkit.getPluginManager().registerEvents(new PlayerEventHandler(this), this);
         if (Bukkit.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
@@ -103,7 +103,7 @@ public class Conquest extends JavaPlugin implements Listener
                 empire.applyTerritories();
             }
         }
-        this.getCommand(Conquest.dimName).setExecutor(new ConquestCommands(this));
+        this.getCommand(fr.rosstail.nodewar.Nodewar.dimName).setExecutor(new NodewarCommands(this));
     }
     
     private void initDefaultConfigs() {
@@ -131,26 +131,26 @@ public class Conquest extends JavaPlugin implements Listener
         if (rsp == null) {
             return false;
         }
-        Conquest.econ = rsp.getProvider();
-        return Conquest.econ != null;
+        fr.rosstail.nodewar.Nodewar.econ = rsp.getProvider();
+        return fr.rosstail.nodewar.Nodewar.econ != null;
     }
     
     private boolean setupPermissions() {
         final RegisteredServiceProvider<Permission> rsp = (RegisteredServiceProvider<Permission>)this.getServer().getServicesManager().getRegistration((Class)Permission.class);
-        Conquest.perms = rsp.getProvider();
-        return Conquest.perms != null;
+        fr.rosstail.nodewar.Nodewar.perms = rsp.getProvider();
+        return fr.rosstail.nodewar.Nodewar.perms != null;
     }
     
     public static Economy getEconomy() {
-        return Conquest.econ;
+        return fr.rosstail.nodewar.Nodewar.econ;
     }
     
     public static Permission getPermissions() {
-        return Conquest.perms;
+        return fr.rosstail.nodewar.Nodewar.perms;
     }
     
     public static Chat getChat() {
-        return Conquest.chat;
+        return fr.rosstail.nodewar.Nodewar.chat;
     }
     
     private Karma getKarmaPlugin() {
@@ -171,12 +171,12 @@ public class Conquest extends JavaPlugin implements Listener
     
     static {
         log = Logger.getLogger("Minecraft");
-        Conquest.econ = null;
-        Conquest.perms = null;
-        Conquest.chat = null;
+        fr.rosstail.nodewar.Nodewar.econ = null;
+        fr.rosstail.nodewar.Nodewar.perms = null;
+        fr.rosstail.nodewar.Nodewar.chat = null;
     }
 
     public YamlConfiguration getCustomConfig() {
-        return YamlConfiguration.loadConfiguration(new File("plugins/Conquest/config.yml"));
+        return YamlConfiguration.loadConfiguration(new File("plugins/Nodewar/config.yml"));
     }
 }

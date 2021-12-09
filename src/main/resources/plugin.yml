@@ -1,6 +1,6 @@
-name: Conquest
-version: 0.2
-description: Conquest plugin
+name: Nodewar
+version: 0.1
+description: Nodewar plugin
 api-version: 1.13
 author: Rosstail
 website: https://www.spigotmc.org/resources/
@@ -8,14 +8,14 @@ softdepend:
   - PlaceholderAPI
   - WorldGuard
   - Karma
-main: fr.rosstail.conquest.Conquest
+main: fr.rosstail.nodewar.Nodewar
 commands:
-  conquest:
+  nodewar:
     description: Display default command
-    usage: /conquest
+    usage: /nodewar
     permission-message: You don't have permission !
-    permission: conquest
+    permission: nodewar
 
 permissions:
-  conquest:
+  nodewar:
     default: true

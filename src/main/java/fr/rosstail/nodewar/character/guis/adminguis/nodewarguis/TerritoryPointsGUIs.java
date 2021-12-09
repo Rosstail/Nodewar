@@ -1,4 +1,4 @@
-package fr.rosstail.nodewar.character.guis.adminguis.conquestguis;
+package fr.rosstail.nodewar.character.guis.adminguis.nodewarguis;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
@@ -6,8 +6,8 @@ import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
-import fr.rosstail.nodewar.character.guis.GUIs;
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.character.guis.GUIs;
 import fr.rosstail.nodewar.required.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
@@ -85,7 +85,7 @@ public class TerritoryPointsGUIs {
 
                 staticPane.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, null, Material.BEACON, point.getDisplay(), null
                         , GUIs.adaptLore(player, null)), event -> {
-                    PointGUIs.initGUI(player, plugin, point, gui);
+                    fr.rosstail.nodewar.character.guis.adminguis.nodewarguis.PointGUIs.initGUI(player, plugin, point, gui);
                 }), posX, posY);
 
                 posX++;

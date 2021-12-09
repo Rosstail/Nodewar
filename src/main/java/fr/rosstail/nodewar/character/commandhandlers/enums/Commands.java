@@ -1,4 +1,4 @@
-package fr.rosstail.conquest.character.commandhandlers.enums;
+package fr.rosstail.nodewar.character.commandhandlers.enums;
 
 public enum Commands
 {
@@ -11,7 +11,7 @@ public enum Commands
     COMMAND_EMPIRE_LEAVE("empire leave", "fe.empire.leave"),
     COMMAND_ADMIN("admin", "fe.admin"), 
     COMMAND_ADMIN_PLAYER("admin player", "fe.admin.player"), 
-    COMMAND_ADMIN_CONQUEST("admin conquest", "fe.admin.conquest"), 
+    COMMAND_ADMIN_NODEWAR("admin nodewar", "fe.admin.nodewar"),
     COMMAND_ADMIN_EMPIRE("admin empire", "fe.admin.empire"), 
     COMMAND_ADMIN_EMPIRE_PLAYER_SET("admin empire set", "fe.admin.empire.set"),
     COMMAND_ADMIN_EMPIRE_PLAYER_REMOVE("admin empire remove", "fe.admin.empire.remove");

@@ -1,5 +1,5 @@
 
-package fr.rosstail.nodewar.character.guis.adminguis.conquestguis;
+package fr.rosstail.nodewar.character.guis.adminguis.nodewarguis;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;

@@ -1,6 +1,6 @@
-package fr.rosstail.conquest.required;
+package fr.rosstail.nodewar.required;
 
-import fr.rosstail.conquest.Conquest;
+import fr.rosstail.nodewar.Nodewar;
 
 import java.io.*;
 import java.net.URI;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class FileResourcesUtils {
 
-    public static void main(String folder, Conquest plugin) throws IOException {
+    public static void main(String folder, Nodewar plugin) throws IOException {
         FileResourcesUtils app = new FileResourcesUtils();
 
         // Sample 3 - read all files from a resources folder (JAR version)

@@ -1,6 +1,5 @@
-package fr.rosstail.conquest.character.datahandlers;
+package fr.rosstail.nodewar.character.datahandlers;
 
-import fr.rosstail.conquest.Conquest;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -12,9 +11,9 @@ import java.sql.Statement;
 public class DataBaseActions
 {
     private static Connection connection;
-    private static Conquest plugin;
+    private static fr.rosstail.nodewar.Nodewar plugin;
     
-    public DataBaseActions(final Connection connection, final Conquest plugin) {
+    public DataBaseActions(final Connection connection, final fr.rosstail.nodewar.Nodewar plugin) {
         try {
             if (connection != null && !connection.isClosed()) {
                 this.createTable(connection, this.getPlayerInfoRequest());
@@ -41,7 +40,7 @@ public class DataBaseActions
     }
     
     private String getPlayerInfoRequest() {
-        return "CREATE TABLE IF NOT EXISTS CONQUEST_players_info ( UUID varchar(40) PRIMARY KEY UNIQUE NOT NULL,\n empire varchar(30) DEFAULT NULL,\n lastUpdate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);";
+        return "CREATE TABLE IF NOT EXISTS NODEWAR_players_info ( UUID varchar(40) PRIMARY KEY UNIQUE NOT NULL,\n empire varchar(30) DEFAULT NULL,\n lastUpdate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);";
     }
     
     public static void insertPlayerInfo(final Player player, final PlayerInfo playerInfo) {
@@ -51,7 +50,7 @@ public class DataBaseActions
         final String UUID = player.getUniqueId().toString();
         Bukkit.getScheduler().runTaskAsynchronously(DataBaseActions.plugin, () -> {
             try {
-                final PreparedStatement preparedStatement = DataBaseActions.connection.prepareStatement("INSERT INTO CONQUEST_players_info (UUID) VALUES (?);");
+                final PreparedStatement preparedStatement = DataBaseActions.connection.prepareStatement("INSERT INTO NODEWAR_players_info (UUID) VALUES (?);");
                 preparedStatement.setString(1, UUID);
                 preparedStatement.execute();
                 preparedStatement.close();
@@ -69,7 +68,7 @@ public class DataBaseActions
         final String UUID = player.getUniqueId().toString();
         Bukkit.getScheduler().runTaskAsynchronously(DataBaseActions.plugin, () -> {
             try {
-                final PreparedStatement preparedStatement = DataBaseActions.connection.prepareStatement("UPDATE CONQUEST_players_info SET empire = ? WHERE UUID = ?;");
+                final PreparedStatement preparedStatement = DataBaseActions.connection.prepareStatement("UPDATE NODEWAR_players_info SET empire = ? WHERE UUID = ?;");
                 preparedStatement.setString(1, playerInfo.getEmpire().getName());
                 preparedStatement.setString(2, UUID);
                 preparedStatement.execute();

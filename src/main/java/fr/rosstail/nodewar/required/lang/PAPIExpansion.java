@@ -1,7 +1,6 @@
-package fr.rosstail.conquest.required.lang;
+package fr.rosstail.nodewar.required.lang;
 
-import fr.rosstail.conquest.character.datahandlers.PlayerInfo;
-import fr.rosstail.conquest.Conquest;
+import fr.rosstail.nodewar.character.datahandlers.PlayerInfo;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,13 +8,13 @@ import org.bukkit.entity.Player;
 
 public class PAPIExpansion extends PlaceholderExpansion
 {
-    private final Conquest plugin;
+    private final fr.rosstail.nodewar.Nodewar plugin;
     
     public boolean canRegister() {
-        return Bukkit.getPluginManager().getPlugin("Conquest") != null;
+        return Bukkit.getPluginManager().getPlugin("Nodewar") != null;
     }
     
-    public PAPIExpansion(final Conquest plugin) {
+    public PAPIExpansion(final fr.rosstail.nodewar.Nodewar plugin) {
         this.plugin = plugin;
     }
     
@@ -28,7 +27,7 @@ public class PAPIExpansion extends PlaceholderExpansion
     }
     
     public String getIdentifier() {
-        return Conquest.getDimName();
+        return fr.rosstail.nodewar.Nodewar.getDimName();
     }
     
     public String getRequiredPlugin() {
@@ -47,11 +46,11 @@ public class PAPIExpansion extends PlaceholderExpansion
                     return player.getName();
                 }
 
-                return playerMessage(player, "%" + Conquest.getDimName() + "_" + identifier + "%");
+                return playerMessage(player, "%" + fr.rosstail.nodewar.Nodewar.getDimName() + "_" + identifier + "%");
             }
         }
 
-        return "%" + Conquest.getDimName() + "_" + identifier + "%";
+        return "%" + fr.rosstail.nodewar.Nodewar.getDimName() + "_" + identifier + "%";
     }
 
     public String playerEmpireMessage(final Player player, String message) {

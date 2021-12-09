@@ -1,8 +1,7 @@
-package fr.rosstail.conquest.character.guis;
+package fr.rosstail.nodewar.character.guis;
 
-import fr.rosstail.conquest.Conquest;
-import fr.rosstail.conquest.required.PlayerHead;
-import fr.rosstail.conquest.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.required.PlayerHead;
+import fr.rosstail.nodewar.required.lang.AdaptMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,7 +17,7 @@ import java.util.List;
 
 public class GUIs
 {
-    public static ItemStack createGuiItem(final Player player, final Conquest plugin, final FileConfiguration customConfig, final Material material, final String display, final String path, final List<String> lore) {
+    public static ItemStack createGuiItem(final Player player, final fr.rosstail.nodewar.Nodewar plugin, final FileConfiguration customConfig, final Material material, final String display, final String path, final List<String> lore) {
         ItemStack item = new ItemStack(material, 1);
         final ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', display));

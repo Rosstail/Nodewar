@@ -1,4 +1,4 @@
-package fr.rosstail.conquest.character.guis.adminguis.playerGUIs;
+package fr.rosstail.nodewar.character.guis.adminguis.playerGUIs;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
@@ -6,11 +6,10 @@ import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
-import fr.rosstail.conquest.character.guis.GUIs;
-import fr.rosstail.conquest.character.datahandlers.PlayerInfo;
-import fr.rosstail.conquest.character.empires.Empire;
-import fr.rosstail.conquest.Conquest;
-import fr.rosstail.conquest.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.character.guis.GUIs;
+import fr.rosstail.nodewar.character.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.character.empires.Empire;
+import fr.rosstail.nodewar.required.lang.AdaptMessage;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -19,7 +18,7 @@ import java.util.ArrayList;
 
 public class PlayerAdminEmpireGUIs {
 
-    public static void initGUI(Player player, Conquest plugin, ChestGui previousGui, Player target) {
+    public static void initGUI(Player player, fr.rosstail.nodewar.Nodewar plugin, ChestGui previousGui, Player target) {
 
         int invSize = 6;
         String display = target.getName() + "'s Empires - Page 1";
@@ -53,7 +52,7 @@ public class PlayerAdminEmpireGUIs {
 
     }
 
-    private static StaticPane initPane(Player player, Conquest plugin, ChestGui gui, ChestGui previousGui, PaginatedPane paginatedPane, Player target, int page) {
+    private static StaticPane initPane(Player player, fr.rosstail.nodewar.Nodewar plugin, ChestGui gui, ChestGui previousGui, PaginatedPane paginatedPane, Player target, int page) {
         StaticPane staticPane = new StaticPane(0, 0, 9, 6);
 
         ArrayList<Empire> empires = new ArrayList<>(Empire.getEmpires().values());

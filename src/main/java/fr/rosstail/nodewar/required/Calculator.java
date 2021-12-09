@@ -1,4 +1,4 @@
-package fr.rosstail.conquest.required;
+package fr.rosstail.nodewar.required;
 
 public class Calculator {
 

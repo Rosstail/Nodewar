@@ -1,4 +1,4 @@
-package fr.rosstail.nodewar.character.guis.adminguis.conquestguis;
+package fr.rosstail.nodewar.character.guis.adminguis.nodewarguis;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
@@ -9,7 +9,7 @@ import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import fr.rosstail.nodewar.character.guis.GUIs;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.required.lang.AdaptMessage;
-import fr.rosstail.nodewar.territory.zonehandlers.NodeWarWorlds;
+import fr.rosstail.nodewar.territory.zonehandlers.NodewarWorlds;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -56,7 +56,7 @@ public class WorldsGUIs {
     private static StaticPane initPane(Player player, Nodewar plugin, ChestGui gui, PaginatedPane paginatedPane, int page) {
         StaticPane staticPane = new StaticPane(0, 0, 9, 6);
 
-        List<World> worlds = NodeWarWorlds.getUsedWorlds();
+        List<World> worlds = NodewarWorlds.getUsedWorlds();
         int index = 45 * page;
 
         int posY = 0;

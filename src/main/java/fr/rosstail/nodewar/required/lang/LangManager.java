@@ -1,15 +1,14 @@
-package fr.rosstail.conquest.required.lang;
+package fr.rosstail.nodewar.required.lang;
 
 import java.util.Collections;
 import java.util.List;
-import fr.rosstail.conquest.Conquest;
 
 public class LangManager
 {
     private static Lang currentLang;
     
     public static void initCurrentLang() {
-        LangManager.currentLang = new Lang(Conquest.getInstance().getConfig().getString("general.lang"));
+        LangManager.currentLang = new Lang(fr.rosstail.nodewar.Nodewar.getInstance().getConfig().getString("general.lang"));
         if (!LangManager.currentLang.available()) {
             LangManager.currentLang = null;
         }

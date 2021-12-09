@@ -1,19 +1,18 @@
-package fr.rosstail.conquest.character.eventhandler;
+package fr.rosstail.nodewar.character.eventhandler;
 
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.entity.Player;
-import fr.rosstail.conquest.character.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.character.datahandlers.PlayerInfo;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.configuration.file.FileConfiguration;
-import fr.rosstail.conquest.Conquest;
 import org.bukkit.event.Listener;
 
 public class PlayerEventHandler implements Listener
 {
     private final long delay;
     
-    public PlayerEventHandler(final Conquest plugin) {
+    public PlayerEventHandler(final fr.rosstail.nodewar.Nodewar plugin) {
         final FileConfiguration config = plugin.getCustomConfig();
         this.delay = 1000 * config.getInt("general.delay-between-database-updates");
     }

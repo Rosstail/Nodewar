@@ -1,4 +1,4 @@
-package fr.rosstail.conquest.required.lang;
+package fr.rosstail.nodewar.required.lang;
 
 public enum LangMessage
 {

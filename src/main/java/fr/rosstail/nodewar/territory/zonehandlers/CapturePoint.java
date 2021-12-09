@@ -1,13 +1,13 @@
-package fr.rosstail.conquest.territory.zonehandlers;
+package fr.rosstail.nodewar.territory.zonehandlers;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import fr.rosstail.conquest.character.datahandlers.PlayerInfo;
-import fr.rosstail.conquest.character.empires.Empire;
-import fr.rosstail.conquest.territory.eventhandlers.customevents.PointOwnerChange;
+import fr.rosstail.nodewar.character.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.character.empires.Empire;
+import fr.rosstail.nodewar.territory.eventhandlers.customevents.PointOwnerChange;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -85,7 +85,7 @@ public class CapturePoint
             this.pointTimeLeft = 0;
         }
         this.empireAdvantage = this.empire;
-        (this.bossBar = Bukkit.createBossBar("feConquest.capturePoint." + this.getName(), BarColor.WHITE, BarStyle.SEGMENTED_10)).setTitle("Point - " + this.getDisplay());
+        (this.bossBar = Bukkit.createBossBar("feNodewar.capturePoint." + this.getName(), BarColor.WHITE, BarStyle.SEGMENTED_10)).setTitle("Point - " + this.getDisplay());
         this.bossBar.setVisible(true);
     }
 

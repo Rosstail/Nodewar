@@ -1,24 +1,23 @@
-package fr.rosstail.conquest.character.commandhandlers;
+package fr.rosstail.nodewar.character.commandhandlers;
 
-import fr.rosstail.conquest.character.guis.adminguis.conquestguis.WorldsGUIs;
-import fr.rosstail.conquest.character.guis.adminguis.playerGUIs.PlayerAdminGUI;
+import fr.rosstail.nodewar.character.guis.adminguis.nodewarguis.WorldsGUIs;
+import fr.rosstail.nodewar.character.guis.adminguis.playerGUIs.PlayerAdminGUI;
 import org.bukkit.entity.Player;
-import fr.rosstail.conquest.required.lang.AdaptMessage;
-import fr.rosstail.conquest.character.datahandlers.PlayerInfo;
-import fr.rosstail.conquest.character.empires.Empire;
+import fr.rosstail.nodewar.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.character.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.character.empires.Empire;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import fr.rosstail.conquest.required.lang.LangManager;
-import fr.rosstail.conquest.required.lang.LangMessage;
-import fr.rosstail.conquest.character.commandhandlers.enums.Commands;
+import fr.rosstail.nodewar.required.lang.LangManager;
+import fr.rosstail.nodewar.required.lang.LangMessage;
+import fr.rosstail.nodewar.character.commandhandlers.enums.Commands;
 import org.bukkit.command.CommandSender;
-import fr.rosstail.conquest.Conquest;
 
 public class AdminCommands
 {
-    private final Conquest plugin;
+    private final fr.rosstail.nodewar.Nodewar plugin;
     
-    AdminCommands(final Conquest plugin) {
+    AdminCommands(final fr.rosstail.nodewar.Nodewar plugin) {
         this.plugin = plugin;
     }
     
@@ -26,8 +25,8 @@ public class AdminCommands
         if (command.startsWith(Commands.COMMAND_ADMIN_PLAYER.getCommand())) {
             this.playerGUICommand(sender, args);
         }
-        else if (command.startsWith(Commands.COMMAND_ADMIN_CONQUEST.getCommand())) {
-            this.conquestGUICommand(sender, args);
+        else if (command.startsWith(Commands.COMMAND_ADMIN_NODEWAR.getCommand())) {
+            this.nodewarGUICommand(sender, args);
         }
         else if (command.startsWith(Commands.COMMAND_ADMIN_EMPIRE_PLAYER_SET.getCommand())) {
             this.setEmpireCommand(sender, args);
@@ -55,15 +54,15 @@ public class AdminCommands
                     }
                 }
                 else {
-                    ConquestCommands.discPlayer(sender);
+                    NodewarCommands.discPlayer(sender);
                 }
             }
             else {
-                ConquestCommands.tooFewArguments(sender);
+                NodewarCommands.tooFewArguments(sender);
             }
         }
         else {
-            ConquestCommands.doesNotHavePermission(sender, Commands.COMMAND_ADMIN_EMPIRE.getPermission());
+            NodewarCommands.doesNotHavePermission(sender, Commands.COMMAND_ADMIN_EMPIRE.getPermission());
         }
     }
     
@@ -76,20 +75,20 @@ public class AdminCommands
                     sender.sendMessage("Removed empire for " + target.getName());
                 }
                 else {
-                    ConquestCommands.discPlayer(sender);
+                    NodewarCommands.discPlayer(sender);
                 }
             }
             else {
-                ConquestCommands.tooFewArguments(sender);
+                NodewarCommands.tooFewArguments(sender);
             }
         }
         else {
-            ConquestCommands.doesNotHavePermission(sender, Commands.COMMAND_ADMIN_EMPIRE.getPermission());
+            NodewarCommands.doesNotHavePermission(sender, Commands.COMMAND_ADMIN_EMPIRE.getPermission());
         }
     }
     
     private void playerGUICommand(final CommandSender sender, final String[] args) {
-        if (ConquestCommands.isSenderPlayer(sender)) {
+        if (NodewarCommands.isSenderPlayer(sender)) {
             final Player playerSender = (Player)sender;
             if (playerSender.hasPermission(Commands.COMMAND_ADMIN_PLAYER.getPermission())) {
                 if (args.length == 3) {
@@ -98,34 +97,34 @@ public class AdminCommands
                         PlayerAdminGUI.initGUI(playerSender, this.plugin, target, null);
                     }
                     else {
-                        ConquestCommands.discPlayer(sender);
+                        NodewarCommands.discPlayer(sender);
                     }
                 }
                 else {
-                    ConquestCommands.tooFewArguments(sender);
+                    NodewarCommands.tooFewArguments(sender);
                 }
             }
             else {
-                ConquestCommands.doesNotHavePermission(playerSender, Commands.COMMAND_ADMIN_PLAYER.getPermission());
+                NodewarCommands.doesNotHavePermission(playerSender, Commands.COMMAND_ADMIN_PLAYER.getPermission());
             }
         }
         else {
-            ConquestCommands.playerOnly(sender);
+            NodewarCommands.playerOnly(sender);
         }
     }
     
-    private void conquestGUICommand(final CommandSender sender, final String[] args) {
-        if (ConquestCommands.isSenderPlayer(sender)) {
+    private void nodewarGUICommand(final CommandSender sender, final String[] args) {
+        if (NodewarCommands.isSenderPlayer(sender)) {
             final Player player = (Player)sender;
-            if (player.hasPermission(Commands.COMMAND_ADMIN_CONQUEST.getPermission())) {
+            if (player.hasPermission(Commands.COMMAND_ADMIN_NODEWAR.getPermission())) {
                 WorldsGUIs.initGUI(player, this.plugin);
             }
             else {
-                ConquestCommands.doesNotHavePermission(player, Commands.COMMAND_ADMIN_CONQUEST.getPermission());
+                NodewarCommands.doesNotHavePermission(player, Commands.COMMAND_ADMIN_NODEWAR.getPermission());
             }
         }
         else {
-            ConquestCommands.playerOnly(sender);
+            NodewarCommands.playerOnly(sender);
         }
     }
 }

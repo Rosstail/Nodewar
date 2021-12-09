@@ -1,6 +1,5 @@
-package fr.rosstail.conquest.required.lang;
+package fr.rosstail.nodewar.required.lang;
 
-import fr.rosstail.conquest.Conquest;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 
@@ -13,7 +12,7 @@ public class Lang
     
     public Lang(final String langId) {
         this.langId = langId;
-        this.file = new File(Conquest.getInstance().getDataFolder(), "lang/" + langId + ".yml");
+        this.file = new File(fr.rosstail.nodewar.Nodewar.getInstance().getDataFolder(), "lang/" + langId + ".yml");
         if (this.file.exists()) {
             this.configuration = YamlConfiguration.loadConfiguration(this.file);
             this.name = this.configuration.getString("lang-name");

@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.Rosstail</groupId>
-    <artifactId>conquest</artifactId>
-    <version>0.3</version>
+    <artifactId>nodewar</artifactId>
+    <version>0.1</version>
     <build>
         <plugins>
             <plugin>
@@ -42,7 +42,7 @@
                     <relocations>
                         <relocation>
                             <pattern>com.github.stefvanschie.inventoryframework</pattern>
-                            <shadedPattern>fr.rosstail.conquest.inventoryframework</shadedPattern>
+                            <shadedPattern>fr.rosstail.nodewar.inventoryframework</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

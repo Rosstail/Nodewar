@@ -1,10 +1,9 @@
-package fr.rosstail.conquest.territory.zonehandlers;
+package fr.rosstail.nodewar.territory.zonehandlers;
 
 import java.io.File;
 import java.util.HashSet;
 
-import fr.rosstail.conquest.Conquest;
-import fr.rosstail.conquest.territory.eventhandlers.customevents.TerritoryOwnerChange;
+import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerChange;
 import org.bukkit.entity.Player;
 import java.util.Set;
 import java.util.Iterator;
@@ -20,7 +19,7 @@ import java.util.Objects;
 import java.util.HashMap;
 import java.util.ArrayList;
 import org.bukkit.boss.BossBar;
-import fr.rosstail.conquest.character.empires.Empire;
+import fr.rosstail.nodewar.character.empires.Empire;
 import org.bukkit.World;
 import java.util.List;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -67,7 +66,7 @@ public class Territory
 
     public Territory(final int fileID, final World world, final String key) {
         this.fileID = fileID;
-        FileConfiguration config = ConquestWorlds.getTerritoryConfigs().get(fileID);
+        FileConfiguration config = NodewarWorlds.getTerritoryConfigs().get(fileID);
         this.capturePoints = new HashMap<>();
         this.name = key;
         if (config.getString(key + ".options.display") != null) {
@@ -125,12 +124,12 @@ public class Territory
                 this.capturePoints.put(point, CapturePoint.gets(config, world, this, point));
             }
         }
-        (this.bossBar = Bukkit.createBossBar("feConquest.territory." + this.getName(), BarColor.WHITE, BarStyle.SEGMENTED_10)).setTitle("Territory - " + this.getDisplay());
+        (this.bossBar = Bukkit.createBossBar("feNodewar.territory." + this.getName(), BarColor.WHITE, BarStyle.SEGMENTED_10)).setTitle("Territory - " + this.getDisplay());
         this.bossBar.setVisible(true);
     }
 
     public void initCanAttack() {
-        final List<String> linkedStrings = ConquestWorlds.getTerritoryConfigs().get(fileID).getStringList(this.getName() + ".options.can-attack");
+        final List<String> linkedStrings = NodewarWorlds.getTerritoryConfigs().get(fileID).getStringList(this.getName() + ".options.can-attack");
         final ArrayList<Territory> linkedTerritories = new ArrayList<>();
         final List<Territory> allTerritories = getAllTerritories();
         for (final String stringTerritory : linkedStrings) {
@@ -248,7 +247,7 @@ public class Territory
     }
 
     private static void tickCheck(final Territory territory) {
-        territory.setTickScheduler(Bukkit.getScheduler().scheduleSyncRepeatingTask(Conquest.getInstance(), () -> {
+        territory.setTickScheduler(Bukkit.getScheduler().scheduleSyncRepeatingTask(fr.rosstail.nodewar.Nodewar.getInstance(), () -> {
             territory.countEmpiresPointsOnTerritory();
             for (final CapturePoint point : new ArrayList<>(territory.getCapturePoints())) {
                 point.getPlayersOnPoint();
@@ -260,7 +259,7 @@ public class Territory
     }
 
     private static void secondCheck(final Territory territory) {
-        territory.setSecondScheduler(Bukkit.getScheduler().scheduleSyncRepeatingTask(Conquest.getInstance(), () -> {
+        territory.setSecondScheduler(Bukkit.getScheduler().scheduleSyncRepeatingTask(fr.rosstail.nodewar.Nodewar.getInstance(), () -> {
             for (final CapturePoint point : new ArrayList<>(territory.getCapturePoints())) {
                 point.setCaptureTime();
                 point.checkOwnerChange();
@@ -470,12 +469,12 @@ public class Territory
         return this.bossBar;
     }
 
-    public static void initWorldTerritories(final Conquest plugin) {
+    public static void initWorldTerritories(final fr.rosstail.nodewar.Nodewar plugin) {
         final File folder = new File(plugin.getDataFolder(), "worlds/");
         if (folder.listFiles() != null) {
             for (final File worldFolder : Objects.requireNonNull(folder.listFiles())) {
                 if (worldFolder.isDirectory()) {
-                    final ConquestWorlds world = ConquestWorlds.gets(worldFolder);
+                    final NodewarWorlds world = NodewarWorlds.gets(worldFolder);
                     if (world == null) {
                         System.out.println(worldFolder + " doesn't correspond at any existing world.");
                     }
@@ -484,7 +483,7 @@ public class Territory
                     System.out.println(worldFolder + " is not a directory");
                 }
             }
-            ConquestWorlds.setUsedWorlds();
+            NodewarWorlds.setUsedWorlds();
         }
     }
 

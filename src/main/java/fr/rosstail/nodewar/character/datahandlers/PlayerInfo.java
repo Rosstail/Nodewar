@@ -1,13 +1,12 @@
-package fr.rosstail.conquest.character.datahandlers;
+package fr.rosstail.nodewar.character.datahandlers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import fr.rosstail.conquest.character.empires.Empire;
-import fr.rosstail.conquest.Conquest;
-import fr.rosstail.conquest.required.DataBase;
-import fr.rosstail.conquest.territory.zonehandlers.ConquestWorlds;
+import fr.rosstail.nodewar.character.empires.Empire;
+import fr.rosstail.nodewar.required.DataBase;
+import fr.rosstail.nodewar.territory.zonehandlers.NodewarWorlds;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -26,7 +25,7 @@ import java.util.TimerTask;
 
 public class PlayerInfo
 {
-    private static final Conquest plugin = Conquest.getInstance();
+    private static final fr.rosstail.nodewar.Nodewar plugin = fr.rosstail.nodewar.Nodewar.getInstance();
     private static final Map<Player, PlayerInfo> playerInfoMap;
     private final Player player;
     private Empire empire;
@@ -97,16 +96,16 @@ public class PlayerInfo
     
     public void setPlayerGroup(final Empire empire) {
         if (empire != null) {
-            for (final World world : ConquestWorlds.getUsedWorlds()) {
-                Conquest.getPermissions().playerAddGroup(world.getName(), this.player, empire.getName());
+            for (final World world : NodewarWorlds.getUsedWorlds()) {
+                fr.rosstail.nodewar.Nodewar.getPermissions().playerAddGroup(world.getName(), this.player, empire.getName());
             }
         }
     }
     
     private void removePlayerGroup(final Empire empire) {
         if (empire != null) {
-            for (final World world : ConquestWorlds.getUsedWorlds()) {
-                Conquest.getPermissions().playerRemoveGroup(world.getName(), this.player, empire.getName());
+            for (final World world : NodewarWorlds.getUsedWorlds()) {
+                fr.rosstail.nodewar.Nodewar.getPermissions().playerRemoveGroup(world.getName(), this.player, empire.getName());
             }
         }
     }

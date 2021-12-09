@@ -1,12 +1,10 @@
-package fr.rosstail.conquest.required.lang;
-
-import fr.rosstail.conquest.Conquest;
+package fr.rosstail.nodewar.required.lang;
 
 public enum PlaceHolders
 {
-    PLAYER_NAME("%" + Conquest.getDimName() + "_player%"),
-    PLAYER_EMPIRE_STARTER("%" + Conquest.getDimName() + "_player_empire_"),
-    PLAYER_EMPIRE("%" + Conquest.getDimName() + "_player_empire%");
+    PLAYER_NAME("%" + fr.rosstail.nodewar.Nodewar.getDimName() + "_player%"),
+    PLAYER_EMPIRE_STARTER("%" + fr.rosstail.nodewar.Nodewar.getDimName() + "_player_empire_"),
+    PLAYER_EMPIRE("%" + fr.rosstail.nodewar.Nodewar.getDimName() + "_player_empire%");
     
     private final String text;
     

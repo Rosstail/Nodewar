@@ -1,9 +1,8 @@
-package fr.rosstail.conquest.character.empires;
+package fr.rosstail.nodewar.character.empires;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import fr.rosstail.conquest.Conquest;
-import fr.rosstail.conquest.territory.zonehandlers.ConquestWorlds;
-import fr.rosstail.conquest.territory.zonehandlers.Territory;
+import fr.rosstail.nodewar.territory.zonehandlers.NodewarWorlds;
+import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.boss.BarColor;
@@ -86,7 +85,7 @@ public class Empire
     }
     
     public void applyTerritories() {
-        final List<World> worlds = ConquestWorlds.getUsedWorlds();
+        final List<World> worlds = NodewarWorlds.getUsedWorlds();
         for (final World world : worlds) {
             final ArrayList<Territory> territories = new ArrayList<Territory>();
             for (final Territory territory : Territory.getAllTerritories()) {
@@ -122,7 +121,7 @@ public class Empire
         getSets = new HashMap<>();
     }
 
-    public static void init(final Conquest plugin) {
+    public static void init(final fr.rosstail.nodewar.Nodewar plugin) {
         Empire.setNoEmpire();
         final File folder = new File(plugin.getDataFolder(), "empires/");
         if (folder.listFiles() != null) {

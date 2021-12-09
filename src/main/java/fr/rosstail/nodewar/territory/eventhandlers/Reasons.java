@@ -1,4 +1,4 @@
-package fr.rosstail.conquest.territory.eventhandlers;
+package fr.rosstail.nodewar.territory.eventhandlers;
 
 public enum Reasons
 {

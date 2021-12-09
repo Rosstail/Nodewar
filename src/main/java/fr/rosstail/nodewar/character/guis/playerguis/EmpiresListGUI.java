@@ -1,15 +1,14 @@
-package fr.rosstail.conquest.character.guis.playerguis;
+package fr.rosstail.nodewar.character.guis.playerguis;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
-import fr.rosstail.conquest.character.guis.GUIs;
-import fr.rosstail.conquest.character.datahandlers.PlayerInfo;
-import fr.rosstail.conquest.character.empires.Empire;
-import fr.rosstail.conquest.Conquest;
-import fr.rosstail.conquest.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.character.guis.GUIs;
+import fr.rosstail.nodewar.character.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.character.empires.Empire;
+import fr.rosstail.nodewar.required.lang.AdaptMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,7 +22,7 @@ import java.util.List;
 
 public class EmpiresListGUI {
 
-    public static void initGUI(Player player, Conquest plugin) {
+    public static void initGUI(Player player, fr.rosstail.nodewar.Nodewar plugin) {
         FileConfiguration customConfig = new YamlConfiguration();
         String path = "gui/empireListGUI.yml";
         File file = new File(plugin.getDataFolder(), path);
@@ -62,7 +61,7 @@ public class EmpiresListGUI {
 
     }
 
-    private static void initPane(Player player, Conquest plugin, FileConfiguration customConfig, StaticPane itemSlot, ChestGui gui) {
+    private static void initPane(Player player, fr.rosstail.nodewar.Nodewar plugin, FileConfiguration customConfig, StaticPane itemSlot, ChestGui gui) {
         for (String slotName : customConfig.getConfigurationSection("gui.slots").getKeys(false)) {
             String slotPath = "gui.slots." + slotName;
             int posX = customConfig.getInt(slotPath + ".location.x");

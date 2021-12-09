@@ -16,12 +16,12 @@ import org.bukkit.util.StringUtil;
 
 import java.util.*;
 
-public class ConquestCommands implements CommandExecutor, TabExecutor
+public class NodewarCommands implements CommandExecutor, TabExecutor
 {
     private final EmpireCommands empireCommands;
     private final AdminCommands adminCommands;
 
-    public ConquestCommands(final Nodewar plugin) {
+    public NodewarCommands(final Nodewar plugin) {
         this.empireCommands = new EmpireCommands(plugin);
         this.adminCommands = new AdminCommands(plugin);
     }
@@ -63,7 +63,7 @@ public class ConquestCommands implements CommandExecutor, TabExecutor
             }
             else if (string.startsWith(Commands.COMMAND_ADMIN.getCommand())) {
                 commands.add("empire");
-                commands.add("conquest");
+                commands.add("nodewar");
                 commands.add("player");
             }
             StringUtil.copyPartialMatches(args[1], commands, completions);

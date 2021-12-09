@@ -1,9 +1,9 @@
-package fr.rosstail.conquest.territory.eventhandlers.events;
+package fr.rosstail.nodewar.territory.eventhandlers.events;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import fr.rosstail.conquest.territory.zonehandlers.CapturePoint;
-import fr.rosstail.conquest.territory.zonehandlers.ConquestWorlds;
-import fr.rosstail.conquest.territory.eventhandlers.Reasons;
+import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
+import fr.rosstail.nodewar.territory.zonehandlers.NodewarWorlds;
+import fr.rosstail.nodewar.territory.eventhandlers.Reasons;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerEvent;
@@ -24,8 +24,8 @@ public class RegionLeftEvent extends RegionEvent
     {
         super(region, player, reason, parent);
         World previousWorld = parent.getPlayer().getWorld();
-        if (ConquestWorlds.getUsedWorlds().contains(previousWorld)) {
-            ConquestWorlds.getWorldTerritories(previousWorld).forEach(territory -> {
+        if (NodewarWorlds.getUsedWorlds().contains(previousWorld)) {
+            NodewarWorlds.getWorldTerritories(previousWorld).forEach(territory -> {
                 if (territory.getRegion().equals(region)) {
                     territory.bossBarRemove(player);
                 }

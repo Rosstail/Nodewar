@@ -1,4 +1,4 @@
-package fr.rosstail.conquest.territory.zonehandlers;
+package fr.rosstail.nodewar.territory.zonehandlers;
 
 import java.util.HashMap;
 import java.util.HashSet;

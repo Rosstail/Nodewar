@@ -1,26 +1,25 @@
-package fr.rosstail.conquest.character.commandhandlers;
+package fr.rosstail.nodewar.character.commandhandlers;
 
-import fr.rosstail.conquest.character.datahandlers.PlayerInfo;
-import fr.rosstail.conquest.character.empires.Empire;
-import fr.rosstail.conquest.character.guis.playerguis.EmpiresListGUI;
+import fr.rosstail.nodewar.character.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.character.empires.Empire;
+import fr.rosstail.nodewar.character.guis.playerguis.EmpiresListGUI;
 import org.bukkit.entity.Player;
 import org.bukkit.ChatColor;
-import fr.rosstail.conquest.required.lang.LangManager;
-import fr.rosstail.conquest.required.lang.LangMessage;
-import fr.rosstail.conquest.character.commandhandlers.enums.Commands;
+import fr.rosstail.nodewar.required.lang.LangManager;
+import fr.rosstail.nodewar.required.lang.LangMessage;
+import fr.rosstail.nodewar.character.commandhandlers.enums.Commands;
 import org.bukkit.command.CommandSender;
-import fr.rosstail.conquest.Conquest;
 
 public class EmpireCommands
 {
-    private final Conquest plugin;
+    private final fr.rosstail.nodewar.Nodewar plugin;
     
-    public EmpireCommands(final Conquest plugin) {
+    public EmpireCommands(final fr.rosstail.nodewar.Nodewar plugin) {
         this.plugin = plugin;
     }
     
     public void empireCommands(final CommandSender sender, final String command, final String[] args) {
-        if (!ConquestCommands.isSenderPlayer(sender) || sender.hasPermission(Commands.COMMAND_EMPIRE.getPermission())) {
+        if (!NodewarCommands.isSenderPlayer(sender) || sender.hasPermission(Commands.COMMAND_EMPIRE.getPermission())) {
             if (command.startsWith(Commands.COMMAND_EMPIRE_LIST.getCommand())) {
                 this.listCommand(sender);
             }
@@ -35,29 +34,29 @@ public class EmpireCommands
             }
         }
         else {
-            ConquestCommands.doesNotHavePermission(sender, Commands.COMMAND_EMPIRE.getPermission());
+            NodewarCommands.doesNotHavePermission(sender, Commands.COMMAND_EMPIRE.getPermission());
         }
     }
     
     private void listCommand(final CommandSender sender) {
-        if (ConquestCommands.isSenderPlayer(sender)) {
+        if (NodewarCommands.isSenderPlayer(sender)) {
             final Player player = (Player)sender;
             if (player.hasPermission(Commands.COMMAND_EMPIRE_LIST.getPermission())) {
                 EmpiresListGUI.initGUI(player, this.plugin);
             }
             else {
-                ConquestCommands.doesNotHavePermission(player, Commands.COMMAND_EMPIRE_LIST.getPermission());
+                NodewarCommands.doesNotHavePermission(player, Commands.COMMAND_EMPIRE_LIST.getPermission());
             }
         }
         else {
-            ConquestCommands.playerOnly(sender);
+            NodewarCommands.playerOnly(sender);
         }
     }
     
     private void joinCommand(final CommandSender sender, final String[] args) {
         if (args.length > 2) {
             if (Empire.getEmpires().containsKey(args[2])) {
-                if (ConquestCommands.isSenderPlayer(sender)) {
+                if (NodewarCommands.isSenderPlayer(sender)) {
                     final Player player = (Player)sender;
                     if (player.hasPermission(Commands.COMMAND_EMPIRE_JOIN.getPermission())) {
                         final PlayerInfo playerInfo = PlayerInfo.gets(player);
@@ -74,11 +73,11 @@ public class EmpireCommands
                         }
                     }
                     else {
-                        ConquestCommands.doesNotHavePermission(player, Commands.COMMAND_EMPIRE_JOIN.getPermission());
+                        NodewarCommands.doesNotHavePermission(player, Commands.COMMAND_EMPIRE_JOIN.getPermission());
                     }
                 }
                 else {
-                    ConquestCommands.playerOnly(sender);
+                    NodewarCommands.playerOnly(sender);
                 }
             }
         }
@@ -88,11 +87,11 @@ public class EmpireCommands
     }
     
     private void leaveCommand(final CommandSender sender) {
-        if (ConquestCommands.isSenderPlayer(sender)) {
+        if (NodewarCommands.isSenderPlayer(sender)) {
             PlayerInfo.gets((Player)sender).leaveEmpire();
         }
         else {
-            ConquestCommands.playerOnly(sender);
+            NodewarCommands.playerOnly(sender);
         }
     }
 }

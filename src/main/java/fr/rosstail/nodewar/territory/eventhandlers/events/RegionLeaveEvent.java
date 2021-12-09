@@ -1,7 +1,7 @@
-package fr.rosstail.conquest.territory.eventhandlers.events;
+package fr.rosstail.nodewar.territory.eventhandlers.events;
 
 import org.bukkit.event.player.PlayerEvent;
-import fr.rosstail.conquest.territory.eventhandlers.Reasons;
+import fr.rosstail.nodewar.territory.eventhandlers.Reasons;
 import org.bukkit.entity.Player;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.event.Cancellable;

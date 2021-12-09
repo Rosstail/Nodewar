@@ -1,15 +1,14 @@
-package fr.rosstail.conquest.required;
+package fr.rosstail.nodewar.required;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import fr.rosstail.conquest.character.datahandlers.DataBaseActions;
+import fr.rosstail.nodewar.character.datahandlers.DataBaseActions;
 import org.bukkit.configuration.Configuration;
 import java.sql.Connection;
-import fr.rosstail.conquest.Conquest;
 
 public class DataBase
 {
-    Conquest plugin;
+    fr.rosstail.nodewar.Nodewar plugin;
     private static DataBase dataBase;
     private Connection connection;
     public String connector;
@@ -20,12 +19,12 @@ public class DataBase
     public int port;
     private final Configuration config;
     
-    private DataBase(final Conquest plugin) {
+    private DataBase(final fr.rosstail.nodewar.Nodewar plugin) {
         this.plugin = plugin;
         this.config = plugin.getCustomConfig();
     }
     
-    public static DataBase gets(final Conquest plugin) {
+    public static DataBase gets(final fr.rosstail.nodewar.Nodewar plugin) {
         if (DataBase.dataBase == null) {
             DataBase.dataBase = new DataBase(plugin);
         }

@@ -1,19 +1,19 @@
-package fr.rosstail.conquest.required;
+package fr.rosstail.nodewar.required;
 
 import java.util.HashMap;
 
 import org.bukkit.inventory.ItemStack;
-import fr.rosstail.conquest.Conquest;
+
 import java.util.Map;
 
 public class PlayerHead
 {
-    private static Map<Conquest, PlayerHead> getSets;
+    private static Map<fr.rosstail.nodewar.Nodewar, PlayerHead> getSets;
 
     public PlayerHead() {
     }
     
-    public static PlayerHead gets(final Conquest plugin) {
+    public static PlayerHead gets(final fr.rosstail.nodewar.Nodewar plugin) {
         if (!PlayerHead.getSets.containsKey(plugin)) {
             PlayerHead.getSets.put(plugin, new PlayerHead());
         }

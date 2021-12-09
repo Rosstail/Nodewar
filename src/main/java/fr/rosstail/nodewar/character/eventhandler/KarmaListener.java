@@ -1,9 +1,9 @@
-package fr.rosstail.conquest.character.eventhandler;
+package fr.rosstail.nodewar.character.eventhandler;
 
 import com.rosstail.karma.Karma;
 import com.rosstail.karma.customevents.PlayerKarmaChangeEvent;
-import fr.rosstail.conquest.character.datahandlers.PlayerInfo;
-import fr.rosstail.conquest.character.empires.Empire;
+import fr.rosstail.nodewar.character.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.character.empires.Empire;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,7 +17,7 @@ public class KarmaListener implements Listener {
 
     public KarmaListener(Karma karma) {
         this.karmaPlugin = karma;
-        System.out.println("[CONQUEST] Hooked with KARMA" );
+        System.out.println("[NODEWAR] Hooked with KARMA" );
     }
 
 

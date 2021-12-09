@@ -14,25 +14,25 @@ import java.util.ArrayList;
 import org.bukkit.World;
 import java.util.Map;
 
-public class ConquestWorlds
+public class NodewarWorlds
 {
-    private static final Map<World, ConquestWorlds> worlds = new HashMap<>();
+    private static final Map<World, NodewarWorlds> worlds = new HashMap<>();
     private static final ArrayList<File> territoryFiles = new ArrayList<>();
     private static final ArrayList<FileConfiguration> territoryConfigs = new ArrayList<>();
     private final ArrayList<Territory> worldTerritories;
     
-    public static ConquestWorlds gets(final File folder) {
+    public static NodewarWorlds gets(final File folder) {
         final World world = Bukkit.getWorld(folder.getName());
         if (world != null) {
-            if (!ConquestWorlds.worlds.containsKey(world)) {
-                ConquestWorlds.worlds.put(world, new ConquestWorlds(folder));
+            if (!NodewarWorlds.worlds.containsKey(world)) {
+                NodewarWorlds.worlds.put(world, new NodewarWorlds(folder));
             }
-            return ConquestWorlds.worlds.get(world);
+            return NodewarWorlds.worlds.get(world);
         }
         return null;
     }
     
-    public ConquestWorlds(final File worldFolder) {
+    public NodewarWorlds(final File worldFolder) {
         this.worldTerritories = new ArrayList<>();
         if (worldFolder.listFiles() != null) {
             final World world = Bukkit.getWorld(worldFolder.getName());
@@ -62,7 +62,7 @@ public class ConquestWorlds
         final List<World> worldList = Bukkit.getWorlds();
         final ArrayList<World> finWorldList = new ArrayList<World>();
         for (final World world : worldList) {
-            if (ConquestWorlds.worlds.containsKey(world)) {
+            if (NodewarWorlds.worlds.containsKey(world)) {
                 finWorldList.add(world);
             }
         }
@@ -71,7 +71,7 @@ public class ConquestWorlds
     }
     
     public static List<World> getUsedWorlds() {
-        return new ArrayList<World>(ConquestWorlds.worlds.keySet());
+        return new ArrayList<World>(NodewarWorlds.worlds.keySet());
     }
     
     public ArrayList<Territory> getWorldTerritories() {
@@ -79,7 +79,7 @@ public class ConquestWorlds
     }
     
     public static ArrayList<Territory> getWorldTerritories(final World world) {
-        return ConquestWorlds.worlds.get(world).getWorldTerritories();
+        return NodewarWorlds.worlds.get(world).getWorldTerritories();
     }
 
     public static ArrayList<File> getTerritoryFiles() {

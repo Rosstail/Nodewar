@@ -1,9 +1,9 @@
-package fr.rosstail.conquest.character.commandhandlers.enums;
+package fr.rosstail.nodewar.character.commandhandlers.enums;
 
 public enum Permission
 {
-    PERM_CHARACTER_NUMBER_UNLIMITED("conquest.character.number.*"),
-    PERM_CHARACTER_NUMBER("conquest.character.number.");
+    PERM_CHARACTER_NUMBER_UNLIMITED("nodewar.character.number.*"),
+    PERM_CHARACTER_NUMBER("nodewar.character.number.");
     
     private final String permission;
     

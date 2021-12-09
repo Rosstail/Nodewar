@@ -1,11 +1,17 @@
-package fr.rosstail.conquest.territory.eventhandlers;
+package fr.rosstail.nodewar.territory.eventhandlers;
 
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import fr.rosstail.conquest.territory.zonehandlers.PlayerRegions;
-import fr.rosstail.conquest.territory.eventhandlers.events.RegionEnteredEvent;
+import fr.rosstail.nodewar.territory.zonehandlers.PlayerRegions;
+import fr.rosstail.nodewar.territory.eventhandlers.events.RegionEnteredEvent;
+import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.territory.eventhandlers.events.RegionEnterEvent;
+import fr.rosstail.nodewar.territory.eventhandlers.events.RegionLeaveEvent;
+import fr.rosstail.nodewar.territory.eventhandlers.events.RegionLeftEvent;
+import fr.rosstail.nodewar.territory.zonehandlers.NodewarWorlds;
+import fr.rosstail.nodewar.territory.zonehandlers.PlayerRegions;
 import org.bukkit.Bukkit;
-import fr.rosstail.conquest.territory.eventhandlers.events.RegionEnterEvent;
+import fr.rosstail.nodewar.territory.eventhandlers.events.RegionEnterEvent;
 
 import java.util.HashSet;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -15,15 +21,15 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import java.util.Objects;
 import org.bukkit.Location;
-import fr.rosstail.conquest.territory.zonehandlers.ConquestWorlds;
+import fr.rosstail.nodewar.territory.zonehandlers.NodewarWorlds;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.EventHandler;
 import java.util.Iterator;
 
-import fr.rosstail.conquest.territory.eventhandlers.events.RegionLeftEvent;
+import fr.rosstail.nodewar.territory.eventhandlers.events.RegionLeftEvent;
 import org.bukkit.event.player.PlayerEvent;
-import fr.rosstail.conquest.territory.eventhandlers.events.RegionLeaveEvent;
+import fr.rosstail.nodewar.territory.eventhandlers.events.RegionLeaveEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import java.util.HashMap;
 
@@ -31,15 +37,15 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.util.Set;
 import org.bukkit.entity.Player;
 import java.util.Map;
-import fr.rosstail.conquest.Conquest;
+
 import org.bukkit.event.Listener;
 
 public class WGRegionEventsListener implements Listener
 {
-    private final Conquest plugin;
+    private final Nodewar plugin;
     private final Map<Player, Set<ProtectedRegion>> playerRegions;
 
-    public WGRegionEventsListener(final Conquest plugin) {
+    public WGRegionEventsListener(final Nodewar plugin) {
         this.plugin = plugin;
         this.playerRegions = new HashMap<>();
     }
@@ -72,7 +78,7 @@ public class WGRegionEventsListener implements Listener
 
     @EventHandler
     public void onPlayerMove(final PlayerMoveEvent e) {
-        if (ConquestWorlds.getUsedWorlds().contains(e.getPlayer().getWorld()) && this.doPlayerMoveLoc(e)) {
+        if (NodewarWorlds.getUsedWorlds().contains(e.getPlayer().getWorld()) && this.doPlayerMoveLoc(e)) {
             e.setCancelled(this.updateRegions(e.getPlayer(), Reasons.MOVE, Objects.requireNonNull(e.getTo()), e));
         }
     }
