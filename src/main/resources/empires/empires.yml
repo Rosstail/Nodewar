@@ -1,0 +1,14 @@
+coalition:
+  display: "&cCoalition"
+  boss-bar-color: RED
+  friendly-fire: true
+
+empire:
+  display: "&eEmpire"
+  boss-bar-color: YELLOW
+  friendly-fire: false
+
+order:
+  display: "&aOrder"
+  boss-bar-color: GREEN
+  friendly-fire: false
