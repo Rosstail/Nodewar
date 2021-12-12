@@ -10,6 +10,8 @@ import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.required.lang.LangManager;
+import fr.rosstail.nodewar.required.lang.LangMessage;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -88,7 +90,7 @@ public class PlayerAdminEmpireGUIs {
                     PlayerInfo targetInfo = PlayerInfo.gets(target);
                     targetInfo.leaveEmpire();
                     targetInfo.setEmpire(empire);
-                    player.sendMessage("Set " + target.getName() + " empire to " + empire.getDisplay());
+                    player.sendMessage(AdaptMessage.playerMessage(target, LangManager.getMessage(LangMessage.PLAYER_SET_EMPIRE)));
                     previousGui.show(player);
                 }), posX, posY);
 

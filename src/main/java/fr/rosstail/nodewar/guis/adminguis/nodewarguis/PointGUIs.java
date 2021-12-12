@@ -9,6 +9,8 @@ import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.required.lang.LangManager;
+import fr.rosstail.nodewar.required.lang.LangMessage;
 import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -46,7 +48,7 @@ public class PointGUIs {
             PointGUIs.initGUI(player, plugin, point, previousGui);
             if (event.isRightClick()) {
                 point.cancelAttack(null);
-                System.out.println(point.getDisplay() + " is now neutral");
+                player.sendMessage(AdaptMessage.pointMessage(point, LangManager.getMessage(LangMessage.POINT_NEUTRALIZE)));
             } else {
                 PointEmpireGUIs.initGUI(player, plugin, gui, point);
             }

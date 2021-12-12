@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.required;
 
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.required.lang.AdaptMessage;
 
 import java.io.*;
 import java.net.URI;
@@ -24,7 +25,7 @@ public class FileResourcesUtils {
             File pluginFolder = new File(plugin.getDataFolder() + "/" + folder);
             if (!pluginFolder.exists()) {
                 pluginFolder.mkdir();
-                System.out.println("Creating " + pluginFolder.getName() + " folder.");
+                AdaptMessage.print("Creating " + pluginFolder.getName() + " folder.", AdaptMessage.prints.OUT);
             } else {
                 return;
             }
@@ -47,7 +48,7 @@ public class FileResourcesUtils {
                         main(file.getName(), plugin);
                     }*/
                     plugin.saveResource(filePathInJAR, false);
-                    System.out.println(" > Creating " + file + " config.");
+                    AdaptMessage.print(" > Creating " + file + " config.", AdaptMessage.prints.OUT);
                 }
 
 
@@ -114,7 +115,7 @@ public class FileResourcesUtils {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                AdaptMessage.print(line, AdaptMessage.prints.OUT);
             }
 
         } catch (IOException e) {

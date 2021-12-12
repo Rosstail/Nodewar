@@ -82,7 +82,6 @@ public class Calculator {
                 }
             }.parse();
         } catch (Exception e) {
-            System.out.println("[Karma] An exception as occured during the calculation : " + str);
             return 0D;
         }
     }

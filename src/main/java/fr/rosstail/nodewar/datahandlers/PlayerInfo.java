@@ -7,6 +7,9 @@ import com.google.gson.JsonParser;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.required.DataBase;
+import fr.rosstail.nodewar.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.required.lang.LangManager;
+import fr.rosstail.nodewar.required.lang.LangMessage;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -74,11 +77,11 @@ public class PlayerInfo
     public void setEmpire(final Empire empire) {
         if (empire == null) {
             this.removePlayerGroup(this.empire);
-            this.player.sendMessage("You left your empire.");
+            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_LEAVE_EMPIRE)));
         }
         else {
-            this.player.sendMessage("You joined the " + empire.getDisplay() + " empire.");
-            this.setPlayerGroup(empire);
+            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_SET_EMPIRE)));
+            setPlayerGroup(empire);
         }
         this.empire = empire;
     }

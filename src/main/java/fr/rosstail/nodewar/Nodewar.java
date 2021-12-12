@@ -8,6 +8,7 @@ import fr.rosstail.nodewar.eventhandler.PlayerEventHandler;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.required.DataBase;
 import fr.rosstail.nodewar.required.FileResourcesUtils;
+import fr.rosstail.nodewar.required.lang.AdaptMessage;
 import fr.rosstail.nodewar.required.lang.LangManager;
 import fr.rosstail.nodewar.required.lang.PAPIExpansion;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
@@ -54,10 +55,10 @@ public class Nodewar extends JavaPlugin implements Listener
     }
     
     public void onEnable() {
-        fr.rosstail.nodewar.Nodewar.instance = this;
-        fr.rosstail.nodewar.Nodewar.dimName = fr.rosstail.nodewar.Nodewar.instance.getName().toLowerCase();
+        instance = this;
+        dimName = instance.getName().toLowerCase();
         if (!new File("plugins/Nodewar/config.yml").exists()) {
-            System.out.println("Preparing default config.yml");
+            AdaptMessage.print("Preparing default config.yml", AdaptMessage.prints.OUT);
             this.saveDefaultConfig();
         }
 
@@ -65,9 +66,9 @@ public class Nodewar extends JavaPlugin implements Listener
         if (karma != null) {
             KarmaListener listener = new KarmaListener(karma);
             this.getServer().getPluginManager().registerEvents(listener, karma);
-            System.out.println("[NODEWAR] Karma is OK");
+            AdaptMessage.print("[NODEWAR] Karma is OK", AdaptMessage.prints.OUT);
         } else {
-            System.out.println("[NODEWAR] Karma is NULL");
+            AdaptMessage.print("[NODEWAR] Karma is NULL", AdaptMessage.prints.ERROR);
         }
 
         WorldGuardPlugin wgPlugin = this.getWGPlugin();
@@ -88,11 +89,11 @@ public class Nodewar extends JavaPlugin implements Listener
         }
         Empire.init(this);
         if (this.setupEconomy()) {
-            System.out.println("[" + this.getName() + "] Hooked with Vault !");
+            AdaptMessage.print("[" + this.getName() + "] Hooked with Vault !", AdaptMessage.prints.OUT);
             this.setupPermissions();
         }
         else {
-            fr.rosstail.nodewar.Nodewar.log.severe(String.format("[" + this.getName() + "] Didn't found Vault.", this.getDescription().getName()));
+            log.severe(String.format("[" + this.getName() + "] Didn't found Vault.", this.getDescription().getName()));
         }
         Bukkit.getPluginManager().registerEvents(new PlayerEventHandler(this), this);
         if (Bukkit.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
@@ -106,7 +107,7 @@ public class Nodewar extends JavaPlugin implements Listener
                 empire.applyTerritories();
             }
         }
-        this.getCommand(fr.rosstail.nodewar.Nodewar.dimName).setExecutor(new NodewarCommands(this));
+        this.getCommand(dimName).setExecutor(new NodewarCommands(this));
     }
     
     private void initDefaultConfigs() {
@@ -134,26 +135,26 @@ public class Nodewar extends JavaPlugin implements Listener
         if (rsp == null) {
             return false;
         }
-        fr.rosstail.nodewar.Nodewar.econ = rsp.getProvider();
-        return fr.rosstail.nodewar.Nodewar.econ != null;
+        econ = rsp.getProvider();
+        return econ != null;
     }
     
     private boolean setupPermissions() {
         final RegisteredServiceProvider<Permission> rsp = (RegisteredServiceProvider<Permission>)this.getServer().getServicesManager().getRegistration((Class)Permission.class);
-        fr.rosstail.nodewar.Nodewar.perms = rsp.getProvider();
-        return fr.rosstail.nodewar.Nodewar.perms != null;
+        perms = rsp.getProvider();
+        return perms != null;
     }
     
     public static Economy getEconomy() {
-        return fr.rosstail.nodewar.Nodewar.econ;
+        return econ;
     }
     
     public static Permission getPermissions() {
-        return fr.rosstail.nodewar.Nodewar.perms;
+        return perms;
     }
     
     public static Chat getChat() {
-        return fr.rosstail.nodewar.Nodewar.chat;
+        return chat;
     }
     
     private Karma getKarmaPlugin() {
@@ -174,9 +175,9 @@ public class Nodewar extends JavaPlugin implements Listener
     
     static {
         log = Logger.getLogger("Minecraft");
-        fr.rosstail.nodewar.Nodewar.econ = null;
-        fr.rosstail.nodewar.Nodewar.perms = null;
-        fr.rosstail.nodewar.Nodewar.chat = null;
+        econ = null;
+        perms = null;
+        chat = null;
     }
 
     public YamlConfiguration getCustomConfig() {

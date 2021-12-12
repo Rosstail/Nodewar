@@ -3,6 +3,8 @@ package fr.rosstail.nodewar.territory.zonehandlers;
 import java.io.File;
 import java.util.HashSet;
 
+import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.required.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerChange;
 import org.bukkit.entity.Player;
 import java.util.Set;
@@ -459,15 +461,19 @@ public class Territory
                 if (worldFolder.isDirectory()) {
                     final WorldTerritoryManager world = WorldTerritoryManager.gets(worldFolder);
                     if (world == null) {
-                        System.out.println(worldFolder + " doesn't correspond at any existing world.");
+                        AdaptMessage.print("[" + Nodewar.getDimName()  + "] doesn't correspond at any existing world.", AdaptMessage.prints.WARNING);
                     }
                 }
                 else {
-                    System.out.println(worldFolder + " is not a directory");
+                    AdaptMessage.print("[" + Nodewar.getDimName()  + "]" + worldFolder + " is not a directory", AdaptMessage.prints.WARNING);
                 }
             }
             WorldTerritoryManager.setUsedWorlds();
         }
+    }
+
+    public int getRegenOrDamage() {
+        return regenOrDamage;
     }
 
     public Empire getEmpireAdvantage() {

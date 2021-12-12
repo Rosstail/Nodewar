@@ -5,10 +5,13 @@ import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.required.lang.LangManager;
+import fr.rosstail.nodewar.required.lang.LangMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -55,8 +58,7 @@ public class EmpiresListGUI {
             gui.addPane(itemSlot);
             gui.show(player);
         } catch (IOException | InvalidConfigurationException e) {
-            System.out.println("[FE_CHARACTER] Error while reading " + path + " file");
-            System.out.println(e);
+            AdaptMessage.print("[" + Nodewar.getDimName() + "] Error while reading " + path + " file", AdaptMessage.prints.ERROR);
         }
 
     }
@@ -75,9 +77,7 @@ public class EmpiresListGUI {
                 itemSlot.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, customConfig, material, display, slotPath,
                         GUIs.adaptLore(player, lore)), event -> {
                     if(PlayerInfo.gets(player).tryJoinEmpire(empire)) {
-                        player.sendMessage("vous avez rejoins l'empire " + empire.getDisplay() + " avec succès.");
-                    } else {
-                        player.sendMessage("Vous ne pouvez pas rejoindre cet empire.");
+                        player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_JOIN_EMPIRE)));
                     }
                     initPane(player, plugin, customConfig, itemSlot, gui);
                     gui.update();

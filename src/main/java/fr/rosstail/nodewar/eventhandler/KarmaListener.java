@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.eventhandler;
 import com.rosstail.karma.Karma;
 import com.rosstail.karma.customevents.PlayerKarmaChangeEvent;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.required.lang.AdaptMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,12 +17,12 @@ public class KarmaListener implements Listener {
 
     public KarmaListener(Karma karma) {
         this.karmaPlugin = karma;
-        System.out.println("[NODEWAR] Hooked with KARMA" );
+        //AdaptMessage.print("[NODEWAR] Hooked with KARMA", AdaptMessage.prints.OUT);
     }
 
 
 
-    @EventHandler(ignoreCancelled = true)
+    /*@EventHandler(ignoreCancelled = true)
     private void onPlayerKarmaChange(PlayerKarmaChangeEvent event) {
         Player player = event.getPlayer();
         Player victim = null;
@@ -52,5 +53,5 @@ public class KarmaListener implements Listener {
             event.setValue(-value);
         }
 
-    }
+    }*/
 }

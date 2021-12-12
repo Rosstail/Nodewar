@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.empires;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import fr.rosstail.nodewar.required.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import org.bukkit.ChatColor;
@@ -136,7 +137,7 @@ public class Empire
                     addEmpire(empireFile);
                 }
                 else {
-                    System.out.println(empireFile + " is not a file");
+                    AdaptMessage.print(empireFile + " is not a file", AdaptMessage.prints.WARNING);
                 }
             }
         }

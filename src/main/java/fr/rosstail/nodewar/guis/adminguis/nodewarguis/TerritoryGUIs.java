@@ -8,6 +8,8 @@ import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.required.lang.LangManager;
+import fr.rosstail.nodewar.required.lang.LangMessage;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryVulnerabilityToggle;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import org.bukkit.Bukkit;
@@ -48,7 +50,8 @@ public class TerritoryGUIs {
                 , GUIs.adaptLore(player, null)), event -> {
             if (event.isRightClick()) {
                 territory.cancelAttack(null);
-                player.sendMessage(territory.getDisplay() + " is now neutral");
+                player.sendMessage(AdaptMessage.playerMessage(player,
+                        AdaptMessage.territoryMessage(territory,LangManager.getMessage(LangMessage.TERRITORY_NEUTRALIZE))));
             } else {
                 TerritoryEmpireGUIs.initGUI(player, plugin, gui, territory);
             }
@@ -82,9 +85,11 @@ public class TerritoryGUIs {
             if (!toggleEvent.isCancelled()) {
                 vulnerabilityButton(player, plugin, territory, gui, staticPane);
                 if (territory.isVulnerable()) {
-                    player.sendMessage(territory.getDisplay() + " is now vulnerable");
+                    player.sendMessage(AdaptMessage.playerMessage(player,
+                            AdaptMessage.territoryMessage(territory, LangManager.getMessage(LangMessage.TERRITORY_VULNERABLE))));
                 } else {
-                    player.sendMessage(territory.getDisplay() + " is now invulnerable");
+                    player.sendMessage(AdaptMessage.playerMessage(player,
+                            AdaptMessage.territoryMessage(territory, LangManager.getMessage(LangMessage.TERRITORY_INVULNERABLE))));
                 }
             }
 

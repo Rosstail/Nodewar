@@ -15,14 +15,14 @@ public enum Commands
 
     //TERRITORY/POINT
     COMMAND_TERRITORY("territory", "nodewar.territory"),
-    COMMAND_TERRITORY_VULNERABILITY("territory vulnerability", "nodewar.territory.vulnerability"),
-    COMMAND_TERRITORY_SET_EMPIRE("territory empire set", "nodewar.territory.empire.set"),
-    COMMAND_TERRITORY_NEUTRALIZE("territory neutralize", "nodewar.territory.neutralize"),
+    COMMAND_TERRITORY_VULNERABILITY("vulnerability", "nodewar.territory.vulnerability"),
+    COMMAND_TERRITORY_SET_EMPIRE("setempire", "nodewar.territory.empire.set"),
+    COMMAND_TERRITORY_NEUTRALIZE("neutralize", "nodewar.territory.neutralize"),
 
     //ADMIN GUI
     COMMAND_ADMIN("admin", "nodewar.admin"),
     COMMAND_ADMIN_PLAYER("admin player", "nodewar.admin.player"),
-    COMMAND_ADMIN_NODEWAR("admin nodewar", "nodewar.admin.nodewar"),
+    COMMAND_ADMIN_NODEWAR("admin territory", "nodewar.admin.territory"),
     COMMAND_ADMIN_EMPIRE("admin empire", "nodewar.admin.empire"),
     COMMAND_ADMIN_EMPIRE_PLAYER_SET("admin empire set", "nodewar.admin.empire.set"),
     COMMAND_ADMIN_EMPIRE_PLAYER_REMOVE("admin empire remove", "nodewar.admin.empire.remove");

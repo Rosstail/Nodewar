@@ -24,7 +24,6 @@ public class WorldGuardInteractions
     private static Map<Player, List<ProtectedRegion>> playersProtectedRegions;
     
     public static void setPlayersDataForWorlds(final List<World> worldList) {
-        System.out.println(worldList.toString());
         final Timer T = new Timer();
         T.schedule(new TimerTask() {
             @Override

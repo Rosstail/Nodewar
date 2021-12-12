@@ -1,12 +1,13 @@
 name: Nodewar
-version: 0.1
+version: 0.2
 description: Nodewar plugin
 api-version: 1.13
 author: Rosstail
 website: https://www.spigotmc.org/resources/
+depend:
+  - WorldGuard
 softdepend:
   - PlaceholderAPI
-  - WorldGuard
   - Karma
 main: fr.rosstail.nodewar.Nodewar
 commands:

@@ -5,6 +5,7 @@ import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.required.lang.AdaptMessage;
 import org.bukkit.Material;
@@ -53,8 +54,7 @@ public class PlayerInfoGUI {
             gui.addPane(itemSlot);
             gui.show(player);
         } catch (IOException | InvalidConfigurationException e) {
-            System.out.println("[FE_CHARACTER] Error while reading " + path + " file");
-            System.out.println(e);
+            AdaptMessage.print("[" + Nodewar.getDimName() + "] Error while reading " + path + " file", AdaptMessage.prints.ERROR);
         }
     }
 

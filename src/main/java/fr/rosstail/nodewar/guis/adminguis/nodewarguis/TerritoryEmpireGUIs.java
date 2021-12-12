@@ -10,6 +10,8 @@ import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.required.lang.LangManager;
+import fr.rosstail.nodewar.required.lang.LangMessage;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -87,7 +89,11 @@ public class TerritoryEmpireGUIs {
                 staticPane.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, null, Material.RED_BANNER, empire.getDisplay(), null
                         , GUIs.adaptLore(player, null)), event -> {
                     territory.cancelAttack(empire);
-                    System.out.println(territory.getDisplay() + " is now owned by " + empire.getDisplay());
+                    if (empire != Empire.getNoEmpire()) {
+                        AdaptMessage.playerMessage(player, AdaptMessage.territoryMessage(territory, LangManager.getMessage(LangMessage.TERRITORY_SET_EMPIRE)));
+                    } else {
+                        AdaptMessage.playerMessage(player, AdaptMessage.territoryMessage(territory, LangManager.getMessage(LangMessage.TERRITORY_NEUTRALIZE)));
+                    }
                     previousGui.show(player);
                 }), posX, posY);
 
