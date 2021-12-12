@@ -1,6 +1,6 @@
 package fr.rosstail.nodewar.required.lang;
 
-import fr.rosstail.nodewar.character.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

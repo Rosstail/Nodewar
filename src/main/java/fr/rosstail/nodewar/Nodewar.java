@@ -2,10 +2,10 @@ package fr.rosstail.nodewar;
 
 import com.rosstail.karma.Karma;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import fr.rosstail.nodewar.character.commandhandlers.NodewarCommands;
-import fr.rosstail.nodewar.character.eventhandler.KarmaListener;
-import fr.rosstail.nodewar.character.eventhandler.PlayerEventHandler;
-import fr.rosstail.nodewar.character.empires.Empire;
+import fr.rosstail.nodewar.commandhandlers.NodewarCommands;
+import fr.rosstail.nodewar.eventhandler.KarmaListener;
+import fr.rosstail.nodewar.eventhandler.PlayerEventHandler;
+import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.required.DataBase;
 import fr.rosstail.nodewar.required.FileResourcesUtils;
 import fr.rosstail.nodewar.required.lang.LangManager;
@@ -13,6 +13,7 @@ import fr.rosstail.nodewar.required.lang.PAPIExpansion;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import fr.rosstail.nodewar.territory.eventhandlers.NodewarEventsListener;
 import fr.rosstail.nodewar.territory.eventhandlers.WGRegionEventsListener;
+import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -96,8 +97,10 @@ public class Nodewar extends JavaPlugin implements Listener
         Bukkit.getPluginManager().registerEvents(new PlayerEventHandler(this), this);
         if (Bukkit.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
             Territory.initWorldTerritories(this);
-            for (final Territory territory : Territory.getAllTerritories()) {
-                territory.initCanAttack();
+            for (final WorldTerritoryManager manager : WorldTerritoryManager.getUsedWorlds().values()) {
+                for (final Territory territory : manager.getTerritories().values()) {
+                    territory.initCanAttack();
+                }
             }
             for (final Empire empire : Empire.getEmpires().values()) {
                 empire.applyTerritories();

@@ -3,15 +3,12 @@ package fr.rosstail.nodewar.territory.eventhandlers;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import fr.rosstail.nodewar.territory.zonehandlers.PlayerRegions;
-import fr.rosstail.nodewar.territory.eventhandlers.events.RegionEnteredEvent;
+import fr.rosstail.nodewar.territory.eventhandlers.worldguardevents.RegionEnteredEvent;
 import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.territory.eventhandlers.events.RegionEnterEvent;
-import fr.rosstail.nodewar.territory.eventhandlers.events.RegionLeaveEvent;
-import fr.rosstail.nodewar.territory.eventhandlers.events.RegionLeftEvent;
-import fr.rosstail.nodewar.territory.zonehandlers.NodewarWorlds;
-import fr.rosstail.nodewar.territory.zonehandlers.PlayerRegions;
+import fr.rosstail.nodewar.territory.eventhandlers.worldguardevents.RegionEnterEvent;
+import fr.rosstail.nodewar.territory.eventhandlers.worldguardevents.RegionLeaveEvent;
+import fr.rosstail.nodewar.territory.eventhandlers.worldguardevents.RegionLeftEvent;
 import org.bukkit.Bukkit;
-import fr.rosstail.nodewar.territory.eventhandlers.events.RegionEnterEvent;
 
 import java.util.HashSet;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -21,15 +18,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import java.util.Objects;
 import org.bukkit.Location;
-import fr.rosstail.nodewar.territory.zonehandlers.NodewarWorlds;
+import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.EventHandler;
 import java.util.Iterator;
 
-import fr.rosstail.nodewar.territory.eventhandlers.events.RegionLeftEvent;
 import org.bukkit.event.player.PlayerEvent;
-import fr.rosstail.nodewar.territory.eventhandlers.events.RegionLeaveEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import java.util.HashMap;
 
@@ -78,7 +73,7 @@ public class WGRegionEventsListener implements Listener
 
     @EventHandler
     public void onPlayerMove(final PlayerMoveEvent e) {
-        if (NodewarWorlds.getUsedWorlds().contains(e.getPlayer().getWorld()) && this.doPlayerMoveLoc(e)) {
+        if (WorldTerritoryManager.getUsedWorlds().containsKey(e.getPlayer().getWorld()) && this.doPlayerMoveLoc(e)) {
             e.setCancelled(this.updateRegions(e.getPlayer(), Reasons.MOVE, Objects.requireNonNull(e.getTo()), e));
         }
     }

@@ -5,8 +5,8 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import fr.rosstail.nodewar.character.datahandlers.PlayerInfo;
-import fr.rosstail.nodewar.character.empires.Empire;
+import fr.rosstail.nodewar.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.PointOwnerChange;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,7 +21,6 @@ import java.util.*;
 
 public class CapturePoint
 {
-    private static final Map<String, CapturePoint> capturePoints;
     private final String name;
     private final String display;
     private final World world;
@@ -35,14 +34,6 @@ public class CapturePoint
     private int pointTimeLeft;
     private final BossBar bossBar;
     private Set<Player> playerOnPoints;
-
-    public static CapturePoint gets(final FileConfiguration config, final World world, final Territory territory, final String point) {
-        final String defKey = world.getName() + "." + territory.getName() + "." + point;
-        if (!CapturePoint.capturePoints.containsKey(defKey)) {
-            CapturePoint.capturePoints.put(defKey, new CapturePoint(config, world, territory, point));
-        }
-        return CapturePoint.capturePoints.get(defKey);
-    }
 
     public CapturePoint(final FileConfiguration config, final World world, final Territory territory, final String key) {
         this.playerOnPoints = new HashSet<>();
@@ -85,7 +76,7 @@ public class CapturePoint
             this.pointTimeLeft = 0;
         }
         this.empireAdvantage = this.empire;
-        (this.bossBar = Bukkit.createBossBar("feNodewar.capturePoint." + this.getName(), BarColor.WHITE, BarStyle.SEGMENTED_10)).setTitle("Point - " + this.getDisplay());
+        (this.bossBar = Bukkit.createBossBar("nodewarNodewar.capturePoint." + this.getName(), BarColor.WHITE, BarStyle.SEGMENTED_10)).setTitle("Point - " + this.getDisplay());
         this.bossBar.setVisible(true);
     }
 
@@ -326,9 +317,5 @@ public class CapturePoint
 
     public BossBar getBossBar() {
         return this.bossBar;
-    }
-
-    static {
-        capturePoints = new HashMap<>();
     }
 }

@@ -1,6 +1,6 @@
 package fr.rosstail.nodewar.required.lang;
 
-import fr.rosstail.nodewar.character.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;

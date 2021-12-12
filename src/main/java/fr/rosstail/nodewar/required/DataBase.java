@@ -2,7 +2,7 @@ package fr.rosstail.nodewar.required;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import fr.rosstail.nodewar.character.datahandlers.DataBaseActions;
+import fr.rosstail.nodewar.datahandlers.DataBaseActions;
 import org.bukkit.configuration.Configuration;
 import java.sql.Connection;
 

@@ -4,9 +4,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.Rosstail</groupId>
+    <groupId>com.github.Rosstail</groupId>
     <artifactId>nodewar</artifactId>
     <version>0.1</version>
+    <packaging>jar</packaging>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Rosstail Apache Maven packages</name>
+            <url>https://maven.pkg.github.com/Rosstail/NodeWar</url>
+        </repository>
+    </distributionManagement>
+    <developers>
+        <developer>
+            <name>Rosstail</name>
+            <email>rosstail_zegeek@hotmail.fr</email>
+            <organization>com.github.rosstail</organization>
+            <organizationUrl>https://github.com/Rosstail/NodeWar</organizationUrl>
+        </developer>
+    </developers>
+
     <build>
         <plugins>
             <plugin>
@@ -124,7 +142,7 @@
         <dependency>
             <groupId>com.github.Rosstail</groupId>
             <artifactId>karma</artifactId>
-            <version>1.9.0</version>
+            <version>1.9.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

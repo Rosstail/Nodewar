@@ -1,10 +1,10 @@
 package fr.rosstail.nodewar.territory.eventhandlers;
 
 
-import fr.rosstail.nodewar.character.empires.Empire;
+import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.*;
 import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
-import fr.rosstail.nodewar.territory.zonehandlers.NodewarWorlds;
+import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -90,12 +90,12 @@ public class NodewarEventsListener implements Listener {
             Bukkit.getScheduler().cancelTask(territory.getTickScheduler());
             Bukkit.getScheduler().cancelTask(territory.getSecondScheduler());
             territory.bossBarRemove(null);
-            territory.getCapturePoints().forEach(capturePoint -> capturePoint.bossBarRemove(null));
+            territory.getCapturePoints().forEach((s, capturePoint) -> capturePoint.bossBarRemove(null));
         }
         int fileID = territory.getFileID();
-        FileConfiguration fileConfiguration = NodewarWorlds.getTerritoryConfigs().get(fileID);
+        FileConfiguration fileConfiguration = WorldTerritoryManager.getTerritoryConfigs().get(fileID);
         fileConfiguration.set(territory.getName() + ".options.is-vulnerable", vulnerability);
-        NodewarWorlds.getTerritoryConfigs().set(fileID, fileConfiguration);
-        NodewarWorlds.saveTerritoryFile(fileID);
+        WorldTerritoryManager.getTerritoryConfigs().set(fileID, fileConfiguration);
+        WorldTerritoryManager.saveTerritoryFile(fileID);
     }
 }

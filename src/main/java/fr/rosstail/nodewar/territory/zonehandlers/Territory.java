@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.HashMap;
 import java.util.ArrayList;
 import org.bukkit.boss.BossBar;
-import fr.rosstail.nodewar.character.empires.Empire;
+import fr.rosstail.nodewar.empires.Empire;
 import org.bukkit.World;
 import java.util.List;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -28,7 +28,6 @@ import java.util.Map;
 
 public class Territory
 {
-    private static final Map<String, Territory> territories = new HashMap<>();
     private final String name;
     private final String display;
     private final int fileID;
@@ -48,25 +47,9 @@ public class Territory
     private int tickScheduler;
     private int secondScheduler;
 
-    public static Territory gets(final int fileID, final World world, final String key) {
-        final String defKey = world.getName() + "." + key;
-        if (!Territory.territories.containsKey(defKey)) {
-            Territory.territories.put(defKey, new Territory(fileID, world, key));
-        }
-        return Territory.territories.get(defKey);
-    }
-
-    public static List<Territory> getAllTerritories() {
-        return new ArrayList<>(Territory.territories.values());
-    }
-
-    public static Map<String, Territory> getTerritoriesMap() {
-        return Territory.territories;
-    }
-
     public Territory(final int fileID, final World world, final String key) {
         this.fileID = fileID;
-        FileConfiguration config = NodewarWorlds.getTerritoryConfigs().get(fileID);
+        FileConfiguration config = WorldTerritoryManager.getTerritoryConfigs().get(fileID);
         this.capturePoints = new HashMap<>();
         this.name = key;
         if (config.getString(key + ".options.display") != null) {
@@ -121,17 +104,17 @@ public class Territory
         if (config.getConfigurationSection(key + ".options.capture-points") != null) {
             final ArrayList<String> listPoints = new ArrayList<>(config.getConfigurationSection(key + ".options.capture-points").getKeys(false));
             for (final String point : listPoints) {
-                this.capturePoints.put(point, CapturePoint.gets(config, world, this, point));
+                this.capturePoints.put(point, new CapturePoint(config, world, this, point));
             }
         }
-        (this.bossBar = Bukkit.createBossBar("feNodewar.territory." + this.getName(), BarColor.WHITE, BarStyle.SEGMENTED_10)).setTitle("Territory - " + this.getDisplay());
+        (this.bossBar = Bukkit.createBossBar("nodewarNodewar.territory." + this.getName(), BarColor.WHITE, BarStyle.SEGMENTED_10)).setTitle("Territory - " + this.getDisplay());
         this.bossBar.setVisible(true);
     }
 
     public void initCanAttack() {
-        final List<String> linkedStrings = NodewarWorlds.getTerritoryConfigs().get(fileID).getStringList(this.getName() + ".options.can-attack");
+        final List<String> linkedStrings = WorldTerritoryManager.getTerritoryConfigs().get(fileID).getStringList(this.getName() + ".options.can-attack");
         final ArrayList<Territory> linkedTerritories = new ArrayList<>();
-        final List<Territory> allTerritories = getAllTerritories();
+        final List<Territory> allTerritories = new ArrayList<>(WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().values());
         for (final String stringTerritory : linkedStrings) {
             for (final Territory territory : allTerritories) {
                 if (territory.getName().equalsIgnoreCase(stringTerritory) && territory.getWorld().equals(this.world)) {
@@ -186,8 +169,8 @@ public class Territory
         return this.canAttackTerritories;
     }
 
-    public List<CapturePoint> getCapturePoints() {
-        return new ArrayList<>(this.capturePoints.values());
+    public Map<String, CapturePoint> getCapturePoints() {
+        return this.capturePoints;
     }
 
     public void setResistance(final int value) {
@@ -249,7 +232,7 @@ public class Territory
     private static void tickCheck(final Territory territory) {
         territory.setTickScheduler(Bukkit.getScheduler().scheduleSyncRepeatingTask(fr.rosstail.nodewar.Nodewar.getInstance(), () -> {
             territory.countEmpiresPointsOnTerritory();
-            for (final CapturePoint point : new ArrayList<>(territory.getCapturePoints())) {
+            for (final CapturePoint point : new ArrayList<>(territory.getCapturePoints().values())) {
                 point.getPlayersOnPoint();
                 point.countEmpirePlayerOnPoint();
                 point.updateBossBar();
@@ -260,7 +243,7 @@ public class Territory
 
     private static void secondCheck(final Territory territory) {
         territory.setSecondScheduler(Bukkit.getScheduler().scheduleSyncRepeatingTask(fr.rosstail.nodewar.Nodewar.getInstance(), () -> {
-            for (final CapturePoint point : new ArrayList<>(territory.getCapturePoints())) {
+            for (final CapturePoint point : new ArrayList<>(territory.getCapturePoints().values())) {
                 point.setCaptureTime();
                 point.checkOwnerChange();
             }
@@ -344,7 +327,7 @@ public class Territory
     }
 
     private Empire calcAdv() {
-        final ArrayList<CapturePoint> capturePoints = new ArrayList<CapturePoint>(this.getCapturePoints());
+        final ArrayList<CapturePoint> capturePoints = new ArrayList<CapturePoint>(this.getCapturePoints().values());
         this.regenOrDamage = 0;
         if (capturePoints.size() <= 0) {
             return this.empire;
@@ -474,7 +457,7 @@ public class Territory
         if (folder.listFiles() != null) {
             for (final File worldFolder : Objects.requireNonNull(folder.listFiles())) {
                 if (worldFolder.isDirectory()) {
-                    final NodewarWorlds world = NodewarWorlds.gets(worldFolder);
+                    final WorldTerritoryManager world = WorldTerritoryManager.gets(worldFolder);
                     if (world == null) {
                         System.out.println(worldFolder + " doesn't correspond at any existing world.");
                     }
@@ -483,7 +466,7 @@ public class Territory
                     System.out.println(worldFolder + " is not a directory");
                 }
             }
-            NodewarWorlds.setUsedWorlds();
+            WorldTerritoryManager.setUsedWorlds();
         }
     }
 

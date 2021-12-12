@@ -1,6 +1,6 @@
 package fr.rosstail.nodewar.territory.eventhandlers.customevents;
 
-import fr.rosstail.nodewar.character.empires.Empire;
+import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
