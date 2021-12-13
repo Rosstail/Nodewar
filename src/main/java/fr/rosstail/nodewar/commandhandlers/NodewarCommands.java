@@ -47,8 +47,13 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
             } else if (string.startsWith(Commands.COMMAND_ADMIN.getCommand())) {
                 adminCommands(sender, string, args);
             } else {
+                Player player = null;
+                if (sender instanceof Player) {
+                    player = ((Player) sender).getPlayer();
+                }
+                Player finalPlayer = player;
                 LangManager.getListMessage(LangMessage.HELP).forEach(s ->
-                        sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null), s)));
+                        sender.sendMessage(AdaptMessage.playerMessage(finalPlayer, s)));
             }
         } else {
             doesNotHavePermission(sender, Commands.COMMAND_FE.getPermission());
@@ -69,8 +74,13 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 this.leaveCommand(sender);
             }
             else {
+                Player player = null;
+                if (sender instanceof Player) {
+                    player = ((Player) sender).getPlayer();
+                }
+                Player finalPlayer = player;
                 LangManager.getListMessage(LangMessage.EMPIRE_HELP).forEach(s ->
-                        sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null), s)));
+                        sender.sendMessage(AdaptMessage.playerMessage(finalPlayer, s)));
             }
         }
         else {
@@ -102,14 +112,12 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                         final PlayerInfo playerInfo = PlayerInfo.gets(player);
                         final Empire playerEmpire = playerInfo.getEmpire();
                         final Empire empire = Empire.getEmpires().get(args[2]);
-                        if (playerInfo.tryJoinEmpire(empire)) {
-                            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_JOIN_EMPIRE)));
-                        }
-                        else if (empire == null) {
-                            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.EMPIRE_DOES_NOT_EXIST)));
-                        }
-                        else if (playerEmpire != null) {
-                            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_ALREADY_IN_EMPIRE)));
+                        if (!playerInfo.tryJoinEmpire(empire)) {
+                            if (empire == null) {
+                                player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.EMPIRE_DOES_NOT_EXIST)));
+                            } else if (playerEmpire != null) {
+                                player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_ALREADY_IN_EMPIRE)));
+                            }
                         }
                     }
                     else {
@@ -326,8 +334,13 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
             this.removeEmpireCommand(sender, args);
         }
         else {
+            Player player = null;
+            if (sender instanceof Player) {
+                player = ((Player) sender).getPlayer();
+            }
+            Player finalPlayer = player;
             LangManager.getListMessage(LangMessage.ADMIN_HELP).forEach(s ->
-                    sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null), s)));
+                    sender.sendMessage(AdaptMessage.playerMessage(finalPlayer, s)));
         }
     }
 
@@ -513,23 +526,35 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
     }
     
     public static void discPlayer(final CommandSender sender) {
-        sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null), LangManager.getMessage(LangMessage.DISCONNECTED_PLAYER)));
+        Player player = null;
+        if (sender instanceof Player) {
+            player = ((Player) sender).getPlayer();
+        }
+        sender.sendMessage(AdaptMessage.playerMessage((player), LangManager.getMessage(LangMessage.DISCONNECTED_PLAYER)));
     }
-    
+
     public static void playerOnly(final CommandSender sender) {
-        sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null), LangManager.getMessage(LangMessage.BY_PLAYER_ONLY)));
-    }
-    
-    public static void wrongArg(final CommandSender sender) {
-        sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null), LangManager.getMessage(LangMessage.WRONG_VALUE)));
+        Player player = null;
+        if (sender instanceof Player) {
+            player = ((Player) sender).getPlayer();
+        }
+        sender.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.BY_PLAYER_ONLY)));
     }
     
     public static void tooFewArguments(final CommandSender sender) {
-        sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null), LangManager.getMessage(LangMessage.TOO_FEW_ARGUMENTS)));
+        Player player = null;
+        if (sender instanceof Player) {
+            player = ((Player) sender).getPlayer();
+        }
+        sender.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.TOO_FEW_ARGUMENTS)));
     }
     
     public static void doesNotHavePermission(final CommandSender sender, final String permission) {
-        sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null),
+        Player player = null;
+        if (sender instanceof Player) {
+            player = ((Player) sender).getPlayer();
+        }
+        sender.sendMessage(AdaptMessage.playerMessage(player,
                 LangManager.getMessage(LangMessage.PERMISSION_DENIED).replaceAll("%permission%", permission)));
     }
 }

@@ -4,9 +4,9 @@ import fr.rosstail.nodewar.Nodewar;
 
 public enum PlaceHolders
 {
-    PLAYER_NAME("%" + Nodewar.getDimName() + "_player%"),
+    PLAYER_NAME("%player%"),
     PLAYER_EMPIRE_STARTER("%" + Nodewar.getDimName() + "_player_empire_"),
-    PLAYER_EMPIRE("%" + Nodewar.getDimName() + "_player_empire%"),
+    PLAYER_EMPIRE_DISPLAY("%" + Nodewar.getDimName() + "_player_empire_display%"),
 
     EMPIRE_STARTER("%" + Nodewar.getDimName() + "_empire_"),
     EMPIRE_NAME("%" + Nodewar.getDimName() + "_empire_name%"),

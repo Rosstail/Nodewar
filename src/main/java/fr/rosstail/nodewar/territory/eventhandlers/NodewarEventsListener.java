@@ -65,13 +65,14 @@ public class NodewarEventsListener implements Listener {
         if (empire != null) {
             capturePoint.getTerritory().getPlayersOnTerritory().forEach(player -> {
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', capturePoint.getDisplay() + " &rpoint"),
-                        ChatColor.translateAlternateColorCodes('&', "Captured by " + empire.getDisplay()), 4, 50, 8);
+                        ChatColor.translateAlternateColorCodes('&', "Captured by " + (capturePoint.getEmpire() != null ? empire.getDisplay() : Empire.getNoEmpire().getDisplay())), 4, 50, 8);
             });
             capturePoint.getRegion().getMembers().addGroup(empire.getName());
         } else {
             capturePoint.getTerritory().getPlayersOnTerritory().forEach(player -> {
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', capturePoint.getDisplay() + " &rpoint"),
-                        ChatColor.translateAlternateColorCodes('&', "Neutralized by " + capturePoint.getEmpireAdvantage().getDisplay()), 4, 50, 8);
+                        ChatColor.translateAlternateColorCodes('&', "Neutralized by " +
+                                (capturePoint.getEmpireAdvantage() != null ? capturePoint.getEmpireAdvantage().getDisplay() : Empire.getNoEmpire().getDisplay())), 4, 50, 8);
             });
             capturePoint.getRegion().getMembers().removeAll();
         }

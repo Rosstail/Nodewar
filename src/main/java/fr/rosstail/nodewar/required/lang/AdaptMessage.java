@@ -99,10 +99,10 @@ public class AdaptMessage
                 message = message.replaceAll(PlaceHolders.TERRITORY_ON_ATTACK.getText(), String.valueOf(territory.isDamaged()));
             }
             if (message.contains(PlaceHolders.TERRITORY_EMPIRE_OWNER.getText())) {
-                message = message.replaceAll(PlaceHolders.TERRITORY_EMPIRE_OWNER.getText(), String.valueOf(territory.getEmpire()));
+                message = message.replaceAll(PlaceHolders.TERRITORY_EMPIRE_OWNER.getText(), String.valueOf(territory.getEmpire().getDisplay()));
             }
             if (message.contains(PlaceHolders.TERRITORY_EMPIRE_ADVANTAGE.getText())) {
-                message = message.replaceAll(PlaceHolders.TERRITORY_EMPIRE_ADVANTAGE.getText(), String.valueOf(territory.getEmpireAdvantage()));
+                message = message.replaceAll(PlaceHolders.TERRITORY_EMPIRE_ADVANTAGE.getText(), String.valueOf(territory.getEmpireAdvantage().getDisplay()));
             }
             if (message.contains(PlaceHolders.TERRITORY_REGION.getText())) {
                 message = message.replaceAll(PlaceHolders.TERRITORY_REGION.getText(), territory.getRegion().getId());
@@ -160,10 +160,10 @@ public class AdaptMessage
         if (message == null) {
             return null;
         }
-        if (message.contains(PlaceHolders.PLAYER_EMPIRE_STARTER.getText()) || message.contains(PlaceHolders.PLAYER_EMPIRE.getText())) {
+        if (message.contains(PlaceHolders.PLAYER_EMPIRE_STARTER.getText()) || message.contains(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText())) {
             final PlayerInfo playerInfo = PlayerInfo.gets(player);
-            if (message.contains(PlaceHolders.PLAYER_EMPIRE.getText())) {
-                message = message.replaceAll(PlaceHolders.PLAYER_EMPIRE.getText(), playerInfo.getEmpire().getDisplay());
+            if (message.contains(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText())) {
+                message = message.replaceAll(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText(), playerInfo.getEmpire().getDisplay());
             }
         }
         return ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(player, message));

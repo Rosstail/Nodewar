@@ -121,7 +121,7 @@ public class CapturePoint
     }
 
     public Empire getEmpireAdvantage() {
-        return this.empireAdvantage;
+        return empireAdvantage;
     }
 
     public void setEmpireAdvantage(final Empire empireAdvantage) {
@@ -268,11 +268,11 @@ public class CapturePoint
     }
 
     void updateBossBar() {
-        BarColor barColor;
-        if (this.empireAdvantage == null || this.empireAdvantage == Empire.getNoEmpire()) {
-            barColor = BarColor.WHITE;
-        } else {
-            barColor = this.empireAdvantage.getBarColor();
+        BarColor barColor = BarColor.WHITE;
+        if (empire != null && !empire.equals(Empire.getNoEmpire())) {
+            barColor = empire.getBarColor();
+        } else if (empireAdvantage != null && !empireAdvantage.equals(Empire.getNoEmpire())){
+            barColor = empireAdvantage.getBarColor();
         }
         this.bossBar.setColor(barColor);
         if (this.getPointTimeLeft() == this.getMaxCaptureTime()) {

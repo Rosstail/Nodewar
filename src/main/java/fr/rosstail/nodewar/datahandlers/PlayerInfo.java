@@ -75,15 +75,16 @@ public class PlayerInfo
     }
     
     public void setEmpire(final Empire empire) {
+        Empire previousEmpire = this.empire;
+        this.empire = empire;
         if (empire == null) {
-            this.removePlayerGroup(this.empire);
+            this.removePlayerGroup(previousEmpire);
             player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_LEAVE_EMPIRE)));
         }
         else {
-            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_SET_EMPIRE)));
             setPlayerGroup(empire);
+            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_JOIN_EMPIRE)));
         }
-        this.empire = empire;
     }
     
     public boolean tryJoinEmpire(final Empire empire) {
