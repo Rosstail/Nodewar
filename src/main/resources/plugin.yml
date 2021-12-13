@@ -1,5 +1,5 @@
 name: Nodewar
-version: 0.2
+version: 1.0
 description: Nodewar plugin
 api-version: 1.13
 author: Rosstail
@@ -8,7 +8,6 @@ depend:
   - WorldGuard
 softdepend:
   - PlaceholderAPI
-  - Karma
 main: fr.rosstail.nodewar.Nodewar
 commands:
   nodewar:

@@ -378,13 +378,11 @@ public class Territory
 
     private void updateBossBar() {
         BarColor barColor;
-        if (this.empireAdvantage == null) {
+        if (this.empireAdvantage == null || this.empireAdvantage == Empire.getNoEmpire()) {
             barColor = BarColor.WHITE;
-        }
-        else if (this.empireAdvantage == this.getEmpire()) {
+        } else if (this.empireAdvantage == this.getEmpire()) {
             barColor = this.getEmpire().getBarColor();
-        }
-        else {
+        } else {
             barColor = this.empireAdvantage.getBarColor();
         }
         this.bossBar.setColor(barColor);

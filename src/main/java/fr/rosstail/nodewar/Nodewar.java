@@ -1,9 +1,7 @@
 package fr.rosstail.nodewar;
 
-import com.rosstail.karma.Karma;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.commandhandlers.NodewarCommands;
-import fr.rosstail.nodewar.eventhandler.KarmaListener;
 import fr.rosstail.nodewar.eventhandler.PlayerEventHandler;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.required.DataBase;
@@ -60,15 +58,6 @@ public class Nodewar extends JavaPlugin implements Listener
         if (!new File("plugins/Nodewar/config.yml").exists()) {
             AdaptMessage.print("Preparing default config.yml", AdaptMessage.prints.OUT);
             this.saveDefaultConfig();
-        }
-
-        Karma karma = this.getKarmaPlugin();
-        if (karma != null) {
-            KarmaListener listener = new KarmaListener(karma);
-            this.getServer().getPluginManager().registerEvents(listener, karma);
-            AdaptMessage.print("[NODEWAR] Karma is OK", AdaptMessage.prints.OUT);
-        } else {
-            AdaptMessage.print("[NODEWAR] Karma is NULL", AdaptMessage.prints.ERROR);
         }
 
         WorldGuardPlugin wgPlugin = this.getWGPlugin();
@@ -131,18 +120,18 @@ public class Nodewar extends JavaPlugin implements Listener
         if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
-        final RegisteredServiceProvider<Economy> rsp = (RegisteredServiceProvider<Economy>)this.getServer().getServicesManager().getRegistration((Class)Economy.class);
+        final RegisteredServiceProvider<Economy> rsp = this.getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
         }
         econ = rsp.getProvider();
-        return econ != null;
+        return true;
     }
     
     private boolean setupPermissions() {
-        final RegisteredServiceProvider<Permission> rsp = (RegisteredServiceProvider<Permission>)this.getServer().getServicesManager().getRegistration((Class)Permission.class);
+        final RegisteredServiceProvider<Permission> rsp = this.getServer().getServicesManager().getRegistration(Permission.class);
         perms = rsp.getProvider();
-        return perms != null;
+        return true;
     }
     
     public static Economy getEconomy() {
@@ -155,14 +144,6 @@ public class Nodewar extends JavaPlugin implements Listener
     
     public static Chat getChat() {
         return chat;
-    }
-    
-    private Karma getKarmaPlugin() {
-        final Plugin plugin = this.getServer().getPluginManager().getPlugin("Karma");
-        if (plugin == null) {
-            return null;
-        }
-        return (Karma) plugin;
     }
 
     private WorldGuardPlugin getWGPlugin() {

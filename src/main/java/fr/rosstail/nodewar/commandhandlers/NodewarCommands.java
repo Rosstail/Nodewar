@@ -47,10 +47,10 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
             } else if (string.startsWith(Commands.COMMAND_ADMIN.getCommand())) {
                 adminCommands(sender, string, args);
             } else {
-                LangManager.getListMessage(LangMessage.HELP).forEach(s -> sender.sendMessage(AdaptMessage.playerMessage(null, s)));
+                LangManager.getListMessage(LangMessage.HELP).forEach(s ->
+                        sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null), s)));
             }
-        }
-        else {
+        } else {
             doesNotHavePermission(sender, Commands.COMMAND_FE.getPermission());
         }
         return true;
@@ -69,7 +69,8 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 this.leaveCommand(sender);
             }
             else {
-                LangManager.getListMessage(LangMessage.EMPIRE_HELP).forEach(s -> sender.sendMessage(ChatColor.translateAlternateColorCodes('&', s)));
+                LangManager.getListMessage(LangMessage.EMPIRE_HELP).forEach(s ->
+                        sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null), s)));
             }
         }
         else {
@@ -193,11 +194,11 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                     sender.sendMessage(LangManager.getMessage(LangMessage.LOCATION_DOES_NOT_EXIST));
                     return;
                 } else if (!WorldTerritoryManager.getUsedWorlds().containsKey(world)){
-                    sender.sendMessage(LangManager.getMessage(LangMessage.WORLD_NOT_USED));
+                    sender.sendMessage(AdaptMessage.worldMessage(world, LangManager.getMessage(LangMessage.WORLD_NOT_USED)));
                     return;
                 }
                 if (empire == null) {
-                    sender.sendMessage(LangManager.getMessage(LangMessage.EMPIRE_DOES_NOT_EXIST));
+                    sender.sendMessage(AdaptMessage.empireMessage(Empire.getNoEmpire(), LangManager.getMessage(LangMessage.EMPIRE_DOES_NOT_EXIST)));
                     return;
                 }
 
@@ -230,25 +231,15 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                             }
                         }
                     }
-                    if (WorldTerritoryManager.getUsedWorlds().containsKey(world)) {
-                        WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().forEach((s, territory) -> {
-                            TerritoryOwnerChange event = new TerritoryOwnerChange(territory, empire);
-                            Bukkit.getPluginManager().callEvent(event);
-                            if (!event.isCancelled()) {
-                                territory.cancelAttack(territory.getEmpire());
-                            }
-                        });
-                        sender.sendMessage(LangManager.getMessage(LangMessage.WORLD_SET_EMPIRE));
-                    }
                 } else {
                     worldTerritoryManager.getTerritories().forEach((s, territory) -> {
                         TerritoryOwnerChange event = new TerritoryOwnerChange(territory, empire);
                         Bukkit.getPluginManager().callEvent(event);
                         if (!event.isCancelled()) {
-                            sender.sendMessage(AdaptMessage.territoryMessage(territory, LangManager.getMessage(LangMessage.WORLD_SET_EMPIRE)));
                             territory.cancelAttack(territory.getEmpire());
                         }
                     });
+                    sender.sendMessage(AdaptMessage.worldMessage(world, LangManager.getMessage(LangMessage.WORLD_SET_EMPIRE)));
                 }
             } else {
                 tooFewArguments(sender);
@@ -269,7 +260,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                     sender.sendMessage(LangManager.getMessage(LangMessage.LOCATION_DOES_NOT_EXIST));
                     return;
                 } else if (!WorldTerritoryManager.getUsedWorlds().containsKey(world)){
-                    sender.sendMessage(LangManager.getMessage(LangMessage.WORLD_NOT_USED));
+                    sender.sendMessage(AdaptMessage.worldMessage(world, LangManager.getMessage(LangMessage.WORLD_NOT_USED)));
                     return;
                 }
 
@@ -311,7 +302,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                             territory.cancelAttack(null);
                         }
                     });
-                    sender.sendMessage(LangManager.getMessage(LangMessage.WORLD_NEUTRALIZE));
+                    sender.sendMessage(AdaptMessage.worldMessage(world, LangManager.getMessage(LangMessage.WORLD_NEUTRALIZE)));
                 }
             } else {
                 tooFewArguments(sender);
@@ -335,7 +326,8 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
             this.removeEmpireCommand(sender, args);
         }
         else {
-            LangManager.getListMessage(LangMessage.ADMIN_HELP).forEach(s -> sender.sendMessage(ChatColor.translateAlternateColorCodes('&', s)));
+            LangManager.getListMessage(LangMessage.ADMIN_HELP).forEach(s ->
+                    sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null), s)));
         }
     }
 
@@ -347,7 +339,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 if (target != null) {
                     if (empire != null) {
                         PlayerInfo.gets(target).setEmpire(empire);
-                        sender.sendMessage("Set " + empire.getDisplay() + " empire to " + target.getName());
+                        sender.sendMessage(AdaptMessage.playerMessage(target, LangManager.getMessage(LangMessage.PLAYER_SET_EMPIRE)));
                     }
                     else {
                         AdaptMessage.playerMessage(target, LangManager.getMessage(LangMessage.EMPIRE_DOES_NOT_EXIST));
@@ -372,7 +364,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 final Player target = Bukkit.getServer().getPlayerExact(args[3]);
                 if (target != null) {
                     PlayerInfo.gets(target).setEmpire(null);
-                    sender.sendMessage("Removed empire for " + target.getName());
+                    sender.sendMessage(AdaptMessage.playerMessage(target, LangManager.getMessage(LangMessage.PLAYER_REMOVE_EMPIRE)));
                 }
                 else {
                     NodewarCommands.discPlayer(sender);
@@ -521,22 +513,23 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
     }
     
     public static void discPlayer(final CommandSender sender) {
-        sender.sendMessage(AdaptMessage.playerMessage(null, LangManager.getMessage(LangMessage.DISCONNECTED_PLAYER)));
+        sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null), LangManager.getMessage(LangMessage.DISCONNECTED_PLAYER)));
     }
     
     public static void playerOnly(final CommandSender sender) {
-        sender.sendMessage(AdaptMessage.playerMessage(null, LangManager.getMessage(LangMessage.BY_PLAYER_ONLY)));
+        sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null), LangManager.getMessage(LangMessage.BY_PLAYER_ONLY)));
     }
     
     public static void wrongArg(final CommandSender sender) {
-        sender.sendMessage(AdaptMessage.playerMessage(null, LangManager.getMessage(LangMessage.WRONG_VALUE)));
+        sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null), LangManager.getMessage(LangMessage.WRONG_VALUE)));
     }
     
     public static void tooFewArguments(final CommandSender sender) {
-        sender.sendMessage(AdaptMessage.playerMessage(null, LangManager.getMessage(LangMessage.TOO_FEW_ARGUMENTS)));
+        sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null), LangManager.getMessage(LangMessage.TOO_FEW_ARGUMENTS)));
     }
     
     public static void doesNotHavePermission(final CommandSender sender, final String permission) {
-        sender.sendMessage("You don't have this permission : " + permission);
+        sender.sendMessage(AdaptMessage.playerMessage((sender instanceof Player ? (Player) sender : null),
+                LangManager.getMessage(LangMessage.PERMISSION_DENIED).replaceAll("%permission%", permission)));
     }
 }

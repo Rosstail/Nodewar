@@ -13,6 +13,9 @@ public enum PlaceHolders
     EMPIRE_DISPLAY("%" + Nodewar.getDimName() + "_empire_display%"),
     EMPIRE_FRIENDLY_FIRE("%" + Nodewar.getDimName() + "_empire_friendly_fire%"),
 
+    WORLD_STARTER("%" + Nodewar.getDimName() + "_world_"),
+    WORLD_NAME("%" + Nodewar.getDimName() + "_world_name%"),
+
     TERRITORY_STARTER("%" + Nodewar.getDimName() + "_territory_"),
     TERRITORY_NAME("%" + Nodewar.getDimName() + "_territory_name%"),
     TERRITORY_WORLD("%" + Nodewar.getDimName() + "_territory_world%"),

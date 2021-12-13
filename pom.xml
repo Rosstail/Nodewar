@@ -6,7 +6,7 @@
 
     <groupId>com.github.Rosstail</groupId>
     <artifactId>nodewar</artifactId>
-    <version>0.2</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <distributionManagement>
@@ -137,13 +137,12 @@
         <dependency>
             <groupId>com.github.stefvanschie.inventoryframework</groupId>
             <artifactId>IF</artifactId>
-            <version>0.10.0</version>
+            <version>0.10.3</version>
         </dependency>
         <dependency>
-            <groupId>com.github.Rosstail</groupId>
-            <artifactId>karma</artifactId>
-            <version>1.9.1</version>
-            <scope>provided</scope>
+            <groupId>io.pixeloutlaw</groupId>
+            <artifactId>mythicdrops</artifactId>
+            <version>4.4.0</version>
         </dependency>
     </dependencies>
 </project>

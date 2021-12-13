@@ -9,6 +9,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.regex.Pattern;
@@ -48,7 +49,23 @@ public class AdaptMessage
             }
         }
 
-        return message;
+        return ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(null, message));
+    }
+
+    public static String worldMessage(World world, String message) {
+        if (message == null) {
+            return null;
+        }
+        if (world == null) {
+            return message;
+        }
+
+        if (message.contains(PlaceHolders.WORLD_STARTER.getText())) {
+            if (message.contains(PlaceHolders.WORLD_NAME.getText())) {
+                message = message.replaceAll(PlaceHolders.WORLD_NAME.getText(), world.getName());
+            }
+        }
+        return ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(null, message));
     }
 
     public static String territoryMessage(Territory territory, String message) {
