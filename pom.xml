@@ -13,7 +13,7 @@
         <repository>
             <id>github</id>
             <name>GitHub Rosstail Apache Maven packages</name>
-            <url>https://maven.pkg.github.com/Rosstail/NodeWar</url>
+            <url>https://maven.pkg.github.com/Rosstail/Nodewar</url>
         </repository>
     </distributionManagement>
     <developers>
@@ -21,7 +21,7 @@
             <name>Rosstail</name>
             <email>rosstail_zegeek@hotmail.fr</email>
             <organization>com.github.rosstail</organization>
-            <organizationUrl>https://github.com/Rosstail/NodeWar</organizationUrl>
+            <organizationUrl>https://github.com/Rosstail/Nodewar</organizationUrl>
         </developer>
     </developers>
 
@@ -34,22 +34,6 @@
                     <source>8</source>
                     <target>8</target>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <minimizeJar>true</minimizeJar>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -130,19 +114,15 @@
             <version>20041127.091804</version>
         </dependency>
         <dependency>
-            <groupId>net.wesjd</groupId>
-            <artifactId>anvilgui</artifactId>
-            <version>1.4.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>com.github.stefvanschie.inventoryframework</groupId>
             <artifactId>IF</artifactId>
             <version>0.10.3</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>io.pixeloutlaw</groupId>
-            <artifactId>mythicdrops</artifactId>
-            <version>4.4.0</version>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations-java5</artifactId>
+            <version>22.0.0</version>
         </dependency>
     </dependencies>
 </project>
