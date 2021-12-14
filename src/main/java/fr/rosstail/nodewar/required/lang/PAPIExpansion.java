@@ -35,7 +35,7 @@ public class PAPIExpansion extends PlaceholderExpansion
     }
     
     public String getVersion() {
-        return "0.1";
+        return plugin.getDescription().getVersion();
     }
     
     public String onPlaceholderRequest(final Player player, final String identifier) {
@@ -73,6 +73,12 @@ public class PAPIExpansion extends PlaceholderExpansion
         if (player != null) {
             if (message.contains(PlaceHolders.PLAYER_NAME.getText())) {
                 message = message.replaceAll(PlaceHolders.PLAYER_NAME.getText(), player.getName());
+            }
+            if (message.contains(PlaceHolders.PLAYER_EMPIRE_STARTER.getText()) || message.contains(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText())) {
+                final PlayerInfo playerInfo = PlayerInfo.gets(player);
+                if (message.contains(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText())) {
+                    message = message.replaceAll(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText(), playerInfo.getEmpire().getDisplay());
+                }
             }
             message = playerEmpireMessage(player, message);
         }
