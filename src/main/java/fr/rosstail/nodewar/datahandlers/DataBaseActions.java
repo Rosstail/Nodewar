@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.datahandlers;
 
+import fr.rosstail.nodewar.Nodewar;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -40,7 +41,7 @@ public class DataBaseActions
     }
     
     private String getPlayerInfoRequest() {
-        return "CREATE TABLE IF NOT EXISTS NODEWAR_players_info ( UUID varchar(40) PRIMARY KEY UNIQUE NOT NULL,\n empire varchar(30) DEFAULT NULL,\n lastUpdate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);";
+        return "CREATE TABLE IF NOT EXISTS " + Nodewar.getDimName() + "_players_info ( UUID varchar(40) PRIMARY KEY UNIQUE NOT NULL,\n empire varchar(30) DEFAULT NULL,\n lastUpdate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);";
     }
     
     public static void insertPlayerInfo(final Player player, final PlayerInfo playerInfo) {
@@ -50,7 +51,7 @@ public class DataBaseActions
         final String UUID = player.getUniqueId().toString();
         Bukkit.getScheduler().runTaskAsynchronously(DataBaseActions.plugin, () -> {
             try {
-                final PreparedStatement preparedStatement = DataBaseActions.connection.prepareStatement("INSERT INTO NODEWAR_players_info (UUID) VALUES (?);");
+                final PreparedStatement preparedStatement = DataBaseActions.connection.prepareStatement("INSERT INTO " + Nodewar.getDimName() + "_players_info (UUID) VALUES (?);");
                 preparedStatement.setString(1, UUID);
                 preparedStatement.execute();
                 preparedStatement.close();
@@ -68,7 +69,7 @@ public class DataBaseActions
         final String UUID = player.getUniqueId().toString();
         Bukkit.getScheduler().runTaskAsynchronously(DataBaseActions.plugin, () -> {
             try {
-                final PreparedStatement preparedStatement = DataBaseActions.connection.prepareStatement("UPDATE NODEWAR_players_info SET empire = ? WHERE UUID = ?;");
+                final PreparedStatement preparedStatement = DataBaseActions.connection.prepareStatement("UPDATE " + Nodewar.getDimName() + "_players_info SET empire = ? WHERE UUID = ?;");
                 preparedStatement.setString(1, playerInfo.getEmpire().getName());
                 preparedStatement.setString(2, UUID);
                 preparedStatement.execute();

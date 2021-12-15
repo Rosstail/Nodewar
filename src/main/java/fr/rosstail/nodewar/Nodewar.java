@@ -32,7 +32,7 @@ public class Nodewar extends JavaPlugin implements Listener
     private static final Logger log;
     private static Economy econ;
     private static Permission perms;
-    private static Chat chat;
+    private static final Chat chat;
     private static Nodewar instance;
     private static String dimName;
     DataBase database;
@@ -55,7 +55,7 @@ public class Nodewar extends JavaPlugin implements Listener
     public void onEnable() {
         instance = this;
         dimName = instance.getName().toLowerCase();
-        if (!new File("plugins/Nodewar/config.yml").exists()) {
+        if (!new File("plugins/" + getName() + "/config.yml").exists()) {
             AdaptMessage.print("Preparing default config.yml", AdaptMessage.prints.OUT);
             this.saveDefaultConfig();
         }
@@ -162,6 +162,6 @@ public class Nodewar extends JavaPlugin implements Listener
     }
 
     public YamlConfiguration getCustomConfig() {
-        return YamlConfiguration.loadConfiguration(new File("plugins/Nodewar/config.yml"));
+        return YamlConfiguration.loadConfiguration(new File("plugins/" + getName() + "/config.yml"));
     }
 }

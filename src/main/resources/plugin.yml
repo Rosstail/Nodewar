@@ -1,5 +1,5 @@
 name: Nodewar
-version: 1.0.1
+version: 1.0.2
 description: Nodewar plugin
 api-version: 1.13
 author: Rosstail
@@ -11,11 +11,102 @@ softdepend:
 main: fr.rosstail.nodewar.Nodewar
 commands:
   nodewar:
-    description: Display default command
+    description: Display default commands
     usage: /nodewar
     permission-message: You don't have permission !
     permission: nodewar
+  nodewar help:
+    description: Display default commands
+    usage: /nodewar help
+    permission-message: You don't have permission !
+    permission: nodewar.help
+  nodewar empire:
+    description: Display empire commands
+    usage: /nodewar empire
+    permission-message: You don't have permission !
+    permission: nodewar.empire
+  nodewar empire join:
+    description: Join an empire
+    usage: /nodewar empire join [empire]
+    permission-message: You don't have permission !
+    permission: nodewar.empire.join
+  nodewar empire leave:
+    description: Leave current empire
+    usage: /nodewar empire leave
+    permission-message: You don't have permission !
+    permission: nodewar.empire.join
+  nodewar admin:
+    description: Display admin commands
+    usage: /nodewar admin
+    permission-message: You don't have permission !
+    permission: nodewar.admin
+  nodewar admin player:
+    description: Display GUI for player management
+    usage: /nodewar admin player [player]
+    permission-message: You don't have permission !
+    permission: nodewar.admin.player
+  nodewar admin territory:
+    description: Display gui for territories management
+    usage: /nodewar admin territory
+    permission-message: You don't have permission !
+    permission: nodewar.admin.territory
+  nodewar admin empire set:
+    description: Set empire to player
+    usage: /nodewar admin empire set [player] [empire]
+    permission-message: You don't have permission !
+    permission: nodewar.admin.empire.set
+  nodewar admin empire remove:
+    description: Remove empire of player
+    usage: /nodewar admin empire remove [player]
+    permission-message: You don't have permission !
+    permission: nodewar.admin.empire.remove
+  nodewar territory:
+    description: Displays territory commands
+    usage: /nodewar territory
+    permission-message: You don't have permission !
+    permission: nodewar.territory
+  nodewar territory vulnerability:
+    description: Changes the territory vulnerability
+    usage: /nodewar territory [[world]/[territory]] vulnerability TRUE/FALSE
+    permission-message: You don't have permission !
+    permission: nodewar.territory.vulnerability
+  nodewar territory setempire:
+    description: Set empire for the location
+    usage: /nodewar territory [[world]/(territory)/(point)] setempire [empire]
+    permission-message: You don't have permission !
+    permission: nodewar.territory.setempire
+  nodewar territory neutralize:
+    description: Remove empire from location
+    usage: /nodewar territory [[world]/(territory)/(point)] neutralize
+    permission-message: You don't have permission !
+    permission: nodewar.territory.neutralize
 
 permissions:
   nodewar:
     default: true
+  nodewar.help:
+    default: true
+  nodewar.empire:
+    default: true
+  nodewar.empire.join:
+    default: true
+  nodewar.empire.leave:
+    default: true
+  nodewar.admin:
+    default: op
+  nodewar.admin.player:
+    default: op
+  nodewar.admin.territory:
+    default: op
+  nodewar.admin.empire.set:
+    default: op
+  nodewar.admin.empire.remove:
+    default: op
+  nodewar.territory:
+    default: op
+  nodewar.territory.vulnerability:
+    default: op
+  nodewar.territory.setempire:
+    default: op
+  nodewar.territory.neutralize:
+    default: op

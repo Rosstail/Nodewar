@@ -29,7 +29,7 @@ import java.util.TimerTask;
 
 public class PlayerInfo
 {
-    private static final fr.rosstail.nodewar.Nodewar plugin = fr.rosstail.nodewar.Nodewar.getInstance();
+    private static final fr.rosstail.nodewar.Nodewar plugin = Nodewar.getInstance();
     private static final Map<Player, PlayerInfo> playerInfoMap;
     private final Player player;
     private Empire empire;
@@ -43,7 +43,7 @@ public class PlayerInfo
             this.playerJsonData = null;
         }
         else {
-            final String path = plugin.getDataFolder() + "/playerdata/" + player.getUniqueId().toString() + ".json";
+            final String path = plugin.getDataFolder() + "/playerdata/" + player.getUniqueId() + ".json";
             if (new File(path).exists()) {
                 try {
                     final JsonParser jsonParser = new JsonParser();
@@ -164,7 +164,7 @@ public class PlayerInfo
         final String UUID = String.valueOf(this.player.getUniqueId());
         try {
             if (DataBase.getConnection() != null && !DataBase.getConnection().isClosed()) {
-                final PreparedStatement statement = DataBase.getConnection().prepareStatement("SELECT * FROM FECHAR_players_infos WHERE UUID = '" + UUID + "';");
+                final PreparedStatement statement = DataBase.getConnection().prepareStatement("SELECT * FROM " + Nodewar.getDimName() + "_players_info WHERE UUID = '" + UUID + "';");
                 final ResultSet result = statement.executeQuery();
                 if (result.next()) {
                     this.empire = Empire.getEmpires().get(result.getString("empire"));
@@ -183,12 +183,7 @@ public class PlayerInfo
     public void updateAll() {
         final PlayerInfo playerInfo = this;
         if (DataBase.isConnected()) {
-            Bukkit.getScheduler().runTaskAsynchronously(this.plugin, new Runnable() {
-                @Override
-                public void run() {
-                    DataBaseActions.updatePlayerInfo(PlayerInfo.this.player, playerInfo);
-                }
-            });
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> DataBaseActions.updatePlayerInfo(PlayerInfo.this.player, playerInfo));
         }
         else {
             this.saveDataFile();
@@ -196,7 +191,7 @@ public class PlayerInfo
     }
     
     public void saveDataFile() {
-        final String path = this.plugin.getDataFolder() + "/playerdata/" + this.player.getUniqueId().toString() + ".json";
+        final String path = plugin.getDataFolder() + "/playerdata/" + this.player.getUniqueId() + ".json";
         try {
             final FileWriter fileWriter = new FileWriter(path);
             final JsonObject baseInfo = new JsonObject();
@@ -215,6 +210,6 @@ public class PlayerInfo
     }
     
     static {
-        playerInfoMap = new HashMap<Player, PlayerInfo>();
+        playerInfoMap = new HashMap<>();
     }
 }
