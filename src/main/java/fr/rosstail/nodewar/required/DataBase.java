@@ -3,7 +3,7 @@ package fr.rosstail.nodewar.required;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import fr.rosstail.nodewar.datahandlers.DataBaseActions;
-import fr.rosstail.nodewar.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import org.bukkit.configuration.Configuration;
 import java.sql.Connection;
 

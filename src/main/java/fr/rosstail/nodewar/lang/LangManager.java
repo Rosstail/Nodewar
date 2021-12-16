@@ -1,4 +1,4 @@
-package fr.rosstail.nodewar.required.lang;
+package fr.rosstail.nodewar.lang;
 
 import java.util.Collections;
 import java.util.List;

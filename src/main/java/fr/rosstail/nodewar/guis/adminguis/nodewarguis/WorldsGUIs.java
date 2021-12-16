@@ -8,7 +8,7 @@ import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import org.bukkit.Material;
 import org.bukkit.World;

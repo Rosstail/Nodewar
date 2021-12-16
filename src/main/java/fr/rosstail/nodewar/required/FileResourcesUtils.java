@@ -1,7 +1,7 @@
 package fr.rosstail.nodewar.required;
 
 import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 
 import java.io.*;
 import java.net.URI;

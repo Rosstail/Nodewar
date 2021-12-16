@@ -1,17 +1,18 @@
-package fr.rosstail.nodewar.required.lang;
+package fr.rosstail.nodewar.lang;
 
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import static org.bukkit.Bukkit.getLogger;
 
@@ -49,7 +50,7 @@ public class AdaptMessage
             }
         }
 
-        return ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(null, message));
+        return adapt(setPlaceholderMessage(null, message));
     }
 
     public static String worldMessage(World world, String message) {
@@ -65,7 +66,7 @@ public class AdaptMessage
                 message = message.replaceAll(PlaceHolders.WORLD_NAME.getText(), world.getName());
             }
         }
-        return ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(null, message));
+        return adapt(setPlaceholderMessage(null, message));
     }
 
     public static String territoryMessage(Territory territory, String message) {
@@ -109,7 +110,7 @@ public class AdaptMessage
             }
         }
 
-        return ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(null, message));
+        return adapt(setPlaceholderMessage(null, message));
     }
 
     public static String pointMessage(CapturePoint point, String message) {
@@ -153,7 +154,7 @@ public class AdaptMessage
             }
         }
 
-        return ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(null, message));
+        return adapt(setPlaceholderMessage(null, message));
     }
 
     public static String playerEmpireMessage(final Player player, String message) {
@@ -166,7 +167,7 @@ public class AdaptMessage
                 message = message.replaceAll(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText(), playerInfo.getEmpire().getDisplay());
             }
         }
-        return ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(player, message));
+        return adapt(setPlaceholderMessage(player, message));
     }
     
     public static String playerMessage(final Player player, String message) {
@@ -179,7 +180,24 @@ public class AdaptMessage
             }
             message = playerEmpireMessage(player, message);
         }
-        return ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(player, message));
+        return adapt(setPlaceholderMessage(player, message));
+    }
+
+    private static String adapt(String message) {
+        if (message == null) {
+            return null;
+        }
+        if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1].replaceAll("\\)", "")) >= 16) {
+            Matcher matcher = hexPattern.matcher(message);
+            while (matcher.find()) {
+                try {
+                    String color = message.substring(matcher.start(), matcher.end());
+                    message = message.replaceAll(color, String.valueOf(ChatColor.of(color))); //ChatColor.of not detected
+                    matcher = hexPattern.matcher(message);
+                } catch (Exception e) {}
+            }
+        }
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
     
     private static String setPlaceholderMessage(final Player player, final String message) {

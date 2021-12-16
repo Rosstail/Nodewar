@@ -1,7 +1,7 @@
 package fr.rosstail.nodewar.guis;
 
 import fr.rosstail.nodewar.required.PlayerHead;
-import fr.rosstail.nodewar.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

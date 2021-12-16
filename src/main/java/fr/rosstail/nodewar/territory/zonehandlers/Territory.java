@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashSet;
 
 import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.required.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerChange;
 import org.bukkit.entity.Player;
 import java.util.Set;

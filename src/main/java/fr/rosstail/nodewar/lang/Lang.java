@@ -1,4 +1,4 @@
-package fr.rosstail.nodewar.required.lang;
+package fr.rosstail.nodewar.lang;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;

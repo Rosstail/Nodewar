@@ -1,4 +1,4 @@
-package fr.rosstail.nodewar.required.lang;
+package fr.rosstail.nodewar.lang;
 
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;

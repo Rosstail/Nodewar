@@ -7,12 +7,10 @@ import com.google.gson.JsonParser;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.required.DataBase;
-import fr.rosstail.nodewar.required.lang.AdaptMessage;
-import fr.rosstail.nodewar.required.lang.LangManager;
-import fr.rosstail.nodewar.required.lang.LangMessage;
-import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -101,17 +99,13 @@ public class PlayerInfo
     
     public void setPlayerGroup(final Empire empire) {
         if (empire != null) {
-            for (final World world : WorldTerritoryManager.getUsedWorlds().keySet()) {
-                Nodewar.getPermissions().playerAddGroup(world.getName(), this.player, empire.getName());
-            }
+            Nodewar.getPermissions().playerAddGroup(null, this.player, empire.getName());
         }
     }
     
     private void removePlayerGroup(final Empire empire) {
         if (empire != null) {
-            for (final World world : WorldTerritoryManager.getUsedWorlds().keySet()) {
-                Nodewar.getPermissions().playerRemoveGroup(world.getName(), this.player, empire.getName());
-            }
+            Nodewar.getPermissions().playerRemoveGroup(null, this.player, empire.getName());
         }
     }
     
