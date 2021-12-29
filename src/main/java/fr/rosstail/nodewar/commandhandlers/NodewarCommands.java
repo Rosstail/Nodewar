@@ -158,7 +158,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
             if (args.length >= 4) {
                 String[] location = args[1].split("/");
                 boolean value = Boolean.parseBoolean(args[3]);
-                if (location.length > 2) {
+                if (location.length >= 2) {
                     String worldName = location[0];
                     String territoryName = location[1];
 
@@ -179,7 +179,6 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 } else {
                     tooFewArguments(sender);
                 }
-                ;
             } else {
                 tooFewArguments(sender);
             }
@@ -257,7 +256,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
     }
 
     private void territoryPointNeutralizeCommand(final CommandSender sender, final String command, final String[] args) {
-        if (sender.hasPermission(Commands.COMMAND_TERRITORY_VULNERABILITY.getPermission())) {
+        if (sender.hasPermission(Commands.COMMAND_TERRITORY_NEUTRALIZE.getPermission())) {
             if (args.length >= 3) {
                 String[] location = args[1].split("/");
                 String worldName = location[0];

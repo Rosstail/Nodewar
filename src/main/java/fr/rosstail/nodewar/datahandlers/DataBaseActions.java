@@ -44,7 +44,7 @@ public class DataBaseActions
         return "CREATE TABLE IF NOT EXISTS " + Nodewar.getDimName() + "_players_info ( UUID varchar(40) PRIMARY KEY UNIQUE NOT NULL,\n empire varchar(30) DEFAULT NULL,\n lastUpdate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);";
     }
     
-    public static void insertPlayerInfo(final Player player, final PlayerInfo playerInfo) {
+    public static void insertPlayerInfo(final Player player) {
         if (player.hasMetadata("NPC")) {
             return;
         }

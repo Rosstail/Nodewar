@@ -11,6 +11,63 @@ general:
   delay-between-database-updates: 300
   use-action-bar-on-actions: true
   debug-messages: true
+  use-calendar: false
 
 empires:
   none-display: "&7None"
+
+calendar:
+  wednesday-bf:
+    start:
+      day-name: wednesday
+      system-time: "18:00"
+      vulnerable: true
+      empire: neutral
+      worlds:
+        conquer:
+          territories:
+            - "the-bastion"
+    end:
+      day-name: wednesday
+      system-time: "21:00"
+      vulnerable: false
+      worlds:
+        conquer:
+          territories:
+            - "the-bastion"
+  friday-bf:
+    start:
+      day-name: friday
+      system-time: "20:00"
+      vulnerable: true
+      empire: neutral
+      worlds:
+        conquer:
+          territories:
+            - "the-bastion"
+    end:
+      day-name: friday
+      system-time: "22:00"
+      vulnerable: false
+      worlds:
+        conquer:
+          territories:
+            - "the-bastion"
+  sunday-bf:
+    start:
+      day-name: sunday
+      system-time: "16:00"
+      vulnerable: true
+      empire: neutral
+      worlds:
+        conquer:
+          territories:
+            - "the-bastion"
+    end:
+      day-name: sunday
+      system-time: "20:00"
+      vulnerable: false
+      worlds:
+        conquer:
+          territories:
+            - "the-bastion"

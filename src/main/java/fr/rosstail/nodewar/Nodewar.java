@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import fr.rosstail.nodewar.calendar.CalendarManager;
 import fr.rosstail.nodewar.commandhandlers.NodewarCommands;
 import fr.rosstail.nodewar.eventhandler.PlayerEventHandler;
 import fr.rosstail.nodewar.empires.Empire;
@@ -35,6 +36,7 @@ public class Nodewar extends JavaPlugin implements Listener
     private static final Chat chat;
     private static Nodewar instance;
     private static String dimName;
+    private static CalendarManager calendarManager;
     DataBase database;
     
     public Nodewar() {
@@ -95,6 +97,9 @@ public class Nodewar extends JavaPlugin implements Listener
             for (final Empire empire : Empire.getEmpires().values()) {
                 empire.applyTerritories();
             }
+        }
+        if (getCustomConfig().getBoolean("general.use-calendar")) {
+            CalendarManager.init(this);
         }
         this.getCommand(dimName).setExecutor(new NodewarCommands(this));
     }

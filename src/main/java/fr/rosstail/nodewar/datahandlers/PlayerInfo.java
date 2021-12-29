@@ -141,7 +141,7 @@ public class PlayerInfo
     public void loadInfo() {
         if (DataBase.isConnected()) {
             if (!this.databaseLoad()) {
-                DataBaseActions.insertPlayerInfo(this.player, this);
+                DataBaseActions.insertPlayerInfo(this.player);
             }
         }
         else if (this.playerJsonData != null) {

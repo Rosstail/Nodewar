@@ -6,6 +6,7 @@ public enum PlaceHolders
 {
     PLAYER_NAME("%player%"),
     PLAYER_EMPIRE_STARTER("%" + Nodewar.getDimName() + "_player_empire_"),
+    PLAYER_EMPIRE("%" + Nodewar.getDimName() + "_player_empire%"),
     PLAYER_EMPIRE_DISPLAY("%" + Nodewar.getDimName() + "_player_empire_display%"),
 
     EMPIRE_STARTER("%" + Nodewar.getDimName() + "_empire_"),
