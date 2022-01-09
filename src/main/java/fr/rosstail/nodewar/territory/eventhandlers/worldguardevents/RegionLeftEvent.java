@@ -28,6 +28,7 @@ public class RegionLeftEvent extends RegionEvent
             WorldTerritoryManager.getUsedWorlds().get(previousWorld).getTerritories().forEach((s, territory) -> {
                 if (territory.getRegion().equals(region)) {
                     territory.bossBarRemove(player);
+                    territory.getPlayersOnTerritory().remove(player);
                 }
                 for (CapturePoint capturePoint : territory.getCapturePoints().values()) {
                     if (capturePoint.getRegion().equals(region)) {

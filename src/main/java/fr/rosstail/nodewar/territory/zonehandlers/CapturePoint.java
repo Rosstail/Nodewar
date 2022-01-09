@@ -77,7 +77,7 @@ public class CapturePoint
         }
         this.empireAdvantage = this.empire;
         (this.bossBar = Bukkit.createBossBar("nodewarNodewar.capturePoint." + this.getName(), BarColor.WHITE, BarStyle.SEGMENTED_10)).setTitle("Point - " + this.getDisplay());
-        this.bossBar.setVisible(true);
+        this.bossBar.setVisible(territory.isVulnerable());
     }
 
     public String getID() {
@@ -284,12 +284,10 @@ public class CapturePoint
     }
 
     public void bossBarRemove(final Player player) {
-        if (player == null) {
-            this.bossBar.removeAll();
-        }
-        else {
-            this.bossBar.removePlayer(player);
-        }
+        this.bossBar.removePlayer(player);
+    }
+    public void bossBarRemove() {
+        this.bossBar.removeAll();
     }
 
     public void cancelAttack(final Empire newEmpire) {

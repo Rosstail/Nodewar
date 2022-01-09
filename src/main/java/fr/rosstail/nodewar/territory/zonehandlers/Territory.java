@@ -110,7 +110,7 @@ public class Territory
             }
         }
         (this.bossBar = Bukkit.createBossBar("nodewarNodewar.territory." + this.getName(), BarColor.WHITE, BarStyle.SEGMENTED_10)).setTitle("Territory - " + this.getDisplay());
-        this.bossBar.setVisible(true);
+        this.bossBar.setVisible(vulnerable);
     }
 
     public void initCanAttack() {
@@ -395,12 +395,10 @@ public class Territory
     }
 
     public void bossBarRemove(final Player player) {
-        if (player == null) {
+        this.bossBar.removePlayer(player);
+    }
+    public void bossBarRemove() {
             this.bossBar.removeAll();
-        }
-        else {
-            this.bossBar.removePlayer(player);
-        }
     }
 
     private void checkChangeOwner() {

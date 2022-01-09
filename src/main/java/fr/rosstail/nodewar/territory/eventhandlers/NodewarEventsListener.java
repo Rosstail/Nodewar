@@ -85,15 +85,19 @@ public class NodewarEventsListener implements Listener {
 
         territory.setVulnerable(vulnerability);
 
-        if (territory.isVulnerable()) {
+        if (vulnerability) {
             Territory.enableTickCheckIfVulnerable(territory);
         } else {
             Bukkit.getScheduler().cancelTask(territory.getTickScheduler());
             Bukkit.getScheduler().cancelTask(territory.getSecondScheduler());
-            territory.bossBarRemove(null);
-            territory.getCapturePoints().forEach((s, capturePoint) -> capturePoint.bossBarRemove(null));
+            /*Test not remove bossbar on vulnerability
+             territory.bossBarRemove();
+             territory.getCapturePoints().forEach((s, capturePoint) -> capturePoint.bossBarRemove());
+            */
         }
         int fileID = territory.getFileID();
+        territory.getBossBar().setVisible(vulnerability);
+        territory.getCapturePoints().forEach((s, capturePoint) -> capturePoint.getBossBar().setVisible(vulnerability));
         FileConfiguration fileConfiguration = WorldTerritoryManager.getTerritoryConfigs().get(fileID);
         fileConfiguration.set(territory.getName() + ".options.is-vulnerable", vulnerability);
         WorldTerritoryManager.getTerritoryConfigs().set(fileID, fileConfiguration);
