@@ -158,13 +158,15 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
             if (args.length >= 4) {
                 String[] location = args[1].split("/");
                 boolean value = Boolean.parseBoolean(args[3]);
+                String worldName = location[0];
+                World world = Bukkit.getWorld(worldName);
+
+                WorldTerritoryManager worldTerritoryManager = WorldTerritoryManager.getUsedWorlds().get(world);
                 if (location.length >= 2) {
-                    String worldName = location[0];
                     String territoryName = location[1];
 
-                    World world = Bukkit.getWorld(worldName);
                     if (world != null && territoryName != null && WorldTerritoryManager.getUsedWorlds().containsKey(world)) {
-                        Map<String, Territory> worldTerritories = WorldTerritoryManager.getUsedWorlds().get(world).getTerritories();
+                        Map<String, Territory> worldTerritories = worldTerritoryManager.getTerritories();
                         if (worldTerritories.containsKey(territoryName)) {
                             Territory territory = worldTerritories.get(territoryName);
                             TerritoryVulnerabilityToggle event = new TerritoryVulnerabilityToggle(territory, value);
@@ -177,7 +179,13 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                         }
                     }
                 } else {
-                    tooFewArguments(sender);
+                    worldTerritoryManager.getTerritories().forEach((s, territory) -> {
+                        TerritoryVulnerabilityToggle event = new TerritoryVulnerabilityToggle(territory, value);
+                        Bukkit.getPluginManager().callEvent(event);
+                    });
+                    sender.sendMessage(AdaptMessage.worldMessage(world,
+                            (value ? LangManager.getMessage(LangMessage.WORLD_VULNERABLE)
+                                    : LangManager.getMessage(LangMessage.WORLD_INVULNERABLE))));
                 }
             } else {
                 tooFewArguments(sender);
