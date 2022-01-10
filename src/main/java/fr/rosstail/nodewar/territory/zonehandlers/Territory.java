@@ -397,9 +397,6 @@ public class Territory
     public void bossBarRemove(final Player player) {
         this.bossBar.removePlayer(player);
     }
-    public void bossBarRemove() {
-            this.bossBar.removeAll();
-    }
 
     private void checkChangeOwner() {
         if (this.empireAdvantage != null) {
@@ -438,8 +435,7 @@ public class Territory
             if (this.empire != null) {
                 point.setEmpireMember();
                 point.setPointTimeLeft(point.getMaxCaptureTime());
-            }
-            else {
+            } else {
                 point.removeAllMembers();
                 point.setPointTimeLeft(0);
             }

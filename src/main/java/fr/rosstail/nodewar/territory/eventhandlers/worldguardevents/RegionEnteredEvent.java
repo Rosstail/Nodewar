@@ -15,7 +15,7 @@ public class RegionEnteredEvent extends RegionEvent
         final World world = player.getWorld();
         if (WorldTerritoryManager.getUsedWorlds().containsKey(world)) {
             WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().forEach((s, territory) -> {
-                if (/*territory.isVulnerable() && Test without deleting player on invulnerable*/territory.getRegion().equals(region)) {
+                if (territory.getRegion().equals(region)) {
                     territory.getBossBar().addPlayer(player);
                     territory.getPlayersOnTerritory().add(player);
                 }

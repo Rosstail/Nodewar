@@ -75,8 +75,8 @@ public class PlayerInfo
     public void setEmpire(final Empire empire) {
         Empire previousEmpire = this.empire;
         this.empire = empire;
+        this.removePlayerGroup(previousEmpire);
         if (empire == null) {
-            this.removePlayerGroup(previousEmpire);
             player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_LEAVE_EMPIRE)));
         }
         else {

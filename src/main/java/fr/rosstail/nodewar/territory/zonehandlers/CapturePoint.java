@@ -148,12 +148,22 @@ public class CapturePoint
             if (empire != Empire.getNoEmpire()) {
                 final ArrayList<Territory> empireTerritories = empire.getWorldTerritories(this.getWorld());
                 if (empireTerritories.size() == 0) {
+                    ArrayList<Player> newPlayerList;
+                    if (empiresAmount.containsKey(empire)) {
+                        newPlayerList = empiresAmount.get(empire);
+                        empiresAmount.replace(empire, newPlayerList);
+                    } else {
+                        newPlayerList = new ArrayList<>();
+                        empiresAmount.put(empire, newPlayerList);
+                    }
+                    newPlayerList.add(player);
+                    empiresAmount.replace(empire, newPlayerList);
+                } else if (empireTerritories.contains(territory)) {
                     if (empiresAmount.containsKey(empire)) {
                         final ArrayList<Player> newPlayerList = empiresAmount.get(empire);
                         newPlayerList.add(player);
                         empiresAmount.replace(empire, newPlayerList);
-                    }
-                    else {
+                    } else {
                         final ArrayList<Player> newPlayerList = new ArrayList<Player>();
                         newPlayerList.add(player);
                         empiresAmount.put(empire, newPlayerList);
@@ -198,6 +208,7 @@ public class CapturePoint
             if (empires.contains(this.empire)) {
                 if (!attackerEmpire.equals(this.empire)) {
                     final int defenderAmount = playersAmount.get(empires.indexOf(this.empire)).size();
+                    System.out.println("Nombre de défenseurs : " + defenderAmount);
                     final float ratio = attackerAmount / (float)(attackerAmount + defenderAmount);
                     if (ratio >= this.getAttackerRatio()) {
                         return attackerEmpire;
@@ -238,8 +249,7 @@ public class CapturePoint
                 if (this.pointTimeLeft < this.captureTime) {
                     ++this.pointTimeLeft;
                 }
-            }
-            else if (this.pointTimeLeft > 0) {
+            } else if (this.pointTimeLeft > 0) {
                 --this.pointTimeLeft;
             }
         }
@@ -250,8 +260,7 @@ public class CapturePoint
             if (this.pointTimeLeft >= this.captureTime) {
                 PointOwnerChange pointOwnerChange = new PointOwnerChange(this, empireAdvantage);
                 Bukkit.getPluginManager().callEvent(pointOwnerChange);
-            }
-            else if (this.pointTimeLeft <= 0) {
+            } else if (this.pointTimeLeft <= 0) {
                 PointOwnerChange pointOwnerChange = new PointOwnerChange(this, null);
                 Bukkit.getPluginManager().callEvent(pointOwnerChange);
             }
@@ -276,7 +285,11 @@ public class CapturePoint
         }
         this.bossBar.setColor(barColor);
         if (this.getPointTimeLeft() == this.getMaxCaptureTime()) {
-            this.bossBar.setProgress((this.getMaxCaptureTime() - (float)this.getPointTimeLeft()) / this.getMaxCaptureTime());
+            if (empire != empireAdvantage) {
+                this.bossBar.setProgress((this.getMaxCaptureTime() - (float) this.getPointTimeLeft()) / this.getMaxCaptureTime());
+            } else {
+                this.bossBar.setProgress(1f);
+            }
         }
         else {
             this.bossBar.setProgress(this.getPointTimeLeft() / (float)this.getMaxCaptureTime());
@@ -285,9 +298,6 @@ public class CapturePoint
 
     public void bossBarRemove(final Player player) {
         this.bossBar.removePlayer(player);
-    }
-    public void bossBarRemove() {
-        this.bossBar.removeAll();
     }
 
     public void cancelAttack(final Empire newEmpire) {

@@ -20,22 +20,21 @@ public class RegionLeftEvent extends RegionEvent
      * @param player the player who triggered the event
      * @param reason the type of movement how the player left the region
      */
-    public RegionLeftEvent(ProtectedRegion region, Player player, Reasons reason, PlayerEvent parent)
-    {
+    public RegionLeftEvent(ProtectedRegion region, Player player, Reasons reason, PlayerEvent parent) {
         super(region, player, reason, parent);
-        World previousWorld = parent.getPlayer().getWorld();
-        if (WorldTerritoryManager.getUsedWorlds().containsKey(previousWorld)) {
-            WorldTerritoryManager.getUsedWorlds().get(previousWorld).getTerritories().forEach((s, territory) -> {
+        World world = parent.getPlayer().getWorld();
+        if (WorldTerritoryManager.getUsedWorlds().containsKey(world)) {
+            WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().forEach((s, territory) -> {
                 if (territory.getRegion().equals(region)) {
                     territory.bossBarRemove(player);
                     territory.getPlayersOnTerritory().remove(player);
                 }
-                for (CapturePoint capturePoint : territory.getCapturePoints().values()) {
+                territory.getCapturePoints().values().forEach(capturePoint -> {
                     if (capturePoint.getRegion().equals(region)) {
                         capturePoint.bossBarRemove(player);
                         capturePoint.getPlayersOnPoint().remove(player);
                     }
-                }
+                });
             });
         }
     }
