@@ -5,6 +5,7 @@ front-frelia:
         region: front-frelia
         max-resistance: 900
         is-vulnerable: true
+        must-connect-to-node: true
         capture-points:
             front-frelia-a:
                 display: "&aA"
@@ -35,6 +36,7 @@ front-renais:
         region: front-renais
         max-resistance: 900
         is-vulnerable: true
+        must-connect-to-node: true
         capture-points:
             front-renais-a:
                 display: "&aA"
@@ -65,6 +67,7 @@ front-jehanna:
         region: front-jehanna
         max-resistance: 900
         is-vulnerable: true
+        must-connect-to-node: true
         capture-points:
             front-jehanna-a:
                 display: "&aA"
@@ -95,6 +98,7 @@ front-rausten:
         region: front-rausten
         max-resistance: 900
         is-vulnerable: true
+        must-connect-to-node: true
         capture-points:
             front-rausten-a:
                 display: "&aA"
@@ -125,6 +129,7 @@ front-grado:
         region: front-grado
         max-resistance: 900
         is-vulnerable: true
+        must-connect-to-node: true
         capture-points:
             front-grado-a:
                 display: "&aA"
@@ -155,6 +160,7 @@ front-carcino:
         region: front-carcino
         max-resistance: 900
         is-vulnerable: true
+        must-connect-to-node: true
         capture-points:
             front-carcino-a:
                 display: "&aA"

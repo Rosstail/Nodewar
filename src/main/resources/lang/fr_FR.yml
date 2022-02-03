@@ -20,6 +20,19 @@ territory-invulnerable: "%nodewar_territory_display% &7est maintenant invulnerab
 point-set-empire: "%nodewar_point_display% &r&7 est maintenant sous domination %nodewar_territory_empire_owner%"
 point-neutralize: "%nodewar_point_display% &r&7a été neutralisé"
 
+bossbar:
+  territory:
+    neutral: "Territoire %nodewar_territory_display% &7- &c%nodewar_territory_resistance%&7/&c%nodewar_territory_max_resistance%"
+    under-capture: "Territoire %nodewar_territory_display% &7- &ccapture &7- &c%nodewar_territory_resistance%&7/&c%nodewar_territory_max_resistance%"
+    struggle: "Territoire %nodewar_territory_display% &7- &econflit &7- &c%nodewar_territory_resistance%&7/&c%nodewar_territory_max_resistance%"
+    on-defense: "Territoire %nodewar_territory_display% &7- &cdéfense &7- &c%nodewar_territory_resistance%&7/&c%nodewar_territory_max_resistance%"
+  point:
+    neutral: "Point %nodewar_point_display% &7- &c%nodewar_point_resistance%&7/&c%nodewar_point_max_resistance%"
+    under-capture: "Point %nodewar_point_display% &7- &ccapture &7- &c%nodewar_point_resistance%&7/&c%nodewar_point_max_resistance%"
+    neutralizing: "Point %nodewar_point_display% &7- neutralisation - &c%nodewar_point_resistance%&7/&c%nodewar_point_max_resistance%"
+    on-defense: "Point %nodewar_point_display% &7- &cdéfense &7- &c%nodewar_point_resistance%&7/&c%nodewar_point_max_resistance%"
+    struggle: "Point %nodewar_point_display% &7- &cconflit &7- &c%nodewar_point_resistance%&7/&c%nodewar_point_max_resistance%"
+
 location-does-not-exist: "&7Ce monde/territoire/point n'existe pas."
 world-not-used: "&7Ce monde n'est pas utilisé."
 

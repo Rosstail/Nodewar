@@ -7,6 +7,9 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.empires.Empire;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.PointOwnerChange;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,8 +22,9 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class CapturePoint
-{
+import static fr.rosstail.nodewar.territory.zonehandlers.CapturePoint.Status.*;
+
+public class CapturePoint {
     private final String name;
     private final String display;
     private final World world;
@@ -34,6 +38,25 @@ public class CapturePoint
     private int pointTimeLeft;
     private final BossBar bossBar;
     private Set<Player> playerOnPoints;
+    private Status status = NEUTRAL;
+
+    enum Status {
+        NEUTRAL(LangManager.getMessage(LangMessage.BOSSBAR_POINT_NEUTRAL)),
+        CONQUER(LangManager.getMessage(LangMessage.BOSSBAR_POINT_CONQUER)),
+        STRUGGLE(LangManager.getMessage(LangMessage.BOSSBAR_POINT_STRUGGLE)),
+        ON_DEFENSE(LangManager.getMessage(LangMessage.BOSSBAR_POINT_DEFENDED)),
+        NEUTRALIZE(LangManager.getMessage(LangMessage.BOSSBAR_POINT_NEUTRALIZE));
+
+        private final String text;
+
+        Status(final String text) {
+            this.text = text;
+        }
+
+        public String getText() {
+            return text;
+        }
+    }
 
     public CapturePoint(final FileConfiguration config, final World world, final Territory territory, final String key) {
         this.playerOnPoints = new HashSet<>();
@@ -54,29 +77,27 @@ public class CapturePoint
         }
         if (config.getString(territory.getName() + ".options.capture-points." + key + ".display") != null) {
             this.display = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString(territory.getName() + ".options.capture-points." + key + ".display")));
-        }
-        else {
+        } else {
             this.display = ChatColor.translateAlternateColorCodes('&', "&7" + this.name);
         }
         this.world = world;
         this.territory = territory;
         this.captureTime = config.getInt(territory.getName() + ".options.capture-points." + key + ".max-capture-time");
         this.bonusConquer = config.getInt(territory.getName() + ".options.capture-points." + key + ".bonus-conquer-point");
-        this.attackerRatio = (float)config.getDouble(territory.getName() + ".options.capture-points." + key + ".attacker-ratio-needed");
+        this.attackerRatio = (float) config.getDouble(territory.getName() + ".options.capture-points." + key + ".attacker-ratio-needed");
         if (regionEmpires.size() == 1) {
             this.empire = Empire.getEmpires().get(regionEmpires.get(0));
-        }
-        else if (Empire.getEmpires().containsKey(config.getString(territory.getName() + ".options.default-empire"))) {
+        } else if (Empire.getEmpires().containsKey(config.getString(territory.getName() + ".options.default-empire"))) {
             this.empire = Empire.getEmpires().get(config.getString(territory.getName() + ".options.default-empire"));
         }
         if (this.empire != null) {
             this.pointTimeLeft = this.captureTime;
-        }
-        else {
+        } else {
             this.pointTimeLeft = 0;
         }
         this.empireAdvantage = this.empire;
-        (this.bossBar = Bukkit.createBossBar("nodewarNodewar.capturePoint." + this.getName(), BarColor.WHITE, BarStyle.SEGMENTED_10)).setTitle("Point - " + this.getDisplay());
+        this.bossBar = Bukkit.createBossBar("nodewar.capturePoint." + this.getName(), BarColor.WHITE, BarStyle.SEGMENTED_10);
+        this.bossBar.setTitle(AdaptMessage.pointMessage(this, status.getText()));
         this.bossBar.setVisible(territory.isVulnerable());
     }
 
@@ -140,49 +161,65 @@ public class CapturePoint
         return this.playerOnPoints = PlayerRegions.getPlayersInRegion(this.region);
     }
 
+    boolean check(Territory territory, Empire empire) {
+        if (territory.getEmpire() != null && territory.getEmpire().equals(empire)) {//defends
+            return true;
+        } else if (empire.getWorldTerritories(territory.getWorld()).size() == 0) { //Own nothing
+            return (territory.isNode() && !territory.isNeedLinkToNode()); //Must capture territory without link
+        } else { //own territories
+            if (territory.isNeedLinkToNode()) {  //Needs node
+                return Territory.isTerritoryConnectedToNode(new ArrayList<>(), territory, empire); //si noeud ou non
+            }
+            return true;
+        }
+    }
+
     void countEmpirePlayerOnPoint() {
         final Map<Empire, ArrayList<Player>> empiresAmount = new HashMap<>();
         for (final Player player : this.playerOnPoints) {
             final PlayerInfo playerInfo = PlayerInfo.gets(player);
             final Empire empire = playerInfo.getEmpire();
-            if (empire != Empire.getNoEmpire()) {
+            if (empire != null && empire != Empire.getNoEmpire()) {
                 final ArrayList<Territory> empireTerritories = empire.getWorldTerritories(this.getWorld());
-                if (empireTerritories.size() == 0 && territory.isAnchor()) {
-                    ArrayList<Player> newPlayerList;
-                    if (empiresAmount.containsKey(empire)) {
-                        newPlayerList = empiresAmount.get(empire);
-                        empiresAmount.replace(empire, newPlayerList);
-                    } else {
-                        newPlayerList = new ArrayList<>();
-                        empiresAmount.put(empire, newPlayerList);
-                    }
-                    newPlayerList.add(player);
-                    empiresAmount.replace(empire, newPlayerList);
-                } else if (empireTerritories.contains(territory)) {
-                    if (empiresAmount.containsKey(empire)) {
-                        final ArrayList<Player> newPlayerList = empiresAmount.get(empire);
-                        newPlayerList.add(player);
-                        empiresAmount.replace(empire, newPlayerList);
-                    } else {
-                        final ArrayList<Player> newPlayerList = new ArrayList<Player>();
-                        newPlayerList.add(player);
-                        empiresAmount.put(empire, newPlayerList);
-                    }
-                } else {
-                    for (final Territory territory : empireTerritories) {
-                        if (territory.getCanAttackTerritories().contains(this.getTerritory())) {
-                            if (empiresAmount.containsKey(empire)) {
-                                final ArrayList<Player> newPlayerList = empiresAmount.get(empire);
-                                newPlayerList.add(player);
-                                empiresAmount.replace(empire, newPlayerList);
-                            } else {
-                                final ArrayList<Player> newPlayerList = new ArrayList<Player>();
-                                newPlayerList.add(player);
-                                empiresAmount.put(empire, newPlayerList);
-                            }
+                if (check(territory, empire)) {
+                    if (empireTerritories.size() == 0) {
+                        ArrayList<Player> newPlayerList;
+                        if (empiresAmount.containsKey(empire)) {
+                            newPlayerList = empiresAmount.get(empire);
+                            empiresAmount.replace(empire, newPlayerList);
+                        } else {
+                            newPlayerList = new ArrayList<>();
+                            empiresAmount.put(empire, newPlayerList);
                         }
+                        newPlayerList.add(player);
+                        empiresAmount.replace(empire, newPlayerList);
+                    } else if (empireTerritories.contains(territory)) {
+                        if (empiresAmount.containsKey(empire)) {
+                            final ArrayList<Player> newPlayerList = empiresAmount.get(empire);
+                            newPlayerList.add(player);
+                            empiresAmount.replace(empire, newPlayerList);
+                        } else {
+                            final ArrayList<Player> newPlayerList = new ArrayList<Player>();
+                            newPlayerList.add(player);
+                            empiresAmount.put(empire, newPlayerList);
+                        }
+                    } else {
+                        empireTerritories.forEach(territory -> {
+                            if (territory.getCanAttackTerritories().contains(this.getTerritory())) {
+                                if (empiresAmount.containsKey(empire)) {
+                                    final ArrayList<Player> newPlayerList = empiresAmount.get(empire);
+                                    newPlayerList.add(player);
+                                    empiresAmount.replace(empire, newPlayerList);
+                                } else {
+                                    final ArrayList<Player> newPlayerList = new ArrayList<Player>();
+                                    newPlayerList.add(player);
+                                    empiresAmount.put(empire, newPlayerList);
+                                }
+                            }
+                        });
                     }
                 }
+
             }
         }
         final List<Empire> empires = new ArrayList<Empire>(empiresAmount.keySet());
@@ -208,7 +245,7 @@ public class CapturePoint
             if (empires.contains(this.empire)) {
                 if (!attackerEmpire.equals(this.empire)) {
                     final int defenderAmount = playersAmount.get(empires.indexOf(this.empire)).size();
-                    final float ratio = attackerAmount / (float)(attackerAmount + defenderAmount);
+                    final float ratio = attackerAmount / (float) (attackerAmount + defenderAmount);
                     if (ratio >= this.getAttackerRatio()) {
                         return attackerEmpire;
                     }
@@ -216,8 +253,7 @@ public class CapturePoint
                 return this.empire;
             }
             return attackerEmpire;
-        }
-        else {
+        } else {
             if (greatestAttacker.size() <= 1) {
                 if (empires.contains(this.empire)) {
                     final int indexEmpire = empires.indexOf(this.empire);
@@ -234,7 +270,7 @@ public class CapturePoint
                 return null;
             }
             final int defenderAmount2 = playersAmount.get(empires.indexOf(this.empire)).size();
-            final float ratio2 = attackerAmount / (float)(attackerAmount + defenderAmount2);
+            final float ratio2 = attackerAmount / (float) (attackerAmount + defenderAmount2);
             if (ratio2 >= this.getAttackerRatio()) {
                 return null;
             }
@@ -246,10 +282,18 @@ public class CapturePoint
         if (this.empireAdvantage != null) {
             if (this.empire == null || this.empire.equals(this.empireAdvantage)) {
                 if (this.pointTimeLeft < this.captureTime) {
+                    if (this.empire == null) {
+                        status = CONQUER;
+                    } else {
+                        status = ON_DEFENSE;
+                    }
                     ++this.pointTimeLeft;
+                } else {
+                    status = NEUTRAL;
                 }
             } else if (this.pointTimeLeft > 0) {
                 --this.pointTimeLeft;
+                status = NEUTRALIZE;
             }
         }
     }
@@ -279,7 +323,7 @@ public class CapturePoint
         BarColor barColor = BarColor.WHITE;
         if (empire != null && !empire.equals(Empire.getNoEmpire())) {
             barColor = empire.getBarColor();
-        } else if (empireAdvantage != null && !empireAdvantage.equals(Empire.getNoEmpire())){
+        } else if (empireAdvantage != null && !empireAdvantage.equals(Empire.getNoEmpire())) {
             barColor = empireAdvantage.getBarColor();
         }
         this.bossBar.setColor(barColor);
@@ -289,10 +333,10 @@ public class CapturePoint
             } else {
                 this.bossBar.setProgress(1f);
             }
+        } else {
+            this.bossBar.setProgress(this.getPointTimeLeft() / (float) this.getMaxCaptureTime());
         }
-        else {
-            this.bossBar.setProgress(this.getPointTimeLeft() / (float)this.getMaxCaptureTime());
-        }
+        this.bossBar.setTitle(AdaptMessage.pointMessage(this, status.getText()));
     }
 
     public void bossBarRemove(final Player player) {

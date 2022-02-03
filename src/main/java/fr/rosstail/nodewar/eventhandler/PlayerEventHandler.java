@@ -31,6 +31,6 @@ public class PlayerEventHandler implements Listener
         final Player player = event.getPlayer();
         final PlayerInfo playerInfo = PlayerInfo.gets(player);
         playerInfo.getTimer().cancel();
-        playerInfo.updateAll();
+        playerInfo.updateAll(true);
     }
 }

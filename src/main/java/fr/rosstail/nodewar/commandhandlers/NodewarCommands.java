@@ -162,30 +162,32 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 World world = Bukkit.getWorld(worldName);
 
                 WorldTerritoryManager worldTerritoryManager = WorldTerritoryManager.getUsedWorlds().get(world);
-                if (location.length >= 2) {
-                    String territoryName = location[1];
+                if (worldTerritoryManager != null) {
+                    if (location.length >= 2) {
+                        String territoryName = location[1];
 
-                    if (world != null && territoryName != null && WorldTerritoryManager.getUsedWorlds().containsKey(world)) {
-                        Map<String, Territory> worldTerritories = worldTerritoryManager.getTerritories();
-                        if (worldTerritories.containsKey(territoryName)) {
-                            Territory territory = worldTerritories.get(territoryName);
-                            TerritoryVulnerabilityToggle event = new TerritoryVulnerabilityToggle(territory, value);
-                            Bukkit.getPluginManager().callEvent(event);
-                            if (!event.isCancelled()) {
-                                sender.sendMessage(AdaptMessage.territoryMessage(territory,
-                                        (value ? LangManager.getMessage(LangMessage.TERRITORY_VULNERABLE)
-                                                : LangManager.getMessage(LangMessage.TERRITORY_INVULNERABLE))));
+                        if (world != null && territoryName != null && WorldTerritoryManager.getUsedWorlds().containsKey(world)) {
+                            Map<String, Territory> worldTerritories = worldTerritoryManager.getTerritories();
+                            if (worldTerritories.containsKey(territoryName)) {
+                                Territory territory = worldTerritories.get(territoryName);
+                                TerritoryVulnerabilityToggle event = new TerritoryVulnerabilityToggle(territory, value);
+                                Bukkit.getPluginManager().callEvent(event);
+                                if (!event.isCancelled()) {
+                                    sender.sendMessage(AdaptMessage.territoryMessage(territory,
+                                            (value ? LangManager.getMessage(LangMessage.TERRITORY_VULNERABLE)
+                                                    : LangManager.getMessage(LangMessage.TERRITORY_INVULNERABLE))));
+                                }
                             }
                         }
+                    } else {
+                        worldTerritoryManager.getTerritories().forEach((s, territory) -> {
+                            TerritoryVulnerabilityToggle event = new TerritoryVulnerabilityToggle(territory, value);
+                            Bukkit.getPluginManager().callEvent(event);
+                        });
+                        sender.sendMessage(AdaptMessage.worldMessage(world,
+                                (value ? LangManager.getMessage(LangMessage.WORLD_VULNERABLE)
+                                        : LangManager.getMessage(LangMessage.WORLD_INVULNERABLE))));
                     }
-                } else {
-                    worldTerritoryManager.getTerritories().forEach((s, territory) -> {
-                        TerritoryVulnerabilityToggle event = new TerritoryVulnerabilityToggle(territory, value);
-                        Bukkit.getPluginManager().callEvent(event);
-                    });
-                    sender.sendMessage(AdaptMessage.worldMessage(world,
-                            (value ? LangManager.getMessage(LangMessage.WORLD_VULNERABLE)
-                                    : LangManager.getMessage(LangMessage.WORLD_INVULNERABLE))));
                 }
             } else {
                 tooFewArguments(sender);

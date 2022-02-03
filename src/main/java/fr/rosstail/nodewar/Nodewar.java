@@ -3,6 +3,7 @@ package fr.rosstail.nodewar;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.calendar.CalendarManager;
 import fr.rosstail.nodewar.commandhandlers.NodewarCommands;
+import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.eventhandler.PlayerEventHandler;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.required.DataBase;
@@ -118,6 +119,9 @@ public class Nodewar extends JavaPlugin implements Listener
     }
     
     public void onDisable() {
+        PlayerInfo.getPlayerInfoMap().forEach((player, playerInfo) -> {
+            playerInfo.updateAll(false);
+        });
         this.database.closeConnection();
     }
     

@@ -5,7 +5,7 @@ carcino:
         region: carcino
         max-resistance: 900
         is-vulnerable: false
-        is-anchor: true
+        is-node: true
         can-attack:
             - front-carcino
             - front-carcino-frelia
@@ -18,7 +18,7 @@ frelia:
         region: frelia
         max-resistance: 900
         is-vulnerable: false
-        is-anchor: true
+        is-node: true
         can-attack:
             - front-frelia
             - front-carcino-frelia
@@ -31,7 +31,7 @@ grado:
         region: grado
         max-resistance: 900
         is-vulnerable: false
-        is-anchor: true
+        is-node: true
         can-attack:
             - front-grado
             - front-grado-jehanna
@@ -44,7 +44,7 @@ jehanna:
         region: jehanna
         max-resistance: 900
         is-vulnerable: false
-        is-anchor: true
+        is-node: true
         can-attack:
             - front-jehanna
             - front-jehanna-rausten
@@ -57,7 +57,7 @@ rausten:
         region: rausten
         max-resistance: 900
         is-vulnerable: false
-        is-anchor: true
+        is-node: true
         can-attack:
             - front-rausten
             - front-jehanna-rausten
@@ -70,7 +70,7 @@ renais:
         region: renais
         max-resistance: 900
         is-vulnerable: false
-        is-anchor: true
+        is-node: true
         can-attack:
             - front-renais
             - front-frelia-renais

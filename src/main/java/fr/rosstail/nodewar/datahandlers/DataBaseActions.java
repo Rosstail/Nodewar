@@ -67,17 +67,15 @@ public class DataBaseActions
             return;
         }
         final String UUID = player.getUniqueId().toString();
-        Bukkit.getScheduler().runTaskAsynchronously(DataBaseActions.plugin, () -> {
-            try {
-                final PreparedStatement preparedStatement = DataBaseActions.connection.prepareStatement("UPDATE " + Nodewar.getDimName() + "_players_info SET empire = ? WHERE UUID = ?;");
-                preparedStatement.setString(1, playerInfo.getEmpire().getName());
-                preparedStatement.setString(2, UUID);
-                preparedStatement.execute();
-                preparedStatement.close();
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
+        try {
+            final PreparedStatement preparedStatement = DataBaseActions.connection.prepareStatement("UPDATE " + Nodewar.getDimName() + "_players_info SET empire = ? WHERE UUID = ?;");
+            preparedStatement.setString(1, playerInfo.getEmpire().getName());
+            preparedStatement.setString(2, UUID);
+            preparedStatement.execute();
+            preparedStatement.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

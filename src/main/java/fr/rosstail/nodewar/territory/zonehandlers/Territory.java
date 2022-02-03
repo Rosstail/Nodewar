@@ -1,49 +1,39 @@
 package fr.rosstail.nodewar.territory.zonehandlers;
 
-import java.io.File;
-import java.util.HashSet;
-
-import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.lang.AdaptMessage;
-import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerChange;
-import org.bukkit.entity.Player;
-
-import java.util.Set;
-import java.util.Iterator;
-
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
-import org.bukkit.Bukkit;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BarColor;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
-import org.bukkit.ChatColor;
-
-import java.util.Objects;
-import java.util.HashMap;
-import java.util.ArrayList;
-
-import org.bukkit.boss.BossBar;
-import fr.rosstail.nodewar.empires.Empire;
-import org.bukkit.World;
-
-import java.util.List;
-
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.empires.Empire;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
+import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerChange;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.World;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
-import java.util.Map;
+import java.io.File;
+import java.util.*;
 
 public class Territory {
     private final String name;
     private final String display;
     private final int fileID;
     private boolean vulnerable;
-    private final boolean anchor;
+    private final boolean node;
+    private final boolean needLinkToNode;
     private final ProtectedRegion region;
     private final int maxResistance;
-    private List<Territory> canAttackTerritories;
+    private final List<Territory> canAttackTerritories = new ArrayList<>();
+    private final List<Territory> canBeAttackTerritories = new ArrayList<>();
     private final Map<String, CapturePoint> capturePoints;
     private final World world;
     private Empire empire;
@@ -55,6 +45,24 @@ public class Territory {
     private final BossBar bossBar;
     private int tickScheduler;
     private int secondScheduler;
+    private Status status = Status.NEUTRAL;
+
+    enum Status {
+        NEUTRAL(LangManager.getMessage(LangMessage.BOSSBAR_TERRITORY_NEUTRAL)),
+        CONQUER(LangManager.getMessage(LangMessage.BOSSBAR_TERRITORY_CONQUER)),
+        STRUGGLE(LangManager.getMessage(LangMessage.BOSSBAR_TERRITORY_STRUGGLE)),
+        ON_DEFENSE(LangManager.getMessage(LangMessage.BOSSBAR_TERRITORY_ON_DEFENSE));
+
+        private final String text;
+
+        Status(final String text) {
+            this.text = text;
+        }
+
+        public String getText() {
+            return text;
+        }
+    }
 
     public Territory(final int fileID, final World world, final String key) {
         this.fileID = fileID;
@@ -99,38 +107,46 @@ public class Territory {
         } else {
             this.vulnerable = false;
         }
-        if (config.getString(key + ".options.is-anchor") != null) {
-            this.anchor = config.getBoolean(key + ".options.is-anchor");
+        if (config.getString(key + ".options.is-node") != null) {
+            this.node = config.getBoolean(key + ".options.is-node");
         } else {
-            this.anchor = false;
+            this.node = false;
         }
+
+        if (config.getString(key + ".options.must-connect-to-node") != null) {
+            this.needLinkToNode = config.getBoolean(key + ".options.must-connect-to-node");
+        } else {
+            this.needLinkToNode = true;
+        }
+
         if (config.getString(key + ".data.has-been-damaged") != null) {
             this.damaged = config.getBoolean(key + ".data.has-been-damaged");
         } else {
             this.damaged = false;
         }
+
         if (config.getConfigurationSection(key + ".options.capture-points") != null) {
             final ArrayList<String> listPoints = new ArrayList<>(config.getConfigurationSection(key + ".options.capture-points").getKeys(false));
             for (final String point : listPoints) {
                 this.capturePoints.put(point, new CapturePoint(config, world, this, point));
             }
         }
-        (this.bossBar = Bukkit.createBossBar("nodewarNodewar.territory." + this.getName(), BarColor.WHITE, BarStyle.SEGMENTED_10)).setTitle("Territory - " + this.getDisplay());
+
+        this.bossBar = Bukkit.createBossBar("nodewar.territory." + this.getName(), BarColor.WHITE, BarStyle.SEGMENTED_10);
+        this.bossBar.setTitle(AdaptMessage.territoryMessage(this, status.getText()));
         this.bossBar.setVisible(vulnerable);
     }
 
     public void initCanAttack() {
         final List<String> linkedStrings = WorldTerritoryManager.getTerritoryConfigs().get(fileID).getStringList(this.getName() + ".options.can-attack");
-        final ArrayList<Territory> linkedTerritories = new ArrayList<>();
         final List<Territory> allTerritories = new ArrayList<>(WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().values());
-        for (final String stringTerritory : linkedStrings) {
-            for (final Territory territory : allTerritories) {
-                if (territory.getName().equalsIgnoreCase(stringTerritory) && territory.getWorld().equals(this.world)) {
-                    linkedTerritories.add(territory);
-                }
+
+        linkedStrings.forEach(s -> allTerritories.forEach(territory -> {
+            if (territory.getName().equalsIgnoreCase(s) && territory.getWorld().equals(this.world)) {
+                canAttackTerritories.add(territory);
+                territory.getTerritoriesCanAttack().add(this);
             }
-        }
-        this.canAttackTerritories = linkedTerritories;
+        }));
     }
 
     public String getID() {
@@ -177,6 +193,10 @@ public class Territory {
         return this.canAttackTerritories;
     }
 
+    public List<Territory> getTerritoriesCanAttack() {
+        return canBeAttackTerritories;
+    }
+
     public Map<String, CapturePoint> getCapturePoints() {
         return this.capturePoints;
     }
@@ -199,10 +219,6 @@ public class Territory {
 
     public void setEmpire(final Empire value) {
         this.empire = value;
-    }
-
-    public void setCanAttackTerritories(final List<Territory> canAttackTerritories) {
-        this.canAttackTerritories = canAttackTerritories;
     }
 
     public void setEmpireAdvantage(final Empire empireAdvantage) {
@@ -239,22 +255,22 @@ public class Territory {
     private static void tickCheck(final Territory territory) {
         territory.setTickScheduler(Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), () -> {
             territory.countEmpiresPointsOnTerritory();
-            for (final CapturePoint point : new ArrayList<>(territory.getCapturePoints().values())) {
-                point.getPlayersOnPoint();
-                point.countEmpirePlayerOnPoint();
-                point.updateBossBar();
-            }
+            territory.getCapturePoints().forEach((s, capturePoint) -> {
+                capturePoint.getPlayersOnPoint();
+                capturePoint.countEmpirePlayerOnPoint();
+                capturePoint.updateBossBar();
+            });
             territory.updateBossBar();
         }, 0L, 1L));
     }
 
     private static void secondCheck(final Territory territory) {
         territory.setSecondScheduler(Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), () -> {
-            for (final CapturePoint point : new ArrayList<>(territory.getCapturePoints().values())) {
-                point.setCaptureTime();
-                point.checkOwnerChange();
-            }
-            if (territory.damaged) {
+            territory.getCapturePoints().forEach((s, capturePoint) -> {
+                capturePoint.setCaptureTime();
+                capturePoint.checkOwnerChange();
+            });
+            if (territory.isDamaged()) {
                 territory.setCaptureTime();
                 territory.checkChangeOwner();
             }
@@ -349,15 +365,24 @@ public class Territory {
             }
         }
         if (this.regenOrDamage > 0) {
+            if (resistance >= maxResistance) {
+                status = Status.NEUTRAL;
+            } else {
+                status = Status.ON_DEFENSE;
+            }
             return this.empire;
-        }
-        if (this.regenOrDamage < 0) {
+        } else if (this.regenOrDamage < 0) {
             if (!this.damaged) {
                 this.damaged = true;
+                status = Status.CONQUER;
             }
             return this.empireCanAttack;
+        } else {
+            if (resistance < maxResistance) {
+                status = Status.STRUGGLE;
+            }
+            return null;
         }
-        return null;
     }
 
     private void setCaptureTime() {
@@ -392,6 +417,7 @@ public class Territory {
         } else {
             this.bossBar.setProgress(this.getResistance() / (float) this.getMaxResistance());
         }
+        this.bossBar.setTitle(AdaptMessage.territoryMessage(this, status.getText()));
     }
 
     public void bossBarRemove(final Player player) {
@@ -415,22 +441,23 @@ public class Territory {
     }
 
     public void cancelAttack(final Empire newEmpire) {
-        this.setEmpire(newEmpire);
-        if (this.empireAdvantage != null && this.empireAdvantage != newEmpire) {
-            this.empireAdvantage.applyTerritories();
-            this.setEmpireAdvantage(newEmpire);
+        setEmpire(newEmpire);
+        if (empireAdvantage != null && empireAdvantage != newEmpire) {
+            empireAdvantage.applyTerritories();
+            setEmpireAdvantage(newEmpire);
         }
-        if (this.empire != null) {
-            this.empire.applyTerritories();
+        if (empire != null) {
+            empire.applyTerritories();
         } else {
-            this.region.getMembers().removeAll();
+            region.getMembers().removeAll();
         }
-        this.setResistance(this.getMaxResistance());
-        this.setDamaged(false);
-        for (final CapturePoint point : this.capturePoints.values()) {
-            point.setEmpire(this.empire);
-            point.setEmpireAdvantage(this.empire);
-            if (this.empire != null) {
+        setResistance(maxResistance);
+        setDamaged(false);
+
+        for (final CapturePoint point : capturePoints.values()) {
+            point.setEmpire(empire);
+            point.setEmpireAdvantage(empire);
+            if (empire != null) {
                 point.setEmpireMember();
                 point.setPointTimeLeft(point.getMaxCaptureTime());
             } else {
@@ -473,7 +500,26 @@ public class Territory {
         return damaged;
     }
 
-    public boolean isAnchor() {
-        return anchor;
+    public boolean isNode() {
+        return node;
+    }
+
+    public boolean isNeedLinkToNode() {
+        return needLinkToNode;
+    }
+
+    public static boolean isTerritoryConnectedToNode(ArrayList<Territory> territories, Territory territory, Empire empire) {
+        territories.add(territory);
+        for (Territory subTerritory : territory.getTerritoriesCanAttack()) {
+            if (!territories.contains(subTerritory) && subTerritory.getEmpire() != null && subTerritory.getEmpire().equals(empire)) {
+                if (subTerritory.isNode()) {
+                    return true;
+                } else {
+                    territories.add(subTerritory);
+                    return isTerritoryConnectedToNode(territories, subTerritory, empire);
+                }
+            }
+        }
+        return false;
     }
 }

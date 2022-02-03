@@ -18,7 +18,7 @@ import static org.bukkit.Bukkit.getLogger;
 
 public class AdaptMessage
 {
-    private static final Pattern hexPattern = Pattern.compile("#[a-fA-F0-9]{6}");
+    private static final Pattern hexPattern = Pattern.compile("\\{(#[a-fA-F0-9]{6})}");
 
     public enum prints {
         OUT,
@@ -191,10 +191,12 @@ public class AdaptMessage
             Matcher matcher = hexPattern.matcher(message);
             while (matcher.find()) {
                 try {
-                    String color = message.substring(matcher.start(), matcher.end());
-                    message = message.replaceAll(color, String.valueOf(ChatColor.of(color))); //ChatColor.of not detected
-                    matcher = hexPattern.matcher(message);
-                } catch (Exception e) {}
+                    String matched = matcher.group(0);
+                    String color = matcher.group(1);
+                    message = message.replace(matched, String.valueOf(ChatColor.of(color)));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         return ChatColor.translateAlternateColorCodes('&', message);

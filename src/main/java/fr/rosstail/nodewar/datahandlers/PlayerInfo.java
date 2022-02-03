@@ -125,7 +125,7 @@ public class PlayerInfo
         (this.timer = new Timer()).schedule(new TimerTask() {
             @Override
             public void run() {
-                PlayerInfo.this.updateAll();
+                updateAll(true);
             }
         }, delay, delay);
     }
@@ -174,10 +174,13 @@ public class PlayerInfo
         return false;
     }
     
-    public void updateAll() {
-        final PlayerInfo playerInfo = this;
+    public void updateAll(boolean async) {
         if (DataBase.isConnected()) {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> DataBaseActions.updatePlayerInfo(PlayerInfo.this.player, playerInfo));
+            if (async) {
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> DataBaseActions.updatePlayerInfo(player, this));
+            } else {
+                DataBaseActions.updatePlayerInfo(player, this);
+            }
         }
         else {
             this.saveDataFile();
@@ -205,5 +208,9 @@ public class PlayerInfo
     
     static {
         playerInfoMap = new HashMap<>();
+    }
+
+    public static Map<Player, PlayerInfo> getPlayerInfoMap() {
+        return playerInfoMap;
     }
 }
