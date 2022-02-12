@@ -1,6 +1,5 @@
 package fr.rosstail.nodewar;
 
-import com.rosstail.karma.ConfigData;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.calendar.CalendarManager;
 import fr.rosstail.nodewar.commandhandlers.NodewarCommands;
