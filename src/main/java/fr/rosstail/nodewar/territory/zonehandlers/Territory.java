@@ -43,8 +43,6 @@ public class Territory {
     private int regenOrDamage;
     private boolean damaged;
     private final BossBar bossBar;
-    private int tickScheduler;
-    private int secondScheduler;
     private Status status = Status.NEUTRAL;
 
     enum Status {
@@ -116,7 +114,7 @@ public class Territory {
         if (config.getString(key + ".options.must-connect-to-node") != null) {
             this.needLinkToNode = config.getBoolean(key + ".options.must-connect-to-node");
         } else {
-            this.needLinkToNode = true;
+            this.needLinkToNode = !node;
         }
 
         if (config.getString(key + ".data.has-been-damaged") != null) {
@@ -209,14 +207,6 @@ public class Territory {
         }
     }
 
-    public int getTickScheduler() {
-        return this.tickScheduler;
-    }
-
-    public int getSecondScheduler() {
-        return this.secondScheduler;
-    }
-
     public void setEmpire(final Empire value) {
         this.empire = value;
     }
@@ -233,51 +223,11 @@ public class Territory {
         this.damaged = damaged;
     }
 
-    public void setTickScheduler(final int tickScheduler) {
-        this.tickScheduler = tickScheduler;
-    }
-
-    public void setSecondScheduler(final int secondScheduler) {
-        this.secondScheduler = secondScheduler;
-    }
-
     public Set<Player> getPlayersOnTerritory() {
         return new HashSet<>(PlayerRegions.getPlayersInRegion(this.region));
     }
 
-    public static void enableTickCheckIfVulnerable(final Territory territory) {
-        if (territory.isVulnerable()) {
-            tickCheck(territory);
-            secondCheck(territory);
-        }
-    }
-
-    private static void tickCheck(final Territory territory) {
-        territory.setTickScheduler(Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), () -> {
-            territory.countEmpiresPointsOnTerritory();
-            territory.getCapturePoints().forEach((s, capturePoint) -> {
-                capturePoint.getPlayersOnPoint();
-                capturePoint.countEmpirePlayerOnPoint();
-                capturePoint.updateBossBar();
-            });
-            territory.updateBossBar();
-        }, 0L, 1L));
-    }
-
-    private static void secondCheck(final Territory territory) {
-        territory.setSecondScheduler(Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), () -> {
-            territory.getCapturePoints().forEach((s, capturePoint) -> {
-                capturePoint.setCaptureTime();
-                capturePoint.checkOwnerChange();
-            });
-            if (territory.isDamaged()) {
-                territory.setCaptureTime();
-                territory.checkChangeOwner();
-            }
-        }, 0L, 20L));
-    }
-
-    private void countEmpiresPointsOnTerritory() {
+    void countEmpiresPointsOnTerritory() {
         final Map<Empire, Integer> empiresAmount = new HashMap<>();
         final ArrayList<CapturePoint> points = new ArrayList<>(this.capturePoints.values());
         for (final CapturePoint point : points) {
@@ -385,7 +335,7 @@ public class Territory {
         }
     }
 
-    private void setCaptureTime() {
+    void setCaptureTime() {
         if (this.empireAdvantage != null && this.empireAdvantage != Empire.getNoEmpire()) {
             this.resistance += this.regenOrDamage;
             if (this.resistance < this.maxResistance) {
@@ -402,7 +352,7 @@ public class Territory {
         this.vulnerable = vulnerability;
     }
 
-    private void updateBossBar() {
+    void updateBossBar() {
         BarColor barColor;
         if (this.empireAdvantage == null || this.empireAdvantage == Empire.getNoEmpire()) {
             barColor = BarColor.WHITE;
@@ -424,7 +374,7 @@ public class Territory {
         this.bossBar.removePlayer(player);
     }
 
-    private void checkChangeOwner() {
+    void checkChangeOwner() {
         if (this.empireAdvantage != null) {
             if (this.empire == null || !this.empire.equals(this.empireAdvantage)) {
                 if (this.resistance <= 0) {

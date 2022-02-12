@@ -22,6 +22,7 @@ public class CalendarManager {
 
     private static CalendarManager calendarManager = null;
     private final YamlConfiguration config;
+    private final int taskScheduler;
 
     public static void init(Nodewar plugin) {
         if (calendarManager == null) {
@@ -32,8 +33,8 @@ public class CalendarManager {
     public CalendarManager(Nodewar plugin) {
         this.config = plugin.getCustomConfig();
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-            for (String s : config.getConfigurationSection("calendar").getKeys(false)) {
+        taskScheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+            config.getConfigurationSection("calendar").getKeys(false).forEach(s -> {
                 ConfigurationSection schedule = config.getConfigurationSection("calendar." + s);
                 if (schedule != null) {
                     ConfigurationSection starter = schedule.getConfigurationSection("start");
@@ -45,7 +46,7 @@ public class CalendarManager {
                         checkSchedule(finisher);
                     }
                 }
-            }
+            });
         }, 0L, 1200L);
     }
 
@@ -59,7 +60,8 @@ public class CalendarManager {
         String empireName = String.valueOf(section.get("empire"));
 
         f = new SimpleDateFormat("EEEE", Locale.ENGLISH);
-        format = f.format(date);
+        format = f.format(date).toLowerCase();
+
         if (dayName.equalsIgnoreCase(format)) {
             f = new SimpleDateFormat("HH:mm");
             format = f.format(date);
@@ -73,6 +75,7 @@ public class CalendarManager {
                         worldTerritorySection.forEach(s -> {
                             if (territoryManager.getTerritories().containsKey(s)) {
                                 changeTerritoryState(territoryManager.getTerritories().get(s), vulnerableStr, empireName);
+
                             }
                         });
                     }
@@ -105,6 +108,10 @@ public class CalendarManager {
                 Bukkit.getPluginManager().callEvent(event);
             }
         }
+    }
+
+    public void stopCalenderSchedule() {
+        Bukkit.getScheduler().cancelTask(taskScheduler);
     }
 
     public static CalendarManager getCalendarManager() {

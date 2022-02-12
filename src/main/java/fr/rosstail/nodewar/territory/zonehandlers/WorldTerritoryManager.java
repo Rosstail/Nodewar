@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.territory.zonehandlers;
 import java.util.HashMap;
 import java.util.List;
 
+import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.territory.WorldGuardInteractions;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -21,6 +22,38 @@ public class WorldTerritoryManager
     private static final ArrayList<File> territoryFiles = new ArrayList<>();
     private static final ArrayList<FileConfiguration> territoryConfigs = new ArrayList<>();
     private final Map<String, Territory> territories = new HashMap<>();
+    private static final int tickScheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), () -> {
+        worlds.forEach((world, worldTerritoryManager) -> {
+            worldTerritoryManager.getTerritories().forEach((s, territory) -> {
+                if (territory.isVulnerable()) {
+                    territory.countEmpiresPointsOnTerritory();
+                    territory.getCapturePoints().forEach((s1, capturePoint) -> {
+                        capturePoint.getPlayersOnPoint();
+                        capturePoint.countEmpirePlayerOnPoint();
+                        capturePoint.updateBossBar();
+                    });
+                    territory.updateBossBar();
+                }
+            });
+        });
+
+    }, 0L, 1L);;
+    private static final int secondScheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), () -> {
+        worlds.forEach((world, worldTerritoryManager) -> {
+            worldTerritoryManager.getTerritories().forEach((s, territory) -> {
+                if (territory.isVulnerable()) {
+                    territory.getCapturePoints().forEach((s1, capturePoint) -> {
+                        capturePoint.setCaptureTime();
+                        capturePoint.checkOwnerChange();
+                    });
+                    if (territory.isDamaged()) {
+                        territory.setCaptureTime();
+                        territory.checkChangeOwner();
+                    }
+                }
+            });
+        });
+    }, 0L, 20L);;
     
     public static WorldTerritoryManager gets(final File folder) {
         final World world = Bukkit.getWorld(folder.getName());
@@ -46,7 +79,6 @@ public class WorldTerritoryManager
                         for (final String key : customConfig.getKeys(false)) {
                             final Territory territory = new Territory(territoryFiles.size() - 1, world, key);
                             this.territories.put(key, territory);
-                            Territory.enableTickCheckIfVulnerable(territory);
                         }
                     }
                     catch (IOException | InvalidConfigurationException e) {
@@ -88,5 +120,18 @@ public class WorldTerritoryManager
             e.printStackTrace();
         }
 
+    }
+
+    public int getTickScheduler() {
+        return tickScheduler;
+    }
+
+    public int getSecondScheduler() {
+        return secondScheduler;
+    }
+
+    public static void stopTimers() {
+        Bukkit.getScheduler().cancelTask(tickScheduler);
+        Bukkit.getScheduler().cancelTask(secondScheduler);
     }
 }

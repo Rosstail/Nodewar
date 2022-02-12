@@ -22,10 +22,10 @@ public class WorldGuardInteractions
 {
     private static Map<Player, World> playersWorlds;
     private static Map<Player, List<ProtectedRegion>> playersProtectedRegions;
+    private final static Timer timer = new Timer();
     
     public static void setPlayersDataForWorlds(final List<World> worldList) {
-        final Timer T = new Timer();
-        T.schedule(new TimerTask() {
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 for (final World world : worldList) {
@@ -78,7 +78,10 @@ public class WorldGuardInteractions
     public static Map<Player, World> getPlayersWorlds() {
         return WorldGuardInteractions.playersWorlds;
     }
-    
+
+    public static void stopTimer() {
+        timer.cancel();
+    }
     static {
         WorldGuardInteractions.playersWorlds = new HashMap<>();
         WorldGuardInteractions.playersProtectedRegions = new HashMap<>();

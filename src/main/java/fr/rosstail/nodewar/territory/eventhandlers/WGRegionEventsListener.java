@@ -102,10 +102,10 @@ public class WGRegionEventsListener implements Listener
         final RegionManager rm = container.get(BukkitAdapter.adapt(Objects.requireNonNull(loc.getWorld())));
         Set<ProtectedRegion> regions;
         if (this.playerRegions.get(player) == null) {
-            regions = new HashSet<ProtectedRegion>();
+            regions = new HashSet<>();
         }
         else {
-            regions = new HashSet<ProtectedRegion>(this.playerRegions.get(player));
+            regions = new HashSet<>(this.playerRegions.get(player));
         }
         final Set<ProtectedRegion> oldRegions = new HashSet<ProtectedRegion>(regions);
         if (rm == null) {
@@ -125,12 +125,9 @@ public class WGRegionEventsListener implements Listener
                     regions.addAll(oldRegions);
                     return true;
                 }
-                Bukkit.getScheduler().runTaskLater(this.plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        final RegionEnteredEvent e = new RegionEnteredEvent(region, player, reason, event);
-                        WGRegionEventsListener.this.plugin.getServer().getPluginManager().callEvent(e);
-                    }
+                Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+                    final RegionEnteredEvent e1 = new RegionEnteredEvent(region, player, reason, event);
+                    WGRegionEventsListener.this.plugin.getServer().getPluginManager().callEvent(e1);
                 }, 1L);
                 regions.add(region);
             }

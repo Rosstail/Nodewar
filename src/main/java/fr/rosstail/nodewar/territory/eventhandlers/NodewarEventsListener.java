@@ -84,13 +84,6 @@ public class NodewarEventsListener implements Listener {
         boolean vulnerability = event.isVulnerable();
 
         territory.setVulnerable(vulnerability);
-
-        if (vulnerability) {
-            Territory.enableTickCheckIfVulnerable(territory);
-        } else {
-            Bukkit.getScheduler().cancelTask(territory.getTickScheduler());
-            Bukkit.getScheduler().cancelTask(territory.getSecondScheduler());
-        }
         int fileID = territory.getFileID();
         territory.getBossBar().setVisible(vulnerability);
         territory.getCapturePoints().forEach((s, capturePoint) -> capturePoint.getBossBar().setVisible(vulnerability));

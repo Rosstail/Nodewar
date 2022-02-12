@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.empires.Empire;
-import fr.rosstail.nodewar.required.DataBase;
+import fr.rosstail.nodewar.required.DataBaseInteractions;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,66 +26,61 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class PlayerInfo
-{
-    private static final fr.rosstail.nodewar.Nodewar plugin = Nodewar.getInstance();
+public class PlayerInfo {
+    private static final Nodewar plugin = Nodewar.getInstance();
     private static final Map<Player, PlayerInfo> playerInfoMap;
+    private static final Timer timer = new Timer();
     private final Player player;
     private Empire empire;
     private Long lastUpdate;
-    private Timer timer;
     private JsonObject playerJsonData;
-    
+
     public PlayerInfo(final Player player) {
         this.player = player;
-        if (DataBase.isConnected()) {
+        if (DataBaseInteractions.get() != null) {
             this.playerJsonData = null;
-        }
-        else {
+        } else {
             final String path = plugin.getDataFolder() + "/playerdata/" + player.getUniqueId() + ".json";
             if (new File(path).exists()) {
                 try {
                     final JsonParser jsonParser = new JsonParser();
                     final Object parsed = jsonParser.parse(new FileReader(path));
-                    this.playerJsonData = (JsonObject)parsed;
-                }
-                catch (IOException e) {
+                    this.playerJsonData = (JsonObject) parsed;
+                } catch (IOException e) {
                     this.playerJsonData = null;
                 }
-            }
-            else {
+            } else {
                 this.playerJsonData = null;
             }
         }
     }
-    
+
     public static PlayerInfo gets(final Player player) {
         if (!PlayerInfo.playerInfoMap.containsKey(player)) {
             PlayerInfo.playerInfoMap.put(player, new PlayerInfo(player));
         }
         return PlayerInfo.playerInfoMap.get(player);
     }
-    
+
     public Empire getEmpire() {
         if (this.empire != null) {
             return this.empire;
         }
         return Empire.getNoEmpire();
     }
-    
+
     public void setEmpire(final Empire empire) {
         Empire previousEmpire = this.empire;
         this.empire = empire;
         this.removePlayerGroup(previousEmpire);
         if (empire == null) {
             player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_LEAVE_EMPIRE)));
-        }
-        else {
+        } else {
             setPlayerGroup(empire);
             player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_JOIN_EMPIRE)));
         }
     }
-    
+
     public boolean tryJoinEmpire(final Empire empire) {
         if (this.empire == null) {
             this.setEmpire(empire);
@@ -92,101 +88,89 @@ public class PlayerInfo
         }
         return false;
     }
-    
+
     public void leaveEmpire() {
         this.setEmpire(null);
     }
-    
+
     public void setPlayerGroup(final Empire empire) {
         if (empire != null) {
             Nodewar.getPermissions().playerAddGroup(null, this.player, empire.getName());
         }
     }
-    
+
     private void removePlayerGroup(final Empire empire) {
         if (empire != null) {
             Nodewar.getPermissions().playerRemoveGroup(null, this.player, empire.getName());
         }
     }
-    
+
     public Long getLastUpdate() {
         return this.lastUpdate;
     }
-    
+
     public void setLastUpdate(final Long lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
-    
-    public Timer getTimer() {
-        return this.timer;
-    }
-    
-    public void setTimer(final long delay) {
-        (this.timer = new Timer()).schedule(new TimerTask() {
-            @Override
-            public void run() {
-                updateAll(true);
-            }
-        }, delay, delay);
-    }
-    
+
+
     public JsonObject getPlayerJsonData() {
         return this.playerJsonData;
     }
-    
+
     public void setPlayerJsonData(final JsonObject playerJsonData) {
         this.playerJsonData = playerJsonData;
     }
-    
+
     public void loadInfo() {
-        if (DataBase.isConnected()) {
+        if (DataBaseInteractions.get() != null) {
             if (!this.databaseLoad()) {
-                DataBaseActions.insertPlayerInfo(this.player);
+                DataBaseInteractions.get().insertPlayerInfo(this.player);
             }
-        }
-        else if (this.playerJsonData != null) {
+        } else if (this.playerJsonData != null) {
             if (this.playerJsonData.has("empire")) {
                 this.empire = Empire.getEmpires().get(this.playerJsonData.get("empire").getAsString());
-            }
-            else {
+            } else {
                 this.empire = null;
             }
         }
     }
-    
+
     private boolean databaseLoad() {
         final String UUID = String.valueOf(this.player.getUniqueId());
+        boolean value = false;
         try {
-            if (DataBase.getConnection() != null && !DataBase.getConnection().isClosed()) {
-                final PreparedStatement statement = DataBase.getConnection().prepareStatement("SELECT * FROM " + Nodewar.getDimName() + "_players_info WHERE UUID = '" + UUID + "';");
+            DataBaseInteractions dataBaseInteractions = DataBaseInteractions.get();
+            if (dataBaseInteractions != null) {
+                Connection connection = dataBaseInteractions.openConnection();
+                final PreparedStatement statement = connection.prepareStatement("SELECT * FROM " + Nodewar.getDimName() + "_players_info WHERE UUID = '" + UUID + "';");
                 final ResultSet result = statement.executeQuery();
                 if (result.next()) {
                     this.empire = Empire.getEmpires().get(result.getString("empire"));
-                    statement.close();
-                    return true;
+                    value = true;
                 }
                 statement.close();
+                connection.close();
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return value;
     }
-    
+
     public void updateAll(boolean async) {
-        if (DataBase.isConnected()) {
+        DataBaseInteractions dataBaseInteractions = DataBaseInteractions.get();
+        if (dataBaseInteractions != null) {
             if (async) {
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> DataBaseActions.updatePlayerInfo(player, this));
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> dataBaseInteractions.updatePlayerInfo(player, this));
             } else {
-                DataBaseActions.updatePlayerInfo(player, this);
+                dataBaseInteractions.updatePlayerInfo(player, this);
             }
-        }
-        else {
+        } else {
             this.saveDataFile();
         }
     }
-    
+
     public void saveDataFile() {
         final String path = plugin.getDataFolder() + "/playerdata/" + this.player.getUniqueId() + ".json";
         try {
@@ -200,17 +184,36 @@ public class PlayerInfo
             fileWriter.write(gson.toJson(baseInfo));
             fileWriter.flush();
             fileWriter.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
+
     static {
         playerInfoMap = new HashMap<>();
     }
 
     public static Map<Player, PlayerInfo> getPlayerInfoMap() {
         return playerInfoMap;
+    }
+
+    public static void startTimer() {
+        int delay = 1000 * plugin.getCustomConfig().getInt("general.delay-between-database-updates");
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                playerInfoMap.forEach((player, playerInfo) -> {
+                    playerInfo.updateAll(true);
+                });
+            }
+        }, delay, delay);
+    }
+
+    public static Timer getTimer() {
+        return timer;
+    }
+
+    public static void stopTimer() {
+        timer.cancel();
     }
 }

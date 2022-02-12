@@ -1,16 +1,18 @@
 package fr.rosstail.nodewar;
 
+import com.rosstail.karma.ConfigData;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.calendar.CalendarManager;
 import fr.rosstail.nodewar.commandhandlers.NodewarCommands;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.eventhandler.PlayerEventHandler;
 import fr.rosstail.nodewar.empires.Empire;
-import fr.rosstail.nodewar.required.DataBase;
+import fr.rosstail.nodewar.required.DataBaseInteractions;
 import fr.rosstail.nodewar.required.FileResourcesUtils;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.PAPIExpansion;
+import fr.rosstail.nodewar.territory.WorldGuardInteractions;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import fr.rosstail.nodewar.territory.eventhandlers.NodewarEventsListener;
 import fr.rosstail.nodewar.territory.eventhandlers.WGRegionEventsListener;
@@ -37,12 +39,6 @@ public class Nodewar extends JavaPlugin implements Listener
     private static final Chat chat;
     private static Nodewar instance;
     private static String dimName;
-    private static CalendarManager calendarManager;
-    DataBase database;
-    
-    public Nodewar() {
-        this.database = DataBase.gets(this);
-    }
     
     public void onLoad() {
     }
@@ -76,9 +72,6 @@ public class Nodewar extends JavaPlugin implements Listener
             new PAPIExpansion(this).register();
             Bukkit.getPluginManager().registerEvents(this, this);
         }
-        if (this.database.isConnexionEnabled()) {
-            this.database.prepareConnection();
-        }
         Empire.init(this);
         if (this.setupEconomy()) {
             AdaptMessage.print("[" + this.getName() + "] Hooked with Vault !", AdaptMessage.prints.OUT);
@@ -102,6 +95,11 @@ public class Nodewar extends JavaPlugin implements Listener
         if (getCustomConfig().getBoolean("general.use-calendar")) {
             CalendarManager.init(this);
         }
+        String connectorStr = getCustomConfig().getString("mysql.connector");
+        if (connectorStr != null && !connectorStr.equalsIgnoreCase("none")) {
+            DataBaseInteractions.init(instance);
+        }
+        PlayerInfo.startTimer();
         this.getCommand(dimName).setExecutor(new NodewarCommands(this));
     }
     
@@ -119,10 +117,15 @@ public class Nodewar extends JavaPlugin implements Listener
     }
     
     public void onDisable() {
+        WorldGuardInteractions.stopTimer();
+        if (getCustomConfig().getBoolean("general.use-calendar")) {
+            CalendarManager.getCalendarManager().stopCalenderSchedule();
+        }
+        WorldTerritoryManager.stopTimers();
+        PlayerInfo.stopTimer();
         PlayerInfo.getPlayerInfoMap().forEach((player, playerInfo) -> {
             playerInfo.updateAll(false);
         });
-        this.database.closeConnection();
     }
     
     private boolean setupEconomy() {
