@@ -35,6 +35,21 @@ commands:
     usage: /nodewar empire leave
     permission-message: You don't have permission !
     permission: nodewar.empire.join
+  nodewar empire create:
+    description: Create an empire and join it
+    usage: /nodewar empire create
+    permission-message: You don't have permission !
+    permission: nodewar.empire.join
+  nodewar empire edit:
+    description: Manage your empire
+    usage: /nodewar empire edit
+    permission-message: You don't have permission !
+    permission: nodewar.empire.edit
+  nodewar empire disband:
+    description: Disband your empire
+    usage: /nodewar empire disband
+    permission-message: You don't have permission !
+    permission: nodewar.empire.disband
   nodewar admin:
     description: Display admin commands
     usage: /nodewar admin
@@ -60,6 +75,21 @@ commands:
     usage: /nodewar admin empire remove [player]
     permission-message: You don't have permission !
     permission: nodewar.admin.empire.remove
+  nodewar admin empire create:
+    description: Create an empty empire
+    usage: /nodewar admin empire create [name]
+    permission-message: You don't have permission !
+    permission: nodewar.admin.empire.create
+  nodewar admin empire edit:
+    description: Manage an existing empire
+    usage: /nodewar admin empire edit [name] [option] [value]
+    permission-message: You don't have permission !
+    permission: nodewar.admin.empire.edit
+  nodewar admin empire disband:
+    description: Disband an existing empire
+    usage: /nodewar admin empire disband [name]
+    permission-message: You don't have permission !
+    permission: nodewar.admin.empire.disband
   nodewar territory:
     description: Displays territory commands
     usage: /nodewar territory
@@ -92,6 +122,12 @@ permissions:
     default: true
   nodewar.empire.leave:
     default: true
+  nodewar.empire.create:
+    default: true
+  nodewar.empire.disband:
+    default: true
+  nodewar.empire.edit:
+    default: true
   nodewar.admin:
     default: op
   nodewar.admin.player:
@@ -101,6 +137,12 @@ permissions:
   nodewar.admin.empire.set:
     default: op
   nodewar.admin.empire.remove:
+    default: op
+  nodewar.admin.empire.create:
+    default: op
+  nodewar.admin.empire.edit:
+    default: op
+  nodewar.admin.empire.disband:
     default: op
   nodewar.territory:
     default: op
