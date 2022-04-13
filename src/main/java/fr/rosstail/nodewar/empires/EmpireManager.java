@@ -29,9 +29,9 @@ public class EmpireManager {
         this.plugin = plugin;
     }
 
-    public Empire getSet(final FileConfiguration config, final String key) {
+    public Empire getSet(final File file, final FileConfiguration config, final String key) {
         if (!empires.containsKey(key)) {
-            empires.put(key, new Empire(config, key));
+            empires.put(key, new Empire(file, config, key));
         }
         return empires.get(key);
     }
@@ -75,7 +75,7 @@ public class EmpireManager {
         try {
             customConfig.load(empireFile);
             for (final String key : customConfig.getKeys(false)) {
-                empireManager.getSet(customConfig, key);
+                empireManager.getSet(empireFile, customConfig, key);
             }
         }
         catch (IOException | InvalidConfigurationException e) {

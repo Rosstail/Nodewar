@@ -20,6 +20,7 @@ import java.util.*;
 public class Empire
 {
     private final String name;
+    private final File file;
     private final FileConfiguration config;
     private String display;
     private BarColor barColor;
@@ -27,8 +28,9 @@ public class Empire
     private boolean friendlyFire;
     private String ownerUUID;
     
-    Empire(final FileConfiguration config, final String key) {
+    Empire(final File file, final FileConfiguration config, final String key) {
         this.name = key;
+        this.file = file;
         this.config = config;
         String display = config.getString(key + ".display");
         if (display == null) {
@@ -53,6 +55,7 @@ public class Empire
     Empire(Player player, String name) {
         this.name = name;
         this.config = new YamlConfiguration();
+        this.file = new File(Nodewar.getInstance().getDataFolder(), "empires/" + name + ".yml");
         this.display = AdaptMessage.empireMessage(this, "&7" + name);
         this.friendlyFire = true;
         this.barColor = BarColor.WHITE;
@@ -71,6 +74,7 @@ public class Empire
         this.display = ChatColor.translateAlternateColorCodes('&', "&7None");
         this.barColor = BarColor.WHITE;
         this.friendlyFire = true;
+        this.file = null;
     }
     
     public String getName() {
@@ -143,21 +147,21 @@ public class Empire
     }
 
     public void saveConfigFile() {
-        config.createSection(name);
-        config.set(name + ".display", display);
-        config.set(name + ".friendly-fire", friendlyFire);
-        config.set(name + ".boss-bar-color", barColor.toString());
-        config.set(name + ".owner-uuid", ownerUUID);
-        try {
-            File file = new File(Nodewar.getInstance().getDataFolder(), "empires/" + name + ".yml");
-            config.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (name != null) {
+            config.createSection(name);
+            config.set(name + ".display", display);
+            config.set(name + ".friendly-fire", friendlyFire);
+            config.set(name + ".boss-bar-color", barColor.toString());
+            config.set(name + ".owner-uuid", ownerUUID);
+            try {
+                config.save(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void deleteConfig() {
-        File file = new File(Nodewar.getInstance().getDataFolder(), "empires/" + name + ".yml");
         file.delete();
     }
 }

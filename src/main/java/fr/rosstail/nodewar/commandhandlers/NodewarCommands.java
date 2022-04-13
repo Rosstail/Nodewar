@@ -777,13 +777,14 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 empiresName.sort(Comparator.comparing(String::toString));
                 commands.addAll(empiresName);
             } else if (string.startsWith(Commands.COMMAND_ADMIN_EMPIRE.getCommand())) {
-                commands.add("create");
-                commands.add("edit");
-                commands.add("disband");
+                commands.add("display");
+                commands.add("bossbarcolor");
+                commands.add("friendlyfire");
+                commands.add("setowner");
             }
             StringUtil.copyPartialMatches(args[4], commands, completions);
         } else if (args.length <= 6) {
-            if (string.startsWith(Commands.COMMAND_ADMIN_EMPIRE_EDIT.getCommand() + " bossbarcolor")){
+            if (string.startsWith(Commands.COMMAND_ADMIN_EMPIRE_EDIT.getCommand())){
                 commands.add("BLUE");
                 commands.add("GREEN");
                 commands.add("PINK");
@@ -791,6 +792,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 commands.add("RED");
                 commands.add("WHITE");
             }
+            StringUtil.copyPartialMatches(args[5], commands, completions);
         }
         Collections.sort(completions);
         return completions;
