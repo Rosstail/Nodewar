@@ -7,6 +7,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.empires.Empire;
+import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -85,10 +86,11 @@ public class CapturePoint {
         this.captureTime = config.getInt(territory.getName() + ".options.capture-points." + key + ".max-capture-time");
         this.bonusConquer = config.getInt(territory.getName() + ".options.capture-points." + key + ".bonus-conquer-point");
         this.attackerRatio = (float) config.getDouble(territory.getName() + ".options.capture-points." + key + ".attacker-ratio-needed");
+        Map<String, Empire> empires = EmpireManager.getEmpireManager().getEmpires();
         if (regionEmpires.size() == 1) {
-            this.empire = Empire.getEmpires().get(regionEmpires.get(0));
-        } else if (Empire.getEmpires().containsKey(config.getString(territory.getName() + ".options.default-empire"))) {
-            this.empire = Empire.getEmpires().get(config.getString(territory.getName() + ".options.default-empire"));
+            this.empire = empires.get(regionEmpires.get(0));
+        } else if (empires.containsKey(config.getString(territory.getName() + ".options.default-empire"))) {
+            this.empire = empires.get(config.getString(territory.getName() + ".options.default-empire"));
         }
         if (this.empire != null) {
             this.pointTimeLeft = this.captureTime;
@@ -179,7 +181,7 @@ public class CapturePoint {
         for (final Player player : this.playerOnPoints) {
             final PlayerInfo playerInfo = PlayerInfo.gets(player);
             final Empire empire = playerInfo.getEmpire();
-            if (empire != null && empire != Empire.getNoEmpire()) {
+            if (empire != null && empire != EmpireManager.getEmpireManager().getNoEmpire()) {
                 final ArrayList<Territory> empireTerritories = empire.getWorldTerritories(this.getWorld());
                 if (check(territory, empire)) {
                     if (empireTerritories.size() == 0) {
@@ -321,9 +323,10 @@ public class CapturePoint {
 
     void updateBossBar() {
         BarColor barColor = BarColor.WHITE;
-        if (empire != null && !empire.equals(Empire.getNoEmpire())) {
+        Empire noEmpire = EmpireManager.getEmpireManager().getNoEmpire();
+        if (empire != null && !empire.equals(noEmpire)) {
             barColor = empire.getBarColor();
-        } else if (empireAdvantage != null && !empireAdvantage.equals(Empire.getNoEmpire())) {
+        } else if (empireAdvantage != null && !empireAdvantage.equals(noEmpire)) {
             barColor = empireAdvantage.getBarColor();
         }
         this.bossBar.setColor(barColor);

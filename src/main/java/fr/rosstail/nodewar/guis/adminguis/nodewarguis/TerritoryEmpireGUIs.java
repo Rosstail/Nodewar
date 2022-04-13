@@ -6,6 +6,7 @@ import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.Nodewar;
@@ -58,7 +59,7 @@ public class TerritoryEmpireGUIs {
     private static StaticPane initPane(Player player, Nodewar plugin, ChestGui gui, ChestGui previousGui, PaginatedPane paginatedPane, Territory territory, int page) {
         StaticPane staticPane = new StaticPane(0, 0, 9, 6);
 
-        ArrayList<Empire> empires = new ArrayList<>(Empire.getEmpires().values());
+        ArrayList<Empire> empires = new ArrayList<>(EmpireManager.getEmpireManager().getEmpires().values());
 
         int index = 45 * page;
 
@@ -89,7 +90,7 @@ public class TerritoryEmpireGUIs {
                 staticPane.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, null, Material.RED_BANNER, empire.getDisplay(), null
                         , GUIs.adaptLore(player, null)), event -> {
                     territory.cancelAttack(empire);
-                    if (empire != Empire.getNoEmpire()) {
+                    if (empire != EmpireManager.getEmpireManager().getNoEmpire()) {
                         AdaptMessage.playerMessage(player, AdaptMessage.territoryMessage(territory, LangManager.getMessage(LangMessage.TERRITORY_SET_EMPIRE)));
                     } else {
                         AdaptMessage.playerMessage(player, AdaptMessage.territoryMessage(territory, LangManager.getMessage(LangMessage.TERRITORY_NEUTRALIZE)));

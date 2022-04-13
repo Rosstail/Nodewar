@@ -7,6 +7,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.empires.Empire;
+import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -89,10 +90,11 @@ public class Territory {
         } else {
             this.region = null;
         }
+        Map<String, Empire> empires = EmpireManager.getEmpireManager().getEmpires();
         if (regionEmpires.size() == 1) {
-            this.empire = Empire.getEmpires().get(regionEmpires.get(0));
-        } else if (Empire.getEmpires().containsKey(config.getString(key + ".options.default-empire"))) {
-            this.empire = Empire.getEmpires().get(config.getString(key + ".options.default-empire"));
+            this.empire = empires.get(regionEmpires.get(0));
+        } else if (empires.containsKey(config.getString(key + ".options.default-empire"))) {
+            this.empire = empires.get(config.getString(key + ".options.default-empire"));
         }
         this.maxResistance = config.getInt(key + ".options.max-resistance");
         if (config.getString(key + ".data.resistance") != null) {
@@ -247,7 +249,7 @@ public class Territory {
         final ArrayList<Empire> greatestAttacker = new ArrayList<>();
         for (final Empire empireOnPoint : empiresOnPoint) {
             final int index = empiresOnPoint.indexOf(empireOnPoint);
-            if (empireOnPoint != null && empireOnPoint != Empire.getNoEmpire() && !empireOnPoint.equals(this.empire) && pointAmount.get(index) >= attackerAmount) {
+            if (empireOnPoint != null && empireOnPoint != EmpireManager.getEmpireManager().getNoEmpire() && !empireOnPoint.equals(this.empire) && pointAmount.get(index) >= attackerAmount) {
                 if (pointAmount.get(index) != attackerAmount) {
                     greatestAttacker.clear();
                     attackerAmount = pointAmount.get(index);
@@ -304,7 +306,7 @@ public class Territory {
             return this.empire;
         }
         for (final CapturePoint point : capturePoints) {
-            if (point.getEmpire() != null && point.getEmpire() != Empire.getNoEmpire()) {
+            if (point.getEmpire() != null && point.getEmpire() != EmpireManager.getEmpireManager().getNoEmpire()) {
                 int value = 0;
                 if (this.empire == null || (this.empireCanAttack != null && !this.empire.equals(this.empireCanAttack) && point.getEmpire().equals(this.empireCanAttack))) {
                     value = -point.getBonusConquer();
@@ -336,7 +338,7 @@ public class Territory {
     }
 
     void setCaptureTime() {
-        if (this.empireAdvantage != null && this.empireAdvantage != Empire.getNoEmpire()) {
+        if (this.empireAdvantage != null && this.empireAdvantage != EmpireManager.getEmpireManager().getNoEmpire()) {
             this.resistance += this.regenOrDamage;
             if (this.resistance < this.maxResistance) {
                 setDamaged(true);
@@ -354,7 +356,7 @@ public class Territory {
 
     void updateBossBar() {
         BarColor barColor;
-        if (this.empireAdvantage == null || this.empireAdvantage == Empire.getNoEmpire()) {
+        if (this.empireAdvantage == null || this.empireAdvantage == EmpireManager.getEmpireManager().getNoEmpire()) {
             barColor = BarColor.WHITE;
         } else if (this.empireAdvantage == this.getEmpire()) {
             barColor = this.getEmpire().getBarColor();

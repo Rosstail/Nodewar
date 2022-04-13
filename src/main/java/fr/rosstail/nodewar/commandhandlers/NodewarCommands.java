@@ -4,6 +4,7 @@ import fr.rosstail.nodewar.commandhandlers.enums.Commands;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.guis.adminguis.nodewarguis.WorldsGUIs;
 import fr.rosstail.nodewar.guis.adminguis.playerGUIs.PlayerAdminGUI;
 import fr.rosstail.nodewar.guis.playerguis.EmpiresListGUI;
@@ -23,6 +24,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.util.StringUtil;
 
 import java.util.*;
@@ -64,10 +66,16 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
     private void empireCommands(final CommandSender sender, final String command, final String[] args) {
         if (!NodewarCommands.isSenderPlayer(sender) || sender.hasPermission(Commands.COMMAND_EMPIRE.getPermission())) {
             if (command.startsWith(Commands.COMMAND_EMPIRE_LIST.getCommand())) {
-                this.listCommand(sender);
+                this.empireListCommand(sender);
             }
             else if (command.startsWith(Commands.COMMAND_EMPIRE_JOIN.getCommand())) {
-                this.joinCommand(sender, args);
+                this.empireJoinCommand(sender, args);
+            }
+            else if (command.startsWith(Commands.COMMAND_EMPIRE_CREATE.getCommand())) {
+                this.empireCreateCommand(sender, args);
+            }
+            else if (command.startsWith(Commands.COMMAND_EMPIRE_DISBAND.getCommand())) {
+                this.empireDisbandCommand(sender, args);
             }
             else if (command.startsWith(Commands.COMMAND_EMPIRE_LEAVE.getCommand())) {
                 this.leaveCommand(sender);
@@ -83,34 +91,37 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
             }
         }
         else {
-            NodewarCommands.doesNotHavePermission(sender, Commands.COMMAND_EMPIRE.getPermission());
+            doesNotHavePermission(sender, Commands.COMMAND_EMPIRE.getPermission());
         }
     }
 
-    private void listCommand(final CommandSender sender) {
+    private void empireListCommand(final CommandSender sender) {
         if (NodewarCommands.isSenderPlayer(sender)) {
             final Player player = (Player)sender;
             if (player.hasPermission(Commands.COMMAND_EMPIRE_LIST.getPermission())) {
                 EmpiresListGUI.initGUI(player, this.plugin);
             }
             else {
-                NodewarCommands.doesNotHavePermission(player, Commands.COMMAND_EMPIRE_LIST.getPermission());
+                doesNotHavePermission(player, Commands.COMMAND_EMPIRE_LIST.getPermission());
             }
         }
         else {
-            NodewarCommands.playerOnly(sender);
+            playerOnly(sender);
         }
     }
 
-    private void joinCommand(final CommandSender sender, final String[] args) {
+    private void empireJoinCommand(final CommandSender sender, final String[] args) {
         if (args.length > 2) {
-            if (Empire.getEmpires().containsKey(args[2])) {
+            String empireName = args[2];
+            EmpireManager empireManager = EmpireManager.getEmpireManager();
+            Map<String, Empire> empires = empireManager.getEmpires();
+            if (empires.containsKey(empireName)) {
                 if (NodewarCommands.isSenderPlayer(sender)) {
-                    final Player player = (Player)sender;
+                    final Player player = (Player) sender;
                     if (player.hasPermission(Commands.COMMAND_EMPIRE_JOIN.getPermission())) {
                         final PlayerInfo playerInfo = PlayerInfo.gets(player);
                         final Empire playerEmpire = playerInfo.getEmpire();
-                        final Empire empire = Empire.getEmpires().get(args[2]);
+                        final Empire empire = empires.get(empireName);
                         if (!playerInfo.tryJoinEmpire(empire)) {
                             if (empire == null) {
                                 player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.EMPIRE_DOES_NOT_EXIST)));
@@ -120,10 +131,10 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                         }
                     }
                     else {
-                        NodewarCommands.doesNotHavePermission(player, Commands.COMMAND_EMPIRE_JOIN.getPermission());
+                        doesNotHavePermission(player, Commands.COMMAND_EMPIRE_JOIN.getPermission());
                     }
                 } else {
-                    NodewarCommands.playerOnly(sender);
+                    playerOnly(sender);
                 }
             }
         }
@@ -132,12 +143,70 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
         }
     }
 
+    private void empireCreateCommand(final CommandSender sender, final String[] args) {
+        if (NodewarCommands.isSenderPlayer(sender)) {
+            EmpireManager empireManager = EmpireManager.getEmpireManager();
+            Player player = (Player) sender;
+            PlayerInfo playerInfo = PlayerInfo.getPlayerInfoMap().get(player);
+            Empire noEmpire = EmpireManager.getEmpireManager().getNoEmpire();
+            if (player.hasPermission(Commands.COMMAND_EMPIRE_CREATE.getPermission())) {
+                if (args.length > 2) {
+                    String empireID = args[2];
+                    if (empireManager.getEmpires().containsKey(args[2])) {
+                        player.sendMessage("Empire already existing");
+                    } else if (playerInfo.getEmpire() == noEmpire) {
+                        Empire empire = empireManager.getSet(player, empireID);
+                        playerInfo.tryJoinEmpire(empire);
+                    } else {
+                        player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_ALREADY_IN_EMPIRE)));
+                    }
+                } else {
+                    tooFewArguments(sender);
+                }
+            } else {
+                doesNotHavePermission(player, Commands.COMMAND_EMPIRE_CREATE.getPermission());
+            }
+        } else {
+            playerOnly(sender);
+        }
+    }
+
+    private void empireDisbandCommand(final CommandSender sender, final String[] args) {
+        if (NodewarCommands.isSenderPlayer(sender)) {
+            EmpireManager empireManager = EmpireManager.getEmpireManager();
+            Player player = (Player) sender;
+            Empire playerEmpire = PlayerInfo.getPlayerInfoMap().get(player).getEmpire();
+            Empire noEmpire = EmpireManager.getEmpireManager().getNoEmpire();
+            if (player.hasPermission(Commands.COMMAND_EMPIRE_DISBAND.getPermission())) {
+                if (playerEmpire != noEmpire) {
+                    if (player.getUniqueId().toString().equals(playerEmpire.getOwnerUUID())) {
+                        empireManager.getEmpires().remove(playerEmpire.getName());
+                        PlayerInfo.getPlayerInfoMap().forEach((player1, playerInfo) -> {
+                            if (playerInfo.getEmpire() == playerEmpire) {
+                                playerInfo.leaveEmpire();
+                            }
+                        });
+                        sender.sendMessage("Empire disbanded.");
+                    } else {
+                        sender.sendMessage("You are not the owner of " + playerEmpire.getDisplay());
+                    }
+                } else {
+                    player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_ALREADY_IN_EMPIRE)));
+                }
+            } else {
+                doesNotHavePermission(player, Commands.COMMAND_EMPIRE_DISBAND.getPermission());
+            }
+        } else {
+            playerOnly(sender);
+        }
+    }
+
     private void leaveCommand(final CommandSender sender) {
         if (NodewarCommands.isSenderPlayer(sender)) {
             PlayerInfo.gets((Player)sender).leaveEmpire();
         }
         else {
-            NodewarCommands.playerOnly(sender);
+            playerOnly(sender);
         }
     }
 
@@ -203,9 +272,10 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 String[] location = args[1].split("/");
                 String worldName = location[0];
                 String empireName = args[3];
-
+                EmpireManager empireManager = EmpireManager.getEmpireManager();
+                Map<String, Empire> empires = empireManager.getEmpires();
                 World world = Bukkit.getWorld(worldName);
-                Empire empire = Empire.getEmpires().get(empireName);
+                Empire empire = empires.get(empireName);
                 if (world == null) {
                     sender.sendMessage(LangManager.getMessage(LangMessage.LOCATION_DOES_NOT_EXIST));
                     return;
@@ -214,7 +284,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                     return;
                 }
                 if (empire == null) {
-                    sender.sendMessage(AdaptMessage.empireMessage(Empire.getNoEmpire(), LangManager.getMessage(LangMessage.EMPIRE_DOES_NOT_EXIST)));
+                    sender.sendMessage(AdaptMessage.empireMessage(empireManager.getNoEmpire(), LangManager.getMessage(LangMessage.EMPIRE_DOES_NOT_EXIST)));
                     return;
                 }
 
@@ -356,7 +426,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
         if (sender.hasPermission(Commands.COMMAND_ADMIN_EMPIRE.getPermission())) {
             if (args.length == 5) {
                 final Player target = Bukkit.getServer().getPlayerExact(args[3]);
-                final Empire empire = Empire.getEmpires().get(args[4]);
+                final Empire empire = EmpireManager.getEmpireManager().getEmpires().get(args[4]);
                 if (target != null) {
                     if (empire != null) {
                         PlayerInfo.gets(target).setEmpire(empire);
@@ -448,6 +518,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
     public List<String> onTabComplete(final CommandSender sender, final Command cmd, final String label, final String[] args) {
         final List<String> completions = new ArrayList<>();
         final List<String> commands = new ArrayList<>();
+        Map<String, Empire> empires = EmpireManager.getEmpireManager().getEmpires();
         final String string = String.join(" ", args);
         if (args.length <= 1) {
             commands.add("admin");
@@ -458,6 +529,8 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
         }
         else if (args.length <= 2) {
             if (string.startsWith(Commands.COMMAND_EMPIRE.getCommand())) {
+                commands.add("create");
+                commands.add("disband");
                 commands.add("join");
                 commands.add("leave");
                 commands.add("list");
@@ -482,7 +555,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
         else if (args.length <= 3) {
             if (string.startsWith(Commands.COMMAND_EMPIRE_JOIN.getCommand())) {
                 final ArrayList<String> empiresName = new ArrayList<>();
-                Empire.getEmpires().forEach((s, empire) -> empiresName.add(s));
+                empires.forEach((s, empire) -> empiresName.add(s));
                 empiresName.sort(Comparator.comparing(String::toString));
                 commands.addAll(empiresName);
             } else if (string.startsWith(Commands.COMMAND_ADMIN_EMPIRE.getCommand())) {
@@ -508,7 +581,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 commands.addAll(playersName);
             } else if (string.startsWith(Commands.COMMAND_TERRITORY.getCommand())) {
                 if (args[2].equalsIgnoreCase("setempire")) {
-                    Empire.getEmpires().forEach((s, empire) -> commands.add(s));
+                    empires.forEach((s, empire) -> commands.add(s));
                 } else if (args[2].equalsIgnoreCase("vulnerability")) {
                     commands.add("true");
                     commands.add("false");
@@ -519,7 +592,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
         else if (args.length <= 5) {
             if (string.startsWith(Commands.COMMAND_ADMIN_EMPIRE_PLAYER_SET.getCommand())) {
                 final ArrayList<String> empiresName = new ArrayList<>();
-                Empire.getEmpires().forEach((s, empire) -> empiresName.add(s));
+                empires.forEach((s, empire) -> empiresName.add(s));
                 empiresName.sort(Comparator.comparing(String::toString));
                 commands.addAll(empiresName);
             }

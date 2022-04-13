@@ -6,6 +6,7 @@ import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.Nodewar;
@@ -58,7 +59,7 @@ public class PointEmpireGUIs {
     private static StaticPane initPane(Player player, Nodewar plugin, ChestGui gui, ChestGui previousGui, PaginatedPane paginatedPane, CapturePoint point, int page) {
         StaticPane staticPane = new StaticPane(0, 0, 9, 6);
 
-        ArrayList<Empire> empires = new ArrayList<>(Empire.getEmpires().values());
+        ArrayList<Empire> empires = new ArrayList<>(EmpireManager.getEmpireManager().getEmpires().values());
 
         int index = 45 * page;
 
@@ -89,7 +90,7 @@ public class PointEmpireGUIs {
                 staticPane.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, null, Material.RED_BANNER, empire.getDisplay(), null
                         , GUIs.adaptLore(player, null)), event -> {
                     point.cancelAttack(empire);
-                    if (empire != Empire.getNoEmpire()) {
+                    if (empire != EmpireManager.getEmpireManager().getNoEmpire()) {
                         player.sendMessage(AdaptMessage.pointMessage(point, LangManager.getMessage(LangMessage.POINT_SET_EMPIRE)));
                     } else {
                         player.sendMessage(AdaptMessage.pointMessage(point, LangManager.getMessage(LangMessage.POINT_NEUTRALIZE)));

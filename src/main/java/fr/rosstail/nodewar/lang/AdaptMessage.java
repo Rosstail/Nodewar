@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.lang;
 
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.empires.Empire;
+import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -35,7 +36,7 @@ public class AdaptMessage
             return null;
         }
         if (empire == null) {
-            empire = Empire.getNoEmpire();
+            empire = EmpireManager.getEmpireManager().getNoEmpire();
         }
 
         if (message.contains(PlaceHolders.EMPIRE_STARTER.getText())) {
@@ -163,6 +164,9 @@ public class AdaptMessage
         }
         if (message.contains(PlaceHolders.PLAYER_EMPIRE_STARTER.getText()) || message.contains(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText())) {
             final PlayerInfo playerInfo = PlayerInfo.gets(player);
+            if (message.contains(PlaceHolders.PLAYER_EMPIRE.getText())) {
+                message = message.replaceAll(PlaceHolders.PLAYER_EMPIRE.getText(), playerInfo.getEmpire().getName());
+            }
             if (message.contains(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText())) {
                 message = message.replaceAll(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText(), playerInfo.getEmpire().getDisplay());
             }

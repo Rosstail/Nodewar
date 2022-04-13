@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.territory.eventhandlers;
 
 
 import fr.rosstail.nodewar.empires.Empire;
+import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.*;
 import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
@@ -62,17 +63,18 @@ public class NodewarEventsListener implements Listener {
     public void onPointOwnerHasChanged(PointOwnerHasChanged event) {
         CapturePoint capturePoint = event.getCapturePoint();
         Empire empire = event.getEmpire();
+        String noEmpireDisplay = EmpireManager.getEmpireManager().getNoEmpire().getDisplay();
         if (empire != null) {
             capturePoint.getTerritory().getPlayersOnTerritory().forEach(player -> {
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', capturePoint.getDisplay() + " &rpoint"),
-                        ChatColor.translateAlternateColorCodes('&', "Captured by " + (capturePoint.getEmpire() != null ? empire.getDisplay() : Empire.getNoEmpire().getDisplay())), 4, 50, 8);
+                        ChatColor.translateAlternateColorCodes('&', "Captured by " + (capturePoint.getEmpire() != null ? empire.getDisplay() : noEmpireDisplay)), 4, 50, 8);
             });
             capturePoint.getRegion().getMembers().addGroup(empire.getName());
         } else {
             capturePoint.getTerritory().getPlayersOnTerritory().forEach(player -> {
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&', capturePoint.getDisplay() + " &rpoint"),
                         ChatColor.translateAlternateColorCodes('&', "Neutralized by " +
-                                (capturePoint.getEmpireAdvantage() != null ? capturePoint.getEmpireAdvantage().getDisplay() : Empire.getNoEmpire().getDisplay())), 4, 50, 8);
+                                (capturePoint.getEmpireAdvantage() != null ? capturePoint.getEmpireAdvantage().getDisplay() : noEmpireDisplay)), 4, 50, 8);
             });
             capturePoint.getRegion().getMembers().removeAll();
         }

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.empires.Empire;
+import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.required.DataBaseInteractions;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
@@ -66,7 +67,7 @@ public class PlayerInfo {
         if (this.empire != null) {
             return this.empire;
         }
-        return Empire.getNoEmpire();
+        return EmpireManager.getEmpireManager().getNoEmpire();
     }
 
     public void setEmpire(final Empire empire) {
@@ -129,7 +130,7 @@ public class PlayerInfo {
             }
         } else if (this.playerJsonData != null) {
             if (this.playerJsonData.has("empire")) {
-                this.empire = Empire.getEmpires().get(this.playerJsonData.get("empire").getAsString());
+                this.empire = EmpireManager.getEmpireManager().getEmpires().get(this.playerJsonData.get("empire").getAsString());
             } else {
                 this.empire = null;
             }
@@ -146,7 +147,7 @@ public class PlayerInfo {
                 final PreparedStatement statement = connection.prepareStatement("SELECT * FROM " + Nodewar.getDimName() + "_players_info WHERE UUID = '" + UUID + "';");
                 final ResultSet result = statement.executeQuery();
                 if (result.next()) {
-                    this.empire = Empire.getEmpires().get(result.getString("empire"));
+                    this.empire = EmpireManager.getEmpireManager().getEmpires().get(result.getString("empire"));
                     value = true;
                 }
                 statement.close();

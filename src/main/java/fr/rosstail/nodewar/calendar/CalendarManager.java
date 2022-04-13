@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.calendar;
 
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.empires.Empire;
+import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerChange;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryVulnerabilityToggle;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
@@ -85,6 +86,7 @@ public class CalendarManager {
     }
 
     private void changeTerritoryState(Territory territory, String vulnerableStr, String empireName) {
+        Map<String, Empire> empires = EmpireManager.getEmpireManager().getEmpires();
         if (empireName != null) {
             if (empireName.equalsIgnoreCase("neutral")) {
                 TerritoryOwnerChange event = new TerritoryOwnerChange(territory, null);
@@ -92,8 +94,8 @@ public class CalendarManager {
                 if (!event.isCancelled()) {
                     territory.cancelAttack(territory.getEmpire());
                 }
-            } else if (Empire.getEmpires().containsKey(empireName)) {
-                TerritoryOwnerChange event = new TerritoryOwnerChange(territory, Empire.getEmpires().get(empireName));
+            } else if (empires.containsKey(empireName)) {
+                TerritoryOwnerChange event = new TerritoryOwnerChange(territory, empires.get(empireName));
                 Bukkit.getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
                     territory.cancelAttack(territory.getEmpire());

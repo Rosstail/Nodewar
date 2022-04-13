@@ -6,6 +6,7 @@ import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.empires.Empire;
@@ -57,7 +58,7 @@ public class PlayerAdminEmpireGUIs {
     private static StaticPane initPane(Player player, fr.rosstail.nodewar.Nodewar plugin, ChestGui gui, ChestGui previousGui, PaginatedPane paginatedPane, Player target, int page) {
         StaticPane staticPane = new StaticPane(0, 0, 9, 6);
 
-        ArrayList<Empire> empires = new ArrayList<>(Empire.getEmpires().values());
+        ArrayList<Empire> empires = new ArrayList<>(EmpireManager.getEmpireManager().getEmpires().values());
 
         int index = 45 * page;
 

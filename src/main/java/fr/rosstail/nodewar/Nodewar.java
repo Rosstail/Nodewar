@@ -4,6 +4,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.calendar.CalendarManager;
 import fr.rosstail.nodewar.commandhandlers.NodewarCommands;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.eventhandler.PlayerEventHandler;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.required.DataBaseInteractions;
@@ -71,12 +72,12 @@ public class Nodewar extends JavaPlugin implements Listener
             new PAPIExpansion(this).register();
             Bukkit.getPluginManager().registerEvents(this, this);
         }
-        Empire.init(this);
+        EmpireManager.initEmpireManager(this);
+        EmpireManager.getEmpireManager().init();
         if (this.setupEconomy()) {
             AdaptMessage.print("[" + this.getName() + "] Hooked with Vault !", AdaptMessage.prints.OUT);
             this.setupPermissions();
-        }
-        else {
+        } else {
             log.severe(String.format("[" + this.getName() + "] Didn't found Vault.", this.getDescription().getName()));
         }
         Bukkit.getPluginManager().registerEvents(new PlayerEventHandler(this), this);
@@ -87,7 +88,7 @@ public class Nodewar extends JavaPlugin implements Listener
                     territory.initCanAttack();
                 }
             }
-            for (final Empire empire : Empire.getEmpires().values()) {
+            for (final Empire empire : EmpireManager.getEmpireManager().getEmpires().values()) {
                 empire.applyTerritories();
             }
         }

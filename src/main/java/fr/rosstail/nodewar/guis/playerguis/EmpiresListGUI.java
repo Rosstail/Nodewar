@@ -6,6 +6,7 @@ import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.empires.Empire;
@@ -22,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class EmpiresListGUI {
 
@@ -72,8 +74,9 @@ public class EmpiresListGUI {
             String display = AdaptMessage.playerMessage(player, customConfig.getString(slotPath + ".display"));
             Material material = Material.getMaterial(customConfig.getString(slotPath + ".material"));
             List<String> lore = customConfig.getStringList(slotPath + ".lore");
-            if (Empire.getEmpires().containsKey(customConfig.getString(slotPath + ".empire"))) {
-                Empire empire = Empire.getEmpires().get(customConfig.getString(slotPath + ".empire"));
+            Map<String, Empire> empires = EmpireManager.getEmpireManager().getEmpires();
+            if (empires.containsKey(customConfig.getString(slotPath + ".empire"))) {
+                Empire empire = empires.get(customConfig.getString(slotPath + ".empire"));
                 itemSlot.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, customConfig, material, display, slotPath,
                         GUIs.adaptLore(player, lore)), event -> {
                     if(PlayerInfo.gets(player).tryJoinEmpire(empire)) {

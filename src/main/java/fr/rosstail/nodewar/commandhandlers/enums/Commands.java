@@ -10,6 +10,8 @@ public enum Commands
     COMMAND_EMPIRE_LIST("empire list", "nodewar.empire.list"),
     COMMAND_EMPIRE_JOIN("empire join", "nodewar.empire.join"),
     COMMAND_EMPIRE_LEAVE("empire leave", "nodewar.empire.leave"),
+    COMMAND_EMPIRE_CREATE("empire create", "nodewar.empire.create"),
+    COMMAND_EMPIRE_DISBAND("empire disband", "nodewar.empire.disband"),
     COMMAND_EMPIRE_SET("empire set", "nodewar.empire.set"),
     COMMAND_EMPIRE_REMOVE("empire remove", "nodewar.empire.remove"),
 
