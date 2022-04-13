@@ -181,17 +181,18 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 if (playerEmpire != noEmpire) {
                     if (player.getUniqueId().toString().equals(playerEmpire.getOwnerUUID())) {
                         empireManager.getEmpires().remove(playerEmpire.getName());
-                        PlayerInfo.getPlayerInfoMap().forEach((player1, playerInfo) -> {
+                        for (Map.Entry<Player, PlayerInfo> entry : PlayerInfo.getPlayerInfoMap().entrySet()) {
+                            PlayerInfo playerInfo = entry.getValue();
                             if (playerInfo.getEmpire() == playerEmpire) {
                                 playerInfo.leaveEmpire();
                             }
-                        });
+                        }
                         sender.sendMessage("Empire disbanded.");
                     } else {
                         sender.sendMessage("You are not the owner of " + playerEmpire.getDisplay());
                     }
                 } else {
-                    player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_ALREADY_IN_EMPIRE)));
+                    sender.sendMessage("Not in an empire.");
                 }
             } else {
                 doesNotHavePermission(player, Commands.COMMAND_EMPIRE_DISBAND.getPermission());
