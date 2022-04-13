@@ -19,6 +19,7 @@ import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.boss.BarColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -67,20 +68,17 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
         if (!NodewarCommands.isSenderPlayer(sender) || sender.hasPermission(Commands.COMMAND_EMPIRE.getPermission())) {
             if (command.startsWith(Commands.COMMAND_EMPIRE_LIST.getCommand())) {
                 this.empireListCommand(sender);
-            }
-            else if (command.startsWith(Commands.COMMAND_EMPIRE_JOIN.getCommand())) {
+            } else if (command.startsWith(Commands.COMMAND_EMPIRE_JOIN.getCommand())) {
                 this.empireJoinCommand(sender, args);
-            }
-            else if (command.startsWith(Commands.COMMAND_EMPIRE_CREATE.getCommand())) {
+            } else if (command.startsWith(Commands.COMMAND_EMPIRE_CREATE.getCommand())) {
                 this.empireCreateCommand(sender, args);
-            }
-            else if (command.startsWith(Commands.COMMAND_EMPIRE_DISBAND.getCommand())) {
+            } else if (command.startsWith(Commands.COMMAND_EMPIRE_EDIT.getCommand())) {
+                this.empireEditCommand(sender, args);
+            } else if (command.startsWith(Commands.COMMAND_EMPIRE_DISBAND.getCommand())) {
                 this.empireDisbandCommand(sender, args);
-            }
-            else if (command.startsWith(Commands.COMMAND_EMPIRE_LEAVE.getCommand())) {
+            } else if (command.startsWith(Commands.COMMAND_EMPIRE_LEAVE.getCommand())) {
                 this.leaveCommand(sender);
-            }
-            else {
+            } else {
                 Player player = null;
                 if (sender instanceof Player) {
                     player = ((Player) sender).getPlayer();
@@ -156,6 +154,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                         player.sendMessage("Empire already existing");
                     } else if (playerInfo.getEmpire() == noEmpire) {
                         Empire empire = empireManager.getSet(player, empireID);
+                        sender.sendMessage("Empire created.");
                         playerInfo.tryJoinEmpire(empire);
                     } else {
                         player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_ALREADY_IN_EMPIRE)));
@@ -187,6 +186,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                                 playerInfo.leaveEmpire();
                             }
                         }
+                        playerEmpire.deleteConfig();
                         sender.sendMessage("Empire disbanded.");
                     } else {
                         sender.sendMessage("You are not the owner of " + playerEmpire.getDisplay());
@@ -202,9 +202,73 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
         }
     }
 
+    private void empireEditCommand(final CommandSender sender, final String[] args) {
+        if (NodewarCommands.isSenderPlayer(sender)) {
+            Player player = (Player) sender;
+            if (args.length > 3) {
+                Empire playerEmpire = PlayerInfo.getPlayerInfoMap().get(player).getEmpire();
+                Empire noEmpire = EmpireManager.getEmpireManager().getNoEmpire();
+                if (player.hasPermission(Commands.COMMAND_EMPIRE_EDIT.getPermission())) {
+                    if (playerEmpire != noEmpire) {
+                        if (player.getUniqueId().toString().equals(playerEmpire.getOwnerUUID())) {
+                            if (args[2].equalsIgnoreCase("display")) {
+                                playerEmpire.setDisplay(AdaptMessage.playerMessage(player, args[3]));
+                                sender.sendMessage("Edited successfully !");
+                                playerEmpire.saveConfigFile();
+                            } else if (args[2].equalsIgnoreCase("friendlyfire")) {
+                                playerEmpire.setFriendlyFire(args[3].equalsIgnoreCase("true"));
+                                sender.sendMessage("Edited successfully !");
+                                playerEmpire.saveConfigFile();
+                            } else if (args[2].equalsIgnoreCase("bossbarcolor")){
+                                try {
+                                    playerEmpire.setBarColor(BarColor.valueOf(args[3]));
+                                    sender.sendMessage("Edited successfully !");
+                                    playerEmpire.saveConfigFile();
+                                } catch (Exception e) {
+                                    sender.sendMessage("Color doesn't match.");
+                                }
+                            } else if (args[2].equalsIgnoreCase("setowner")){
+                                for (Player player1 : Bukkit.getOnlinePlayers()) {
+                                    if (player1.getName().equalsIgnoreCase(args[3])) {
+                                        if (PlayerInfo.gets(player1).getEmpire().equals(playerEmpire)) {
+                                            playerEmpire.setOwnerUUID(player1.getUniqueId().toString());
+                                            sender.sendMessage("Edited successfully !");
+                                            playerEmpire.saveConfigFile();
+                                        } else {
+                                            sender.sendMessage("The player must be in the empire already.");
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        } else {
+                            sender.sendMessage("You are not the owner of " + playerEmpire.getDisplay());
+                        }
+                    } else {
+                        sender.sendMessage("Not in an empire.");
+                    }
+                } else {
+                    tooFewArguments(sender);
+                }
+            } else {
+                doesNotHavePermission(player, Commands.COMMAND_EMPIRE_EDIT.getPermission());
+            }
+        } else {
+            playerOnly(sender);
+        }
+    }
+
     private void leaveCommand(final CommandSender sender) {
         if (NodewarCommands.isSenderPlayer(sender)) {
-            PlayerInfo.gets((Player)sender).leaveEmpire();
+            Player player = (Player) sender;
+            PlayerInfo playerInfo = PlayerInfo.gets(player);
+            Empire playerEmpire = playerInfo.getEmpire();
+
+            if (!Objects.equals(playerEmpire.getOwnerUUID(), player.getUniqueId().toString())) {
+                PlayerInfo.gets((Player) sender).leaveEmpire();
+            } else {
+                sender.sendMessage("You must disband or delegate your empire to leave it.");
+            }
         }
         else {
             playerOnly(sender);
@@ -401,18 +465,20 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
 
     private void adminCommands(final CommandSender sender, final String command, final String[] args) {
         if (command.startsWith(Commands.COMMAND_ADMIN_PLAYER.getCommand())) {
-            this.playerGUICommand(sender, args);
-        }
-        else if (command.startsWith(Commands.COMMAND_ADMIN_NODEWAR.getCommand())) {
-            this.nodewarGUICommand(sender, args);
-        }
-        else if (command.startsWith(Commands.COMMAND_ADMIN_EMPIRE_PLAYER_SET.getCommand())) {
-            this.setEmpireCommand(sender, args);
-        }
-        else if (command.startsWith(Commands.COMMAND_ADMIN_EMPIRE_PLAYER_REMOVE.getCommand())) {
-            this.removeEmpireCommand(sender, args);
-        }
-        else {
+            playerGUICommand(sender, args);
+        } else if (command.startsWith(Commands.COMMAND_ADMIN_NODEWAR.getCommand())) {
+            nodewarGUICommand(sender, args);
+        } else if (command.startsWith(Commands.COMMAND_ADMIN_EMPIRE_PLAYER_SET.getCommand())) {
+            setEmpireCommand(sender, args);
+        } else if (command.startsWith(Commands.COMMAND_ADMIN_EMPIRE_PLAYER_REMOVE.getCommand())) {
+            removeEmpireCommand(sender, args);
+        } else if (command.startsWith(Commands.COMMAND_ADMIN_EMPIRE_CREATE.getCommand())) {
+            adminEmpireCreateCommand(sender, args);
+        } else if (command.startsWith(Commands.COMMAND_ADMIN_EMPIRE_DISBAND.getCommand())) {
+            adminEmpireDisbandCommand(sender, args);
+        }  else if (command.startsWith(Commands.COMMAND_ADMIN_EMPIRE_EDIT.getCommand())) {
+            adminEmpireEditCommand(sender, args);
+        } else {
             Player player = null;
             if (sender instanceof Player) {
                 player = ((Player) sender).getPlayer();
@@ -447,6 +513,99 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
         }
         else {
             NodewarCommands.doesNotHavePermission(sender, Commands.COMMAND_ADMIN_EMPIRE.getPermission());
+        }
+    }
+
+    private void adminEmpireCreateCommand(final CommandSender sender, final String[] args) {
+        if (sender.hasPermission(Commands.COMMAND_ADMIN_EMPIRE_CREATE.getPermission())) {
+            EmpireManager empireManager = EmpireManager.getEmpireManager();
+            if (args.length > 3) {
+                String empireID = args[3];
+                if (empireManager.getEmpires().containsKey(empireID)) {
+                    sender.sendMessage("Empire already existing");
+                } else {
+                    Empire empire = empireManager.getSet((Player) null, empireID);
+                    sender.sendMessage("Empire " + empireID + " created");
+                }
+            } else {
+                tooFewArguments(sender);
+            }
+        } else {
+            doesNotHavePermission(sender, Commands.COMMAND_ADMIN_EMPIRE_CREATE.getPermission());
+        }
+    }
+
+    private void adminEmpireDisbandCommand(final CommandSender sender, final String[] args) {
+        if (sender.hasPermission(Commands.COMMAND_ADMIN_EMPIRE_DISBAND.getPermission())) {
+            EmpireManager empireManager = EmpireManager.getEmpireManager();
+            if (args.length > 3) {
+                Empire targetEmpire = empireManager.getEmpires().get(args[3]);
+                if (targetEmpire != null) {
+                    empireManager.getEmpires().remove(targetEmpire.getName());
+                    for (Map.Entry<Player, PlayerInfo> entry : PlayerInfo.getPlayerInfoMap().entrySet()) {
+                        PlayerInfo playerInfo = entry.getValue();
+                        if (playerInfo.getEmpire() == targetEmpire) {
+                            playerInfo.leaveEmpire();
+                        }
+                    }
+                    targetEmpire.deleteConfig();
+                    sender.sendMessage("Empire disbanded.");
+                } else {
+                    sender.sendMessage("This empire doesn't exist.");
+                }
+            } else {
+                tooFewArguments(sender);
+            }
+        } else {
+            doesNotHavePermission(sender, Commands.COMMAND_ADMIN_EMPIRE_DISBAND.getPermission());
+        }
+    }
+
+    private void adminEmpireEditCommand(final CommandSender sender, final String[] args) {
+        if (sender.hasPermission(Commands.COMMAND_ADMIN_EMPIRE_EDIT.getPermission())) {
+            if (args.length > 5) {
+                EmpireManager empireManager = EmpireManager.getEmpireManager();
+                Empire targetEmpire;
+                if (args[3].equalsIgnoreCase("none")) {
+                    targetEmpire = empireManager.getNoEmpire();
+                } else {
+                    targetEmpire = empireManager.getEmpires().get(args[3]);
+                }
+                if (args[4].equalsIgnoreCase("display")) {
+                    targetEmpire.setDisplay(AdaptMessage.playerMessage(null, args[5]));
+                    sender.sendMessage("Edited successfully !");
+                    targetEmpire.saveConfigFile();
+                } else if (args[4].equalsIgnoreCase("friendlyfire")) {
+                    targetEmpire.setFriendlyFire(args[5].equalsIgnoreCase("true"));
+                    sender.sendMessage("Edited successfully !");
+                    targetEmpire.saveConfigFile();
+                } else if (args[4].equalsIgnoreCase("bossbarcolor")){
+                    try {
+                        targetEmpire.setBarColor(BarColor.valueOf(args[5]));
+                        sender.sendMessage("Edited successfully !");
+                        targetEmpire.saveConfigFile();
+                    } catch (Exception e) {
+                        sender.sendMessage("Color doesn't match.");
+                    }
+                } else if (args[4].equalsIgnoreCase("setowner")){
+                    for (Player player1 : Bukkit.getOnlinePlayers()) {
+                        if (player1.getName().equalsIgnoreCase(args[5])) {
+                            if (PlayerInfo.gets(player1).getEmpire().equals(targetEmpire)) {
+                                targetEmpire.setOwnerUUID(player1.getUniqueId().toString());
+                                sender.sendMessage("Edited successfully !");
+                                targetEmpire.saveConfigFile();
+                            } else {
+                                sender.sendMessage("The player must be in the empire already.");
+                            }
+                            break;
+                        }
+                    }
+                }
+            } else {
+                tooFewArguments(sender);
+            }
+        } else {
+            doesNotHavePermission(sender, Commands.COMMAND_ADMIN_EMPIRE_EDIT.getPermission());
         }
     }
 
@@ -533,6 +692,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 commands.add("create");
                 commands.add("disband");
                 commands.add("join");
+                commands.add("edit");
                 commands.add("leave");
                 commands.add("list");
             } else if (string.startsWith(Commands.COMMAND_ADMIN.getCommand())) {
@@ -559,7 +719,15 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 empires.forEach((s, empire) -> empiresName.add(s));
                 empiresName.sort(Comparator.comparing(String::toString));
                 commands.addAll(empiresName);
+            } else if (string.startsWith(Commands.COMMAND_EMPIRE_EDIT.getCommand())) {
+                commands.add("display");
+                commands.add("bossbarcolor");
+                commands.add("friendlyfire");
+                commands.add("setowner");
             } else if (string.startsWith(Commands.COMMAND_ADMIN_EMPIRE.getCommand())) {
+                commands.add("create");
+                commands.add("edit");
+                commands.add("disband");
                 commands.add("set");
                 commands.add("remove");
             } else if (string.startsWith(Commands.COMMAND_ADMIN_PLAYER.getCommand())) {
@@ -575,7 +743,19 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
             StringUtil.copyPartialMatches(args[2], commands, completions);
         }
         else if (args.length <= 4) {
-            if (string.startsWith(Commands.COMMAND_ADMIN_EMPIRE_PLAYER_SET.getCommand()) || string.startsWith(Commands.COMMAND_ADMIN_EMPIRE_PLAYER_REMOVE.getCommand())) {
+            if (string.startsWith(Commands.COMMAND_EMPIRE_EDIT.getCommand() + " bossbarcolor")){
+                commands.add("BLUE");
+                commands.add("GREEN");
+                commands.add("PINK");
+                commands.add("PURPLE");
+                commands.add("RED");
+                commands.add("WHITE");
+            } else if (string.startsWith(Commands.COMMAND_ADMIN_EMPIRE.getCommand())) {
+                for (Map.Entry<String, Empire> entry : EmpireManager.getEmpireManager().getEmpires().entrySet()) {
+                    String s = entry.getKey();
+                    commands.add(s);
+                }
+            } if (string.startsWith(Commands.COMMAND_ADMIN_EMPIRE_PLAYER_SET.getCommand()) || string.startsWith(Commands.COMMAND_ADMIN_EMPIRE_PLAYER_REMOVE.getCommand())) {
                 final ArrayList<String> playersName = new ArrayList<>();
                 Bukkit.getOnlinePlayers().forEach(player -> playersName.add(player.getName()));
                 playersName.sort(Comparator.comparing(String::toString));
@@ -596,8 +776,21 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 empires.forEach((s, empire) -> empiresName.add(s));
                 empiresName.sort(Comparator.comparing(String::toString));
                 commands.addAll(empiresName);
+            } else if (string.startsWith(Commands.COMMAND_ADMIN_EMPIRE.getCommand())) {
+                commands.add("create");
+                commands.add("edit");
+                commands.add("disband");
             }
             StringUtil.copyPartialMatches(args[4], commands, completions);
+        } else if (args.length <= 6) {
+            if (string.startsWith(Commands.COMMAND_ADMIN_EMPIRE_EDIT.getCommand() + " bossbarcolor")){
+                commands.add("BLUE");
+                commands.add("GREEN");
+                commands.add("PINK");
+                commands.add("PURPLE");
+                commands.add("RED");
+                commands.add("WHITE");
+            }
         }
         Collections.sort(completions);
         return completions;

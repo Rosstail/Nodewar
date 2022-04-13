@@ -56,7 +56,9 @@ public class Empire
         this.display = AdaptMessage.empireMessage(this, "&7" + name);
         this.friendlyFire = true;
         this.barColor = BarColor.WHITE;
-        this.ownerUUID = player.getUniqueId().toString();
+        if (player != null) {
+            this.ownerUUID = player.getUniqueId().toString();
+        }
         saveConfigFile();
     }
 
@@ -139,7 +141,8 @@ public class Empire
     public void setFriendlyFire(boolean friendlyFire) {
         this.friendlyFire = friendlyFire;
     }
-    private void saveConfigFile() {
+
+    public void saveConfigFile() {
         config.createSection(name);
         config.set(name + ".display", display);
         config.set(name + ".friendly-fire", friendlyFire);
@@ -148,9 +151,13 @@ public class Empire
         try {
             File file = new File(Nodewar.getInstance().getDataFolder(), "empires/" + name + ".yml");
             config.save(file);
-            System.out.println("New empire created : " + display);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void deleteConfig() {
+        File file = new File(Nodewar.getInstance().getDataFolder(), "empires/" + name + ".yml");
+        file.delete();
     }
 }
