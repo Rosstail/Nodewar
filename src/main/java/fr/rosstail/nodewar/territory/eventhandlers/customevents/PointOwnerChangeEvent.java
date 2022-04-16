@@ -1,13 +1,13 @@
 package fr.rosstail.nodewar.territory.eventhandlers.customevents;
 
 import fr.rosstail.nodewar.empires.Empire;
-import fr.rosstail.nodewar.territory.zonehandlers.Territory;
+import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class TerritoryOwnerChange extends Event implements Cancellable {
+public class PointOwnerChangeEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
     @Override
@@ -20,12 +20,12 @@ public class TerritoryOwnerChange extends Event implements Cancellable {
         return handlers;
     }
 
-    private final Territory territory;
+    private final CapturePoint capturePoint;
     private final Empire empire;
     private boolean cancelled;
 
-    public TerritoryOwnerChange(Territory territory, Empire empire) {
-        this.territory = territory;
+    public PointOwnerChangeEvent(CapturePoint capturePoint, Empire empire) {
+        this.capturePoint = capturePoint;
         this.empire = empire;
         this.cancelled = false;
     }
@@ -34,8 +34,8 @@ public class TerritoryOwnerChange extends Event implements Cancellable {
         return empire;
     }
 
-    public Territory getTerritory() {
-        return territory;
+    public CapturePoint getCapturePoint() {
+        return capturePoint;
     }
 
     @Override

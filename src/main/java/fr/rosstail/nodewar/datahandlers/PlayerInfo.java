@@ -28,9 +28,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class PlayerInfo {
-    private static final Nodewar plugin = Nodewar.getInstance();
-    private static final Map<Player, PlayerInfo> playerInfoMap;
-    private static final Timer timer = new Timer();
+    private final Nodewar plugin = Nodewar.getInstance();
     private final Player player;
     private Empire empire;
     private Long lastUpdate;
@@ -54,13 +52,6 @@ public class PlayerInfo {
                 this.playerJsonData = null;
             }
         }
-    }
-
-    public static PlayerInfo gets(final Player player) {
-        if (!PlayerInfo.playerInfoMap.containsKey(player)) {
-            PlayerInfo.playerInfoMap.put(player, new PlayerInfo(player));
-        }
-        return PlayerInfo.playerInfoMap.get(player);
     }
 
     public Empire getEmpire() {
@@ -188,33 +179,5 @@ public class PlayerInfo {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    static {
-        playerInfoMap = new HashMap<>();
-    }
-
-    public static Map<Player, PlayerInfo> getPlayerInfoMap() {
-        return playerInfoMap;
-    }
-
-    public static void startTimer() {
-        int delay = 1000 * plugin.getCustomConfig().getInt("general.delay-between-database-updates");
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                playerInfoMap.forEach((player, playerInfo) -> {
-                    playerInfo.updateAll(true);
-                });
-            }
-        }, delay, delay);
-    }
-
-    public static Timer getTimer() {
-        return timer;
-    }
-
-    public static void stopTimer() {
-        timer.cancel();
     }
 }

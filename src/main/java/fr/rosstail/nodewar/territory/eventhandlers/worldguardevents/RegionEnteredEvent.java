@@ -1,6 +1,5 @@
 package fr.rosstail.nodewar.territory.eventhandlers.worldguardevents;
 
-import fr.rosstail.nodewar.territory.eventhandlers.Reasons;
 import org.bukkit.World;
 import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;

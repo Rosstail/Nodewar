@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.commandhandlers;
 
 import fr.rosstail.nodewar.commandhandlers.enums.Commands;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.empires.EmpireManager;
@@ -11,9 +12,9 @@ import fr.rosstail.nodewar.guis.playerguis.EmpiresListGUI;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
-import fr.rosstail.nodewar.territory.eventhandlers.customevents.PointOwnerChange;
-import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerChange;
-import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryVulnerabilityToggle;
+import fr.rosstail.nodewar.territory.eventhandlers.customevents.PointOwnerChangeEvent;
+import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerChangeEvent;
+import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryVulnerabilityToggleEvent;
 import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
@@ -25,7 +26,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.util.StringUtil;
 
 import java.util.*;
@@ -117,7 +117,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 if (NodewarCommands.isSenderPlayer(sender)) {
                     final Player player = (Player) sender;
                     if (player.hasPermission(Commands.COMMAND_EMPIRE_JOIN.getPermission())) {
-                        final PlayerInfo playerInfo = PlayerInfo.gets(player);
+                        final PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getSet(player);
                         final Empire playerEmpire = playerInfo.getEmpire();
                         final Empire empire = empires.get(empireName);
                         if (!playerInfo.tryJoinEmpire(empire)) {
@@ -145,7 +145,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
         if (NodewarCommands.isSenderPlayer(sender)) {
             EmpireManager empireManager = EmpireManager.getEmpireManager();
             Player player = (Player) sender;
-            PlayerInfo playerInfo = PlayerInfo.getPlayerInfoMap().get(player);
+            PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(player);
             Empire noEmpire = EmpireManager.getEmpireManager().getNoEmpire();
             if (player.hasPermission(Commands.COMMAND_EMPIRE_CREATE.getPermission())) {
                 if (args.length > 2) {
@@ -174,13 +174,14 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
         if (NodewarCommands.isSenderPlayer(sender)) {
             EmpireManager empireManager = EmpireManager.getEmpireManager();
             Player player = (Player) sender;
-            Empire playerEmpire = PlayerInfo.getPlayerInfoMap().get(player).getEmpire();
+            Map<Player, PlayerInfo> playerInfoMap = PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap();
+            Empire playerEmpire = playerInfoMap.get(player).getEmpire();
             Empire noEmpire = EmpireManager.getEmpireManager().getNoEmpire();
             if (player.hasPermission(Commands.COMMAND_EMPIRE_DISBAND.getPermission())) {
                 if (playerEmpire != noEmpire) {
                     if (player.getUniqueId().toString().equals(playerEmpire.getOwnerUUID())) {
                         empireManager.getEmpires().remove(playerEmpire.getName());
-                        for (Map.Entry<Player, PlayerInfo> entry : PlayerInfo.getPlayerInfoMap().entrySet()) {
+                        for (Map.Entry<Player, PlayerInfo> entry : playerInfoMap.entrySet()) {
                             PlayerInfo playerInfo = entry.getValue();
                             if (playerInfo.getEmpire() == playerEmpire) {
                                 playerInfo.leaveEmpire();
@@ -206,7 +207,8 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
         if (NodewarCommands.isSenderPlayer(sender)) {
             Player player = (Player) sender;
             if (args.length > 3) {
-                Empire playerEmpire = PlayerInfo.getPlayerInfoMap().get(player).getEmpire();
+                Map<Player, PlayerInfo> playerInfoMap = PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap();
+                Empire playerEmpire = playerInfoMap.get(player).getEmpire();
                 Empire noEmpire = EmpireManager.getEmpireManager().getNoEmpire();
                 if (player.hasPermission(Commands.COMMAND_EMPIRE_EDIT.getPermission())) {
                     if (playerEmpire != noEmpire) {
@@ -230,7 +232,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                             } else if (args[2].equalsIgnoreCase("setowner")){
                                 for (Player player1 : Bukkit.getOnlinePlayers()) {
                                     if (player1.getName().equalsIgnoreCase(args[3])) {
-                                        if (PlayerInfo.gets(player1).getEmpire().equals(playerEmpire)) {
+                                        if (playerInfoMap.get(player1).getEmpire().equals(playerEmpire)) {
                                             playerEmpire.setOwnerUUID(player1.getUniqueId().toString());
                                             sender.sendMessage("Edited successfully !");
                                             playerEmpire.saveConfigFile();
@@ -261,11 +263,12 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
     private void leaveCommand(final CommandSender sender) {
         if (NodewarCommands.isSenderPlayer(sender)) {
             Player player = (Player) sender;
-            PlayerInfo playerInfo = PlayerInfo.gets(player);
+            PlayerInfoManager playerInfoManager = PlayerInfoManager.getPlayerInfoManager();
+            PlayerInfo playerInfo = playerInfoManager.getSet(player);
             Empire playerEmpire = playerInfo.getEmpire();
 
             if (!Objects.equals(playerEmpire.getOwnerUUID(), player.getUniqueId().toString())) {
-                PlayerInfo.gets((Player) sender).leaveEmpire();
+                playerInfo.leaveEmpire();
             } else {
                 sender.sendMessage("You must disband or delegate your empire to leave it.");
             }
@@ -304,7 +307,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                             Map<String, Territory> worldTerritories = worldTerritoryManager.getTerritories();
                             if (worldTerritories.containsKey(territoryName)) {
                                 Territory territory = worldTerritories.get(territoryName);
-                                TerritoryVulnerabilityToggle event = new TerritoryVulnerabilityToggle(territory, value);
+                                TerritoryVulnerabilityToggleEvent event = new TerritoryVulnerabilityToggleEvent(territory, value);
                                 Bukkit.getPluginManager().callEvent(event);
                                 if (!event.isCancelled()) {
                                     sender.sendMessage(AdaptMessage.territoryMessage(territory,
@@ -315,7 +318,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                         }
                     } else {
                         worldTerritoryManager.getTerritories().forEach((s, territory) -> {
-                            TerritoryVulnerabilityToggle event = new TerritoryVulnerabilityToggle(territory, value);
+                            TerritoryVulnerabilityToggleEvent event = new TerritoryVulnerabilityToggleEvent(territory, value);
                             Bukkit.getPluginManager().callEvent(event);
                         });
                         sender.sendMessage(AdaptMessage.worldMessage(world,
@@ -365,7 +368,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                                 String pointName = location[2];
                                 if (territory.getCapturePoints().containsKey(pointName)) {
                                     CapturePoint point = territory.getCapturePoints().get(pointName);
-                                    PointOwnerChange event = new PointOwnerChange(point, empire);
+                                    PointOwnerChangeEvent event = new PointOwnerChangeEvent(point, empire);
                                     Bukkit.getPluginManager().callEvent(event);
 
                                     if (!event.isCancelled()) {
@@ -373,7 +376,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                                     }
                                 }
                             } else {
-                                TerritoryOwnerChange event = new TerritoryOwnerChange(territory, empire);
+                                TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, empire);
                                 Bukkit.getPluginManager().callEvent(event);
                                 if (!event.isCancelled()) {
                                     sender.sendMessage(AdaptMessage.territoryMessage(territory, LangManager.getMessage(LangMessage.TERRITORY_SET_EMPIRE)));
@@ -384,7 +387,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                     }
                 } else {
                     worldTerritoryManager.getTerritories().forEach((s, territory) -> {
-                        TerritoryOwnerChange event = new TerritoryOwnerChange(territory, empire);
+                        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, empire);
                         Bukkit.getPluginManager().callEvent(event);
                         if (!event.isCancelled()) {
                             territory.cancelAttack(territory.getEmpire());
@@ -428,7 +431,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                                 String pointName = location[2];
                                 if (territory.getCapturePoints().containsKey(pointName)) {
                                     CapturePoint point = territory.getCapturePoints().get(pointName);
-                                    PointOwnerChange event = new PointOwnerChange(point, null);
+                                    PointOwnerChangeEvent event = new PointOwnerChangeEvent(point, null);
                                     Bukkit.getPluginManager().callEvent(event);
 
                                     if (!event.isCancelled()) {
@@ -436,7 +439,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                                     }
                                 }
                             } else {
-                                TerritoryOwnerChange event = new TerritoryOwnerChange(territory, null);
+                                TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, null);
                                 Bukkit.getPluginManager().callEvent(event);
                                 if (!event.isCancelled()) {
                                     sender.sendMessage(AdaptMessage.territoryMessage(territory, LangManager.getMessage(LangMessage.TERRITORY_NEUTRALIZE)));
@@ -447,7 +450,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                     }
                 } else {
                     worldTerritoryManager.getTerritories().forEach((s, territory) -> {
-                        TerritoryOwnerChange event = new TerritoryOwnerChange(territory, null);
+                        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, null);
                         Bukkit.getPluginManager().callEvent(event);
                         if (!event.isCancelled()) {
                             territory.cancelAttack(null);
@@ -496,7 +499,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 final Empire empire = EmpireManager.getEmpireManager().getEmpires().get(args[4]);
                 if (target != null) {
                     if (empire != null) {
-                        PlayerInfo.gets(target).setEmpire(empire);
+                        PlayerInfoManager.getPlayerInfoManager().getSet(target).setEmpire(empire);
                         sender.sendMessage(AdaptMessage.playerMessage(target, LangManager.getMessage(LangMessage.PLAYER_SET_EMPIRE)));
                     }
                     else {
@@ -542,7 +545,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 Empire targetEmpire = empireManager.getEmpires().get(args[3]);
                 if (targetEmpire != null) {
                     empireManager.getEmpires().remove(targetEmpire.getName());
-                    for (Map.Entry<Player, PlayerInfo> entry : PlayerInfo.getPlayerInfoMap().entrySet()) {
+                    for (Map.Entry<Player, PlayerInfo> entry : PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().entrySet()) {
                         PlayerInfo playerInfo = entry.getValue();
                         if (playerInfo.getEmpire() == targetEmpire) {
                             playerInfo.leaveEmpire();
@@ -590,7 +593,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 } else if (args[4].equalsIgnoreCase("setowner")){
                     for (Player player1 : Bukkit.getOnlinePlayers()) {
                         if (player1.getName().equalsIgnoreCase(args[5])) {
-                            if (PlayerInfo.gets(player1).getEmpire().equals(targetEmpire)) {
+                            if (PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(player1).getEmpire().equals(targetEmpire)) {
                                 targetEmpire.setOwnerUUID(player1.getUniqueId().toString());
                                 sender.sendMessage("Edited successfully !");
                                 targetEmpire.saveConfigFile();
@@ -614,7 +617,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
             if (args.length == 4) {
                 final Player target = Bukkit.getServer().getPlayerExact(args[3]);
                 if (target != null) {
-                    PlayerInfo.gets(target).setEmpire(null);
+                    PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(target).setEmpire(null);
                     sender.sendMessage(AdaptMessage.playerMessage(target, LangManager.getMessage(LangMessage.PLAYER_REMOVE_EMPIRE)));
                 }
                 else {

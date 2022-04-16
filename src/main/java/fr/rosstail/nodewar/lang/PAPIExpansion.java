@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.lang;
 
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -58,7 +59,7 @@ public class PAPIExpansion extends PlaceholderExpansion
             return null;
         }
         if (message.contains(PlaceHolders.PLAYER_EMPIRE_STARTER.getText()) || message.contains(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText())) {
-            final PlayerInfo playerInfo = PlayerInfo.gets(player);
+            final PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(player);
             if (message.contains(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText())) {
                 message = message.replaceAll(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText(), playerInfo.getEmpire().getDisplay());
             }
@@ -75,7 +76,7 @@ public class PAPIExpansion extends PlaceholderExpansion
                 message = message.replaceAll(PlaceHolders.PLAYER_NAME.getText(), player.getName());
             }
             if (message.contains(PlaceHolders.PLAYER_EMPIRE_STARTER.getText()) || message.contains(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText())) {
-                final PlayerInfo playerInfo = PlayerInfo.gets(player);
+                final PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(player);
                 if (message.contains(PlaceHolders.PLAYER_EMPIRE.getText())) {
                     message = message.replaceAll(PlaceHolders.PLAYER_EMPIRE.getText(), playerInfo.getEmpire().getName());
                 }

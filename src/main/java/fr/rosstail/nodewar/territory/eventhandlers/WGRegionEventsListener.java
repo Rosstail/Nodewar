@@ -2,12 +2,10 @@ package fr.rosstail.nodewar.territory.eventhandlers;
 
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.territory.eventhandlers.worldguardevents.*;
 import fr.rosstail.nodewar.territory.zonehandlers.PlayerRegions;
-import fr.rosstail.nodewar.territory.eventhandlers.worldguardevents.RegionEnteredEvent;
 import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.territory.eventhandlers.worldguardevents.RegionEnterEvent;
-import fr.rosstail.nodewar.territory.eventhandlers.worldguardevents.RegionLeaveEvent;
-import fr.rosstail.nodewar.territory.eventhandlers.worldguardevents.RegionLeftEvent;
 import org.bukkit.Bukkit;
 
 import java.util.HashSet;
@@ -85,6 +83,8 @@ public class WGRegionEventsListener implements Listener
     @EventHandler
     public void onPlayerTeleport(final PlayerTeleportEvent e) {
         e.setCancelled(this.updateRegions(e.getPlayer(), Reasons.TELEPORT, Objects.requireNonNull(e.getTo()), e));
+        AdaptMessage.print("Teleport event", AdaptMessage.prints.WARNING);
+        //e.setCancelled(this.updateRegions(e.getPlayer(), Reasons.TELEPORT, Objects.requireNonNull(e.getTo()), e));
     }
 
     @EventHandler

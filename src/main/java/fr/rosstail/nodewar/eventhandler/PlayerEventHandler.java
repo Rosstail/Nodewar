@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.eventhandler;
 
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.entity.Player;
@@ -19,7 +20,7 @@ public class PlayerEventHandler implements Listener
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-        final PlayerInfo playerInfo = PlayerInfo.gets(player);
+        final PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(player);
         playerInfo.loadInfo();
         playerInfo.setPlayerGroup(playerInfo.getEmpire());
     }
@@ -27,7 +28,7 @@ public class PlayerEventHandler implements Listener
     @EventHandler
     public void onPlayerLeave(final PlayerQuitEvent event) {
         final Player player = event.getPlayer();
-        final PlayerInfo playerInfo = PlayerInfo.gets(player);
+        final PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(player);
         playerInfo.updateAll(true);
     }
 }

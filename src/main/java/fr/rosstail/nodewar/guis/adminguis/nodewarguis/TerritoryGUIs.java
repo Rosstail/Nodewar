@@ -10,7 +10,7 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
-import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryVulnerabilityToggle;
+import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryVulnerabilityToggleEvent;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -79,7 +79,7 @@ public class TerritoryGUIs {
         staticPane.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, null, vulnerableMaterial, "&9Vulnerability", null
                 , GUIs.adaptLore(player, null)), event -> {
 
-            TerritoryVulnerabilityToggle toggleEvent = new TerritoryVulnerabilityToggle(territory, !territory.isVulnerable());
+            TerritoryVulnerabilityToggleEvent toggleEvent = new TerritoryVulnerabilityToggleEvent(territory, !territory.isVulnerable());
             Bukkit.getPluginManager().callEvent(toggleEvent);
 
             if (!toggleEvent.isCancelled()) {

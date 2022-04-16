@@ -6,6 +6,7 @@ import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
@@ -79,7 +80,7 @@ public class EmpiresListGUI {
                 Empire empire = empires.get(customConfig.getString(slotPath + ".empire"));
                 itemSlot.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, customConfig, material, display, slotPath,
                         GUIs.adaptLore(player, lore)), event -> {
-                    if(PlayerInfo.gets(player).tryJoinEmpire(empire)) {
+                    if(PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(player).tryJoinEmpire(empire)) {
                         player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_JOIN_EMPIRE)));
                     }
                     initPane(player, plugin, customConfig, itemSlot, gui);

@@ -3,8 +3,8 @@ package fr.rosstail.nodewar.calendar;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.empires.EmpireManager;
-import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerChange;
-import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryVulnerabilityToggle;
+import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerChangeEvent;
+import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryVulnerabilityToggleEvent;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import org.bukkit.Bukkit;
@@ -89,13 +89,13 @@ public class CalendarManager {
         Map<String, Empire> empires = EmpireManager.getEmpireManager().getEmpires();
         if (empireName != null) {
             if (empireName.equalsIgnoreCase("neutral")) {
-                TerritoryOwnerChange event = new TerritoryOwnerChange(territory, null);
+                TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, null);
                 Bukkit.getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
                     territory.cancelAttack(territory.getEmpire());
                 }
             } else if (empires.containsKey(empireName)) {
-                TerritoryOwnerChange event = new TerritoryOwnerChange(territory, empires.get(empireName));
+                TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, empires.get(empireName));
                 Bukkit.getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
                     territory.cancelAttack(territory.getEmpire());
@@ -106,7 +106,7 @@ public class CalendarManager {
             boolean isVulnerable = vulnerableStr.equalsIgnoreCase("true");
 
             if (territory.isVulnerable() != isVulnerable) {
-                TerritoryVulnerabilityToggle event = new TerritoryVulnerabilityToggle(territory, isVulnerable);
+                TerritoryVulnerabilityToggleEvent event = new TerritoryVulnerabilityToggleEvent(territory, isVulnerable);
                 Bukkit.getPluginManager().callEvent(event);
             }
         }

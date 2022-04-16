@@ -1,12 +1,12 @@
 package fr.rosstail.nodewar.territory.eventhandlers.customevents;
 
 import fr.rosstail.nodewar.empires.Empire;
-import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
+import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class PointOwnerHasChanged extends Event {
+public class TerritoryOwnerHasChangedEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     @Override
@@ -19,11 +19,11 @@ public class PointOwnerHasChanged extends Event {
         return handlers;
     }
 
-    private final CapturePoint capturePoint;
+    private final Territory territory;
     private final Empire empire;
 
-    public PointOwnerHasChanged(CapturePoint capturePoint, Empire empire) {
-        this.capturePoint = capturePoint;
+    public TerritoryOwnerHasChangedEvent(Territory territory, Empire empire) {
+        this.territory = territory;
         this.empire = empire;
     }
 
@@ -31,7 +31,7 @@ public class PointOwnerHasChanged extends Event {
         return empire;
     }
 
-    public CapturePoint getCapturePoint() {
-        return capturePoint;
+    public Territory getTerritory() {
+        return territory;
     }
 }
