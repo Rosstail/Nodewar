@@ -64,6 +64,7 @@ public class Empire {
         this.config = new YamlConfiguration();
         this.file = new File(Nodewar.getInstance().getDataFolder(), "empires/" + name + ".yml");
         this.display = AdaptMessage.empireMessage(this, "&7" + name);
+        this.mapColor = "#FFFFFF";
         this.friendlyFire = true;
         this.barColor = BarColor.WHITE;
         if (player != null) {
@@ -80,6 +81,7 @@ public class Empire {
         this.config = null;
         this.display = ChatColor.translateAlternateColorCodes('&', "&7None");
         this.barColor = BarColor.WHITE;
+        this.mapColor = "#000000";
         this.friendlyFire = true;
         this.file = null;
     }

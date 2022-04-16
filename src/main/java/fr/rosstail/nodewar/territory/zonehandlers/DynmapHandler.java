@@ -67,35 +67,37 @@ public class DynmapHandler {
         String label;
 
         AreaStyle(Empire empire) {
-            strokeColor = "#FF0000";
+            //AdaptMessage.print(empire.getDisplay() + " : " + empire.getMapColor(), AdaptMessage.prints.OUT);
+            strokeColor = "#AAAAAA";
             unownedStrokeColor = EmpireManager.getEmpireManager().getNoEmpire().getMapColor();
             strokeOpacity = 0.8f;
             strokeWeight = 3;
-            fillColor = empire.getMapColor();
+            fillColor = empire.getMapColor() != null ? empire.getMapColor() : EmpireManager.getEmpireManager().getNoEmpire().getMapColor();
             fillOpacity = 0.35F;
-            label = "LABEL";
+            //label = "LABEL LEL";
+            //AdaptMessage.print(empire.getDisplay() + " : " + empire.getMapColor() + " VS " + fillColor + " = " + empire.getMapColor().equals(fillColor), AdaptMessage.prints.OUT);
         }
     }
 
     private Map<String, AreaMarker> resAreas = new HashMap<>();
 
     private String formatInfoWindow(ProtectedRegion region, AreaMarker m) {
-        String v = "<div class=\"regioninfo\">"+ infoWindow +"</div>";
+        String v = "<div class=\"regioninfo\">" + infoWindow + "</div>";
         ProfileCache pc = WorldGuard.getInstance().getProfileCache();
         v = v.replace("%regionname%", m.getLabel());
         v = v.replace("%playerowners%", region.getOwners().toPlayersString(pc));
         v = v.replace("%groupowners%", region.getOwners().toGroupsString());
         v = v.replace("%playermembers%", region.getMembers().toPlayersString(pc));
         v = v.replace("%groupmembers%", region.getMembers().toGroupsString());
-        if(region.getParent() != null)
+        if (region.getParent() != null)
             v = v.replace("%parent%", region.getParent().getId());
         else
             v = v.replace("%parent%", "");
         v = v.replace("%priority%", String.valueOf(region.getPriority()));
         Map<Flag<?>, Object> map = region.getFlags();
         String flgs = "";
-        for(Flag<?> f : map.keySet()) {
-            flgs += f.getName() + ": " + map.get(f).toString() + "<br/>";
+        for (Flag<?> f : map.keySet()) {
+            flgs += " > " + f.getName() + ": " + map.get(f).toString() + "<br/>";
         }
         v = v.replace("%flags%", flgs);
         return v;
@@ -104,17 +106,17 @@ public class DynmapHandler {
     private void addStyle(AreaMarker m, ProtectedRegion region) {
         AreaStyle as = null;
         /* Check for owner style matches */
-        if(!empireStyleMap.isEmpty()) {
+        if (!empireStyleMap.isEmpty()) {
             DefaultDomain dd = region.getMembers();
             GroupDomain pd = dd.getGroupDomain();
-            if(pd != null) {
-                for(String p : pd.getGroups()) {
+            if (pd != null) {
+                for (String p : pd.getGroups()) {
                     as = empireStyleMap.get(p);
                     if (as != null) break;
                 }
             }
         }
-        if(as == null)
+        if (as == null)
             as = noEmpireStyle;
 
         int sc = 0xFF0000;
@@ -127,7 +129,7 @@ public class DynmapHandler {
         }
         m.setLineStyle(as.strokeWeight, as.strokeOpacity, sc);
         m.setFillStyle(as.fillOpacity, fc);
-        if(as.label != null) {
+        if (as.label != null) {
             m.setLabel(as.label);
         }
     }
@@ -146,41 +148,43 @@ public class DynmapHandler {
         BlockVector3 l0 = region.getMinimumPoint();
         BlockVector3 l1 = region.getMaximumPoint();
 
-        if(tn == RegionType.CUBOID) { /* Cubiod region? */
+        if (tn == RegionType.CUBOID) { /* Cubiod region? */
             /* Make outline */
             x = new double[4];
             z = new double[4];
-            x[0] = l0.getX(); z[0] = l0.getZ();
-            x[1] = l0.getX(); z[1] = l1.getZ()+1.0;
-            x[2] = l1.getX() + 1.0; z[2] = l1.getZ()+1.0;
-            x[3] = l1.getX() + 1.0; z[3] = l0.getZ();
-        }
-        else if(tn == RegionType.POLYGON) {
-            ProtectedPolygonalRegion ppr = (ProtectedPolygonalRegion)region;
+            x[0] = l0.getX();
+            z[0] = l0.getZ();
+            x[1] = l0.getX();
+            z[1] = l1.getZ() + 1.0;
+            x[2] = l1.getX() + 1.0;
+            z[2] = l1.getZ() + 1.0;
+            x[3] = l1.getX() + 1.0;
+            z[3] = l0.getZ();
+        } else if (tn == RegionType.POLYGON) {
+            ProtectedPolygonalRegion ppr = (ProtectedPolygonalRegion) region;
             List<BlockVector2> points = ppr.getPoints();
             x = new double[points.size()];
             z = new double[points.size()];
-            for(int i = 0; i < points.size(); i++) {
+            for (int i = 0; i < points.size(); i++) {
                 BlockVector2 pt = points.get(i);
-                x[i] = pt.getX(); z[i] = pt.getZ();
+                x[i] = pt.getX() + 0.5f;
+                z[i] = pt.getZ() + 0.5f;
             }
-        }
-        else {  /* Unsupported type */
+        } else {  /* Unsupported type */
             return;
         }
         String markerid = world.getName() + "_" + id;
         AreaMarker m = resAreas.remove(markerid); /* Existing area? */
-        if(m == null) {
+        if (m == null) {
             m = set.createAreaMarker(markerid, name, false, world.getName(), x, z, false);
-            if(m == null)
+            if (m == null)
                 return;
-        }
-        else {
+        } else {
             m.setCornerLocations(x, z); /* Replace corner locations */
             m.setLabel(name);   /* Update label */
         }
-        if(use3d) { /* If 3D? */
-            m.setRangeY(l1.getY()+1.0, l0.getY());
+        if (use3d) { /* If 3D? */
+            m.setRangeY(l1.getY() + 1.0, l0.getY());
         }
         /* Set line and fill properties */
         addStyle(m, region);
@@ -195,7 +199,7 @@ public class DynmapHandler {
     }
 
     private class UpdateJob implements Runnable {
-        Map<String,AreaMarker> newMap = new HashMap<>(); /* Build new map */
+        Map<String, AreaMarker> newMap = new HashMap<>(); /* Build new map */
         ArrayList<org.bukkit.World> worldsToDo;
         ArrayList<World> wgWorldsToDo;
         List<ProtectedRegion> regionsToDo = null;
@@ -220,7 +224,7 @@ public class DynmapHandler {
             while (regionsToDo == null) {  // No pending regions for world
                 if (worldsToDo.isEmpty()) { // No more worlds?
                     /* Now, review old map - anything left is gone */
-                    for(AreaMarker oldm : resAreas.values()) {
+                    for (AreaMarker oldm : resAreas.values()) {
                         oldm.deleteMarker();
                     }
                     /* And replace with new map */
@@ -228,10 +232,7 @@ public class DynmapHandler {
                     // Set up for next update (new job)
                     plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new UpdateJob(), updatePeriod);
                     return;
-                }
-                else {
-                    worldsToDo.remove(0);
-                    wgWorldsToDo.remove(0);
+                } else {
                     curWorld = worldsToDo.get(0);
                     curWGWorld = wgWorldsToDo.get(0);
 
@@ -244,6 +245,8 @@ public class DynmapHandler {
                             regionsToDo.add(capturePoint.getRegion());
                         });
                     });
+                    worldsToDo.remove(0);
+                    wgWorldsToDo.remove(0);
                 }
             }
             /* Now, process up to limit regions */
@@ -252,14 +255,14 @@ public class DynmapHandler {
                     regionsToDo = null;
                     break;
                 }
-                ProtectedRegion pr = regionsToDo.remove(regionsToDo.size()-1);
+                ProtectedRegion pr = regionsToDo.remove(regionsToDo.size() - 1);
                 int depth = 1;
                 ProtectedRegion p = pr;
-                while(p.getParent() != null) {
+                while (p.getParent() != null) {
                     depth++;
                     p = p.getParent();
                 }
-                if(depth > maxDepth)
+                if (depth > maxDepth)
                     continue;
                 handleRegion(curWGWorld, pr, newMap);
             }
@@ -269,15 +272,15 @@ public class DynmapHandler {
     }
 
     private class OurServerListener implements Listener {
-        @EventHandler(priority= EventPriority.MONITOR)
+        @EventHandler(priority = EventPriority.MONITOR)
         public void onPluginEnable(PluginEnableEvent event) {
             Plugin p = event.getPlugin();
             String name = p.getDescription().getName();
-            if(name.equals("dynmap")) {
+            if (name.equals("dynmap")) {
                 Plugin wg = p.getServer().getPluginManager().getPlugin("WorldGuard");
-                if(wg != null && wg.isEnabled())
+                if (wg != null && wg.isEnabled())
                     activate();
-            } else if(name.equals("WorldGuard") && dynmap.isEnabled()) {
+            } else if (name.equals("WorldGuard") && dynmap.isEnabled()) {
                 activate();
             }
         }
@@ -288,14 +291,14 @@ public class DynmapHandler {
         PluginManager pm = plugin.getServer().getPluginManager();
         /* Get dynmap */
         dynmap = pm.getPlugin("dynmap");
-        if(dynmap == null) {
+        if (dynmap == null) {
             AdaptMessage.print("Cannot find dynmap!", AdaptMessage.prints.WARNING);
             return;
         }
         dynmapAPI = (DynmapAPI) dynmap; /* Get API */
         /* Get WorldGuard */
         Plugin wgp = pm.getPlugin("WorldGuard");
-        if(wgp == null) {
+        if (wgp == null) {
             AdaptMessage.print("Cannot find WorldGuard!", AdaptMessage.prints.SEVERE);
             return;
         }
@@ -303,7 +306,7 @@ public class DynmapHandler {
         plugin.getServer().getPluginManager().registerEvents(new OurServerListener(), plugin);
 
         /* If both enabled, activate */
-        if(dynmap.isEnabled() && wgp.isEnabled())
+        if (dynmap.isEnabled() && wgp.isEnabled())
             activate();
         /* Start up metrics */
     }
@@ -313,15 +316,14 @@ public class DynmapHandler {
     private void activate() {
         /* Now, get markers API */
         markerAPI = dynmapAPI.getMarkerAPI();
-        if(markerAPI == null) {
+        if (markerAPI == null) {
             AdaptMessage.print("Error loading dynmap marker API!", AdaptMessage.prints.SEVERE);
             return;
         }
         /* Load configuration */
-        if(reload) {
+        if (reload) {
             plugin.reloadConfig();
-        }
-        else {
+        } else {
             reload = true;
         }
         FileConfiguration cfg = plugin.getCustomConfig();
@@ -330,16 +332,16 @@ public class DynmapHandler {
 
         /* Now, add marker set for mobs (make it transient) */
         set = markerAPI.getMarkerSet("worldguard.markerset");
-        if(set == null)
+        if (set == null)
             set = markerAPI.createMarkerSet("worldguard.markerset", cfg.getString("layer.name", "WorldGuard"), null, false);
         else
             set.setMarkerSetLabel(cfg.getString("layer.name", "WorldGuard"));
-        if(set == null) {
+        if (set == null) {
             AdaptMessage.print("Error creating marker set", AdaptMessage.prints.SEVERE);
             return;
         }
         int minzoom = cfg.getInt("layer.minzoom", 0);
-        if(minzoom > 0)
+        if (minzoom > 0)
             set.setMinZoom(minzoom);
         set.setLayerPriority(cfg.getInt("layer.layerprio", 10));
         set.setHideByDefault(cfg.getBoolean("layer.hidebydefault", false));
@@ -356,10 +358,10 @@ public class DynmapHandler {
             empireStyleMap.put(s, new AreaStyle(empire));
         });
 
-        /* Set up update job - based on periond */
-        int per = cfg.getInt("update.period", 300);
-        if(per < 15) per = 15;
-        updatePeriod = per* 20L;
+        /* Set up update job - based on period */
+        int per = cfg.getInt("map.update-delay", 5); //def = 300
+        if (per < 1) per = 1; //def = 15
+        updatePeriod = per * 20L;
         stop = false;
 
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new UpdateJob(), 40);   /* First time is 2 seconds */
@@ -368,7 +370,7 @@ public class DynmapHandler {
     }
 
     public void disable() {
-        if(set != null) {
+        if (set != null) {
             set.deleteMarkerSet();
             set = null;
         }
