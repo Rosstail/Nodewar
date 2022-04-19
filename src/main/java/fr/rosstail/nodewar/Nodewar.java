@@ -41,8 +41,6 @@ public class Nodewar extends JavaPlugin implements Listener
     private static final Chat chat;
     private static Nodewar instance;
     private static String dimName;
-
-    private DynmapHandler dynmapHandler = null;
     
     public void onLoad() {
     }
@@ -96,7 +94,8 @@ public class Nodewar extends JavaPlugin implements Listener
                 empire.applyTerritories();
             }
 
-            dynmapHandler = new DynmapHandler(this);
+            DynmapHandler.init(this);
+            DynmapHandler dynmapHandler = DynmapHandler.getDynmapHandler();
             dynmapHandler.enable();
 
         }
@@ -131,8 +130,8 @@ public class Nodewar extends JavaPlugin implements Listener
             CalendarManager.getCalendarManager().stopCalenderSchedule();
         }
         WorldTerritoryManager.stopTimers();
-        if (dynmapHandler != null) {
-            dynmapHandler.disable();
+        if (DynmapHandler.getDynmapHandler() != null) {
+            DynmapHandler.getDynmapHandler().disable();
         }
         PlayerInfoManager playerInfoManager = PlayerInfoManager.getPlayerInfoManager();
         playerInfoManager.stopTimer();

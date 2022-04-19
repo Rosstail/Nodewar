@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.territory.zonehandlers;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.World;
@@ -15,6 +16,7 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -44,8 +46,8 @@ public class DynmapHandler {
     long updatePeriod;
     boolean use3d;
     String infoWindow;
-    AreaStyle noEmpireStyle;
-    Map<String, AreaStyle> empireStyleMap;
+    private Map<Territory, AreaStyle> territoryAreaStyleMap;
+    private Map<CapturePoint, AreaStyle> capturePointAreaStyleMap;
     boolean stop;
     int maxDepth;
 
@@ -57,25 +59,49 @@ public class DynmapHandler {
         return dynmapHandler;
     }
 
+    public static void init(Nodewar plugin) {
+        if (dynmapHandler == null) {
+            dynmapHandler = new DynmapHandler(plugin);
+        }
+    }
+
     private static class AreaStyle {
-        String strokeColor;
-        String unownedStrokeColor;
-        double strokeOpacity;
+        String strokeColor = EmpireManager.getEmpireManager().getNoEmpire().getMapColor();
+        double strokeOpacity = 0.8f;
         int strokeWeight;
         String fillColor;
-        double fillOpacity;
+        double fillOpacity = 0.35f;
         String label;
 
-        AreaStyle(Empire empire) {
-            //AdaptMessage.print(empire.getDisplay() + " : " + empire.getMapColor(), AdaptMessage.prints.OUT);
-            strokeColor = "#AAAAAA";
-            unownedStrokeColor = EmpireManager.getEmpireManager().getNoEmpire().getMapColor();
-            strokeOpacity = 0.8f;
-            strokeWeight = 3;
-            fillColor = empire.getMapColor() != null ? empire.getMapColor() : EmpireManager.getEmpireManager().getNoEmpire().getMapColor();
-            fillOpacity = 0.35F;
-            //label = "LABEL LEL";
-            //AdaptMessage.print(empire.getDisplay() + " : " + empire.getMapColor() + " VS " + fillColor + " = " + empire.getMapColor().equals(fillColor), AdaptMessage.prints.OUT);
+        AreaStyle(Territory territory) {
+            Empire empire = territory.getEmpire();
+            fillColor = empire != null ? empire.getMapColor() : EmpireManager.getEmpireManager().getNoEmpire().getMapColor();
+            if (!territory.isVulnerable()) {
+                strokeOpacity = 0f;
+                strokeColor = "#777777";
+            } else if (territory.isNode()) {
+                strokeWeight = 10;
+                if (territory.isNeedLinkToNode()) {
+                    strokeColor = "#D4AF37";
+                } else {
+                    strokeColor = "#FEDEBE";
+                }
+            } else {
+                strokeWeight = 5;
+            }
+            label = ChatColor.stripColor(territory.getDisplay());
+        }
+
+        AreaStyle(CapturePoint capturePoint) {
+            Empire empire = capturePoint.getEmpire();
+            fillColor = empire != null ? empire.getMapColor() : EmpireManager.getEmpireManager().getNoEmpire().getMapColor();
+            if (capturePoint.getTerritory().isNode()) {
+                strokeWeight = 4;
+                strokeColor = "#C0C0C0";
+            } else {
+                strokeWeight = 2;
+            }
+            label = ChatColor.stripColor(capturePoint.getDisplay());
         }
     }
 
@@ -103,21 +129,30 @@ public class DynmapHandler {
         return v;
     }
 
-    private void addStyle(AreaMarker m, ProtectedRegion region) {
-        AreaStyle as = null;
+    private void addStyle(Territory territory, AreaMarker m) {
+        AreaStyle as;
         /* Check for owner style matches */
-        if (!empireStyleMap.isEmpty()) {
-            DefaultDomain dd = region.getMembers();
-            GroupDomain pd = dd.getGroupDomain();
-            if (pd != null) {
-                for (String p : pd.getGroups()) {
-                    as = empireStyleMap.get(p);
-                    if (as != null) break;
-                }
-            }
+        as = territoryAreaStyleMap.get(territory);
+
+        int sc = 0xFF0000;
+        int fc = 0xFF0000;
+        try {
+            sc = Integer.parseInt(as.strokeColor.substring(1), 16);
+            fc = Integer.parseInt(as.fillColor.substring(1), 16);
+        } catch (NumberFormatException nfx) {
+            AdaptMessage.print(nfx.getMessage(), AdaptMessage.prints.ERROR);
         }
-        if (as == null)
-            as = noEmpireStyle;
+        m.setLineStyle(as.strokeWeight, as.strokeOpacity, sc);
+        m.setFillStyle(as.fillOpacity, fc);
+        if (as.label != null) {
+            m.setLabel(as.label);
+        }
+    }
+
+    private void addStyle(CapturePoint capturePoint, AreaMarker m) {
+        AreaStyle as;
+        /* Check for owner style matches */
+        as = capturePointAreaStyleMap.get(capturePoint);
 
         int sc = 0xFF0000;
         int fc = 0xFF0000;
@@ -139,8 +174,8 @@ public class DynmapHandler {
         String name = region.getId();
         /* Make first letter uppercase */
         name = name.substring(0, 1).toUpperCase() + name.substring(1);
-        double[] x = null;
-        double[] z = null;
+        double[] x;
+        double[] z;
 
         /* Handle areas */
         String id = region.getId();
@@ -187,7 +222,19 @@ public class DynmapHandler {
             m.setRangeY(l1.getY() + 1.0, l0.getY());
         }
         /* Set line and fill properties */
-        addStyle(m, region);
+        for (Map.Entry<String, Territory> e : WorldTerritoryManager.getUsedWorlds().get(BukkitAdapter.adapt(world)).getTerritories().entrySet()) {
+            Territory territory = e.getValue();
+            if (territory.getRegion().equals(region)) {
+                addStyle(territory, m);
+            } else {
+                for (Map.Entry<String, CapturePoint> entry : territory.getCapturePoints().entrySet()) {
+                    CapturePoint capturePoint = entry.getValue();
+                    if (capturePoint.getRegion().equals(region)) {
+                        addStyle(capturePoint, m);
+                    }
+                }
+            }
+        }
 
         /* Build popup */
         String desc = formatInfoWindow(region, m);
@@ -239,9 +286,14 @@ public class DynmapHandler {
                     worldTerritoryManagers.get(curWorld);
                     regionsToDo = new ArrayList<>();
 
+                    territoryAreaStyleMap = new HashMap<>();
+                    capturePointAreaStyleMap = new HashMap<>();
+
                     worldTerritoryManagers.get(curWorld).getTerritories().forEach((s, territory) -> {
+                        territoryAreaStyleMap.put(territory, new AreaStyle(territory));
                         regionsToDo.add(territory.getRegion());
                         territory.getCapturePoints().forEach((s1, capturePoint) -> {
+                            capturePointAreaStyleMap.put(capturePoint, new AreaStyle(capturePoint));
                             regionsToDo.add(capturePoint.getRegion());
                         });
                     });
@@ -350,13 +402,18 @@ public class DynmapHandler {
         maxDepth = cfg.getInt("maxdepth", 16);
         updatesPerTick = cfg.getInt("updates-per-tick", 20);
 
-        EmpireManager empireManager = EmpireManager.getEmpireManager();
+        territoryAreaStyleMap = new HashMap<>();
+        capturePointAreaStyleMap = new HashMap<>();
         /* Get style information */
-        noEmpireStyle = new AreaStyle(empireManager.getNoEmpire());
-        empireStyleMap = new HashMap<>();
-        empireManager.getEmpires().forEach((s, empire) -> {
-            empireStyleMap.put(s, new AreaStyle(empire));
+        WorldTerritoryManager.getUsedWorlds().forEach((world, worldTerritoryManager) -> {
+            worldTerritoryManager.getTerritories().forEach((s, territory) -> {
+                territoryAreaStyleMap.put(territory, new AreaStyle(territory));
+                territory.getCapturePoints().forEach((s1, capturePoint) -> {
+                    capturePointAreaStyleMap.put(capturePoint, new AreaStyle(capturePoint));
+                });
+            });
         });
+
 
         /* Set up update job - based on period */
         int per = cfg.getInt("map.update-delay", 5); //def = 300
