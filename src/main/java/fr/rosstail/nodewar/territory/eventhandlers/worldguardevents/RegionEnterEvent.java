@@ -1,6 +1,5 @@
 package fr.rosstail.nodewar.territory.eventhandlers.worldguardevents;
 
-import fr.rosstail.nodewar.territory.eventhandlers.Reasons;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.entity.Player;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;

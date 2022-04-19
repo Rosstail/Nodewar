@@ -6,12 +6,13 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
-import fr.rosstail.nodewar.territory.eventhandlers.customevents.PointOwnerChange;
+import fr.rosstail.nodewar.territory.eventhandlers.customevents.PointOwnerChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -179,7 +180,7 @@ public class CapturePoint {
     void countEmpirePlayerOnPoint() {
         final Map<Empire, ArrayList<Player>> empiresAmount = new HashMap<>();
         for (final Player player : this.playerOnPoints) {
-            final PlayerInfo playerInfo = PlayerInfo.gets(player);
+            final PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(player);
             final Empire empire = playerInfo.getEmpire();
             if (empire != null && empire != EmpireManager.getEmpireManager().getNoEmpire()) {
                 final ArrayList<Territory> empireTerritories = empire.getWorldTerritories(this.getWorld());
@@ -303,10 +304,10 @@ public class CapturePoint {
     void checkOwnerChange() {
         if (this.empireAdvantage != null && (this.empire == null || !this.empire.equals(this.empireAdvantage))) {
             if (this.pointTimeLeft >= this.captureTime) {
-                PointOwnerChange pointOwnerChange = new PointOwnerChange(this, empireAdvantage);
+                PointOwnerChangeEvent pointOwnerChange = new PointOwnerChangeEvent(this, empireAdvantage);
                 Bukkit.getPluginManager().callEvent(pointOwnerChange);
             } else if (this.pointTimeLeft <= 0) {
-                PointOwnerChange pointOwnerChange = new PointOwnerChange(this, null);
+                PointOwnerChangeEvent pointOwnerChange = new PointOwnerChangeEvent(this, null);
                 Bukkit.getPluginManager().callEvent(pointOwnerChange);
             }
         }

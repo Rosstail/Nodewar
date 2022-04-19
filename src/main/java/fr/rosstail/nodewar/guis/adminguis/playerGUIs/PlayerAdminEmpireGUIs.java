@@ -6,6 +6,7 @@ import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
@@ -88,7 +89,7 @@ public class PlayerAdminEmpireGUIs {
 
                 staticPane.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, null, Material.RED_BANNER, empire.getDisplay(), null
                         , GUIs.adaptLore(player, null)), event -> {
-                    PlayerInfo targetInfo = PlayerInfo.gets(target);
+                    PlayerInfo targetInfo = PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(target);
                     targetInfo.leaveEmpire();
                     targetInfo.setEmpire(empire);
                     player.sendMessage(AdaptMessage.playerMessage(target, LangManager.getMessage(LangMessage.PLAYER_SET_EMPIRE)));

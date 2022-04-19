@@ -1,12 +1,13 @@
 package fr.rosstail.nodewar.territory.eventhandlers.customevents;
 
+import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class TerritoryVulnerabilityToggle extends Event implements Cancellable {
+public class TerritoryOwnerChangeEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
     @Override
@@ -20,12 +21,21 @@ public class TerritoryVulnerabilityToggle extends Event implements Cancellable {
     }
 
     private final Territory territory;
-    private final boolean vulnerable;
-    private boolean cancelled = false;
+    private final Empire empire;
+    private boolean cancelled;
 
-    public TerritoryVulnerabilityToggle(Territory territory, boolean vulnerable) {
+    public TerritoryOwnerChangeEvent(Territory territory, Empire empire) {
         this.territory = territory;
-        this.vulnerable = vulnerable;
+        this.empire = empire;
+        this.cancelled = false;
+    }
+
+    public Empire getEmpire() {
+        return empire;
+    }
+
+    public Territory getTerritory() {
+        return territory;
     }
 
     @Override
@@ -36,13 +46,5 @@ public class TerritoryVulnerabilityToggle extends Event implements Cancellable {
     @Override
     public void setCancelled(boolean b) {
         this.cancelled = b;
-    }
-
-    public Territory getTerritory() {
-        return territory;
-    }
-
-    public boolean isVulnerable() {
-        return vulnerable;
     }
 }

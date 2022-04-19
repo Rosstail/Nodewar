@@ -1,9 +1,7 @@
 package fr.rosstail.nodewar.territory.eventhandlers.worldguardevents;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
-import fr.rosstail.nodewar.territory.eventhandlers.Reasons;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerEvent;

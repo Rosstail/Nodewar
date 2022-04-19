@@ -1,4 +1,4 @@
-package fr.rosstail.nodewar.territory.eventhandlers;
+package fr.rosstail.nodewar.territory.eventhandlers.worldguardevents;
 
 public enum Reasons
 {

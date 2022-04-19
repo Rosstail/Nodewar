@@ -13,6 +13,9 @@ general:
   debug-messages: true
   use-calendar: false
 
+map:
+  update-delay: 5
+
 empires:
   none-display: "&7None"
 

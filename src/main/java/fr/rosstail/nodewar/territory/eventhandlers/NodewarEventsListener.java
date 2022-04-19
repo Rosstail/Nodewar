@@ -15,18 +15,15 @@ import org.bukkit.event.Listener;
 
 public class NodewarEventsListener implements Listener {
 
-    public NodewarEventsListener() {
-    }
-
     @EventHandler(ignoreCancelled = true)
-    public void onTerritoryOwnerChange(TerritoryOwnerChange event) {
-        TerritoryOwnerHasChanged territoryOwnerHasChanged = new TerritoryOwnerHasChanged(event.getTerritory(), event.getEmpire());
+    public void onTerritoryOwnerChange(TerritoryOwnerChangeEvent event) {
+        TerritoryOwnerHasChangedEvent territoryOwnerHasChanged = new TerritoryOwnerHasChangedEvent(event.getTerritory(), event.getEmpire());
         Bukkit.getPluginManager().callEvent(territoryOwnerHasChanged);
         event.getTerritory().cancelAttack(event.getEmpire());
     }
 
     @EventHandler
-    public void onTerritoryOwnerHasChanged(TerritoryOwnerHasChanged event) {
+    public void onTerritoryOwnerHasChanged(TerritoryOwnerHasChangedEvent event) {
         Territory territory = event.getTerritory();
         Empire empire = event.getEmpire();
         if (empire == null) {
@@ -53,14 +50,14 @@ public class NodewarEventsListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onPointOwnerChange(PointOwnerChange event) {
+    public void onPointOwnerChange(PointOwnerChangeEvent event) {
         event.getCapturePoint().setEmpire(event.getEmpire());
-        PointOwnerHasChanged pointOwnerHasChanged = new PointOwnerHasChanged(event.getCapturePoint(), event.getEmpire());
+        PointOwnerHasChangedEvent pointOwnerHasChanged = new PointOwnerHasChangedEvent(event.getCapturePoint(), event.getEmpire());
         Bukkit.getPluginManager().callEvent(pointOwnerHasChanged);
     }
 
     @EventHandler
-    public void onPointOwnerHasChanged(PointOwnerHasChanged event) {
+    public void onPointOwnerHasChanged(PointOwnerHasChangedEvent event) {
         CapturePoint capturePoint = event.getCapturePoint();
         Empire empire = event.getEmpire();
         String noEmpireDisplay = EmpireManager.getEmpireManager().getNoEmpire().getDisplay();
@@ -81,7 +78,7 @@ public class NodewarEventsListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onTerritoryVulnerabilityToggle(TerritoryVulnerabilityToggle event) {
+    public void onTerritoryVulnerabilityToggle(TerritoryVulnerabilityToggleEvent event) {
         Territory territory = event.getTerritory();
         boolean vulnerability = event.isVulnerable();
 

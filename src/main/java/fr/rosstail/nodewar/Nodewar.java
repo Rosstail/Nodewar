@@ -4,6 +4,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.calendar.CalendarManager;
 import fr.rosstail.nodewar.commandhandlers.NodewarCommands;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.eventhandler.PlayerEventHandler;
 import fr.rosstail.nodewar.empires.Empire;
@@ -13,6 +14,7 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.PAPIExpansion;
 import fr.rosstail.nodewar.territory.WorldGuardInteractions;
+import fr.rosstail.nodewar.territory.zonehandlers.DynmapHandler;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import fr.rosstail.nodewar.territory.eventhandlers.NodewarEventsListener;
 import fr.rosstail.nodewar.territory.eventhandlers.WGRegionEventsListener;
@@ -39,6 +41,8 @@ public class Nodewar extends JavaPlugin implements Listener
     private static final Chat chat;
     private static Nodewar instance;
     private static String dimName;
+
+    private DynmapHandler dynmapHandler = null;
     
     public void onLoad() {
     }
@@ -91,6 +95,10 @@ public class Nodewar extends JavaPlugin implements Listener
             for (final Empire empire : EmpireManager.getEmpireManager().getEmpires().values()) {
                 empire.applyTerritories();
             }
+
+            dynmapHandler = new DynmapHandler(this);
+            dynmapHandler.enable();
+
         }
         if (getCustomConfig().getBoolean("general.use-calendar")) {
             CalendarManager.init(this);
@@ -99,7 +107,8 @@ public class Nodewar extends JavaPlugin implements Listener
         if (connectorStr != null && !connectorStr.equalsIgnoreCase("none")) {
             DataBaseInteractions.init(instance);
         }
-        PlayerInfo.startTimer();
+        PlayerInfoManager.init(this);
+        PlayerInfoManager.getPlayerInfoManager().startTimer();
         this.getCommand(dimName).setExecutor(new NodewarCommands(this));
     }
     
@@ -122,8 +131,12 @@ public class Nodewar extends JavaPlugin implements Listener
             CalendarManager.getCalendarManager().stopCalenderSchedule();
         }
         WorldTerritoryManager.stopTimers();
-        PlayerInfo.stopTimer();
-        PlayerInfo.getPlayerInfoMap().forEach((player, playerInfo) -> {
+        if (dynmapHandler != null) {
+            dynmapHandler.disable();
+        }
+        PlayerInfoManager playerInfoManager = PlayerInfoManager.getPlayerInfoManager();
+        playerInfoManager.stopTimer();
+        playerInfoManager.getPlayerInfoMap().forEach((player, playerInfo) -> {
             playerInfo.updateAll(false);
         });
     }

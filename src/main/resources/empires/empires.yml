@@ -2,18 +2,18 @@ coalition:
   display: "&cCoalition"
   boss-bar-color: RED
   friendly-fire: true
-  dynmap:
-    color: "#CC0000DD"
+  map:
+    color: "#9B111E"
 
 empire:
   display: "&eEmpire"
   boss-bar-color: YELLOW
   friendly-fire: false
-  dynmap:
-    color: "#DDDD00DD"
+  map:
+    color: "#FFF200"
 order:
   display: "&aOrder"
   boss-bar-color: GREEN
   friendly-fire: false
-  dynmap:
-    color: "#00DE00DD"
+  map:
+    color: "#086522"

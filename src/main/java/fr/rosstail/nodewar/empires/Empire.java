@@ -17,17 +17,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class Empire
-{
+public class Empire {
     private final String name;
     private final File file;
     private final FileConfiguration config;
     private String display;
     private BarColor barColor;
+    private String mapColor;
     private final Map<World, ArrayList<Territory>> worldTerritories = new HashMap<>();
     private boolean friendlyFire;
     private String ownerUUID;
-    
+
     Empire(final File file, final FileConfiguration config, final String key) {
         this.name = key;
         this.file = file;
@@ -37,19 +37,26 @@ public class Empire
             display = "&7" + key;
         }
         this.display = ChatColor.translateAlternateColorCodes('&', display);
+
+        if (config.getString(key + ".map.color") != null && config.getString(key + ".map.color").matches("(#[a-fA-F0-9]{6})")) {
+            this.mapColor = config.getString(key + ".map.color");
+        } else {
+            Random obj = new Random();
+            int rand_num = obj.nextInt(0xffffff + 1);
+            this.mapColor = String.format("#%06x", rand_num);
+        }
         if (config.getString(key + ".boss-bar-color") != null) {
             this.barColor = BarColor.valueOf(config.getString(key + ".boss-bar-color"));
-        }
-        else {
+        } else {
             this.barColor = BarColor.WHITE;
         }
         if (config.getString(key + ".friendly-fire") != null) {
             this.friendlyFire = config.getBoolean(key + ".friendly-fire");
-        }
-        else {
+        } else {
             this.friendlyFire = true;
         }
         this.ownerUUID = config.getString(key + ".owner-uuid");
+        System.out.println(display + " colors : " + mapColor);
     }
 
     Empire(Player player, String name) {
@@ -57,6 +64,7 @@ public class Empire
         this.config = new YamlConfiguration();
         this.file = new File(Nodewar.getInstance().getDataFolder(), "empires/" + name + ".yml");
         this.display = AdaptMessage.empireMessage(this, "&7" + name);
+        this.mapColor = "#FFFFFF";
         this.friendlyFire = true;
         this.barColor = BarColor.WHITE;
         if (player != null) {
@@ -73,10 +81,11 @@ public class Empire
         this.config = null;
         this.display = ChatColor.translateAlternateColorCodes('&', "&7None");
         this.barColor = BarColor.WHITE;
+        this.mapColor = "#000000";
         this.friendlyFire = true;
         this.file = null;
     }
-    
+
     public String getName() {
         return this.name;
     }
@@ -103,7 +112,7 @@ public class Empire
         }
         return new ArrayList<>();
     }
-    
+
     public BarColor getBarColor() {
         return this.barColor;
     }
@@ -137,7 +146,15 @@ public class Empire
             }
         }
     }
-    
+
+    public String getMapColor() {
+        return mapColor;
+    }
+
+    public void setMapColor(String mapColor) {
+        this.mapColor = mapColor;
+    }
+
     public boolean isFriendlyFire() {
         return this.friendlyFire;
     }

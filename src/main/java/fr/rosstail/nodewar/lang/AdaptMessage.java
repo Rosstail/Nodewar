@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.lang;
 
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
@@ -24,6 +25,7 @@ public class AdaptMessage
     public enum prints {
         OUT,
         WARNING,
+        SEVERE,
         ERROR;
     }
 
@@ -163,7 +165,7 @@ public class AdaptMessage
             return null;
         }
         if (message.contains(PlaceHolders.PLAYER_EMPIRE_STARTER.getText()) || message.contains(PlaceHolders.PLAYER_EMPIRE_DISPLAY.getText())) {
-            final PlayerInfo playerInfo = PlayerInfo.gets(player);
+            final PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(player);
             if (message.contains(PlaceHolders.PLAYER_EMPIRE.getText())) {
                 message = message.replaceAll(PlaceHolders.PLAYER_EMPIRE.getText(), playerInfo.getEmpire().getName());
             }
@@ -218,7 +220,9 @@ public class AdaptMessage
             getLogger().severe(string);
         } else if (cause.equals(prints.WARNING)) {
             getLogger().warning(string);
-        } else {
+        } else if (cause.equals(prints.SEVERE)) {
+            getLogger().severe(string);
+        } else{
             getLogger().info(string);
         }
     }

@@ -5,6 +5,7 @@ import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.lang.AdaptMessage;
@@ -42,7 +43,7 @@ public class PlayerAdminGUI {
 
         staticPane.addItem(new GuiItem(GUIs.createGuiItem(target, plugin, null, Material.RED_BANNER, "&9Empire", null
                 , GUIs.adaptLore(target, null)), event -> {
-            PlayerInfo targetInfo = PlayerInfo.gets(target);
+            PlayerInfo targetInfo = PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(target);
             if (event.isRightClick()) {
                 targetInfo.leaveEmpire();
             } else {

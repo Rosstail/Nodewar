@@ -11,7 +11,7 @@ import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
-import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerChange;
+import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -380,12 +380,12 @@ public class Territory {
         if (this.empireAdvantage != null) {
             if (this.empire == null || !this.empire.equals(this.empireAdvantage)) {
                 if (this.resistance <= 0) {
-                    TerritoryOwnerChange territoryOwnerChange = new TerritoryOwnerChange(this, this.empireAdvantage);
+                    TerritoryOwnerChangeEvent territoryOwnerChange = new TerritoryOwnerChangeEvent(this, this.empireAdvantage);
                     Bukkit.getPluginManager().callEvent(territoryOwnerChange);
                 }
             } else {
                 if (this.resistance >= this.maxResistance) {
-                    TerritoryOwnerChange territoryOwnerChange = new TerritoryOwnerChange(this, this.empire);
+                    TerritoryOwnerChangeEvent territoryOwnerChange = new TerritoryOwnerChangeEvent(this, this.empire);
                     Bukkit.getPluginManager().callEvent(territoryOwnerChange);
                 }
             }
