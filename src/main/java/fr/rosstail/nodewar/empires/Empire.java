@@ -56,7 +56,6 @@ public class Empire {
             this.friendlyFire = true;
         }
         this.ownerUUID = config.getString(key + ".owner-uuid");
-        System.out.println(display + " colors : " + mapColor);
     }
 
     Empire(Player player, String name) {

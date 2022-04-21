@@ -5,6 +5,7 @@ import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.*;
 import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
+import fr.rosstail.nodewar.territory.zonehandlers.DynmapHandler;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import org.bukkit.Bukkit;

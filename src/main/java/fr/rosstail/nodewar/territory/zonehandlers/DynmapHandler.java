@@ -5,8 +5,6 @@ import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.domains.DefaultDomain;
-import com.sk89q.worldguard.domains.GroupDomain;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -29,7 +27,10 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DynmapHandler {
     private static DynmapHandler dynmapHandler;
@@ -39,9 +40,14 @@ public class DynmapHandler {
     private MarkerAPI markerAPI;
     private int updatesPerTick = 1; //1-20
 
-    private final String DEF_INFOWINDOW = "<div class=\"infowindow\"><span style=\"font-size:120%;\">%regionname%</span><br /> Owner <span style=\"font-weight:bold;\">%playerowners%</span><br />Flags<br /><span style=\"font-weight:bold;\">%flags%</span></div>";
+    private final String DEF_INFOWINDOW = "" +
+            "<div class=\"infowindow\">" +
+                "<span style=\"font-size:120%;\">%regionname%</span>" +
+                "<br /> Empire <span style=\"font-weight:bold;\">%groupmembers%</span>" +
+                "<br /> Flags<br />" +
+                "<span style=\"font-weight:bold;\">  > %flags%</span>" +
+            "</div>";
 
-    private FileConfiguration config;
     MarkerSet set;
     long updatePeriod;
     boolean use3d;
@@ -66,7 +72,7 @@ public class DynmapHandler {
     }
 
     private static class AreaStyle {
-        String strokeColor = EmpireManager.getEmpireManager().getNoEmpire().getMapColor();
+        String strokeColor = "#000000";
         double strokeOpacity = 0.8f;
         int strokeWeight;
         String fillColor;
@@ -78,16 +84,16 @@ public class DynmapHandler {
             fillColor = empire != null ? empire.getMapColor() : EmpireManager.getEmpireManager().getNoEmpire().getMapColor();
             if (!territory.isVulnerable()) {
                 strokeOpacity = 0f;
-                strokeColor = "#777777";
             } else if (territory.isNode()) {
-                strokeWeight = 10;
+                strokeWeight = 7;
                 if (territory.isNeedLinkToNode()) {
                     strokeColor = "#D4AF37";
                 } else {
-                    strokeColor = "#FEDEBE";
+                    strokeColor = "#B87333";
                 }
             } else {
-                strokeWeight = 5;
+                strokeWeight = 3;
+                strokeColor = "#CACACA";
             }
             label = ChatColor.stripColor(territory.getDisplay());
         }
@@ -97,10 +103,10 @@ public class DynmapHandler {
             fillColor = empire != null ? empire.getMapColor() : EmpireManager.getEmpireManager().getNoEmpire().getMapColor();
             if (capturePoint.getTerritory().isNode()) {
                 strokeWeight = 4;
-                strokeColor = "#C0C0C0";
             } else {
                 strokeWeight = 2;
             }
+            strokeColor = "#FFFFFF";
             label = ChatColor.stripColor(capturePoint.getDisplay());
         }
     }
@@ -121,11 +127,11 @@ public class DynmapHandler {
             v = v.replace("%parent%", "");
         v = v.replace("%priority%", String.valueOf(region.getPriority()));
         Map<Flag<?>, Object> map = region.getFlags();
-        String flgs = "";
+        StringBuilder flgs = new StringBuilder();
         for (Flag<?> f : map.keySet()) {
-            flgs += " > " + f.getName() + ": " + map.get(f).toString() + "<br/>";
+            flgs.append(" > ").append(f.getName()).append(": ").append(map.get(f).toString()).append("<br/>");
         }
-        v = v.replace("%flags%", flgs);
+        v = v.replace("%flags%", flgs.toString());
         return v;
     }
 

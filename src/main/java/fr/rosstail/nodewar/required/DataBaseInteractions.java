@@ -1,13 +1,12 @@
 package fr.rosstail.nodewar.required;
 
-import java.sql.*;
-
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
+
+import java.sql.*;
 
 public class DataBaseInteractions {
     fr.rosstail.nodewar.Nodewar plugin;
@@ -44,7 +43,7 @@ public class DataBaseInteractions {
     public Connection openConnection() {
         synchronized (this) {
             try {
-                Class.forName("com.mysql.jdbc.Driver");
+                Class.forName("com.mysql.cj.jdbc.Driver");
                 return DriverManager.getConnection("jdbc:" + this.connector + "://" + this.host + ":" + this.port + "/" + this.database, this.username, this.password);
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();

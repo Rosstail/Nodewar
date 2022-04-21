@@ -20,7 +20,7 @@ public class PlayerEventHandler implements Listener
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-        final PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(player);
+        final PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getSet(player);
         playerInfo.loadInfo();
         playerInfo.setPlayerGroup(playerInfo.getEmpire());
     }
