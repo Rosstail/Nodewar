@@ -24,15 +24,9 @@ public class RegionLeftEvent extends RegionEvent
         if (WorldTerritoryManager.getUsedWorlds().containsKey(world)) {
             WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().forEach((s, territory) -> {
                 if (territory.getRegion().equals(region)) {
-                    territory.bossBarRemove(player);
+                    territory.getObjective().bossBarRemove(player);
                     territory.getPlayersOnTerritory().remove(player);
                 }
-                territory.getCapturePoints().values().forEach(capturePoint -> {
-                    if (capturePoint.getRegion().equals(region)) {
-                        capturePoint.bossBarRemove(player);
-                        capturePoint.getPlayersOnPoint().remove(player);
-                    }
-                });
             });
         }
     }

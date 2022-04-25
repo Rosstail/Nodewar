@@ -49,7 +49,7 @@ public class TerritoryGUIs {
         staticPane.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, null, Material.RED_BANNER, "&9Empire", null
                 , GUIs.adaptLore(player, null)), event -> {
             if (event.isRightClick()) {
-                territory.cancelAttack(null);
+                territory.getObjective().cancel();
                 player.sendMessage(AdaptMessage.playerMessage(player,
                         AdaptMessage.territoryMessage(territory,LangManager.getMessage(LangMessage.TERRITORY_NEUTRALIZE))));
             } else {

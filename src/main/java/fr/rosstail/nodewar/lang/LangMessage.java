@@ -15,11 +15,7 @@ public enum LangMessage
     BOSSBAR_TERRITORY_CONQUER("bossbar.territory.under-capture"),
     BOSSBAR_TERRITORY_STRUGGLE("bossbar.territory.struggle"),
     BOSSBAR_TERRITORY_ON_DEFENSE("bossbar.territory.on-defense"),
-    BOSSBAR_POINT_NEUTRAL("bossbar.point.neutral"),
-    BOSSBAR_POINT_CONQUER("bossbar.point.under-capture"),
-    BOSSBAR_POINT_NEUTRALIZE("bossbar.point.neutralizing"),
-    BOSSBAR_POINT_DEFENDED("bossbar.point.on-defense"),
-    BOSSBAR_POINT_STRUGGLE("bossbar.point.struggle"),
+    BOSSBAR_TERRITORY_NEUTRALIZE("bossbar.territory.neutralizing"),
 
     PLAYER_ALREADY_IN_EMPIRE("player-already-in-empire"),
     PLAYER_JOIN_EMPIRE("player-join-empire"),

@@ -3,7 +3,6 @@ package fr.rosstail.nodewar;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.calendar.CalendarManager;
 import fr.rosstail.nodewar.commandhandlers.NodewarCommands;
-import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.eventhandler.PlayerEventHandler;
@@ -16,7 +15,7 @@ import fr.rosstail.nodewar.lang.PAPIExpansion;
 import fr.rosstail.nodewar.territory.WorldGuardInteractions;
 import fr.rosstail.nodewar.territory.zonehandlers.DynmapHandler;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
-import fr.rosstail.nodewar.territory.eventhandlers.NodewarEventsListener;
+import fr.rosstail.nodewar.territory.eventhandlers.NodeWarEventsListener;
 import fr.rosstail.nodewar.territory.eventhandlers.WGRegionEventsListener;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import net.milkbowl.vault.chat.Chat;
@@ -64,7 +63,7 @@ public class Nodewar extends JavaPlugin implements Listener
         WorldGuardPlugin wgPlugin = this.getWGPlugin();
         if (wgPlugin != null) {
             WGRegionEventsListener wgRegionEventsListener = new WGRegionEventsListener(this);
-            NodewarEventsListener nodewarEventsListener = new NodewarEventsListener();
+            NodeWarEventsListener nodewarEventsListener = new NodeWarEventsListener();
             this.getServer().getPluginManager().registerEvents(wgRegionEventsListener, wgPlugin);
             this.getServer().getPluginManager().registerEvents(nodewarEventsListener, this);
         }
@@ -87,7 +86,9 @@ public class Nodewar extends JavaPlugin implements Listener
             Territory.initWorldTerritories(this);
             for (final WorldTerritoryManager manager : WorldTerritoryManager.getUsedWorlds().values()) {
                 for (final Territory territory : manager.getTerritories().values()) {
-                    territory.initCanAttack();
+                    territory.setupSubTerritories();
+                    territory.setUpObjective();
+                    territory.initTargets();
                 }
             }
             for (final Empire empire : EmpireManager.getEmpireManager().getEmpires().values()) {

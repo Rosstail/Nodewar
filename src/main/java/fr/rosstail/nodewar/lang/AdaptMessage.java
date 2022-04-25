@@ -4,7 +4,6 @@ import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.empires.EmpireManager;
-import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
@@ -90,70 +89,18 @@ public class AdaptMessage
             if (message.contains(PlaceHolders.TERRITORY_WORLD.getText())) {
                 message = message.replaceAll(PlaceHolders.TERRITORY_WORLD.getText(), territory.getWorld().getName());
             }
-            if (message.contains(PlaceHolders.TERRITORY_MAXIMUM_RESISTANCE.getText())) {
-                message = message.replaceAll(PlaceHolders.TERRITORY_MAXIMUM_RESISTANCE.getText(), String.valueOf(territory.getMaxResistance()));
-            }
-            if (message.contains(PlaceHolders.TERRITORY_RESISTANCE.getText())) {
-                message = message.replaceAll(PlaceHolders.TERRITORY_RESISTANCE.getText(), String.valueOf(territory.getResistance()));
-            }
-            if (message.contains(PlaceHolders.TERRITORY_REGEN_DAMAGE.getText())) {
-                message = message.replaceAll(PlaceHolders.TERRITORY_REGEN_DAMAGE.getText(), String.valueOf(territory.getRegenOrDamage()));
-            }
             if (message.contains(PlaceHolders.TERRITORY_ON_ATTACK.getText())) {
-                message = message.replaceAll(PlaceHolders.TERRITORY_ON_ATTACK.getText(), String.valueOf(territory.isDamaged()));
+                message = message.replaceAll(PlaceHolders.TERRITORY_ON_ATTACK.getText(), String.valueOf(territory.isUnderAttack()));
             }
             if (message.contains(PlaceHolders.TERRITORY_EMPIRE_OWNER.getText())) {
-                message = message.replaceAll(PlaceHolders.TERRITORY_EMPIRE_OWNER.getText(), String.valueOf(territory.getEmpire().getDisplay()));
+                Empire owner = territory.getEmpire();
+                message = message.replaceAll(PlaceHolders.TERRITORY_EMPIRE_OWNER.getText(), owner != null ? owner.getDisplay() : EmpireManager.getEmpireManager().getNoEmpire().getDisplay());
             }
             if (message.contains(PlaceHolders.TERRITORY_EMPIRE_ADVANTAGE.getText())) {
-                message = message.replaceAll(PlaceHolders.TERRITORY_EMPIRE_ADVANTAGE.getText(), String.valueOf(territory.getEmpireAdvantage().getDisplay()));
+                message = message.replaceAll(PlaceHolders.TERRITORY_EMPIRE_ADVANTAGE.getText(), String.valueOf(territory.getObjective().getAdvantage().getDisplay()));
             }
             if (message.contains(PlaceHolders.TERRITORY_REGION.getText())) {
                 message = message.replaceAll(PlaceHolders.TERRITORY_REGION.getText(), territory.getRegion().getId());
-            }
-        }
-
-        return adapt(setPlaceholderMessage(null, message));
-    }
-
-    public static String pointMessage(CapturePoint point, String message) {
-        if (message == null) {
-            return null;
-        }
-        if (point == null) {
-            return message;
-        }
-
-        if (message.contains(PlaceHolders.POINT_STARTER.getText())) {
-            if (message.contains(PlaceHolders.POINT_NAME.getText())) {
-                message = message.replaceAll(PlaceHolders.POINT_NAME.getText(), point.getName());
-            }
-            if (message.contains(PlaceHolders.POINT_DISPLAY.getText())) {
-                message = message.replaceAll(PlaceHolders.POINT_DISPLAY.getText(), point.getDisplay());
-            }
-            if (message.contains(PlaceHolders.POINT_WORLD.getText())) {
-                message = message.replaceAll(PlaceHolders.POINT_WORLD.getText(), point.getWorld().getName());
-            }
-            if (message.contains(PlaceHolders.POINT_MAXIMUM_CAPTURE_TIME.getText())) {
-                message = message.replaceAll(PlaceHolders.POINT_MAXIMUM_CAPTURE_TIME.getText(), String.valueOf(point.getMaxCaptureTime()));
-            }
-            if (message.contains(PlaceHolders.POINT_CAPTURE_TIME.getText())) {
-                message = message.replaceAll(PlaceHolders.POINT_CAPTURE_TIME.getText(), String.valueOf(point.getPointTimeLeft()));
-            }
-            if (message.contains(PlaceHolders.POINT_REGEN_DAMAGE.getText())) {
-                message = message.replaceAll(PlaceHolders.POINT_REGEN_DAMAGE.getText(), String.valueOf(point.getBonusConquer()));
-            }
-            if (message.contains(PlaceHolders.POINT_ATTACKER_RATIO.getText())) {
-                message = message.replaceAll(PlaceHolders.POINT_ATTACKER_RATIO.getText(), String.valueOf(point.getAttackerRatio()));
-            }
-            if (message.contains(PlaceHolders.POINT_EMPIRE_OWNER.getText())) {
-                message = message.replaceAll(PlaceHolders.POINT_EMPIRE_OWNER.getText(), point.getEmpire().getDisplay());
-            }
-            if (message.contains(PlaceHolders.POINT_EMPIRE_ADVANTAGE.getText())) {
-                message = message.replaceAll(PlaceHolders.POINT_EMPIRE_ADVANTAGE.getText(), point.getEmpireAdvantage().getDisplay());
-            }
-            if (message.contains(PlaceHolders.POINT_REGION.getText())) {
-                message = message.replaceAll(PlaceHolders.POINT_REGION.getText(), point.getRegion().getId());
             }
         }
 

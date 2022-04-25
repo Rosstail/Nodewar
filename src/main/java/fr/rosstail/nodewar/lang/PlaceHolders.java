@@ -29,20 +29,8 @@ public enum PlaceHolders
     TERRITORY_EMPIRE_OWNER("%" + Nodewar.getDimName() + "_territory_empire_owner%"),
     TERRITORY_EMPIRE_ADVANTAGE("%" + Nodewar.getDimName() + "_territory_empire_advantage%"),
     TERRITORY_ON_ATTACK("%" + Nodewar.getDimName() + "_territory_damaged%"),
-    
-    POINT_STARTER("%" + Nodewar.getDimName() + "_point_"),
-    POINT_NAME("%" + Nodewar.getDimName() + "_point_name%"),
-    POINT_TERRITORY("%" + Nodewar.getDimName() + "_point_territory%"),
-    POINT_ATTACKER_RATIO("%" + Nodewar.getDimName() + "_point_attacker_ratio%"),
-    POINT_WORLD("%" + Nodewar.getDimName() + "_point_world%"),
-    POINT_REGION("%" + Nodewar.getDimName() + "_point_region%"),
-    POINT_DISPLAY("%" + Nodewar.getDimName() + "_point_display%"),
-    POINT_MAXIMUM_CAPTURE_TIME("%" + Nodewar.getDimName() + "_point_max_resistance%"),
-    POINT_CAPTURE_TIME("%" + Nodewar.getDimName() + "_point_resistance%"),
-    POINT_REGEN_DAMAGE("%" + Nodewar.getDimName() + "_point_regendamage%"),
-    POINT_EMPIRE_OWNER("%" + Nodewar.getDimName() + "_point_empire_owner%"),
-    POINT_EMPIRE_ADVANTAGE("%" + Nodewar.getDimName() + "_point_empire_advantage%"),
-    POINT_ON_ATTACK("%" + Nodewar.getDimName() + "_point_damaged%");
+    TERRITORY_TERRITORY("%" + Nodewar.getDimName() + "_territory_territory%"),
+    TERRITORY_ATTACKER_RATIO("%" + Nodewar.getDimName() + "_point_attacker_ratio%");
 
     private final String text;
     

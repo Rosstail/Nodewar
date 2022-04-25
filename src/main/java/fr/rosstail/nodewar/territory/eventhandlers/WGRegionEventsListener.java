@@ -82,8 +82,7 @@ public class WGRegionEventsListener implements Listener
 
     @EventHandler
     public void onPlayerTeleport(final PlayerTeleportEvent e) {
-        e.setCancelled(this.updateRegions(e.getPlayer(), Reasons.TELEPORT, Objects.requireNonNull(e.getTo()), e));
-        AdaptMessage.print("Teleport event", AdaptMessage.prints.WARNING);
+        this.updateRegions(e.getPlayer(), Reasons.TELEPORT, Objects.requireNonNull(e.getTo()), e);
         //e.setCancelled(this.updateRegions(e.getPlayer(), Reasons.TELEPORT, Objects.requireNonNull(e.getTo()), e));
     }
 

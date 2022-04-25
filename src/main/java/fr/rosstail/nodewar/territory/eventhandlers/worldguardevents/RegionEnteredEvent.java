@@ -1,7 +1,7 @@
 package fr.rosstail.nodewar.territory.eventhandlers.worldguardevents;
 
+import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import org.bukkit.World;
-import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.entity.Player;
@@ -15,14 +15,8 @@ public class RegionEnteredEvent extends RegionEvent
         if (WorldTerritoryManager.getUsedWorlds().containsKey(world)) {
             WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().forEach((s, territory) -> {
                 if (territory.getRegion().equals(region)) {
-                    territory.getBossBar().addPlayer(player);
+                    territory.getObjective().getBossBar().addPlayer(player);
                     territory.getPlayersOnTerritory().add(player);
-                }
-                for (CapturePoint capturePoint : territory.getCapturePoints().values()) {
-                    if (capturePoint.getRegion().equals(region)) {
-                        capturePoint.getBossBar().addPlayer(player);
-                        capturePoint.getPlayersOnPoint().add(player);
-                    }
                 }
             });
         }

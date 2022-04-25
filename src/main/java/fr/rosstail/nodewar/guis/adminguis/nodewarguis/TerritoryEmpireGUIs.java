@@ -89,7 +89,7 @@ public class TerritoryEmpireGUIs {
 
                 staticPane.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, null, Material.RED_BANNER, empire.getDisplay(), null
                         , GUIs.adaptLore(player, null)), event -> {
-                    territory.cancelAttack(empire);
+                    territory.getObjective().cancel();
                     if (empire != EmpireManager.getEmpireManager().getNoEmpire()) {
                         AdaptMessage.playerMessage(player, AdaptMessage.territoryMessage(territory, LangManager.getMessage(LangMessage.TERRITORY_SET_EMPIRE)));
                     } else {

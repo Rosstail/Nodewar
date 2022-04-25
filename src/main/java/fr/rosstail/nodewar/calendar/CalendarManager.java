@@ -91,15 +91,11 @@ public class CalendarManager {
             if (empireName.equalsIgnoreCase("neutral")) {
                 TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, null);
                 Bukkit.getPluginManager().callEvent(event);
-                if (!event.isCancelled()) {
-                    territory.cancelAttack(territory.getEmpire());
-                }
+                territory.getObjective().cancel();
             } else if (empires.containsKey(empireName)) {
                 TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, empires.get(empireName));
                 Bukkit.getPluginManager().callEvent(event);
-                if (!event.isCancelled()) {
-                    territory.cancelAttack(territory.getEmpire());
-                }
+                territory.getObjective().cancel();
             }
         }
         if (vulnerableStr != null) {
