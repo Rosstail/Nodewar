@@ -8,6 +8,7 @@ import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerCh
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
 import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -186,7 +187,11 @@ public class ControlPoint extends Objective {
         progress = (float) captureTime / maxCaptureTime;
         getBossBar().setProgress(Math.min(Math.max(0F, progress), 1F));
         if (progress == 1F) {
-            getBossBar().setColor(getTerritory().getEmpire().getBarColor());
+            if (getTerritory().getEmpire() != null) {
+                getBossBar().setColor(getTerritory().getEmpire().getBarColor());
+            } else {
+                getBossBar().setColor(BarColor.WHITE);
+            }
         }
     }
 

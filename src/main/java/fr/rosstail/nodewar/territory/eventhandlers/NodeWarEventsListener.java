@@ -28,18 +28,18 @@ public class NodeWarEventsListener implements Listener {
             });
         }
         else {
-            if (!prevOwner.equals(winner)) {
+            if (prevOwner != winner) {
                 territory.getPlayersOnTerritory().forEach(player -> {
                     player.sendTitle(ChatColor.translateAlternateColorCodes('&',
                                     territory.getDisplay() + " &rTerritory"),
-                            "Captured by " + prevOwner.getDisplay(), 4, 55, 8);
+                            "Captured by " + (winner.getDisplay() ), 4, 55, 8);
                 });
             } else {
                 territory.getPlayersOnTerritory().forEach(player -> {
                     player.sendTitle(ChatColor.translateAlternateColorCodes('&',
                                     territory.getDisplay() + " &rTerritory"),
                             ChatColor.translateAlternateColorCodes('&',
-                                    "Defended by " + prevOwner.getDisplay()), 4, 55, 8);
+                                    "Defended by " + winner.getDisplay()), 4, 55, 8);
                 });
             }
         }

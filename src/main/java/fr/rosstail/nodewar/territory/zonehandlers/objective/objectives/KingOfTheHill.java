@@ -45,7 +45,7 @@ public class KingOfTheHill extends Objective {
                     Empire empire = entry.getKey();
                     Long aLong = entry.getValue();
 
-                    if (aLong < 0L && advantageEmpire.equals(empire)) {
+                    if (aLong <= 0L && advantageEmpire.equals(empire)) {
                         return empire;
                     }
                 }
@@ -64,7 +64,6 @@ public class KingOfTheHill extends Objective {
                     empireTimers.put(advantage, empireTimers.get(advantage) - 1);
                 }
             }
-
         }
     }
 
