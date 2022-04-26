@@ -27,7 +27,7 @@ public class ControlPoint extends Objective {
         super(territory);
         neutralPeriod = territory.getConfig().getBoolean(territory.getName() + ".options.objective.neutral-period", true);
         attackersRatio = (float) territory.getConfig().getDouble(territory.getName() + ".options.objective.attackers-ratio", 1F);
-        maxCaptureTime = 20 * territory.getConfig().getInt(territory.getName() + ".options.objective.max-resistance", 1);
+        maxCaptureTime = territory.getConfig().getInt(territory.getName() + ".options.objective.max-resistance", 1);
         Empire owner = territory.getEmpire();
         if (owner == null) {
             captureTime = 0;
@@ -41,7 +41,20 @@ public class ControlPoint extends Objective {
         Territory territory = getTerritory();
         countEmpiresEffective(territory);
         checkAdvantage();
+        checkNeutralization();
         setCaptureTime(territory);
+    }
+
+    private void checkNeutralization() {
+        Territory territory = getTerritory();
+        Empire owner = territory.getEmpire();
+        Empire advantage = getAdvantage();
+        if (owner != null && advantage != owner) {
+            if (captureTime <= 0) {
+                territory.setEmpire(null); //neutralize
+                territory.changeOwner(null);
+            }
+        }
     }
 
     @Override
@@ -52,30 +65,9 @@ public class ControlPoint extends Objective {
         if (territory.isUnderAttack() && advantage != null) {
             if (captureTime >= maxCaptureTime && owner == null) {
                 return advantage;
-            } else if (captureTime <= 0 && owner != null) {
-                return advantage;
             }
         }
         return null;
-    }
-
-    @Override
-    public void win(final Empire winner) {
-        Territory territory = getTerritory();
-        Empire owner = territory.getEmpire();
-        Empire newOwner = winner;
-        captureTime = maxCaptureTime;
-        setAdvantage(winner);
-        if (owner != null) {
-            if (owner != winner || neutralPeriod) {
-                newOwner = null;
-            }
-        }
-        if (newOwner != null) {
-            territory.setUnderAttack(false);
-        }
-        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(getTerritory(), newOwner);
-        Bukkit.getPluginManager().callEvent(event);
     }
 
     void countEmpiresEffective(Territory territory) {
@@ -120,6 +112,7 @@ public class ControlPoint extends Objective {
         }
 
         if (greatestAttackerEffective == 0 && defenderEffective == 0) {
+            setAdvantage(null);
             return;
         }
 
@@ -158,20 +151,43 @@ public class ControlPoint extends Objective {
     }
 
     @Override
+    public void win(final Empire winner) {
+        Territory territory = getTerritory();
+        Empire owner = territory.getEmpire();
+        Empire newOwner = winner;
+        captureTime = maxCaptureTime;
+        setAdvantage(winner);
+        if (owner != null) {
+            if (owner != winner || neutralPeriod) {
+                newOwner = null;
+            }
+        }
+        if (newOwner != null) {
+            territory.setUnderAttack(false);
+        }
+        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(getTerritory(), newOwner);
+        Bukkit.getPluginManager().callEvent(event);
+    }
+
+    @Override
+    public void reset() {
+        if (getTerritory().getEmpire() != null) {
+            captureTime = maxCaptureTime;
+            getTerritory().setUnderAttack(false);
+        } else {
+            captureTime = 0;
+        }
+    }
+
+    @Override
     public void updateBossBar() {
         super.updateBossBar();
-        Territory territory = getTerritory();
         float progress;
-        if (territory.isUnderAttack()) {
-            if (territory.getEmpire() != null) {
-                progress = (float) ((maxCaptureTime - captureTime)) / maxCaptureTime;
-            } else {
-                progress = (float) captureTime / maxCaptureTime;
-            }
-        } else {
-            progress = (float) captureTime / maxCaptureTime;
-        }
+        progress = (float) captureTime / maxCaptureTime;
         getBossBar().setProgress(Math.min(Math.max(0F, progress), 1F));
+        if (progress == 1F) {
+            getBossBar().setColor(getTerritory().getEmpire().getBarColor());
+        }
     }
 
     public boolean isNeutralPeriod() {

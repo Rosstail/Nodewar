@@ -17,29 +17,38 @@ public class NodeWarEventsListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onTerritoryOwnerChange(TerritoryOwnerChangeEvent event) {
         Territory territory = event.getTerritory();
-        Empire empire = event.getEmpire();
-        territory.changeOwner(empire);
-        if (empire == null) {
+        Empire prevOwner = territory.getEmpire();
+        Empire winner = event.getEmpire();
+        if (winner == null) {
             territory.getPlayersOnTerritory().forEach(player -> {
-                player.sendTitle(ChatColor.translateAlternateColorCodes('&', territory.getDisplay() + " &rTerritory"), "Has been neutralized by " + territory.getObjective().getAdvantage().getDisplay(),
+                player.sendTitle(ChatColor.translateAlternateColorCodes('&',
+                                territory.getDisplay() + " &rTerritory"), "Has been neutralized by "
+                                + territory.getObjective().getAdvantage().getDisplay(),
                         4, 55, 8);
             });
         }
         else {
-            if (!empire.equals(territory.getObjective().getAdvantage())) {
+            if (!prevOwner.equals(winner)) {
                 territory.getPlayersOnTerritory().forEach(player -> {
-                    player.sendTitle(ChatColor.translateAlternateColorCodes('&', territory.getDisplay() + " &rTerritory"),
-                            "Captured by " + empire.getDisplay(), 4, 55, 8);
+                    player.sendTitle(ChatColor.translateAlternateColorCodes('&',
+                                    territory.getDisplay() + " &rTerritory"),
+                            "Captured by " + prevOwner.getDisplay(), 4, 55, 8);
                 });
             } else {
-                if (territory.isUnderAttack()) {
-                    territory.getPlayersOnTerritory().forEach(player -> {
-                        player.sendTitle(ChatColor.translateAlternateColorCodes('&', territory.getDisplay() + " &rTerritory"),
-                                ChatColor.translateAlternateColorCodes('&', "Defended by " + empire.getDisplay()), 4, 55, 8);
-                    });
-                }
+                territory.getPlayersOnTerritory().forEach(player -> {
+                    player.sendTitle(ChatColor.translateAlternateColorCodes('&',
+                                    territory.getDisplay() + " &rTerritory"),
+                            ChatColor.translateAlternateColorCodes('&',
+                                    "Defended by " + prevOwner.getDisplay()), 4, 55, 8);
+                });
             }
         }
+        territory.setEmpire(winner);
+        territory.changeOwner(winner);
+
+        territory.getSubTerritories().forEach((s, territory1) -> {
+            territory1.getObjective().win(winner);
+        });
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -51,7 +60,7 @@ public class NodeWarEventsListener implements Listener {
         int fileID = territory.getFileID();
         BossBar bossBar = territory.getObjective().getBossBar();
         bossBar.setVisible(vulnerability);
-        territory.getObjective().cancel();
+        territory.getObjective().reset();
         FileConfiguration fileConfiguration = WorldTerritoryManager.getTerritoryConfigs().get(fileID);
         fileConfiguration.set(territory.getName() + ".options.is-vulnerable", vulnerability);
         WorldTerritoryManager.getTerritoryConfigs().set(fileID, fileConfiguration);

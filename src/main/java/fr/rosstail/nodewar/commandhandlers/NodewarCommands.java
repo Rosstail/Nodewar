@@ -373,27 +373,19 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                                 String subTerritoryName = location[2];
                                 if (territory.getSubTerritories().containsKey(subTerritoryName)) {
                                     Territory subTerritory = territory.getSubTerritories().get(subTerritoryName);
-                                    TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(subTerritory, empire);
-                                    Bukkit.getPluginManager().callEvent(event);
+                                    subTerritory.getObjective().win(empire);
 
                                     sender.sendMessage(AdaptMessage.territoryMessage(subTerritory, LangManager.getMessage(LangMessage.TERRITORY_SET_EMPIRE)));
                                 }
                             } else {
-                                /*TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, empire);
-                                Bukkit.getPluginManager().callEvent(event);
-                                if (!event.isCancelled()) {*/
-                                    territory.getObjective().win(empire);
-                                    territory.getObjective().cancel();
+                                territory.getObjective().win(empire);
                                 sender.sendMessage(AdaptMessage.territoryMessage(territory, LangManager.getMessage(LangMessage.TERRITORY_SET_EMPIRE)));
-                                //}
                             }
                         }
                     }
                 } else {
                     worldTerritoryManager.getTerritories().forEach((s, territory) -> {
-                        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, empire);
-                        Bukkit.getPluginManager().callEvent(event);
-                        territory.getObjective().cancel();
+                        territory.getObjective().win(empire);
                     });
                     sender.sendMessage(AdaptMessage.worldMessage(world, LangManager.getMessage(LangMessage.WORLD_SET_EMPIRE)));
                 }
@@ -442,7 +434,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                                 TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, null);
                                 Bukkit.getPluginManager().callEvent(event);
                                 sender.sendMessage(AdaptMessage.territoryMessage(territory, LangManager.getMessage(LangMessage.TERRITORY_NEUTRALIZE)));
-                                territory.getObjective().cancel();
+                                territory.getObjective().reset();
                             }
                         }
                     }
@@ -450,7 +442,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                     worldTerritoryManager.getTerritories().forEach((s, territory) -> {
                         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, null);
                         Bukkit.getPluginManager().callEvent(event);
-                        territory.getObjective().cancel();
+                        territory.getObjective().reset();
                     });
                     sender.sendMessage(AdaptMessage.worldMessage(world, LangManager.getMessage(LangMessage.WORLD_NEUTRALIZE)));
                 }

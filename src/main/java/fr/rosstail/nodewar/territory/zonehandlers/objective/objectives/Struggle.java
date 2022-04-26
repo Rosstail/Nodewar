@@ -40,7 +40,7 @@ public class Struggle extends Objective {
         super(territory);
         ConfigurationSection objectiveSection = territory.getConfig().getConfigurationSection(territory.getName() + ".options.objective");
 
-        maxResistance = 20 * objectiveSection.getInt("max-resistance", 180);
+        maxResistance = objectiveSection.getInt("max-resistance", 180);
         resistance = territory.getEmpire() != null ? maxResistance : 0;
 
         ConfigurationSection territorySection = objectiveSection.getConfigurationSection(".territories");
@@ -129,10 +129,16 @@ public class Struggle extends Objective {
 
     @Override
     public void win(Empire winner) {
-        resistance = maxResistance;
         setAdvantage(winner);
         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(getTerritory(), winner);
         Bukkit.getPluginManager().callEvent(event);
+    }
+
+    @Override
+    public void reset() {
+        if (getTerritory().getEmpire() != null) {
+            getTerritory().setUnderAttack(false);
+        }
     }
 
     @Override

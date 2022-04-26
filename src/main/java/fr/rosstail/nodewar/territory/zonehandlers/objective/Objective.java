@@ -37,11 +37,11 @@ public abstract class Objective {
             if (winner != null) {
                 win(winner);
             }
-        }, 0L, 1L);
+        }, 0L, 20L);
     }
 
     public void stop() {
-        cancel();
+        reset();
         Bukkit.getScheduler().cancelTask(gameScheduler);
     }
 
@@ -59,7 +59,8 @@ public abstract class Objective {
         Bukkit.getPluginManager().callEvent(event);
     }
 
-    public void cancel() {
+    public void reset() {
+        getTerritory().setUnderAttack(false);
     }
 
     public void updateBossBar() {

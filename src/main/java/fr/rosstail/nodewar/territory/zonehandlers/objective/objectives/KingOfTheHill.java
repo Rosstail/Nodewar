@@ -1,6 +1,5 @@
 package fr.rosstail.nodewar.territory.zonehandlers.objective.objectives;
 
-import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
@@ -22,7 +21,7 @@ public class KingOfTheHill extends Objective {
         ConfigurationSection objectiveSection = territory.getConfig().getConfigurationSection(territory.getName() + ".options.objective");
 
         assert objectiveSection != null;
-        maxTimer = 20 * objectiveSection.getLong(".max-timer", 180L);
+        maxTimer = objectiveSection.getLong(".max-timer", 180L);
         usedTerritory = WorldTerritoryManager.getUsedWorlds().get(territory.getWorld()).getTerritories().get(objectiveSection.getString(".territory"));
     }
 
@@ -77,9 +76,12 @@ public class KingOfTheHill extends Objective {
         Bukkit.getPluginManager().callEvent(event);
     }
 
-    private void reset() {
+    @Override
+    public void reset() {
         empireTimers.clear();
-        getTerritory().setUnderAttack(false);
+        if (getTerritory().getEmpire() != null) {
+            getTerritory().setUnderAttack(false);
+        }
     }
 
     @Override
