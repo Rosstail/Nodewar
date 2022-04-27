@@ -10,6 +10,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class KingOfTheHill extends Objective {
     private long maxTimer;
@@ -38,16 +39,11 @@ public class KingOfTheHill extends Objective {
 
     @Override
     public Empire checkWinner() {
-        Empire advantageEmpire = getAdvantage();
+        Empire advantage = getAdvantage();
         if (getTerritory().isUnderAttack()) {
-            if (advantageEmpire != null) {
-                for (Map.Entry<Empire, Long> entry : empireTimers.entrySet()) {
-                    Empire empire = entry.getKey();
-                    Long aLong = entry.getValue();
-
-                    if (aLong <= 0L && advantageEmpire.equals(empire)) {
-                        return empire;
-                    }
+            if (advantage != null) {
+                if (empireTimers.containsKey(advantage) && empireTimers.get(advantage) <= 0) {
+                    return advantage;
                 }
             }
         }
@@ -56,13 +52,20 @@ public class KingOfTheHill extends Objective {
 
     private void countTimer() {
         setAdvantage(usedTerritory.getEmpire());
-        Territory territory = getTerritory();
         Empire advantage = getAdvantage();
         if (advantage != null) {
-            if (advantage != territory.getEmpire() || territory.isUnderAttack()) {
-                if (empireTimers.containsKey(advantage)) {
-                    empireTimers.put(advantage, empireTimers.get(advantage) - 1);
-                }
+            if (empireTimers.containsKey(advantage)) {
+                empireTimers.put(advantage, empireTimers.get(advantage) - 1);
+            } else {
+                empireTimers.put(advantage, maxTimer);
+            }
+        }
+        for (Map.Entry<Empire, Long> entry : empireTimers.entrySet()) {
+            Empire empire = entry.getKey();
+            Long aLong = entry.getValue();
+
+            if (empire != null && aLong < maxTimer) {
+                getTerritory().setUnderAttack(true);
             }
         }
     }
@@ -70,7 +73,9 @@ public class KingOfTheHill extends Objective {
     @Override
     public void win(Empire winner) {
         Territory territory = getTerritory();
-        reset();
+        if (winner != null) {
+            territory.setUnderAttack(false);
+        }
         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winner);
         Bukkit.getPluginManager().callEvent(event);
     }

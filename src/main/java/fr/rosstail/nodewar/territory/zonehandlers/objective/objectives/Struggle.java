@@ -129,8 +129,11 @@ public class Struggle extends Objective {
 
     @Override
     public void win(Empire winner) {
+        Territory territory = getTerritory();
+        resistance = maxResistance;
         setAdvantage(winner);
-        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(getTerritory(), winner);
+        territory.setUnderAttack(false);
+        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winner);
         Bukkit.getPluginManager().callEvent(event);
     }
 
@@ -146,7 +149,7 @@ public class Struggle extends Objective {
         super.updateBossBar();
         float progress;
         if (getTerritory().isUnderAttack()) {
-            progress = (maxResistance - (float) resistance) / maxResistance;
+            progress = (float) (maxResistance -  resistance) / maxResistance;
         } else {
             progress = (float) resistance / maxResistance;
         }
