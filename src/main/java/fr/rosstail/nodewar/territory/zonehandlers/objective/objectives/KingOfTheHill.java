@@ -40,21 +40,11 @@ public class KingOfTheHill extends Objective {
     @Override
     public Empire checkWinner() {
         Empire advantage = getAdvantage();
-        System.out.println(advantage + " Try");
         if (getTerritory().isUnderAttack()) {
-            System.out.println("Under attack");
             if (advantage != null) {
-                System.out.println("Advantage " + advantage.getDisplay());
                 if (empireTimers.containsKey(advantage) && empireTimers.get(advantage) <= 0) {
-                    System.out.println("Yay");
                     return advantage;
-                } else if (empireTimers.containsKey(advantage)){
-                    System.out.println(empireTimers.get(advantage));
-                } else {
-                    System.out.println("nope");
                 }
-            } else {
-                System.out.println("No advantage");
             }
         }
         return null;
@@ -100,7 +90,7 @@ public class KingOfTheHill extends Objective {
     public void updateBossBar() {
         super.updateBossBar();
         float progress = 1F;
-        if (getUsedTerritory().isUnderAttack() && empireTimers.size() > 0) {
+        if (getTerritory().isUnderAttack() && empireTimers.size() > 0) {
             long val = maxTimer;
             for (Long aLong : empireTimers.values()) {
                 if (aLong < val) {

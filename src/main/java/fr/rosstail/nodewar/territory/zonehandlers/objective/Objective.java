@@ -53,6 +53,7 @@ public abstract class Objective {
     }
 
     public void win(Empire empire) {
+        System.out.println("WIN OBJECTIVE");
         Territory territory = getTerritory();
         winner = empire;
         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winner);
