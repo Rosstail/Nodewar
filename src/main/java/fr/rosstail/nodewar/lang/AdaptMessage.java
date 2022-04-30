@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.lang;
 
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.Empire;
@@ -100,7 +101,10 @@ public class AdaptMessage
                 message = message.replaceAll(PlaceHolders.TERRITORY_EMPIRE_ADVANTAGE.getText(), String.valueOf(territory.getObjective().getAdvantage().getDisplay()));
             }
             if (message.contains(PlaceHolders.TERRITORY_REGION.getText())) {
-                message = message.replaceAll(PlaceHolders.TERRITORY_REGION.getText(), territory.getRegion().getId());
+                ProtectedRegion region = territory.getRegion();
+                if (region != null) {
+                    message = message.replaceAll(PlaceHolders.TERRITORY_REGION.getText(), region.getId());
+                }
             }
         }
 

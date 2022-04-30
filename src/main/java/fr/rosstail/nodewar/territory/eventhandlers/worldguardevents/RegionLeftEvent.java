@@ -23,7 +23,8 @@ public class RegionLeftEvent extends RegionEvent
         World world = parent.getPlayer().getWorld();
         if (WorldTerritoryManager.getUsedWorlds().containsKey(world)) {
             WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().forEach((s, territory) -> {
-                if (territory.getRegion().equals(region)) {
+                ProtectedRegion territoryRegion = territory.getRegion();
+                if (territoryRegion != null && territoryRegion.equals(region)) {
                     territory.getObjective().bossBarRemove(player);
                     territory.getPlayersOnTerritory().remove(player);
                 }

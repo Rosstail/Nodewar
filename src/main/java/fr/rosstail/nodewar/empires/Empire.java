@@ -132,9 +132,11 @@ public class Empire {
                         }
                         worldTerritories.get(world).add(territory);
                         territories.add(territory);
-                        final ProtectedRegion region = territory.getRegion();
-                        region.getMembers().removeAll();
-                        region.getMembers().addGroup(name);
+                        ProtectedRegion region = territory.getRegion();
+                        if (region != null) {
+                            region.getMembers().removeAll();
+                            region.getMembers().addGroup(name);
+                        }
                     }
                 }
             }

@@ -197,7 +197,8 @@ public class DynmapHandler {
         /* Set line and fill properties */
         for (Map.Entry<String, Territory> e : WorldTerritoryManager.getUsedWorlds().get(BukkitAdapter.adapt(world)).getTerritories().entrySet()) {
             Territory territory = e.getValue();
-            if (territory.getRegion().equals(region)) {
+            ProtectedRegion territoryRegion = territory.getRegion();
+            if (territoryRegion != null && territoryRegion.equals(region)) {
                 addStyle(territory, m);
             }
         }
@@ -255,8 +256,11 @@ public class DynmapHandler {
                     territoryAreaStyleMap = new HashMap<>();
 
                     worldTerritoryManagers.get(curWorld).getTerritories().forEach((s, territory) -> {
+                        ProtectedRegion region = territory.getRegion();
                         territoryAreaStyleMap.put(territory, new AreaStyle(territory));
-                        regionsToDo.add(territory.getRegion());
+                        if (region != null) {
+                            regionsToDo.add(region);
+                        }
                     });
                     worldsToDo.remove(0);
                     wgWorldsToDo.remove(0);

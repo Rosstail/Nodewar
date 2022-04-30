@@ -741,6 +741,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 commands.add("PURPLE");
                 commands.add("RED");
                 commands.add("WHITE");
+                commands.add("YELLOW");
             } else if (string.startsWith(Commands.COMMAND_ADMIN_EMPIRE.getCommand())) {
                 for (Map.Entry<String, Empire> entry : EmpireManager.getEmpireManager().getEmpires().entrySet()) {
                     String s = entry.getKey();
@@ -782,6 +783,7 @@ public class NodewarCommands implements CommandExecutor, TabExecutor
                 commands.add("PURPLE");
                 commands.add("RED");
                 commands.add("WHITE");
+                commands.add("YELLOW");
             }
             StringUtil.copyPartialMatches(args[5], commands, completions);
         }

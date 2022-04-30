@@ -72,6 +72,8 @@ public class Territory {
             this.region = usedRegion;
         } else {
             this.region = null;
+            AdaptMessage.print("The region " + regionSTR + " does not exist in world " + world.getName() + ".\n" +
+                    "    Create region then restart to fix it.", AdaptMessage.prints.WARNING);
         }
         Map<String, Empire> empires = EmpireManager.getEmpireManager().getEmpires();
         if (regionEmpires.size() == 1) {
