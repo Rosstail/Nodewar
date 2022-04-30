@@ -13,7 +13,7 @@ seiros_church:
 
 western_church:
     options:
-        display: '&fWest Church'
+        display: '&fWestern Church'
         region: western_church
         vulnerable: true
         is-node: false

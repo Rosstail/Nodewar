@@ -36,7 +36,7 @@ public class Empire {
         if (display == null) {
             display = "&7" + key;
         }
-        this.display = ChatColor.translateAlternateColorCodes('&', display);
+        this.display = AdaptMessage.empireMessage(this, display);
 
         if (config.getString(key + ".map.color") != null && config.getString(key + ".map.color").matches("(#[a-fA-F0-9]{6})")) {
             this.mapColor = config.getString(key + ".map.color");
