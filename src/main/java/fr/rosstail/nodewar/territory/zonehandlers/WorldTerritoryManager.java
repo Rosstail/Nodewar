@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.territory.WorldGuardInteractions;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.InvalidConfigurationException;

@@ -1,0 +1,124 @@
+adrestia:
+    options:
+        display: "&cAdrestian Empire"
+        region: adrestia
+        vulnerable: false
+        is-node: true
+        objective:
+            type: KOTH
+            max-timer: 30
+            territory: "adrestia"
+        subterritories:
+        targets:
+            - arcandel
+            - brionac_plateau
+            - darley
+            - bergliez
+
+fort_merceus:
+    options:
+        display: '&cFort Merceus'
+        region: fort_merceus
+        vulnerable: true
+        is-node: true
+        objective:
+            type: STRUGGLE
+            max-resistance: 180
+            territories:
+                gaspard:
+                    defense-regen: 2
+                    attack-damage: 2
+                lake_teutates:
+                    defense-regen: 2
+                    attack-damage: 2
+                western_church:
+                    defense-regen: 2
+                    attack-damage: 2
+                brionac_plateau:
+                    defense-regen: 2
+                    attack-damage: 2
+                arcandel:
+                    defense-regen: 2
+                    attack-damage: 2
+        subterritories:
+        targets:
+            - garreg_mach
+            - gaspard
+            - lake_teutates
+            - brionac_plateau
+            - arcandel
+
+brionac_plateau:
+    options:
+        display: '&cBrionac Plateau'
+        region: brionac_plateau
+        vulnerable: true
+        is-node: false
+        objective:
+            type: CONTROL
+            max-resistance: 100
+            attackers-ratio: 1
+        subterritories:
+        targets:
+            - western_church
+            - arcandel
+
+arcandel:
+    options:
+        display: '&cArcandel'
+        region: arcandel
+        vulnerable: true
+        is-node: false
+        objective:
+            type: CONTROL
+            max-resistance: 100
+            attackers-ratio: 1
+        subterritories:
+        targets:
+            - brionac_plateau
+
+darley:
+    options:
+        display: '&cDarley'
+        region: darley
+        vulnerable: true
+        is-node: false
+        objective:
+            type: CONTROL
+            max-resistance: 100
+            attackers-ratio: 1
+        subterritories:
+        targets:
+            - bergliez
+            - hrym
+
+bergliez:
+    options:
+        display: '&cBergliez'
+        region: bergliez
+        vulnerable: true
+        is-node: false
+        objective:
+            type: CONTROL
+            max-resistance: 100
+            attackers-ratio: 1
+        subterritories:
+        targets:
+            - darley
+            - hrym
+
+hrym:
+    options:
+        display: '&cHrym'
+        region: hrym
+        vulnerable: true
+        is-node: false
+        objective:
+            type: CONTROL
+            max-resistance: 100
+            attackers-ratio: 1
+        subterritories:
+        targets:
+            - ordelia
+            - bergliez
+            - darley

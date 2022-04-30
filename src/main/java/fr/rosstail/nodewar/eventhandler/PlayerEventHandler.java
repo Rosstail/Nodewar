@@ -22,7 +22,9 @@ public class PlayerEventHandler implements Listener
         final Player player = event.getPlayer();
         final PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getSet(player);
         playerInfo.loadInfo();
-        playerInfo.setPlayerGroup(playerInfo.getEmpire());
+        if (playerInfo.getEmpire() != null) {
+            playerInfo.setPlayerGroup(playerInfo.getEmpire());
+        }
     }
     
     @EventHandler

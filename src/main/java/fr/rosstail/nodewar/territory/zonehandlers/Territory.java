@@ -9,8 +9,6 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.lang.AdaptMessage;
-import fr.rosstail.nodewar.lang.LangManager;
-import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.ControlPoint;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.KingOfTheHill;
@@ -170,6 +168,19 @@ public class Territory {
         }
         if (empire != null) {
             this.region.getMembers().addGroup(empire.getName());
+        }
+    }
+
+    public static boolean canEmpireAttackTerritory(Territory territory, Empire empire) {
+        if (territory.getEmpire() != null && territory.getEmpire().equals(empire)) {//defends
+            return true;
+        } else if (empire.getWorldTerritories(territory.getWorld()).size() == 0) { //Own nothing
+            return (territory.isNode() && !territory.isNeedLinkToNode()); //Must capture territory without link
+        } else { //own territories
+            if (territory.isNeedLinkToNode()) {  //Needs node
+                return isConnectedToNode(new ArrayList<>(), territory, empire); //si noeud ou non
+            }
+            return true;
         }
     }
 

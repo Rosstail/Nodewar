@@ -9,6 +9,7 @@ depend:
 softdepend:
   - PlaceholderAPI
   - Dynmap
+  - DynmapAPI
 main: fr.rosstail.nodewar.Nodewar
 commands:
   nodewar:

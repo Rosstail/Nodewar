@@ -1,0 +1,128 @@
+leicester:
+    options:
+        display: '&eLeicester Alliance'
+        region: leicester
+        vulnerable: false
+        is-node: true
+        objective:
+            type: KOTH
+            max-timer: 30
+            territory: leicester
+        subterritories:
+            - leicester
+        targets:
+            - eastern_church
+            - daphnel
+            - gloucester
+            - goneril
+
+bridge_of_myrddin:
+    options:
+        display: '&eBridge of Myrddin'
+        region: bridge_of_myrddin
+        vulnerable: true
+        is-node: true
+        objective:
+            type: STRUGGLE
+            max-resistance: 180
+            territories:
+                gloucester:
+                    defense-regen: 2
+                    attack-damage: 2
+                goneril:
+                    defense-regen: 2
+                    attack-damage: 2
+                ordelia:
+                    defense-regen: 2
+                    attack-damage: 2
+                hrym:
+                    defense-regen: 2
+                    attack-damage: 2
+                darley:
+                    defense-regen: 2
+                    attack-damage: 2
+        subterritories:
+        targets:
+            - garreg_mach
+            - gloucester
+            - goneril
+            - ordelia
+            - hrym
+            - darley
+
+ailell:
+    options:
+        display: '&eAilell'
+        region: ailell
+        vulnerable: true
+        is-node: false
+        objective:
+            type: CONTROL
+            max-resistance: 100
+            attackers-ratio: 1
+        subterritories:
+        targets:
+            - daphnel
+            - galatea
+            - eastern_church
+
+
+gloucester:
+    options:
+        display: '&eGloucester'
+        region: gloucester
+        vulnerable: true
+        is-node: false
+        objective:
+            type: CONTROL
+            max-resistance: 100
+            attackers-ratio: 1
+        subterritories:
+        targets:
+            - goneril
+            
+goneril:
+    options:
+        display: '&eGoneril'
+        region: goneril
+        vulnerable: true
+        is-node: false
+        objective:
+            type: CONTROL
+            max-resistance: 100
+            attackers-ratio: 1
+        subterritories:
+        targets:
+            - ordelia
+            - gloucester
+
+daphnel:
+    options:
+        display: '&eDaphnel'
+        region: daphnel
+        vulnerable: true
+        is-node: false
+        objective:
+            type: CONTROL
+            max-resistance: 100
+            attackers-ratio: 1
+        subterritories:
+        targets:
+            - ailell
+            - eastern_church
+            
+ordelia:
+    options:
+        display: '&eOrdelia'
+        region: ordelia
+        vulnerable: true
+        is-node: false
+        objective:
+            type: CONTROL
+            max-resistance: 100
+            attackers-ratio: 1
+        subterritories:
+        targets:
+            - bridge_of_myrddin
+            - goneril
+            - hrym

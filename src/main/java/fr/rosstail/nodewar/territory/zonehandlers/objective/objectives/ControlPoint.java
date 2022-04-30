@@ -79,10 +79,12 @@ public class ControlPoint extends Objective {
             PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(player);
             Empire playerEmpire = playerInfo.getEmpire();
             if (playerEmpire != null && playerEmpire != EmpireManager.getEmpireManager().getNoEmpire()) {
-                if (empireEffectiveMap.containsKey(playerEmpire)) {
-                    empireEffectiveMap.put(playerEmpire, empireEffectiveMap.get(playerEmpire) + 1);
-                } else {
-                    empireEffectiveMap.put(playerEmpire, 1);
+                if (Territory.canEmpireAttackTerritory(territory, playerEmpire)) {
+                    if (empireEffectiveMap.containsKey(playerEmpire)) {
+                        empireEffectiveMap.put(playerEmpire, empireEffectiveMap.get(playerEmpire) + 1);
+                    } else {
+                        empireEffectiveMap.put(playerEmpire, 1);
+                    }
                 }
             }
         }

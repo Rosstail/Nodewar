@@ -1,0 +1,59 @@
+seiros_church:
+    options:
+        display: '&fSeiros Church'
+        region: seiros_church
+        vulnerable: false
+        is-node: true
+        objective:
+            type: KOTH
+            max-timer: 360
+            territory: "garreg_mach"
+        subterritories:
+            - garreg_mach
+
+western_church:
+    options:
+        display: '&fWest Church'
+        region: western_church
+        vulnerable: true
+        is-node: false
+        objective:
+            type: CONTROL
+            max-resistance: 100
+            attackers-ratio: 1
+        subterritories:
+        targets:
+            - fort_merceus
+            - lake_teutates
+            - brionac_plateau
+
+eastern_church:
+    options:
+        display: '&fEastern Church'
+        region: eastern_church
+        vulnerable: true
+        is-node: false
+        objective:
+            type: CONTROL
+            max-resistance: 100
+            attackers-ratio: 1
+        subterritories:
+        targets:
+            - galatea
+            - charon
+ 
+garreg_mach:
+    options:
+        display: '&fGarreg Mach'
+        region: garreg_mach
+        vulnerable: true
+        is-node: true
+        objective:
+            type: STRUGGLE
+            max-timer: 360
+            territory: "seiros_church"
+        target:
+            - seiros_church
+            - fort_merceus
+            - charon
+            - bridge_of_myrddin

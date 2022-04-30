@@ -62,7 +62,7 @@ public class NodeWarEventsListener implements Listener {
         bossBar.setVisible(vulnerability);
         territory.getObjective().reset();
         FileConfiguration fileConfiguration = WorldTerritoryManager.getTerritoryConfigs().get(fileID);
-        fileConfiguration.set(territory.getName() + ".options.is-vulnerable", vulnerability);
+        fileConfiguration.set(territory.getName() + ".options.vulnerable", vulnerability);
         WorldTerritoryManager.getTerritoryConfigs().set(fileID, fileConfiguration);
         WorldTerritoryManager.saveTerritoryFile(fileID);
 
