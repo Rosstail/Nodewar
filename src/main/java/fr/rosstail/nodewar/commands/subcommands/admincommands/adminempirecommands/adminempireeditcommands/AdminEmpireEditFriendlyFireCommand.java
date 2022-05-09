@@ -20,17 +20,17 @@ public class AdminEmpireEditFriendlyFireCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Edit your empire display name";
+        return "Edit the targeted empire display name";
     }
 
     @Override
     public String getSyntax() {
-        return "nodewar empire edit display";
+        return "nodewar admin empire edit display";
     }
 
     @Override
     public String getPermission() {
-        return "nodewar.command.empire.edit.friendlyfire";
+        return "nodewar.command.admin.empire.edit.friendlyfire";
     }
 
     @Override
@@ -39,23 +39,17 @@ public class AdminEmpireEditFriendlyFireCommand extends SubCommand {
             sender.sendMessage("You don't have permission " + getPermission());
             return;
         }
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("By player only");
+
+        if (args.length < 5) {
+            sender.sendMessage("Not enough arguments !");
             return;
         }
-        Player player = Objects.requireNonNull(((Player) sender).getPlayer());
-        PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getSet(player);
-        Empire playerEmpire = playerInfo.getEmpire();
-
-        if (args.length < 4) {
-            player.sendMessage("Not enough arguments !");
-            return;
-        }
+        Empire empire = EmpireManager.getEmpireManager().getEmpires().get(args[4]);
 
 
-        playerEmpire.setFriendlyFire(args[3].equalsIgnoreCase("true"));
-        sender.sendMessage("Friendlyfire for your empire is now " + (args[3].equalsIgnoreCase("true") ? "enabled" : "disabled"));
-        playerEmpire.saveConfigFile();
+        empire.setFriendlyFire(args[3].equalsIgnoreCase("true"));
+        sender.sendMessage("Friendlyfire for " + empire.getDisplay() + " is now " + (args[3].equalsIgnoreCase("true") ? "enabled" : "disabled"));
+        empire.saveConfigFile();
     }
 
     @Override

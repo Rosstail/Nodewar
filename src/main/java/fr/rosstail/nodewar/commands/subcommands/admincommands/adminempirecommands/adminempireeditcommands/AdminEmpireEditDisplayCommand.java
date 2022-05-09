@@ -4,6 +4,7 @@ import fr.rosstail.nodewar.commands.SubCommand;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.Empire;
+import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,7 +21,7 @@ public class AdminEmpireEditDisplayCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Edit your empire display name";
+        return "Edit an empire display name";
     }
 
     @Override
@@ -39,33 +40,30 @@ public class AdminEmpireEditDisplayCommand extends SubCommand {
             sender.sendMessage("You don't have permission " + getPermission());
             return;
         }
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("By player only");
-            return;
-        }
-        Player player = Objects.requireNonNull(((Player) sender).getPlayer());
-        PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getSet(player);
-        Empire playerEmpire = playerInfo.getEmpire();
 
-        if (args.length < 4) {
-            player.sendMessage("Not enough arguments !");
+        if (args.length < 6) {
+            sender.sendMessage("Not enough arguments !");
             return;
         }
+        Empire empire = EmpireManager.getEmpireManager().getEmpires().get(args[4]);
 
         StringBuilder display = new StringBuilder();
-        for (int i = 3; i < args.length; i++) {
-            if (i > 3) {
+        for (int i = 5; i < args.length; i++) {
+            if (i > 5) {
                 display.append(" ");
             }
             display.append(args[i]);
         }
-        playerEmpire.setDisplay(AdaptMessage.playerMessage(player, display.toString()));
-        sender.sendMessage("Your empire is now displayed as " + display);
-        playerEmpire.saveConfigFile();
+        empire.setDisplay(AdaptMessage.empireMessage(empire, String.valueOf(display)));
+        sender.sendMessage("The empire " + empire.getName() + "  is now displayed as " + display);
+        empire.saveConfigFile();
     }
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args) {
+        if (args.length == 5){
+            return new ArrayList<>(EmpireManager.getEmpireManager().getEmpires().keySet());
+        }
         return null;
     }
 }

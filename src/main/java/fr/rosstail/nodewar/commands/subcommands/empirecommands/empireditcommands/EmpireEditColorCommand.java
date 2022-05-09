@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class EmpireEditColorCommand extends SubCommand {
     @Override
@@ -42,24 +43,26 @@ public class EmpireEditColorCommand extends SubCommand {
             sender.sendMessage("By player only");
             return;
         }
+
+        if (args.length < 4) {
+            sender.sendMessage("Not enough arguments !");
+            return;
+        }
+
         Player player = Objects.requireNonNull(((Player) sender).getPlayer());
         PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getSet(player);
         Empire playerEmpire = playerInfo.getEmpire();
 
-        if (args.length < 4) {
-            player.sendMessage("Not enough arguments !");
+        String colorString = args[4];
+        Pattern hexPattern = Pattern.compile("(#[a-fA-F0-9]{6})");
+
+        if (!colorString.matches(hexPattern.pattern())) {
+            sender.sendMessage(colorString + " does not match the #RRGGBB regex !");
             return;
         }
 
-        StringBuilder display = new StringBuilder();
-        for (int i = 3; i < args.length; i++) {
-            if (i > 3) {
-                display.append(" ");
-            }
-            display.append(args[i]);
-        }
-        playerEmpire.setDisplay(AdaptMessage.playerMessage(player, display.toString()));
-        sender.sendMessage("Edited display successfully !");
+        playerEmpire.setMapColor(colorString);
+        sender.sendMessage("Edited color successfully !");
         playerEmpire.saveConfigFile();
     }
 

@@ -18,7 +18,7 @@ public class AdminEmpireEditBossBarColorCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Edit your empire display name";
+        return "Edit an empire bossbar color";
     }
 
     @Override
@@ -38,7 +38,7 @@ public class AdminEmpireEditBossBarColorCommand extends SubCommand {
             return;
         }
 
-        if (args.length < 5) {
+        if (args.length < 6) {
             sender.sendMessage("Not enough arguments !");
             return;
         }
@@ -49,8 +49,8 @@ public class AdminEmpireEditBossBarColorCommand extends SubCommand {
         }
 
         try {
-            empire.setBarColor(BarColor.valueOf(args[4]));
-            sender.sendMessage("Bossbarcolor is now !" + BarColor.valueOf(args[4]));
+            empire.setBarColor(BarColor.valueOf(args[5]));
+            sender.sendMessage("Bossbarcolor is now !" + BarColor.valueOf(args[5]));
             empire.saveConfigFile();
         } catch (Exception e) {
             sender.sendMessage("The barcolor value doesn't exist");

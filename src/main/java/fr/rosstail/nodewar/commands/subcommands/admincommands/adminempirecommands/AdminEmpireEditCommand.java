@@ -43,7 +43,7 @@ public class AdminEmpireEditCommand extends SubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args) {
-        if (args.length <= 4) {
+        if (args.length <= 3) {
             HelpCommand help = new HelpCommand(this);
             help.perform(sender, args);
         } else {

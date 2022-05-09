@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class AdminEmpireEditColorCommand extends SubCommand {
     @Override
@@ -21,7 +22,7 @@ public class AdminEmpireEditColorCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Edit your empire display name";
+        return "Edit an empire dynmap color";
     }
 
     @Override
@@ -31,7 +32,7 @@ public class AdminEmpireEditColorCommand extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "nodewar.command.empire.edit.color";
+        return "nodewar.command.admin.empire.edit.color";
     }
 
     @Override
@@ -40,29 +41,23 @@ public class AdminEmpireEditColorCommand extends SubCommand {
             sender.sendMessage("You don't have permission " + getPermission());
             return;
         }
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("By player only");
+
+        if (args.length < 6) {
+            sender.sendMessage("Not enough arguments !");
             return;
         }
-        Player player = Objects.requireNonNull(((Player) sender).getPlayer());
-        PlayerInfo playerInfo = PlayerInfoManager.getPlayerInfoManager().getSet(player);
-        Empire playerEmpire = playerInfo.getEmpire();
+        Empire empire = EmpireManager.getEmpireManager().getEmpires().get(args[4]);
+        String colorString = args[5];
+        Pattern hexPattern = Pattern.compile("(#[a-fA-F0-9]{6})");
 
-        if (args.length < 4) {
-            player.sendMessage("Not enough arguments !");
+        if (!colorString.matches(hexPattern.pattern())) {
+            sender.sendMessage(colorString + " does not match the #RRGGBB regex !");
             return;
         }
 
-        StringBuilder display = new StringBuilder();
-        for (int i = 3; i < args.length; i++) {
-            if (i > 3) {
-                display.append(" ");
-            }
-            display.append(args[i]);
-        }
-        playerEmpire.setDisplay(AdaptMessage.playerMessage(player, display.toString()));
-        sender.sendMessage("Edited display successfully !");
-        playerEmpire.saveConfigFile();
+        empire.setMapColor(colorString);
+        sender.sendMessage("Edited color successfully !");
+        empire.saveConfigFile();
     }
 
     @Override

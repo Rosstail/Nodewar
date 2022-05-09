@@ -39,12 +39,12 @@ public class AdminPlayerRemoveEmpireCommand extends SubCommand {
             return;
         }
 
-        if (args.length < 3) {
+        if (args.length < 4) {
             sender.sendMessage("Not enough arguments !");
             return;
         }
 
-        String playerName = args[2];
+        String playerName = args[3];
         Player player = Bukkit.getPlayer(playerName);
         if (player == null) {
             sender.sendMessage("The player " + playerName + " is not connected.");
