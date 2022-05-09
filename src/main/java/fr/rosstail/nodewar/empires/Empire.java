@@ -171,6 +171,7 @@ public class Empire {
             config.set(name + ".friendly-fire", friendlyFire);
             config.set(name + ".boss-bar-color", barColor.toString());
             config.set(name + ".owner-uuid", ownerUUID);
+            config.set(name + ".map.color", mapColor);
             try {
                 config.save(file);
             } catch (IOException e) {
