@@ -14,6 +14,7 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
+import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -89,7 +90,10 @@ public class TerritoryEmpireGUIs {
 
                 staticPane.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, null, Material.RED_BANNER, empire.getDisplay(), null
                         , GUIs.adaptLore(player, null)), event -> {
-                    territory.getObjective().reset();
+                    Objective objective = territory.getObjective();
+                    if (objective != null) {
+                        objective.reset();
+                    }
                     if (empire != EmpireManager.getEmpireManager().getNoEmpire()) {
                         AdaptMessage.playerMessage(player, AdaptMessage.territoryMessage(territory, LangManager.getMessage(LangMessage.TERRITORY_SET_EMPIRE)));
                     } else {

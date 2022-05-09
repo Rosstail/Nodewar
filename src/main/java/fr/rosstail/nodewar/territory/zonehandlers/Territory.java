@@ -10,12 +10,8 @@ import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
-import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.ControlPoint;
-import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.KingOfTheHill;
-import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.Struggle;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -123,26 +119,6 @@ public class Territory {
             for (final String subTerritoryStr : subTerritories) {
                 if (worldTerritoriesMap.containsKey(subTerritoryStr)) {
                     this.subTerritories.put(subTerritoryStr, worldTerritoriesMap.get(subTerritoryStr));
-                }
-            }
-        }
-    }
-
-    public void setUpObjective() {
-        ConfigurationSection objectiveSection = config.getConfigurationSection(name + ".options.objective");
-        if (objectiveSection != null) {
-            String objectiveType = objectiveSection.getString(".type");
-            if (objectiveType != null) {
-                if (objectiveType.equalsIgnoreCase("KOTH")) {
-                    objective = new KingOfTheHill(this);
-                } else if (objectiveType.equalsIgnoreCase("STRUGGLE")) {
-                    objective = new Struggle(this);
-                } else if (objectiveType.equalsIgnoreCase("CONTROL")) {
-                    objective = new ControlPoint(this);
-                }
-
-                if (objective != null) {
-                    objective.start();
                 }
             }
         }
@@ -261,5 +237,9 @@ public class Territory {
 
     public Objective getObjective() {
         return objective;
+    }
+
+    public void setObjective(Objective objective) {
+        this.objective = objective;
     }
 }

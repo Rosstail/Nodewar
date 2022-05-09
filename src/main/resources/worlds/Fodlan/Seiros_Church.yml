@@ -48,10 +48,11 @@ garreg_mach:
         region: garreg_mach
         vulnerable: true
         is-node: true
+        must-connect-to-node: true
         objective:
-            type: STRUGGLE
-            max-timer: 360
-            territory: "seiros_church"
+            type: CONTROL
+            max-resistance: 360
+            attackers-ratio: 0.667
         target:
             - seiros_church
             - fort_merceus

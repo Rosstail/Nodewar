@@ -4,10 +4,6 @@ leicester:
         region: leicester
         vulnerable: false
         is-node: true
-        objective:
-            type: KOTH
-            max-timer: 30
-            territory: leicester
         subterritories:
             - leicester
         targets:

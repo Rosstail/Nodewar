@@ -35,6 +35,7 @@ public class KingOfTheHill extends Objective {
     @Override
     public void progress() {
         countTimer();
+        updateBossBar();
     }
 
     @Override

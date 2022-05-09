@@ -86,13 +86,13 @@ public class PlayerInfo {
     }
 
     public void setPlayerGroup(final Empire empire) {
-        if (empire != null) {
+        if (empire != null && empire != EmpireManager.getEmpireManager().getNoEmpire()) {
             Nodewar.getPermissions().playerAddGroup(null, this.player, empire.getName());
         }
     }
 
     private void removePlayerGroup(final Empire empire) {
-        if (empire != null) {
+        if (empire != null && empire != EmpireManager.getEmpireManager().getNoEmpire()) {
             Nodewar.getPermissions().playerRemoveGroup(null, this.player, empire.getName());
         }
     }

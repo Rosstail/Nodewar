@@ -4,10 +4,6 @@ faerghus:
         region: faerghus
         vulnerable: false
         is-node: true
-        objective:
-            type: KOTH
-            max-timer: 30
-            territory: faerghus
         subterritories:
         targets:
             - tailtean_plains
@@ -82,7 +78,7 @@ charon:
                 ailell:
                     defense-regen: 2
                     attack-damage: 2
-                daphnell:
+                daphnel:
                     defense-regen: 2
                     attack-damage: 2
         subterritories:

@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.territory.eventhandlers.worldguardevents;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
+import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerEvent;
@@ -25,7 +26,10 @@ public class RegionLeftEvent extends RegionEvent
             WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().forEach((s, territory) -> {
                 ProtectedRegion territoryRegion = territory.getRegion();
                 if (territoryRegion != null && territoryRegion.equals(region)) {
-                    territory.getObjective().bossBarRemove(player);
+                    Objective objective = territory.getObjective();
+                    if (objective != null) {
+                        objective.bossBarRemove(player);
+                    }
                     territory.getPlayersOnTerritory().remove(player);
                 }
             });

@@ -2,7 +2,7 @@ package fr.rosstail.nodewar;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.calendar.CalendarManager;
-import fr.rosstail.nodewar.commandhandlers.NodewarCommands;
+import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.eventhandler.PlayerEventHandler;
@@ -87,7 +87,7 @@ public class Nodewar extends JavaPlugin implements Listener
             for (final WorldTerritoryManager manager : WorldTerritoryManager.getUsedWorlds().values()) {
                 for (final Territory territory : manager.getTerritories().values()) {
                     territory.setupSubTerritories();
-                    territory.setUpObjective();
+                    WorldTerritoryManager.setUpObjective(territory);
                     territory.initTargets();
                 }
             }
@@ -109,7 +109,8 @@ public class Nodewar extends JavaPlugin implements Listener
         }
         PlayerInfoManager.init(this);
         PlayerInfoManager.getPlayerInfoManager().startTimer();
-        this.getCommand(dimName).setExecutor(new NodewarCommands(this));
+        this.getCommand(dimName).setExecutor(new CommandManager());
+        //this.getCommand(dimName).setExecutor(new NodewarCommands(this));
     }
     
     private void initDefaultConfigs() {
@@ -130,7 +131,6 @@ public class Nodewar extends JavaPlugin implements Listener
         if (getCustomConfig().getBoolean("general.use-calendar")) {
             CalendarManager.getCalendarManager().stopCalenderSchedule();
         }
-        WorldTerritoryManager.stopTimers();
         if (DynmapHandler.getDynmapHandler() != null) {
             DynmapHandler.getDynmapHandler().disable();
         }

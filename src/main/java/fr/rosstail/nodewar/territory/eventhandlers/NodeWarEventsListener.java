@@ -5,6 +5,7 @@ import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.*;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
+import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BossBar;
@@ -20,10 +21,11 @@ public class NodeWarEventsListener implements Listener {
         Empire prevOwner = territory.getEmpire();
         Empire winner = event.getEmpire();
         if (winner == null) {
+            Objective objective = territory.getObjective();
             territory.getPlayersOnTerritory().forEach(player -> {
                 player.sendTitle(ChatColor.translateAlternateColorCodes('&',
-                                territory.getDisplay() + " &rTerritory"), "Has been neutralized by "
-                                + territory.getObjective().getAdvantage().getDisplay(),
+                                territory.getDisplay() + " &rTerritory"), "Has been neutralized" + (objective != null ? "by "
+                                + objective.getAdvantage().getDisplay() : ""),
                         4, 55, 8);
             });
         }
@@ -47,7 +49,10 @@ public class NodeWarEventsListener implements Listener {
         territory.changeOwner(winner);
 
         territory.getSubTerritories().forEach((s, territory1) -> {
-            territory1.getObjective().win(winner);
+            Objective objective = territory1.getObjective();
+            if (objective != null) {
+                objective.win(winner);
+            }
         });
     }
 
@@ -58,9 +63,12 @@ public class NodeWarEventsListener implements Listener {
 
         territory.setVulnerable(vulnerability);
         int fileID = territory.getFileID();
-        BossBar bossBar = territory.getObjective().getBossBar();
-        bossBar.setVisible(vulnerability);
-        territory.getObjective().reset();
+        Objective objective = territory.getObjective();
+        if (objective != null) {
+            BossBar bossBar = objective.getBossBar();
+            bossBar.setVisible(vulnerability);
+            objective.reset();
+        }
         FileConfiguration fileConfiguration = WorldTerritoryManager.getTerritoryConfigs().get(fileID);
         fileConfiguration.set(territory.getName() + ".options.vulnerable", vulnerability);
         WorldTerritoryManager.getTerritoryConfigs().set(fileID, fileConfiguration);

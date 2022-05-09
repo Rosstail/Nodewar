@@ -57,6 +57,7 @@ public class Struggle extends Objective {
     @Override
     public void progress() {
         updateResistance();
+        updateBossBar();
     }
 
     private void updateResistance() {

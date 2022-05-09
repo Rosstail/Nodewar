@@ -6,6 +6,7 @@ import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
+import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
@@ -98,7 +99,11 @@ public class AdaptMessage
                 message = message.replaceAll(PlaceHolders.TERRITORY_EMPIRE_OWNER.getText(), owner != null ? owner.getDisplay() : EmpireManager.getEmpireManager().getNoEmpire().getDisplay());
             }
             if (message.contains(PlaceHolders.TERRITORY_EMPIRE_ADVANTAGE.getText())) {
-                message = message.replaceAll(PlaceHolders.TERRITORY_EMPIRE_ADVANTAGE.getText(), String.valueOf(territory.getObjective().getAdvantage().getDisplay()));
+                Objective objective = territory.getObjective();
+                if (objective != null) {
+                    Empire advantage = objective.getAdvantage();
+                    message = message.replaceAll(PlaceHolders.TERRITORY_EMPIRE_ADVANTAGE.getText(), String.valueOf(advantage != null ? advantage.getDisplay() : EmpireManager.getEmpireManager().getNoEmpire().getDisplay()));
+                }
             }
             if (message.contains(PlaceHolders.TERRITORY_REGION.getText())) {
                 ProtectedRegion region = territory.getRegion();

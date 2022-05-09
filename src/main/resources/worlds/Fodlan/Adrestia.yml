@@ -4,10 +4,6 @@ adrestia:
         region: adrestia
         vulnerable: false
         is-node: true
-        objective:
-            type: KOTH
-            max-timer: 30
-            territory: "adrestia"
         subterritories:
         targets:
             - arcandel

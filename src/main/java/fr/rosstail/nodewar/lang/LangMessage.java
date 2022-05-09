@@ -11,6 +11,12 @@ public enum LangMessage
     TOO_FEW_ARGUMENTS("too-few-arguments"),
     EMPIRE_DOES_NOT_EXIST("empire-does-not-exist"),
 
+    EMPIRE_CREATE("empire.create"),
+    EMPIRE_ALREADY_EXIST("empire.already-exist"),
+    EMPIRE_NOT_EXIST("empire.not-exist"),
+    EMPIRE_DISBANDED("empire.disbanded"),
+    EMPIRE_EDIT("empire.edit"),
+
     BOSSBAR_TERRITORY_NEUTRAL("bossbar.territory.neutral"),
     BOSSBAR_TERRITORY_CONQUER("bossbar.territory.under-capture"),
     BOSSBAR_TERRITORY_STRUGGLE("bossbar.territory.struggle"),

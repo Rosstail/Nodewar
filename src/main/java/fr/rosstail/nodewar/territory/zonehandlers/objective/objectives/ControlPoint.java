@@ -44,6 +44,7 @@ public class ControlPoint extends Objective {
         checkAdvantage();
         checkNeutralization();
         setCaptureTime(territory);
+        updateBossBar();
     }
 
     private void checkNeutralization() {

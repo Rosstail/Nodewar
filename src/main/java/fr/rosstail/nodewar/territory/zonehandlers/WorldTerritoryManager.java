@@ -6,32 +6,35 @@ import java.util.List;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.territory.WorldGuardInteractions;
+import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
+import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.ControlPoint;
+import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.KingOfTheHill;
+import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.Struggle;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.InvalidConfigurationException;
+
 import java.io.IOException;
+
 import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.util.Objects;
+
 import org.bukkit.Bukkit;
+
 import java.io.File;
 import java.util.ArrayList;
+
 import org.bukkit.World;
+
 import java.util.Map;
 
-public class WorldTerritoryManager
-{
+public class WorldTerritoryManager {
     private static final Map<World, WorldTerritoryManager> worlds = new HashMap<>();
     private static final ArrayList<File> territoryFiles = new ArrayList<>();
     private static final ArrayList<FileConfiguration> territoryConfigs = new ArrayList<>();
     private final Map<String, Territory> territories = new HashMap<>();
 
-    private static final int secondScheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), () -> {
-        worlds.forEach((world, worldTerritoryManager) -> {
-            worldTerritoryManager.getTerritories().forEach((s, territory) -> {
-                territory.getObjective().updateBossBar();
-            });
-        });
-    }, 0L, 20L);
-    
     public static WorldTerritoryManager gets(final File folder) {
         final World world = Bukkit.getWorld(folder.getName());
         if (world != null) {
@@ -42,7 +45,7 @@ public class WorldTerritoryManager
         }
         return null;
     }
-    
+
     public WorldTerritoryManager(final File worldFolder) {
         if (worldFolder.listFiles() != null) {
             final World world = Bukkit.getWorld(worldFolder.getName());
@@ -57,15 +60,36 @@ public class WorldTerritoryManager
                             final Territory territory = new Territory(territoryFiles.size() - 1, world, key);
                             this.territories.put(key, territory);
                         }
-                    }
-                    catch (IOException | InvalidConfigurationException e) {
+                    } catch (IOException | InvalidConfigurationException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }
     }
-    
+
+    public static void setUpObjective(Territory territory) {
+        FileConfiguration config = territory.getConfig();
+        ConfigurationSection objectiveSection = config.getConfigurationSection(territory.getName() + ".options.objective");
+        Objective objective = null;
+        if (objectiveSection != null) {
+            String objectiveType = objectiveSection.getString(".type");
+            if (objectiveType != null) {
+                if (objectiveType.equalsIgnoreCase("KOTH")) {
+                    objective = new KingOfTheHill(territory);
+                    objective.start();
+                } else if (objectiveType.equalsIgnoreCase("STRUGGLE")) {
+                    objective = new Struggle(territory);
+                    objective.start();
+                } else if (objectiveType.equalsIgnoreCase("CONTROL")) {
+                    objective = new ControlPoint(territory);
+                    objective.start();
+                }
+            }
+        }
+        territory.setObjective(objective);
+    }
+
     public static void setUsedWorlds() {
         final List<World> worldList = Bukkit.getWorlds();
         final ArrayList<World> finWorldList = new ArrayList<World>();
@@ -77,7 +101,7 @@ public class WorldTerritoryManager
         WorldGuardInteractions.setPlayersDataForWorlds(finWorldList);
         worldList.retainAll(finWorldList);
     }
-    
+
     public static Map<World, WorldTerritoryManager> getUsedWorlds() {
         return worlds;
     }
@@ -96,13 +120,5 @@ public class WorldTerritoryManager
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public int getSecondScheduler() {
-        return secondScheduler;
-    }
-
-    public static void stopTimers() {
-        Bukkit.getScheduler().cancelTask(secondScheduler);
     }
 }

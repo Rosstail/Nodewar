@@ -7,6 +7,7 @@ import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerCh
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryVulnerabilityToggleEvent;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
+import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -88,14 +89,19 @@ public class CalendarManager {
     private void changeTerritoryState(Territory territory, String vulnerableStr, String empireName) {
         Map<String, Empire> empires = EmpireManager.getEmpireManager().getEmpires();
         if (empireName != null) {
+            Objective objective = territory.getObjective();
             if (empireName.equalsIgnoreCase("neutral")) {
                 TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, null);
                 Bukkit.getPluginManager().callEvent(event);
-                territory.getObjective().reset();
+                if (objective!= null) {
+                    objective.reset();
+                }
             } else if (empires.containsKey(empireName)) {
                 TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, empires.get(empireName));
                 Bukkit.getPluginManager().callEvent(event);
-                territory.getObjective().reset();
+                if (objective!= null) {
+                    objective.reset();
+                }
             }
         }
         if (vulnerableStr != null) {
