@@ -115,11 +115,11 @@ public class Nodewar extends JavaPlugin implements Listener
     
     private void initDefaultConfigs() {
         try {
-            FileResourcesUtils.main("worlds", this);
-            FileResourcesUtils.main("empires", this);
-            FileResourcesUtils.main("gui", this);
-            FileResourcesUtils.main("lang", this);
-            FileResourcesUtils.main("playerdata", this);
+            FileResourcesUtils.main("worlds", this, false);
+            FileResourcesUtils.main("empires", this, false);
+            FileResourcesUtils.main("gui", this, false);
+            FileResourcesUtils.main("lang", this, false);
+            FileResourcesUtils.main("playerdata", this, false);
         }
         catch (IOException e) {
             e.printStackTrace();

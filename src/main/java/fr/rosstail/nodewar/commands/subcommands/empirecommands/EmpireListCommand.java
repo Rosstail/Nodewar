@@ -3,6 +3,9 @@ package fr.rosstail.nodewar.commands.subcommands.empirecommands;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.commands.SubCommand;
 import fr.rosstail.nodewar.guis.playerguis.EmpiresListGUI;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -33,11 +36,11 @@ public class EmpireListCommand extends SubCommand {
     @Override
     public void perform(CommandSender sender, String[] args) {
         if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage("You don't have permission " + getPermission());
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.PERMISSION_DENIED)));
             return;
         }
         if (!(sender instanceof Player)) {
-            sender.sendMessage("By player only");
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.BY_PLAYER_ONLY)));
             return;
         }
         EmpiresListGUI.initGUI(((Player) sender).getPlayer(), Nodewar.getInstance());

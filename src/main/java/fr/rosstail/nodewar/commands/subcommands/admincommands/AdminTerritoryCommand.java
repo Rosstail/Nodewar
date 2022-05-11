@@ -5,6 +5,9 @@ import fr.rosstail.nodewar.commands.subcommands.HelpCommand;
 import fr.rosstail.nodewar.commands.subcommands.admincommands.adminterritorycommands.AdminTerritoryVulnerabilityCommand;
 import fr.rosstail.nodewar.commands.subcommands.admincommands.adminterritorycommands.AdminTerritoryNeutralizeCommand;
 import fr.rosstail.nodewar.commands.subcommands.admincommands.adminterritorycommands.AdminTerritorySetOwnerCommand;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -41,7 +44,7 @@ public class AdminTerritoryCommand extends SubCommand {
     @Override
     public void perform(CommandSender sender, String[] args) {
         if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage("You don't have permission " + getPermission());
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.PERMISSION_DENIED)));
             return;
         }
         if (args.length <= 3) {

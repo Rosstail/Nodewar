@@ -39,6 +39,11 @@ public class KingOfTheHill extends Objective {
     }
 
     @Override
+    public Empire checkNeutralization() {
+        return null;
+    }
+
+    @Override
     public Empire checkWinner() {
         Empire advantage = getAdvantage();
         if (getTerritory().isUnderAttack()) {
@@ -101,6 +106,11 @@ public class KingOfTheHill extends Objective {
             progress = ((float) (maxTimer - val)) / maxTimer;
         }
         getBossBar().setProgress(Math.min(Math.max(0F, progress), 1F));
+    }
+
+    @Override
+    public String getName() {
+        return "koth";
     }
 
     public long getMaxTimer() {

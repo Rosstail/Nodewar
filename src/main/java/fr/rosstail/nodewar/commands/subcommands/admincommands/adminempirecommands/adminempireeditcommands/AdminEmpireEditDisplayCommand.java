@@ -6,6 +6,8 @@ import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -26,23 +28,23 @@ public class AdminEmpireEditDisplayCommand extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar admin empire edit display";
+        return "nodewar admin empire edit display [empire] [display1] <displayX>";
     }
 
     @Override
     public String getPermission() {
-        return "nodewar.command.empire.edit.display";
+        return "nodewar.command.admin.empire.edit.display";
     }
 
     @Override
     public void perform(CommandSender sender, String[] args) {
         if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage("You don't have permission " + getPermission());
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.PERMISSION_DENIED)));
             return;
         }
 
         if (args.length < 6) {
-            sender.sendMessage("Not enough arguments !");
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.TOO_FEW_ARGUMENTS)));
             return;
         }
         Empire empire = EmpireManager.getEmpireManager().getEmpires().get(args[4]);

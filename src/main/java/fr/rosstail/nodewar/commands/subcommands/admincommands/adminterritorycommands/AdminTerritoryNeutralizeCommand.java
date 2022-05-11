@@ -1,6 +1,9 @@
 package fr.rosstail.nodewar.commands.subcommands.admincommands.adminterritorycommands;
 
 import fr.rosstail.nodewar.commands.SubCommand;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
@@ -27,7 +30,7 @@ public class AdminTerritoryNeutralizeCommand extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar neutralize";
+        return "nodewar admin territory neutralize [territory]";
     }
 
     @Override
@@ -38,11 +41,11 @@ public class AdminTerritoryNeutralizeCommand extends SubCommand {
     @Override
     public void perform(CommandSender sender, String[] args) {
         if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage("You don't have permission " + getPermission());
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.PERMISSION_DENIED)));
             return;
         }
         if (args.length < 4) {
-            sender.sendMessage("Not enough arguments !");
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.TOO_FEW_ARGUMENTS)));
             return;
         }
 

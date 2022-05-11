@@ -348,11 +348,11 @@ public class DynmapHandler {
         plugin.saveConfig();  /* Save updates, if needed */
 
         /* Now, add marker set for mobs (make it transient) */
-        set = markerAPI.getMarkerSet("worldguard.markerset");
+        set = markerAPI.getMarkerSet("nodewar.markerset");
         if (set == null)
-            set = markerAPI.createMarkerSet("worldguard.markerset", cfg.getString("layer.name", "WorldGuard"), null, false);
+            set = markerAPI.createMarkerSet("nodewar.markerset", cfg.getString("layer.name", "Nodewar"), null, false);
         else
-            set.setMarkerSetLabel(cfg.getString("layer.name", "WorldGuard"));
+            set.setMarkerSetLabel(cfg.getString("layer.name", "Nodewar"));
         if (set == null) {
             AdaptMessage.print("Error creating marker set", AdaptMessage.prints.SEVERE);
             return;

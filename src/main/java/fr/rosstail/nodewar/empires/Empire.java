@@ -76,9 +76,9 @@ public class Empire {
      * No Empire
      */
     Empire() {
-        this.name = null;
+        this.name = "none";
         this.config = null;
-        this.display = ChatColor.translateAlternateColorCodes('&', "&7None");
+        this.display = AdaptMessage.adapt(Nodewar.getInstance().getCustomConfig().getString("empires.none-display"));
         this.barColor = BarColor.WHITE;
         this.mapColor = "#000000";
         this.friendlyFire = true;

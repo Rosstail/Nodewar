@@ -1,32 +1,34 @@
 gui:
     size: 6
-    display: "&8&nEmpires"
+    display: "&8&nDefault Empires"
     slots:
-        coalition:
+        black_eagles:
             location:
                 x: 0
                 y: 0
-            display: "&cCoalition"
+            display: "&cBlack Eagles"
             material: RED_BANNER
             lore:
-                - "&f&oCoalition, Destruction !"
-            empire: coalition
-        empire:
+                - "&f&oEmpire based on magic"
+                - "&f&o> Level 1 enchantment table on warpgate"
+            empire: black_eagles
+        golden_deer:
             location:
                 x: 8
                 y: 0
-            display: "&6Empire"
+            display: "&6Golden Deer"
             lore:
-                - "&f&oThe enemies of the Empire must perish !"
+                - "&f&oEmpire based on light assault"
+                - "&f&o> Crossbow available at warpgate"
             material: YELLOW_BANNER
-            empire: empire
-        order:
+            empire: golden_deer
+        blue_lions:
             location:
                 x: 4
                 y: 5
-            display: "&aOrder"
+            display: "&9Blue Lions"
             lore:
-                - "&f&oThe Order will rule over Olydri, the Order is infinite !"
-                - "&f&oThe Order is infinite, the Order will rule over Olydri !"
-            material: GREEN_BANNER
-            empire: order
+                - "&f&oEmpire based on knights"
+                - "&f&o> Iron armours available at warpgate"
+            material: BLUE_BANNER
+            empire: blue_lions

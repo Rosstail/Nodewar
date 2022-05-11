@@ -3,6 +3,9 @@ package fr.rosstail.nodewar.commands.subcommands.admincommands.adminterritorycom
 import fr.rosstail.nodewar.commands.SubCommand;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.empires.EmpireManager;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
@@ -28,7 +31,7 @@ public class AdminTerritorySetOwnerCommand extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar setowner";
+        return "nodewar admin territory setowner [territory] [empire]";
     }
 
     @Override
@@ -39,12 +42,12 @@ public class AdminTerritorySetOwnerCommand extends SubCommand {
     @Override
     public void perform(CommandSender sender, String[] args) {
         if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage("You don't have permission " + getPermission());
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.PERMISSION_DENIED)));
             return;
         }
 
         if (args.length < 5) {
-            sender.sendMessage("Not enough arguments !");
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.TOO_FEW_ARGUMENTS)));
             return;
         }
 

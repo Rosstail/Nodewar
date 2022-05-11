@@ -22,10 +22,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class PlayerInfo {
     private final Nodewar plugin = Nodewar.getInstance();
@@ -66,10 +62,10 @@ public class PlayerInfo {
         this.empire = empire;
         removePlayerGroup(previousEmpire);
         if (empire == null) {
-            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_LEAVE_EMPIRE)));
+            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.EMPIRE_PLAYER_LEAVE)));
         } else {
             setPlayerGroup(empire);
-            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_JOIN_EMPIRE)));
+            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.EMPIRE_PLAYER_JOIN)));
         }
     }
 

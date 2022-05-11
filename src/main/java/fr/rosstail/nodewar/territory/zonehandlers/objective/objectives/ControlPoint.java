@@ -47,16 +47,20 @@ public class ControlPoint extends Objective {
         updateBossBar();
     }
 
-    private void checkNeutralization() {
+    @Override
+    public Empire checkNeutralization() {
+        if (!neutralPeriod) {
+            return null;
+        }
         Territory territory = getTerritory();
         Empire owner = territory.getEmpire();
         Empire advantage = getAdvantage();
         if (owner != null && advantage != owner) {
             if (captureTime <= 0) {
-                territory.setEmpire(null); //neutralize
-                territory.changeOwner(null);
+                return advantage;
             }
         }
+        return null;
     }
 
     @Override
@@ -92,8 +96,6 @@ public class ControlPoint extends Objective {
     }
 
     private void checkAdvantage() {
-        //final List<Empire> empiresOnPoint = new ArrayList<>(empireIntegerMap.keySet());
-        //final List<Integer> pointAmount = new ArrayList<>(empireIntegerMap.values());
         Empire defender = getTerritory().getEmpire();
         int greatestAttackerEffective = 0;
         int defenderEffective = 0;
@@ -158,19 +160,15 @@ public class ControlPoint extends Objective {
     public void win(final Empire winner) {
         Territory territory = getTerritory();
         Empire owner = territory.getEmpire();
-        Empire newOwner = winner;
         captureTime = maxCaptureTime;
         setAdvantage(winner);
-        if (owner != null) {
-            if (owner != winner || neutralPeriod) {
-                newOwner = null;
-            }
-        }
-        if (newOwner != null) {
+        if (winner != null) {
             territory.setUnderAttack(false);
         }
-        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(getTerritory(), newOwner);
-        Bukkit.getPluginManager().callEvent(event);
+        if (owner != winner) {
+            TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(getTerritory(), winner);
+            Bukkit.getPluginManager().callEvent(event);
+        }
     }
 
     @Override
@@ -196,6 +194,11 @@ public class ControlPoint extends Objective {
                 getBossBar().setColor(BarColor.WHITE);
             }
         }
+    }
+
+    @Override
+    public String getName() {
+        return "controlpoint";
     }
 
     public boolean isNeutralPeriod() {

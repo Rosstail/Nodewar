@@ -2,6 +2,9 @@ package fr.rosstail.nodewar.territory.eventhandlers;
 
 
 import fr.rosstail.nodewar.empires.Empire;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.*;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
@@ -10,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -20,30 +24,24 @@ public class NodeWarEventsListener implements Listener {
         Territory territory = event.getTerritory();
         Empire prevOwner = territory.getEmpire();
         Empire winner = event.getEmpire();
+        String title;
+        String subTitle;
         if (winner == null) {
-            Objective objective = territory.getObjective();
-            territory.getPlayersOnTerritory().forEach(player -> {
-                player.sendTitle(ChatColor.translateAlternateColorCodes('&',
-                                territory.getDisplay() + " &rTerritory"), "Has been neutralized" + (objective != null ? "by "
-                                + objective.getAdvantage().getDisplay() : ""),
-                        4, 55, 8);
-            });
+            title = LangManager.getMessage(LangMessage.TITLE_TERRITORY_NEUTRALIZED);
+            subTitle = LangManager.getMessage(LangMessage.SUBTITLE_TERRITORY_NEUTRALIZED);
+        } else if (prevOwner != winner) {
+            title = LangManager.getMessage(LangMessage.TITLE_TERRITORY_CONQUERED);
+            subTitle = LangManager.getMessage(LangMessage.SUBTITLE_TERRITORY_CONQUERED);
+        } else {
+            title = LangManager.getMessage(LangMessage.TITLE_TERRITORY_DEFENDED);
+            subTitle = LangManager.getMessage(LangMessage.SUBTITLE_TERRITORY_DEFENDED);
         }
-        else {
-            if (prevOwner != winner) {
-                territory.getPlayersOnTerritory().forEach(player -> {
-                    player.sendTitle(ChatColor.translateAlternateColorCodes('&',
-                                    territory.getDisplay() + " &rTerritory"),
-                            "Captured by " + (winner.getDisplay() ), 4, 55, 8);
-                });
-            } else {
-                territory.getPlayersOnTerritory().forEach(player -> {
-                    player.sendTitle(ChatColor.translateAlternateColorCodes('&',
-                                    territory.getDisplay() + " &rTerritory"),
-                            ChatColor.translateAlternateColorCodes('&',
-                                    "Defended by " + winner.getDisplay()), 4, 55, 8);
-                });
-            }
+        for (Player player : territory.getPlayersOnTerritory()) {
+            player.sendTitle(
+                    AdaptMessage.territoryMessage(territory, title),
+                    AdaptMessage.territoryMessage(territory, subTitle),
+                    4, 55, 8
+            );
         }
         territory.setEmpire(winner);
         territory.changeOwner(winner);

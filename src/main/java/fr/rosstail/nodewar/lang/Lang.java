@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.lang;
 
+import fr.rosstail.nodewar.Nodewar;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 
@@ -12,7 +13,7 @@ public class Lang
     
     public Lang(final String langId) {
         this.langId = langId;
-        this.file = new File(fr.rosstail.nodewar.Nodewar.getInstance().getDataFolder(), "lang/" + langId + ".yml");
+        this.file = new File(Nodewar.getInstance().getDataFolder(), "lang/" + langId + ".yml");
         if (this.file.exists()) {
             this.configuration = YamlConfiguration.loadConfiguration(this.file);
             this.name = this.configuration.getString("lang-name");

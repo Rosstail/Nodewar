@@ -47,7 +47,7 @@ public class EmpireManager {
         return empires;
     }
 
-    public void setNoEmpire() {
+    public void initNoEmpire() {
         noEmpire = new Empire();
     }
 
@@ -56,7 +56,7 @@ public class EmpireManager {
     }
 
     public void init() {
-        setNoEmpire();
+        initNoEmpire();
         final File folder = new File(plugin.getDataFolder(), "empires/");
         if (folder.listFiles() != null) {
             for (final File empireFile : Objects.requireNonNull(folder.listFiles())) {

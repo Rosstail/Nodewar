@@ -33,9 +33,14 @@ public abstract class Objective {
     public void start() {
         gameScheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             progress();
-            Empire winner = checkWinner();
-            if (winner != null) {
-                win(winner);
+            Empire neutralizer = checkNeutralization();
+            if (neutralizer != null) {
+                neutralize(neutralizer);
+            } else {
+                Empire winner = checkWinner();
+                if (winner != null) {
+                    win(winner);
+                }
             }
         }, 0L, 20L);
     }
@@ -49,8 +54,15 @@ public abstract class Objective {
         updateBossBar();
     }
 
-    public Empire checkWinner() {
-        return null;
+    public abstract Empire checkNeutralization();
+
+    public abstract Empire checkWinner();
+
+    public void neutralize(Empire empire) {
+        Territory territory = getTerritory();
+        winner = empire;
+        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, null);
+        Bukkit.getPluginManager().callEvent(event);
     }
 
     public void win(Empire empire) {
@@ -134,4 +146,6 @@ public abstract class Objective {
     public BossBar getBossBar() {
         return this.bossBar;
     }
+
+    public abstract String getName();
 }

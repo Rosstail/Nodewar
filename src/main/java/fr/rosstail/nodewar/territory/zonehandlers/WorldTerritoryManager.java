@@ -1,10 +1,9 @@
 package fr.rosstail.nodewar.territory.zonehandlers;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
 
-import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.territory.WorldGuardInteractions;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.ControlPoint;

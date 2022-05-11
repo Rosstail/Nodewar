@@ -41,7 +41,7 @@ public class Struggle extends Objective {
         ConfigurationSection objectiveSection = territory.getConfig().getConfigurationSection(territory.getName() + ".options.objective");
 
         maxResistance = objectiveSection.getInt("max-resistance", 180);
-        resistance = territory.getEmpire() != null ? maxResistance : 0;
+        resistance = maxResistance;
 
         ConfigurationSection territorySection = objectiveSection.getConfigurationSection(".territories");
         if (territorySection != null) {
@@ -60,18 +60,23 @@ public class Struggle extends Objective {
         updateBossBar();
     }
 
+    @Override
+    public Empire checkNeutralization() {
+        return null;
+    }
+
     private void updateResistance() {
         int value = 0;
         Map<Empire, Integer> scoreMap = new HashMap<>();
         Empire owner = getTerritory().getEmpire();
-        territoryTerritoryEffectHashMap.forEach((point, territoryEffect) -> {
-            Empire pointOwner = point.getEmpire();
-            if (pointOwner != null) {
+        territoryTerritoryEffectHashMap.forEach((subTerritory, territoryEffect) -> {
+            Empire subTerritoryOwner = subTerritory.getEmpire();
+            if (subTerritoryOwner != null) {
                 int score = 0;
-                if (scoreMap.containsKey(pointOwner)) {
-                    score = scoreMap.get(pointOwner);
+                if (scoreMap.containsKey(subTerritoryOwner)) {
+                    score = scoreMap.get(subTerritoryOwner);
                 }
-                scoreMap.put(pointOwner, score + (owner == pointOwner ? territoryEffect.defenseRegen : territoryEffect.attackDamage));
+                scoreMap.put(subTerritoryOwner, score + (owner == subTerritoryOwner ? territoryEffect.defenseRegen : territoryEffect.attackDamage));
             }
         });
 
@@ -155,6 +160,11 @@ public class Struggle extends Objective {
             progress = (float) resistance / maxResistance;
         }
         getBossBar().setProgress(Math.min(Math.max(0F, progress), 1F));
+    }
+
+    @Override
+    public String getName() {
+        return "struggle";
     }
 
     public int getMaxResistance() {

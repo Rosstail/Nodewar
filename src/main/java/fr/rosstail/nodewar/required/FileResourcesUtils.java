@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class FileResourcesUtils {
 
-    public static void main(String folder, Nodewar plugin) throws IOException {
+    public static void main(String folder, Nodewar plugin, boolean force) throws IOException {
         FileResourcesUtils app = new FileResourcesUtils();
 
         // Sample 3 - read all files from a resources folder (JAR version)
@@ -42,7 +42,7 @@ public class FileResourcesUtils {
                 }
 
                 File file = new File(filePathInJAR);
-                if (!file.exists()) {
+                if (!file.exists() || force) {
                     /*if (file.isDirectory()) {
                         file.mkdir();
                         main(file.getName(), plugin);

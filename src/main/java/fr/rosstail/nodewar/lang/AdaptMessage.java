@@ -27,7 +27,7 @@ public class AdaptMessage
         OUT,
         WARNING,
         SEVERE,
-        ERROR;
+        ERROR
     }
 
     public static void sendActionBar(final Player player, final String message) {
@@ -145,7 +145,7 @@ public class AdaptMessage
         return adapt(setPlaceholderMessage(player, message));
     }
 
-    private static String adapt(String message) {
+    public static String adapt(String message) {
         if (message == null) {
             return null;
         }

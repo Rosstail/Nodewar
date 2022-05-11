@@ -5,6 +5,9 @@ import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.empires.EmpireManager;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -39,18 +42,18 @@ public class EmpireDisbandCommand extends SubCommand {
     @Override
     public void perform(CommandSender sender, String[] args) {
         if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage("You don't have permission " + getPermission());
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.PERMISSION_DENIED)));
             return;
         }
         if (!(sender instanceof Player)) {
-            sender.sendMessage("By player only");
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.BY_PLAYER_ONLY)));
             return;
         }
         Player player = Objects.requireNonNull(((Player) sender).getPlayer());
         Empire playerEmpire = PlayerInfoManager.getPlayerInfoManager().getSet(player).getEmpire();
         String empireOwnerUUID = playerEmpire.getOwnerUUID();
         if (empireOwnerUUID == null || !empireOwnerUUID.equals(player.getUniqueId().toString())) {
-            player.sendMessage("You do not own this empire !");
+            sender.sendMessage("You do not own this empire !");
             return;
         }
 

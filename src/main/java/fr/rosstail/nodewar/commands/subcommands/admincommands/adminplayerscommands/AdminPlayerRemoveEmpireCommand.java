@@ -4,6 +4,9 @@ import fr.rosstail.nodewar.commands.SubCommand;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.EmpireManager;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -24,7 +27,7 @@ public class AdminPlayerRemoveEmpireCommand extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar admin player leaveempire";
+        return "nodewar admin player leaveempire [player]";
     }
 
     @Override
@@ -35,12 +38,12 @@ public class AdminPlayerRemoveEmpireCommand extends SubCommand {
     @Override
     public void perform(CommandSender sender, String[] args) {
         if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage("You don't have permission " + getPermission());
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.PERMISSION_DENIED)));
             return;
         }
 
         if (args.length < 4) {
-            sender.sendMessage("Not enough arguments !");
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.TOO_FEW_ARGUMENTS)));
             return;
         }
 

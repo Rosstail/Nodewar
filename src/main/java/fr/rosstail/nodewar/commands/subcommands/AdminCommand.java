@@ -4,6 +4,9 @@ import fr.rosstail.nodewar.commands.SubCommand;
 import fr.rosstail.nodewar.commands.subcommands.admincommands.AdminEmpireCommand;
 import fr.rosstail.nodewar.commands.subcommands.admincommands.AdminPlayerCommand;
 import fr.rosstail.nodewar.commands.subcommands.admincommands.AdminTerritoryCommand;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -41,7 +44,7 @@ public class AdminCommand extends SubCommand {
     @Override
     public void perform(CommandSender sender, String[] args) {
         if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage("You don't have permission " + getPermission());
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.PERMISSION_DENIED)));
             return;
         }
 

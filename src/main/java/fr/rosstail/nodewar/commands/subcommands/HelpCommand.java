@@ -2,6 +2,9 @@ package fr.rosstail.nodewar.commands.subcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.SubCommand;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -41,14 +44,14 @@ public class HelpCommand extends SubCommand {
     @Override
     public void perform(CommandSender sender, String[] args) {
         if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage("You don't have permission " + getPermission());
+            sender.sendMessage(AdaptMessage.adapt(LangManager.getMessage(LangMessage.PERMISSION_DENIED)));
             return;
         }
-        StringBuilder helpCommand = new StringBuilder("=====" + getName().toUpperCase() + "=====");
+        StringBuilder helpCommand = new StringBuilder("&a=====&6" + getName().toUpperCase() + "&a=====&r");
         for (SubCommand subCommand : subCommands) {
-                helpCommand.append("\n").append(" > /").append(subCommand.getSyntax()).append(": ").append(subCommand.getDescription());
+                helpCommand.append("\n").append("&b > &2/").append(subCommand.getSyntax()).append("&8: &r").append(subCommand.getDescription());
         }
-        sender.sendMessage(helpCommand.toString());
+        sender.sendMessage(AdaptMessage.adapt(helpCommand.toString()));
     }
 
     @Override
