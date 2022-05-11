@@ -1,11 +1,14 @@
 package fr.rosstail.nodewar.territory.eventhandlers.worldguardevents;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerEvent;
+
+import java.util.Map;
 
 /**
  * event that is triggered after a player left a WorldGuard region
@@ -21,9 +24,12 @@ public class RegionLeftEvent extends RegionEvent
      */
     public RegionLeftEvent(ProtectedRegion region, Player player, Reasons reason, PlayerEvent parent) {
         super(region, player, reason, parent);
+        boolean found = false;
         World world = parent.getPlayer().getWorld();
         if (WorldTerritoryManager.getUsedWorlds().containsKey(world)) {
-            WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().forEach((s, territory) -> {
+            for (Map.Entry<String, Territory> entry : WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().entrySet()) {
+                String s = entry.getKey();
+                Territory territory = entry.getValue();
                 ProtectedRegion territoryRegion = territory.getRegion();
                 if (territoryRegion != null && territoryRegion.equals(region)) {
                     Objective objective = territory.getObjective();
@@ -31,8 +37,28 @@ public class RegionLeftEvent extends RegionEvent
                         objective.bossBarRemove(player);
                     }
                     territory.getPlayersOnTerritory().remove(player);
+                    found = true;
                 }
-            });
+            }
+        }
+        //Needs some optimization because 2 loops
+        if (!found) {
+            for (Map.Entry<World, WorldTerritoryManager> entry : WorldTerritoryManager.getUsedWorlds().entrySet()) {
+                World world1 = entry.getKey();
+                WorldTerritoryManager worldTerritoryManager = entry.getValue();
+                if (world1 != world) {
+                    worldTerritoryManager.getTerritories().forEach((s, territory) -> {
+                        ProtectedRegion territoryRegion = territory.getRegion();
+                        if (territoryRegion != null && territoryRegion.equals(region)) {
+                            Objective objective = territory.getObjective();
+                            if (objective != null) {
+                                objective.bossBarRemove(player);
+                            }
+                            territory.getPlayersOnTerritory().remove(player);
+                        }
+                    });
+                }
+            }
         }
     }
 }

@@ -1,13 +1,12 @@
 package fr.rosstail.nodewar.territory.eventhandlers.worldguardevents;
 
-import fr.rosstail.nodewar.territory.zonehandlers.Territory;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
 import org.bukkit.World;
-import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import org.bukkit.boss.BossBar;
-import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.entity.Player;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.bukkit.event.player.PlayerEvent;
 
 public class RegionEnteredEvent extends RegionEvent
 {
