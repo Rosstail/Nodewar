@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.territory.eventhandlers.worldguardevents;
 
 import org.bukkit.entity.Player;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 
@@ -10,9 +11,9 @@ public abstract class RegionEvent extends PlayerEvent
     private static final HandlerList handlerList;
     private final ProtectedRegion region;
     private final Reasons reasons;
-    public PlayerEvent parentEvent;
+    public Event parentEvent;
     
-    public RegionEvent(final ProtectedRegion region, final Player player, final Reasons reasons, final PlayerEvent parent) {
+    public RegionEvent(final ProtectedRegion region, final Player player, final Reasons reasons, final Event parent) {
         super(player);
         this.region = region;
         this.reasons = reasons;
@@ -35,7 +36,7 @@ public abstract class RegionEvent extends PlayerEvent
         return this.reasons;
     }
     
-    public PlayerEvent getParentEvent() {
+    public Event getParentEvent() {
         return this.parentEvent;
     }
     

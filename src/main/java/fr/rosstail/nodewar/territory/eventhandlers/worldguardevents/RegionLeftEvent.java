@@ -6,6 +6,7 @@ import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerEvent;
 
 import java.util.Map;
@@ -22,10 +23,10 @@ public class RegionLeftEvent extends RegionEvent
      * @param player the player who triggered the event
      * @param reason the type of movement how the player left the region
      */
-    public RegionLeftEvent(ProtectedRegion region, Player player, Reasons reason, PlayerEvent parent) {
+    public RegionLeftEvent(ProtectedRegion region, Player player, Reasons reason, Event parent) {
         super(region, player, reason, parent);
         boolean found = false;
-        World world = parent.getPlayer().getWorld();
+        World world = player.getWorld();
         if (WorldTerritoryManager.getUsedWorlds().containsKey(world)) {
             for (Map.Entry<String, Territory> entry : WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().entrySet()) {
                 String s = entry.getKey();
