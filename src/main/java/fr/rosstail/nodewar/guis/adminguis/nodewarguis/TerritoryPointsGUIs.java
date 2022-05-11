@@ -9,7 +9,6 @@ import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.guis.GUIs;
 import fr.rosstail.nodewar.lang.AdaptMessage;
-import fr.rosstail.nodewar.territory.zonehandlers.CapturePoint;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -55,7 +54,7 @@ public class TerritoryPointsGUIs {
     private static StaticPane initPane(Player player, Nodewar plugin, ChestGui gui, ChestGui previousGui, PaginatedPane paginatedPane, Territory territory, int page) {
         StaticPane staticPane = new StaticPane(0, 0, 9, 6);
 
-        ArrayList<CapturePoint> capturePoints = new ArrayList<>(territory.getCapturePoints().values());
+        ArrayList<Territory> subTerritories = new ArrayList<>(territory.getSubTerritories().values());
 
         int index = 45 * page;
 
@@ -78,14 +77,14 @@ public class TerritoryPointsGUIs {
 
         while (posY != 5) {
             while (posX != 9) {
-                if (capturePoints.size() - 1 < index) {
+                if (subTerritories.size() - 1 < index) {
                     return staticPane;
                 }
-                CapturePoint point = capturePoints.get(index);
+                Territory subTerritory = subTerritories.get(index);
 
-                staticPane.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, null, Material.BEACON, point.getDisplay(), null
+                staticPane.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, null, Material.BEACON, subTerritory.getDisplay(), null
                         , GUIs.adaptLore(player, null)), event -> {
-                    fr.rosstail.nodewar.guis.adminguis.nodewarguis.PointGUIs.initGUI(player, plugin, point, gui);
+                    TerritoryPointsGUIs.initGUI(player, plugin, subTerritory, gui);
                 }), posX, posY);
 
                 posX++;
@@ -95,7 +94,7 @@ public class TerritoryPointsGUIs {
             posY++;
         }
 
-        if (capturePoints.size() > index) {
+        if (subTerritories.size() > index) {
             staticPane.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, null, Material.SPECTRAL_ARROW, "&Next page", null
                     , GUIs.adaptLore(player, null)), event -> {
                 paginatedPane.setPage(page + 1);

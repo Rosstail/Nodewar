@@ -53,7 +53,6 @@ public class DynmapHandler {
     boolean use3d;
     String infoWindow;
     private Map<Territory, AreaStyle> territoryAreaStyleMap;
-    private Map<CapturePoint, AreaStyle> capturePointAreaStyleMap;
     boolean stop;
     int maxDepth;
 
@@ -97,18 +96,6 @@ public class DynmapHandler {
             }
             label = ChatColor.stripColor(territory.getDisplay());
         }
-
-        AreaStyle(CapturePoint capturePoint) {
-            Empire empire = capturePoint.getEmpire();
-            fillColor = empire != null ? empire.getMapColor() : EmpireManager.getEmpireManager().getNoEmpire().getMapColor();
-            if (capturePoint.getTerritory().isNode()) {
-                strokeWeight = 4;
-            } else {
-                strokeWeight = 2;
-            }
-            strokeColor = "#FFFFFF";
-            label = ChatColor.stripColor(capturePoint.getDisplay());
-        }
     }
 
     private Map<String, AreaMarker> resAreas = new HashMap<>();
@@ -139,26 +126,6 @@ public class DynmapHandler {
         AreaStyle as;
         /* Check for owner style matches */
         as = territoryAreaStyleMap.get(territory);
-
-        int sc = 0xFF0000;
-        int fc = 0xFF0000;
-        try {
-            sc = Integer.parseInt(as.strokeColor.substring(1), 16);
-            fc = Integer.parseInt(as.fillColor.substring(1), 16);
-        } catch (NumberFormatException nfx) {
-            AdaptMessage.print(nfx.getMessage(), AdaptMessage.prints.ERROR);
-        }
-        m.setLineStyle(as.strokeWeight, as.strokeOpacity, sc);
-        m.setFillStyle(as.fillOpacity, fc);
-        if (as.label != null) {
-            m.setLabel(as.label);
-        }
-    }
-
-    private void addStyle(CapturePoint capturePoint, AreaMarker m) {
-        AreaStyle as;
-        /* Check for owner style matches */
-        as = capturePointAreaStyleMap.get(capturePoint);
 
         int sc = 0xFF0000;
         int fc = 0xFF0000;
@@ -230,15 +197,9 @@ public class DynmapHandler {
         /* Set line and fill properties */
         for (Map.Entry<String, Territory> e : WorldTerritoryManager.getUsedWorlds().get(BukkitAdapter.adapt(world)).getTerritories().entrySet()) {
             Territory territory = e.getValue();
-            if (territory.getRegion().equals(region)) {
+            ProtectedRegion territoryRegion = territory.getRegion();
+            if (territoryRegion != null && territoryRegion.equals(region)) {
                 addStyle(territory, m);
-            } else {
-                for (Map.Entry<String, CapturePoint> entry : territory.getCapturePoints().entrySet()) {
-                    CapturePoint capturePoint = entry.getValue();
-                    if (capturePoint.getRegion().equals(region)) {
-                        addStyle(capturePoint, m);
-                    }
-                }
             }
         }
 
@@ -293,15 +254,13 @@ public class DynmapHandler {
                     regionsToDo = new ArrayList<>();
 
                     territoryAreaStyleMap = new HashMap<>();
-                    capturePointAreaStyleMap = new HashMap<>();
 
                     worldTerritoryManagers.get(curWorld).getTerritories().forEach((s, territory) -> {
+                        ProtectedRegion region = territory.getRegion();
                         territoryAreaStyleMap.put(territory, new AreaStyle(territory));
-                        regionsToDo.add(territory.getRegion());
-                        territory.getCapturePoints().forEach((s1, capturePoint) -> {
-                            capturePointAreaStyleMap.put(capturePoint, new AreaStyle(capturePoint));
-                            regionsToDo.add(capturePoint.getRegion());
-                        });
+                        if (region != null) {
+                            regionsToDo.add(region);
+                        }
                     });
                     worldsToDo.remove(0);
                     wgWorldsToDo.remove(0);
@@ -389,11 +348,11 @@ public class DynmapHandler {
         plugin.saveConfig();  /* Save updates, if needed */
 
         /* Now, add marker set for mobs (make it transient) */
-        set = markerAPI.getMarkerSet("worldguard.markerset");
+        set = markerAPI.getMarkerSet("nodewar.markerset");
         if (set == null)
-            set = markerAPI.createMarkerSet("worldguard.markerset", cfg.getString("layer.name", "WorldGuard"), null, false);
+            set = markerAPI.createMarkerSet("nodewar.markerset", cfg.getString("layer.name", "Nodewar"), null, false);
         else
-            set.setMarkerSetLabel(cfg.getString("layer.name", "WorldGuard"));
+            set.setMarkerSetLabel(cfg.getString("layer.name", "Nodewar"));
         if (set == null) {
             AdaptMessage.print("Error creating marker set", AdaptMessage.prints.SEVERE);
             return;
@@ -409,14 +368,10 @@ public class DynmapHandler {
         updatesPerTick = cfg.getInt("updates-per-tick", 20);
 
         territoryAreaStyleMap = new HashMap<>();
-        capturePointAreaStyleMap = new HashMap<>();
         /* Get style information */
         WorldTerritoryManager.getUsedWorlds().forEach((world, worldTerritoryManager) -> {
             worldTerritoryManager.getTerritories().forEach((s, territory) -> {
                 territoryAreaStyleMap.put(territory, new AreaStyle(territory));
-                territory.getCapturePoints().forEach((s1, capturePoint) -> {
-                    capturePointAreaStyleMap.put(capturePoint, new AreaStyle(capturePoint));
-                });
             });
         });
 

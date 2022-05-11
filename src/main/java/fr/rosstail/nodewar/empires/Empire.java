@@ -36,7 +36,7 @@ public class Empire {
         if (display == null) {
             display = "&7" + key;
         }
-        this.display = ChatColor.translateAlternateColorCodes('&', display);
+        this.display = AdaptMessage.empireMessage(this, display);
 
         if (config.getString(key + ".map.color") != null && config.getString(key + ".map.color").matches("(#[a-fA-F0-9]{6})")) {
             this.mapColor = config.getString(key + ".map.color");
@@ -76,9 +76,9 @@ public class Empire {
      * No Empire
      */
     Empire() {
-        this.name = null;
+        this.name = "none";
         this.config = null;
-        this.display = ChatColor.translateAlternateColorCodes('&', "&7None");
+        this.display = AdaptMessage.adapt(Nodewar.getInstance().getCustomConfig().getString("empires.none-display"));
         this.barColor = BarColor.WHITE;
         this.mapColor = "#000000";
         this.friendlyFire = true;
@@ -132,9 +132,11 @@ public class Empire {
                         }
                         worldTerritories.get(world).add(territory);
                         territories.add(territory);
-                        final ProtectedRegion region = territory.getRegion();
-                        region.getMembers().removeAll();
-                        region.getMembers().addGroup(name);
+                        ProtectedRegion region = territory.getRegion();
+                        if (region != null) {
+                            region.getMembers().removeAll();
+                            region.getMembers().addGroup(name);
+                        }
                     }
                 }
             }
@@ -169,6 +171,7 @@ public class Empire {
             config.set(name + ".friendly-fire", friendlyFire);
             config.set(name + ".boss-bar-color", barColor.toString());
             config.set(name + ".owner-uuid", ownerUUID);
+            config.set(name + ".map.color", mapColor);
             try {
                 config.save(file);
             } catch (IOException e) {

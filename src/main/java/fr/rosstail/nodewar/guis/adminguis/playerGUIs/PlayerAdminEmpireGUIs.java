@@ -92,7 +92,7 @@ public class PlayerAdminEmpireGUIs {
                     PlayerInfo targetInfo = PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(target);
                     targetInfo.leaveEmpire();
                     targetInfo.setEmpire(empire);
-                    player.sendMessage(AdaptMessage.playerMessage(target, LangManager.getMessage(LangMessage.PLAYER_SET_EMPIRE)));
+                    player.sendMessage(AdaptMessage.playerMessage(target, LangManager.getMessage(LangMessage.EMPIRE_PLAYER_SET)));
                     previousGui.show(player);
                 }), posX, posY);
 

@@ -9,7 +9,6 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.guis.GUIs;
-import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.empires.Empire;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
@@ -81,7 +80,7 @@ public class EmpiresListGUI {
                 itemSlot.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, customConfig, material, display, slotPath,
                         GUIs.adaptLore(player, lore)), event -> {
                     if(PlayerInfoManager.getPlayerInfoManager().getPlayerInfoMap().get(player).tryJoinEmpire(empire)) {
-                        player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_JOIN_EMPIRE)));
+                        player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.EMPIRE_PLAYER_JOIN)));
                     }
                     initPane(player, plugin, customConfig, itemSlot, gui);
                     gui.update();

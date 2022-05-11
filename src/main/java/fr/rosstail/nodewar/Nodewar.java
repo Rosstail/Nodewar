@@ -2,8 +2,7 @@ package fr.rosstail.nodewar;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.calendar.CalendarManager;
-import fr.rosstail.nodewar.commandhandlers.NodewarCommands;
-import fr.rosstail.nodewar.datahandlers.PlayerInfo;
+import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import fr.rosstail.nodewar.empires.EmpireManager;
 import fr.rosstail.nodewar.eventhandler.PlayerEventHandler;
@@ -16,7 +15,7 @@ import fr.rosstail.nodewar.lang.PAPIExpansion;
 import fr.rosstail.nodewar.territory.WorldGuardInteractions;
 import fr.rosstail.nodewar.territory.zonehandlers.DynmapHandler;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
-import fr.rosstail.nodewar.territory.eventhandlers.NodewarEventsListener;
+import fr.rosstail.nodewar.territory.eventhandlers.NodeWarEventsListener;
 import fr.rosstail.nodewar.territory.eventhandlers.WGRegionEventsListener;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import net.milkbowl.vault.chat.Chat;
@@ -64,7 +63,7 @@ public class Nodewar extends JavaPlugin implements Listener
         WorldGuardPlugin wgPlugin = this.getWGPlugin();
         if (wgPlugin != null) {
             WGRegionEventsListener wgRegionEventsListener = new WGRegionEventsListener(this);
-            NodewarEventsListener nodewarEventsListener = new NodewarEventsListener();
+            NodeWarEventsListener nodewarEventsListener = new NodeWarEventsListener();
             this.getServer().getPluginManager().registerEvents(wgRegionEventsListener, wgPlugin);
             this.getServer().getPluginManager().registerEvents(nodewarEventsListener, this);
         }
@@ -87,7 +86,9 @@ public class Nodewar extends JavaPlugin implements Listener
             Territory.initWorldTerritories(this);
             for (final WorldTerritoryManager manager : WorldTerritoryManager.getUsedWorlds().values()) {
                 for (final Territory territory : manager.getTerritories().values()) {
-                    territory.initCanAttack();
+                    territory.setupSubTerritories();
+                    WorldTerritoryManager.setUpObjective(territory);
+                    territory.initTargets();
                 }
             }
             for (final Empire empire : EmpireManager.getEmpireManager().getEmpires().values()) {
@@ -108,16 +109,17 @@ public class Nodewar extends JavaPlugin implements Listener
         }
         PlayerInfoManager.init(this);
         PlayerInfoManager.getPlayerInfoManager().startTimer();
-        this.getCommand(dimName).setExecutor(new NodewarCommands(this));
+        this.getCommand(dimName).setExecutor(new CommandManager());
+        //this.getCommand(dimName).setExecutor(new NodewarCommands(this));
     }
     
     private void initDefaultConfigs() {
         try {
-            FileResourcesUtils.main("worlds", this);
-            FileResourcesUtils.main("empires", this);
-            FileResourcesUtils.main("gui", this);
-            FileResourcesUtils.main("lang", this);
-            FileResourcesUtils.main("playerdata", this);
+            FileResourcesUtils.main("worlds", this, false);
+            FileResourcesUtils.main("empires", this, false);
+            FileResourcesUtils.main("gui", this, false);
+            FileResourcesUtils.main("lang", this, false);
+            FileResourcesUtils.main("playerdata", this, false);
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -129,7 +131,6 @@ public class Nodewar extends JavaPlugin implements Listener
         if (getCustomConfig().getBoolean("general.use-calendar")) {
             CalendarManager.getCalendarManager().stopCalenderSchedule();
         }
-        WorldTerritoryManager.stopTimers();
         if (DynmapHandler.getDynmapHandler() != null) {
             DynmapHandler.getDynmapHandler().disable();
         }

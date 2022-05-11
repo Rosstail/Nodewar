@@ -22,10 +22,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class PlayerInfo {
     private final Nodewar plugin = Nodewar.getInstance();
@@ -64,12 +60,12 @@ public class PlayerInfo {
     public void setEmpire(final Empire empire) {
         Empire previousEmpire = this.empire;
         this.empire = empire;
-        this.removePlayerGroup(previousEmpire);
+        removePlayerGroup(previousEmpire);
         if (empire == null) {
-            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_LEAVE_EMPIRE)));
+            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.EMPIRE_PLAYER_LEAVE)));
         } else {
             setPlayerGroup(empire);
-            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.PLAYER_JOIN_EMPIRE)));
+            player.sendMessage(AdaptMessage.playerMessage(player, LangManager.getMessage(LangMessage.EMPIRE_PLAYER_JOIN)));
         }
     }
 
@@ -86,13 +82,13 @@ public class PlayerInfo {
     }
 
     public void setPlayerGroup(final Empire empire) {
-        if (empire != null) {
+        if (empire != null && empire != EmpireManager.getEmpireManager().getNoEmpire()) {
             Nodewar.getPermissions().playerAddGroup(null, this.player, empire.getName());
         }
     }
 
     private void removePlayerGroup(final Empire empire) {
-        if (empire != null) {
+        if (empire != null && empire != EmpireManager.getEmpireManager().getNoEmpire()) {
             Nodewar.getPermissions().playerRemoveGroup(null, this.player, empire.getName());
         }
     }

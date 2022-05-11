@@ -12,6 +12,7 @@ import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.territory.eventhandlers.customevents.TerritoryVulnerabilityToggleEvent;
 import fr.rosstail.nodewar.territory.zonehandlers.Territory;
+import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -49,7 +50,10 @@ public class TerritoryGUIs {
         staticPane.addItem(new GuiItem(GUIs.createGuiItem(player, plugin, null, Material.RED_BANNER, "&9Empire", null
                 , GUIs.adaptLore(player, null)), event -> {
             if (event.isRightClick()) {
-                territory.cancelAttack(null);
+                Objective objective = territory.getObjective();
+                if (objective != null) {
+                    objective.reset();
+                }
                 player.sendMessage(AdaptMessage.playerMessage(player,
                         AdaptMessage.territoryMessage(territory,LangManager.getMessage(LangMessage.TERRITORY_NEUTRALIZE))));
             } else {

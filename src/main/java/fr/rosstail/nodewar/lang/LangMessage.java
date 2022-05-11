@@ -11,21 +11,31 @@ public enum LangMessage
     TOO_FEW_ARGUMENTS("too-few-arguments"),
     EMPIRE_DOES_NOT_EXIST("empire-does-not-exist"),
 
-    BOSSBAR_TERRITORY_NEUTRAL("bossbar.territory.neutral"),
-    BOSSBAR_TERRITORY_CONQUER("bossbar.territory.under-capture"),
-    BOSSBAR_TERRITORY_STRUGGLE("bossbar.territory.struggle"),
-    BOSSBAR_TERRITORY_ON_DEFENSE("bossbar.territory.on-defense"),
-    BOSSBAR_POINT_NEUTRAL("bossbar.point.neutral"),
-    BOSSBAR_POINT_CONQUER("bossbar.point.under-capture"),
-    BOSSBAR_POINT_NEUTRALIZE("bossbar.point.neutralizing"),
-    BOSSBAR_POINT_DEFENDED("bossbar.point.on-defense"),
-    BOSSBAR_POINT_STRUGGLE("bossbar.point.struggle"),
+    EMPIRE_CREATE("empire.create"),
+    EMPIRE_ALREADY_EXIST("empire.already-exist"),
+    EMPIRE_NOT_EXIST("empire.not-exist"),
+    EMPIRE_DISBANDED("empire.disbanded"),
+    EMPIRE_EDIT("empire.edit"),
+    EMPIRE_PLAYER_ALREADY_JOINED("empire.player-already-joined"),
+    EMPIRE_PLAYER_JOIN("empire.player-join"),
+    EMPIRE_PLAYER_SET("empire.player-set"),
+    EMPIRE_PLAYER_LEAVE("empire.player-leave"),
+    EMPIRE_PLAYER_REMOVE("empire.player-remove"),
+    EMPIRE_PLAYER_WITHOUT("empire.player-without-empire"),
+    EMPIRE_TARGET_WITHOUT("empire.target-without-empire"),
 
-    PLAYER_ALREADY_IN_EMPIRE("player-already-in-empire"),
-    PLAYER_JOIN_EMPIRE("player-join-empire"),
-    PLAYER_SET_EMPIRE("player-set-empire"),
-    PLAYER_LEAVE_EMPIRE("player-leave-empire"),
-    PLAYER_REMOVE_EMPIRE("player-remove-empire"),
+    BOSSBAR_TERRITORY_NEUTRAL("territory.bossbar.neutral"),
+    BOSSBAR_TERRITORY_CONQUER("territory.bossbar.under-capture"),
+    BOSSBAR_TERRITORY_STRUGGLE("territory.bossbar.struggle"),
+    BOSSBAR_TERRITORY_ON_DEFENSE("territory.bossbar.on-defense"),
+    BOSSBAR_TERRITORY_NEUTRALIZE("territory.bossbar.neutralizing"),
+
+    TITLE_TERRITORY_NEUTRALIZED("territory.titles.neutralized.title"),
+    SUBTITLE_TERRITORY_NEUTRALIZED("territory.titles.neutralized.subtitle"),
+    TITLE_TERRITORY_CONQUERED("territory.titles.conquered.title"),
+    SUBTITLE_TERRITORY_CONQUERED("territory.titles.conquered.subtitle"),
+    TITLE_TERRITORY_DEFENDED("territory.titles.defended.title"),
+    SUBTITLE_TERRITORY_DEFENDED("territory.titles.defended.subtitle"),
 
     WORLD_SET_EMPIRE("world-set-empire"),
     WORLD_NEUTRALIZE("world-neutralize"),
@@ -47,13 +57,13 @@ public enum LangMessage
     ADMIN_HELP("admin-help"),
     EMPIRE_HELP("empire-help");
     
-    private final String id;
+    private final String message;
     
-    LangMessage(final String id) {
-        this.id = id;
+    LangMessage(final String message) {
+        this.message = message;
     }
     
-    String getId() {
-        return this.id;
+    String getMessage() {
+        return this.message;
     }
 }

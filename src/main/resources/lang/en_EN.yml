@@ -3,11 +3,15 @@ disconnected-player: "[Nodewar] The targeted player is disconnected."
 too-few-arguments: "&cToo few arguments."
 wrong-value: "&cYou put a wrong value. Type &a/fe help &cto get informed."
 
-player-join-empire: "&7You have joined the %nodewar_player_empire%&r&7."
-player-set-empire: "&7%player% has join the %nodewar_player_empire% empire."
-player-leave-empire: "&7You left your empire."
-player-remove-empire: "&7%player% left his empire."
-player-already-in-empire: "&7Already in the %nodewar_player_empire%&r&7."
+empire:
+  create: "&7You have create the empire %nodewar_player_empire%&7."
+  player-join: "&7You have joined the %nodewar_player_empire%&r&7."
+  player-set: "&7%player% has join the %nodewar_player_empire% empire."
+  player-leave: "&7You left your empire."
+  player-remove: "&7%player% left his empire."
+  player-already-joined: "&7Already in the %nodewar_player_empire%&r&7."
+  player-without-empire: "&7You are already without empire&r&7."
+  target-without-empire: "&7%player% is already without empire&r&7."
 
 world-set-empire: "&7All territories in %nodewar_world_name% is now owned by %nodewar_territory_empire_owner%"
 world-neutralize: "&7All territories in %nodewar_world_name% have been neutralized"
@@ -17,46 +21,23 @@ territory-set-empire: "%nodewar_territory_display% &r&7is now owned by %nodewar_
 territory-neutralize: "%nodewar_territory_display% &r&7has been neutralized"
 territory-vulnerable: "%nodewar_territory_display% &r&7is now vulnerable"
 territory-invulnerable: "%nodewar_territory_display% &r&7is now invulnerable"
-point-set-empire: "%nodewar_point_display% &r&7is now owned by %nodewar_point_empire_owner%"
-point-neutralize: "%nodewar_point_display% &r&7has been neutralized"
 
-bossbar:
-  territory:
+territory:
+  bossbar:
     neutral: "Territory %nodewar_territory_display% &7- &c%nodewar_territory_resistance%&7/&c%nodewar_territory_max_resistance%"
     under-capture: "Territory %nodewar_territory_display% &7- &ccapturing &7- &c%nodewar_territory_resistance%&7/&c%nodewar_territory_max_resistance%"
     struggle: "Territory %nodewar_territory_display% &7- &estruggling &7- &c%nodewar_territory_resistance%&7/&c%nodewar_territory_max_resistance%"
     on-defense: "Territory %nodewar_territory_display% &7- &cdefending &7- &c%nodewar_territory_resistance%&7/&c%nodewar_territory_max_resistance%"
-  point:
-    neutral: "Point %nodewar_point_display% &7- &c%nodewar_point_resistance%&7/&c%nodewar_point_max_resistance%"
-    under-capture: "Point %nodewar_point_display% &7- &cconquering &7- &c%nodewar_point_resistance%&7/&c%nodewar_point_max_resistance%"
-    neutralizing: "Point %nodewar_point_display% &7- neutralizing - &c%nodewar_point_resistance%&7/&c%nodewar_point_max_resistance%"
-    on-defense: "Point %nodewar_point_display% &7- &cdefending &7- &c%nodewar_point_resistance%&7/&c%nodewar_point_max_resistance%"
-    struggle: "Point %nodewar_point_display% &7- &cconflicted &7- &c%nodewar_point_resistance%&7/&c%nodewar_point_max_resistance%"
+  titles:
+    neutralized:
+      title: "Territory %nodewar_territory_display% neutralized"
+      subtitle: "By %nodewar_territory_empire_advantage%"
+    conquered:
+      title: "Territory %nodewar_territory_display% conquered"
+      subtitle: "By %nodewar_territory_empire_advantage%"
+    defended:
+      title: "Territory %nodewar_territory_display% defended"
+      subtitle: "By %nodewar_territory_empire_advantage%"
 
 location-does-not-exist: "&7This location does not exist."
 world-not-used: "&7This world is not used."
-
-help:
-  - "|============================ NODEWAR HELP ============================|"
-  - " &c* &fnodewar admin &8: &7Displays management commands."
-  - " &c* &fnodewar territory &8: &7Commands for territories and points."
-  - " &c* &fnodewar empire &8: &7Displays commands for empires system."
-territory-help:
-  - "|======================== NODEWAR TERRITORY HELP ========================|"
-  - "   &cWorld &8: &7Affect all territories and points of selected world"
-  - "   &cWorld/territory &8: &7Affect the selected territory and his points"
-  - "   &cWorld/territory/point &8: &7Affect the point of selected territory"
-  - " &c* &fnodewar territory [[world]/(territory)/(point)] setempire [empire] &8: &7Set empire as owner."
-  - " &c* &fnodewar territory [[world]/(territory)/(point)] neutralize &8: &7Remove empire owner."
-  - " &c* &fnodewar territory [[world]/(territory)] vulnerability [true/false] &8: &7Alternate vulnerability."
-admin-help:
-  - "|========================= NODEWAR ADMIN HELP =========================|"
-  - " &c* &fnodewar admin nodewar &8: &cOP &8- &7Open worlds, territories and capture points management GUI."
-  - " &c* &fnodewar admin player %player% &8: &cOP &8- &7Open player's options management GUI."
-  - " &c* &fnodewar admin empire set %player% set %empire% &8: &cOP &8- &7Set the specified empire to the player."
-  - " &c* &fnodewar admin empire %player% remove &8: &cOP &8- &7Leaves the player without empire."
-empire-help:
-  - "|========================= NODEWAR EMPIRE HELP =========================|"
-  - " &c* &fnodewar empire join %empire% &8: &7Join the specified empire in the list."
-  - " &c* &fnodewar empire leave &8: &7Leave your actual empire."
-  - " &c* &fnodewar empire list &8: &7Open GUI to join an empire."

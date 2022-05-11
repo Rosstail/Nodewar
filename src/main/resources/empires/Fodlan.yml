@@ -1,0 +1,27 @@
+golden_deer:
+  display: "&eGolden Deer"
+  boss-bar-color: YELLOW
+  friendly-fire: false
+  map:
+    color: "#FFFF00"
+    
+black_eagles:
+  display: '&cBlack Eagles'
+  friendly-fire: true
+  boss-bar-color: RED
+  map:
+    color: "#FF0000"
+
+blue_lions:
+  display: '{#0000DD}Blue Lions'
+  boss-bar-color: BLUE
+  friendly-fire: false
+  map:
+    color: "#0000FF"
+
+seiros_church:
+  display: '{#DD00DD}Seiros Church'
+  boss-bar-color: PURPLE
+  friendly-fire: false
+  map:
+    color: "#AA00AA"
