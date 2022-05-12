@@ -170,7 +170,7 @@ public class WGRegionEventsListener implements Listener
             final HashSet<ProtectedRegion> regionsOnPrevLocation = new HashSet<ProtectedRegion>(prevLocRegionManager.getApplicableRegions(BukkitAdapter.asBlockVector(prevLoc)).getRegions());
 
             for (final ProtectedRegion region : regionsOnPrevLocation) {
-                if (!newLocRegions.contains(region)) {
+                if (!newLocRegions.contains(region) && !commonRegions.contains(region)) {
                     final RegionLeaveEvent leaveEvent = new RegionLeaveEvent(region, player, reason, event);
                     this.plugin.getServer().getPluginManager().callEvent(leaveEvent);
                     if (!leaveEvent.isCancelled()) {
@@ -181,41 +181,6 @@ public class WGRegionEventsListener implements Listener
                 }
             }
         }
-        /*final Iterator<ProtectedRegion> itr = commonRegions.iterator();
-        while (itr.hasNext()) {
-            final ProtectedRegion region = itr.next();
-            if (!regionsOnNewLocation.contains(region)) {
-                if (newLocRegionManager.getRegion(region.getId()) != region) {
-                    final RegionLeaveEvent leaveEventRegion = new RegionLeaveEvent(region, player, reason, event);
-                    if (leaveEventRegion.isCancelled()) {
-                        regions.clear();
-                        regions.addAll(oldRegions);
-                        return true;
-                    }
-                    Bukkit.getScheduler().runTaskLater(this.plugin, new Runnable() {
-                        @Override
-                        public void run() {
-                            final RegionLeftEvent leftEventRegion = new RegionLeftEvent(region, player, reason, event);
-                            plugin.getServer().getPluginManager().callEvent(leftEventRegion);
-                        }
-                    }, 1L);
-                    itr.remove();
-                }
-                else {
-                    final RegionLeaveEvent leaveEventRegion = new RegionLeaveEvent(region, player, reason, event);
-                    this.plugin.getServer().getPluginManager().callEvent(leaveEventRegion);
-                    if (leaveEventRegion.isCancelled()) {
-                        regions.clear();
-                        regions.addAll(oldRegions);
-                        return true;
-                    }
-
-                    itr.remove();
-                }
-            }
-        }
-
-         */
 
         for (ProtectedRegion newLocRegion : newLocRegions) {
             if (!commonRegions.contains(newLocRegion)) {
@@ -226,15 +191,22 @@ public class WGRegionEventsListener implements Listener
             }
         }
         for (ProtectedRegion prevLocRegion : prevLocRegions) {
-            if (!commonRegions.contains(prevLocRegion)) {
+            if (!commonRegions.contains(prevLocRegion) && !newLocRegions.contains(prevLocRegion)) {
                 Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
                     final RegionLeftEvent leftEventRegion = new RegionLeftEvent(prevLocRegion, player, reason, event);
                     plugin.getServer().getPluginManager().callEvent(leftEventRegion);
                 }, 1L);
             }
         }
+        ArrayList<ProtectedRegion> defNewRegions = new ArrayList<>(newLocRegions);
 
-        this.playerRegions.put(player, new HashSet<>(commonRegions));
+        for (ProtectedRegion protectedRegion : commonRegions) {
+            if (!newLocRegions.contains(protectedRegion)) {
+                defNewRegions.add(protectedRegion);
+            }
+        }
+
+        this.playerRegions.put(player, new HashSet<>(defNewRegions));
         PlayerRegions.setRegionsPlayers(this.playerRegions);
         PlayerRegions.updatePlayerInRegions(player, new HashSet<>(prevLocRegions));
         PlayerRegions.updatePlayerInRegions(player, new HashSet<>(newLocRegions));
