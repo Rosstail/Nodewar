@@ -20,11 +20,12 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     public CommandManager() {
         subCommands.add(new AdminCommand());
         subCommands.add(new EmpireCommand());
+        subCommands.add(new HelpCommand(this));
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (args.length == 0) {
+        if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
             HelpCommand help = new HelpCommand(this);
             help.perform(sender, args);
         } else {

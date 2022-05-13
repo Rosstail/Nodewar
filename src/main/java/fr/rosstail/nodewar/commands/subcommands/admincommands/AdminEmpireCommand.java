@@ -28,7 +28,7 @@ public class AdminEmpireCommand extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar nodewar admin empire";
+        return "nodewar admin empire";
     }
 
     @Override
