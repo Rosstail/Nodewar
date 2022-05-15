@@ -64,8 +64,8 @@ public class Nodewar extends JavaPlugin implements Listener
         if (wgPlugin != null) {
             WGRegionEventsListener wgRegionEventsListener = new WGRegionEventsListener(this);
             NodeWarEventsListener nodewarEventsListener = new NodeWarEventsListener();
-            this.getServer().getPluginManager().registerEvents(wgRegionEventsListener, wgPlugin);
-            this.getServer().getPluginManager().registerEvents(nodewarEventsListener, this);
+            getServer().getPluginManager().registerEvents(wgRegionEventsListener, wgPlugin);
+            getServer().getPluginManager().registerEvents(nodewarEventsListener, this);
         }
         this.initDefaultConfigs();
         LangManager.initCurrentLang();
@@ -75,9 +75,9 @@ public class Nodewar extends JavaPlugin implements Listener
         }
         EmpireManager.initEmpireManager(this);
         EmpireManager.getEmpireManager().init();
-        if (this.setupEconomy()) {
+        if (setupEconomy()) {
             AdaptMessage.print("[" + this.getName() + "] Hooked with Vault !", AdaptMessage.prints.OUT);
-            this.setupPermissions();
+            setupPermissions();
         } else {
             log.severe(String.format("[" + this.getName() + "] Didn't found Vault.", this.getDescription().getName()));
         }

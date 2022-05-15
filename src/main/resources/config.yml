@@ -17,7 +17,7 @@ map:
   update-delay: 5
 
 empires:
-  none-display: "&7None"
+  none-display: "&7No Empire"
 
 calendar:
   wednesday-bf:
@@ -27,17 +27,17 @@ calendar:
       vulnerable: true
       empire: neutral
       worlds:
-        conquer:
+        Fodlan:
           territories:
-            - "the-bastion"
+            - "garreg-mach"
     end:
       day-name: wednesday
       system-time: "21:00"
       vulnerable: false
       worlds:
-        conquer:
+        Fodlan:
           territories:
-            - "the-bastion"
+            - "garreg-mach"
   friday-bf:
     start:
       day-name: friday
@@ -45,17 +45,17 @@ calendar:
       vulnerable: true
       empire: neutral
       worlds:
-        conquer:
+        Fodlan:
           territories:
-            - "the-bastion"
+            - "garreg-mach"
     end:
       day-name: friday
       system-time: "22:00"
       vulnerable: false
       worlds:
-        conquer:
+        Fodlan:
           territories:
-            - "the-bastion"
+            - "garreg-mach"
   sunday-bf:
     start:
       day-name: sunday
@@ -63,14 +63,14 @@ calendar:
       vulnerable: true
       empire: neutral
       worlds:
-        conquer:
+        Fodlan:
           territories:
-            - "the-bastion"
+            - "garreg-mach"
     end:
       day-name: sunday
       system-time: "20:00"
       vulnerable: false
       worlds:
-        conquer:
+        Fodlan:
           territories:
-            - "the-bastion"
+            - "garreg-mach"

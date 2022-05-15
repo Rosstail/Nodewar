@@ -24,7 +24,7 @@ permissions:
   nodewar.command:
     default: true
   nodewar.command.*:
-    default: op
+    default: false
     children:
       - nodewar.command.admin
       - nodewar.command.empire
@@ -32,7 +32,7 @@ permissions:
   nodewar.command.admin:
     default: op
   nodewar.command.admin.*:
-    default: op
+    default: false
     children:
       - nodewar.command.admin.empire
       - nodewar.command.admin.player
@@ -40,7 +40,7 @@ permissions:
   nodewar.command.admin.empire:
     default: op
   nodewar.command.admin.empire.*:
-    default: op
+    default: false
     children:
       - nodewar.command.admin.empire.create
       - nodewar.command.admin.empire.disband
@@ -52,7 +52,7 @@ permissions:
   nodewar.command.admin.empire.edit:
     default: op
   nodewar.command.admin.empire.edit.*:
-    default: op
+    default: false
     children:
       - nodewar.command.admin.empire.edit.bossbarcolor
       - nodewar.command.admin.empire.edit.color
@@ -75,7 +75,7 @@ permissions:
   nodewar.command.admin.player:
     default: op
   nodewar.command.admin.player.*:
-    default: op
+    default: false
     children:
       - nodewar.command.admin.player.setempire
       - nodewar.command.admin.player.removeempire
@@ -86,7 +86,7 @@ permissions:
   nodewar.command.admin.territory:
     default: op
   nodewar.command.admin.territory.*:
-    default: op
+    default: false
     children:
       - nodewar.command.admin.territory.neutralize
       - nodewar.command.admin.territory.setowner
@@ -100,7 +100,7 @@ permissions:
   nodewar.command.empire:
     default: true
   nodewar.command.empire.*:
-    default: true
+    default: false
     children:
       - nodewar.command.empire.create
       - nodewar.command.empire.disband
@@ -113,7 +113,7 @@ permissions:
   nodewar.command.empire.edit:
     default: true
   nodewar.command.empire.edit.*:
-    default: true
+    default: false
     children:
       - nodewar.command.empire.edit.bossbarcolor
       - nodewar.command.empire.edit.color
