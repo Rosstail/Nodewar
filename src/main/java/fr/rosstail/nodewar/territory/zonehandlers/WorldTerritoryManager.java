@@ -1,32 +1,20 @@
 package fr.rosstail.nodewar.territory.zonehandlers;
 
-import java.lang.reflect.Array;
-import java.util.HashMap;
-import java.util.List;
-
 import fr.rosstail.nodewar.territory.WorldGuardInteractions;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.ControlPoint;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.KingOfTheHill;
 import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.Struggle;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.InvalidConfigurationException;
-
-import java.io.IOException;
-
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.util.Objects;
-
-import org.bukkit.Bukkit;
-
 import java.io.File;
-import java.util.ArrayList;
-
-import org.bukkit.World;
-
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 public class WorldTerritoryManager {
     private static final Map<World, WorldTerritoryManager> worlds = new HashMap<>();
