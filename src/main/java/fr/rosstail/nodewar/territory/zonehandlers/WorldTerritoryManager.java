@@ -1,13 +1,8 @@
 package fr.rosstail.nodewar.territory.zonehandlers;
 
 import fr.rosstail.nodewar.territory.WorldGuardInteractions;
-import fr.rosstail.nodewar.territory.zonehandlers.objective.Objective;
-import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.ControlPoint;
-import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.KingOfTheHill;
-import fr.rosstail.nodewar.territory.zonehandlers.objective.objectives.Struggle;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -53,28 +48,6 @@ public class WorldTerritoryManager {
                 }
             }
         }
-    }
-
-    public static void setUpObjective(Territory territory) {
-        FileConfiguration config = territory.getConfig();
-        ConfigurationSection objectiveSection = config.getConfigurationSection(territory.getName() + ".options.objective");
-        Objective objective = null;
-        if (objectiveSection != null) {
-            String objectiveType = objectiveSection.getString(".type");
-            if (objectiveType != null) {
-                if (objectiveType.equalsIgnoreCase("KOTH")) {
-                    objective = new KingOfTheHill(territory);
-                    objective.start();
-                } else if (objectiveType.equalsIgnoreCase("STRUGGLE")) {
-                    objective = new Struggle(territory);
-                    objective.start();
-                } else if (objectiveType.equalsIgnoreCase("CONTROL")) {
-                    objective = new ControlPoint(territory);
-                    objective.start();
-                }
-            }
-        }
-        territory.setObjective(objective);
     }
 
     public static void setUsedWorlds() {

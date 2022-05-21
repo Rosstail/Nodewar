@@ -85,12 +85,20 @@ public class Territory {
 
     public void initTargets() {
         final List<String> linkedStrings = WorldTerritoryManager.getTerritoryConfigs().get(fileID).getStringList(this.getName() + ".options.targets");
-        final List<Territory> allTerritories = new ArrayList<>(WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().values());
+        final List<Territory> worldTerritoryList = new ArrayList<>(WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().values());
 
-        linkedStrings.forEach(s -> allTerritories.forEach(territory -> {
-            if (territory.getName().equalsIgnoreCase(s) && territory.getWorld().equals(this.world)) {
-                targets.add(territory);
-                territory.getTerritoriesCanAttack().add(this);
+        linkedStrings.forEach(s -> worldTerritoryList.forEach(territory -> {
+            if (!targets.contains(territory)) {
+                if (s.endsWith("*")) {
+                    String startTerr = s.substring(0, s.length() - 1);
+                    if (territory.getName().startsWith(startTerr) && territory.getWorld().equals(this.world)) {
+                        targets.add(territory);
+                        territory.getTerritoriesCanAttack().add(this);
+                    }
+                } else if (territory.getName().equalsIgnoreCase(s) && territory.getWorld().equals(this.world)) {
+                    targets.add(territory);
+                    territory.getTerritoriesCanAttack().add(this);
+                }
             }
         }));
     }
@@ -113,15 +121,22 @@ public class Territory {
     }
 
     public void setupSubTerritories() {
-        if (config.getConfigurationSection(name + ".options.sub-territories") != null) {
-            Map<String, Territory> worldTerritoriesMap = WorldTerritoryManager.getUsedWorlds().get(world).getTerritories();
-            final ArrayList<String> subTerritories = new ArrayList<>(config.getConfigurationSection(name + ".options.sub-territories").getKeys(false));
-            for (final String subTerritoryStr : subTerritories) {
-                if (worldTerritoriesMap.containsKey(subTerritoryStr)) {
-                    this.subTerritories.put(subTerritoryStr, worldTerritoriesMap.get(subTerritoryStr));
+        final List<Territory> worldTerritoryList = new ArrayList<>(WorldTerritoryManager.getUsedWorlds().get(world).getTerritories().values());
+        final ArrayList<String> subTerrSTR = new ArrayList<>(config.getStringList(name + ".options.subterritories"));
+
+        subTerrSTR.forEach(s -> worldTerritoryList.forEach(territory -> {
+            if (!subTerritories.containsValue(territory)) {
+                if (s.endsWith("*")) {
+                    String startTerr = s.substring(0, s.length() - 1);
+                    if (territory.getName().startsWith(startTerr) && territory.getWorld().equals(this.world)) {
+                        subTerritories.put(territory.name, territory);
+                    }
+                } else if (territory.getName().equalsIgnoreCase(s) && territory.getWorld().equals(this.world)) {
+                    subTerritories.put(s, territory);
+                    territory.getTerritoriesCanAttack().add(this);
                 }
             }
-        }
+        }));
     }
 
     public static boolean isConnectedToNode(ArrayList<Territory> territories, Territory territory, Empire empire) {

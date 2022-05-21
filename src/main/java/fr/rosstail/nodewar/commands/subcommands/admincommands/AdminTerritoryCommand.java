@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.commands.subcommands.admincommands;
 
 import fr.rosstail.nodewar.commands.SubCommand;
 import fr.rosstail.nodewar.commands.subcommands.HelpCommand;
+import fr.rosstail.nodewar.commands.subcommands.admincommands.adminterritorycommands.AdminTerritoryInfoCommand;
 import fr.rosstail.nodewar.commands.subcommands.admincommands.adminterritorycommands.AdminTerritoryVulnerabilityCommand;
 import fr.rosstail.nodewar.commands.subcommands.admincommands.adminterritorycommands.AdminTerritoryNeutralizeCommand;
 import fr.rosstail.nodewar.commands.subcommands.admincommands.adminterritorycommands.AdminTerritorySetOwnerCommand;
@@ -17,6 +18,7 @@ import java.util.List;
 public class AdminTerritoryCommand extends SubCommand {
 
     public AdminTerritoryCommand() {
+        getSubCommands().add(new AdminTerritoryInfoCommand());
         getSubCommands().add(new AdminTerritorySetOwnerCommand());
         getSubCommands().add(new AdminTerritoryNeutralizeCommand());
         getSubCommands().add(new AdminTerritoryVulnerabilityCommand());

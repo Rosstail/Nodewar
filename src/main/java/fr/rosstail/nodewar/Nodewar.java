@@ -1,5 +1,7 @@
 package fr.rosstail.nodewar;
 
+import com.palmergames.bukkit.towny.Towny;
+import com.palmergames.bukkit.towny.TownyAPI;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.calendar.CalendarManager;
 import fr.rosstail.nodewar.commands.CommandManager;
@@ -18,6 +20,7 @@ import fr.rosstail.nodewar.territory.zonehandlers.Territory;
 import fr.rosstail.nodewar.territory.eventhandlers.NodeWarEventsListener;
 import fr.rosstail.nodewar.territory.eventhandlers.WGRegionEventsListener;
 import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
+import fr.rosstail.nodewar.territory.zonehandlers.objective.ObjectiveManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -40,7 +43,8 @@ public class Nodewar extends JavaPlugin implements Listener
     private static final Chat chat;
     private static Nodewar instance;
     private static String dimName;
-    
+    private ObjectiveManager objectiveManager = new ObjectiveManager();
+
     public void onLoad() {
     }
     
@@ -71,12 +75,10 @@ public class Nodewar extends JavaPlugin implements Listener
         LangManager.initCurrentLang();
         if (Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PAPIExpansion(this).register();
-            Bukkit.getPluginManager().registerEvents(this, this);
         }
         EmpireManager.initEmpireManager(this);
         EmpireManager.getEmpireManager().init();
         if (setupEconomy()) {
-            AdaptMessage.print("[" + this.getName() + "] Hooked with Vault !", AdaptMessage.prints.OUT);
             setupPermissions();
         } else {
             log.severe(String.format("[" + this.getName() + "] Didn't found Vault.", this.getDescription().getName()));
@@ -87,7 +89,7 @@ public class Nodewar extends JavaPlugin implements Listener
             for (final WorldTerritoryManager manager : WorldTerritoryManager.getUsedWorlds().values()) {
                 for (final Territory territory : manager.getTerritories().values()) {
                     territory.setupSubTerritories();
-                    WorldTerritoryManager.setUpObjective(territory);
+                    ObjectiveManager.setUpObjective(territory);
                     territory.initTargets();
                 }
             }
@@ -110,7 +112,6 @@ public class Nodewar extends JavaPlugin implements Listener
         PlayerInfoManager.init(this);
         PlayerInfoManager.getPlayerInfoManager().startTimer();
         this.getCommand(dimName).setExecutor(new CommandManager());
-        //this.getCommand(dimName).setExecutor(new NodewarCommands(this));
     }
     
     private void initDefaultConfigs() {
@@ -188,5 +189,9 @@ public class Nodewar extends JavaPlugin implements Listener
 
     public YamlConfiguration getCustomConfig() {
         return YamlConfiguration.loadConfiguration(new File("plugins/" + getName() + "/config.yml"));
+    }
+
+    public ObjectiveManager getObjectiveManager() {
+        return objectiveManager;
     }
 }

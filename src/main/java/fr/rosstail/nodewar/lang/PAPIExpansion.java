@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.lang;
 
+import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.datahandlers.PlayerInfo;
 import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -9,14 +10,15 @@ import org.bukkit.entity.Player;
 
 public class PAPIExpansion extends PlaceholderExpansion
 {
-    private final fr.rosstail.nodewar.Nodewar plugin;
+    private final Nodewar plugin;
     
     public boolean canRegister() {
         return Bukkit.getPluginManager().getPlugin("Nodewar") != null;
     }
     
-    public PAPIExpansion(final fr.rosstail.nodewar.Nodewar plugin) {
+    public PAPIExpansion(final Nodewar plugin) {
         this.plugin = plugin;
+        Bukkit.getPluginManager().registerEvents(plugin, plugin);
     }
     
     public boolean register() {

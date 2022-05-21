@@ -10,6 +10,7 @@ softdepend:
   - PlaceholderAPI
   - Dynmap
   - DynmapAPI
+  - Towny
 main: fr.rosstail.nodewar.Nodewar
 commands:
   nodewar:
@@ -88,9 +89,12 @@ permissions:
   nodewar.command.admin.territory.*:
     default: false
     children:
+      - nodewar.command.admin.territory.info
       - nodewar.command.admin.territory.neutralize
       - nodewar.command.admin.territory.setowner
       - nodewar.command.admin.territory.vulnerability
+  nodewar.command.admin.territory.info:
+    default: op
   nodewar.command.admin.territory.neutralize:
     default: op
   nodewar.command.admin.territory.setowner:
