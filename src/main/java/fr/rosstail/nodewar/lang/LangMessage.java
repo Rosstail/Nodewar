@@ -1,69 +1,86 @@
 package fr.rosstail.nodewar.lang;
 
-public enum LangMessage
-{
-    BY_PLAYER_ONLY("by-player-only"), 
-    DISCONNECTED_PLAYER("disconnected-player"), 
-    CREATING_PLAYER_DATA_FOLDER("creating-playerdata-folder"), 
-    CREATING_PLAYER("creating-player"), 
-    PERMISSION_DENIED("permission-denied"),
-    WRONG_VALUE("wrong-value"), 
-    TOO_FEW_ARGUMENTS("too-few-arguments"),
-    EMPIRE_DOES_NOT_EXIST("empire-does-not-exist"),
+public enum LangMessage {
+    PLUGIN_PREFIX("prefix", true),
 
-    EMPIRE_CREATE("empire.create"),
-    EMPIRE_ALREADY_EXIST("empire.already-exist"),
-    EMPIRE_NOT_EXIST("empire.not-exist"),
-    EMPIRE_DISBANDED("empire.disbanded"),
-    EMPIRE_EDIT("empire.edit"),
-    EMPIRE_PLAYER_ALREADY_JOINED("empire.player-already-joined"),
-    EMPIRE_PLAYER_JOIN("empire.player-join"),
-    EMPIRE_PLAYER_SET("empire.player-set"),
-    EMPIRE_PLAYER_LEAVE("empire.player-leave"),
-    EMPIRE_PLAYER_REMOVE("empire.player-remove"),
-    EMPIRE_PLAYER_WITHOUT("empire.player-without-empire"),
-    EMPIRE_TARGET_WITHOUT("empire.target-without-empire"),
+    COMMANDS_BY_PLAYER_ONLY("commands.by-player-only", false),
+    COMMANDS_PERMISSION_DENIED("commands.permission-denied", false),
+    COMMANDS_INSERT_PLAYER_NAME("commands.insert-player-name", false),
+    COMMANDS_WRONG_VALUE("commands.wrong-value", false),
+    COMMANDS_WRONG_COMMAND("commands.wrong-command", false),
+    COMMANDS_PLAYER_DOES_NOT_EXIST("commands.player-does-not-exist", false),
+    COMMANDS_PLAYER_NO_DATA("commands.player-no-data", false),
 
-    BOSSBAR_TERRITORY_NEUTRAL("territory.bossbar.neutral"),
-    BOSSBAR_TERRITORY_CONQUER("territory.bossbar.under-capture"),
-    BOSSBAR_TERRITORY_STRUGGLE("territory.bossbar.struggle"),
-    BOSSBAR_TERRITORY_ON_DEFENSE("territory.bossbar.on-defense"),
-    BOSSBAR_TERRITORY_NEUTRALIZE("territory.bossbar.neutralizing"),
+    COMMANDS_HELP_HEADER("commands.help.header", false),
 
-    TITLE_TERRITORY_NEUTRALIZED("territory.titles.neutralized.title"),
-    SUBTITLE_TERRITORY_NEUTRALIZED("territory.titles.neutralized.subtitle"),
-    TITLE_TERRITORY_CONQUERED("territory.titles.conquered.title"),
-    SUBTITLE_TERRITORY_CONQUERED("territory.titles.conquered.subtitle"),
-    TITLE_TERRITORY_DEFENDED("territory.titles.defended.title"),
-    SUBTITLE_TERRITORY_DEFENDED("territory.titles.defended.subtitle"),
+    COMMANDS_HELP_LINE("commands.help.line", false),
 
-    WORLD_SET_EMPIRE("world-set-empire"),
-    WORLD_NEUTRALIZE("world-neutralize"),
-    WORLD_VULNERABLE("world-vulnerable"),
-    WORLD_INVULNERABLE("world-invulnerable"),
+    COMMANDS_CHECK_DESC("commands.check.desc", false),
+    COMMANDS_CHECK_SELF_DESC("commands.check.self.desc", false),
+    COMMANDS_CHECK_SELF_RESULT("commands.check.self.result", false),
+    COMMANDS_CHECK_OTHER_DESC("commands.check.other.desc", false),
+    COMMANDS_CHECK_OTHER_RESULT("commands.check.other.result", false),
 
-    LOCATION_DOES_NOT_EXIST("location-does-not-exist"),
-    WORLD_NOT_USED("world-not-used"),
+    COMMANDS_EDIT_DESC("commands.edit.desc", false),
 
-    TERRITORY_HELP("territory-help"),
-    TERRITORY_SET_EMPIRE("territory-set-empire"),
-    TERRITORY_NEUTRALIZE("territory-neutralize"),
-    TERRITORY_VULNERABLE("territory-vulnerable"),
-    TERRITORY_INVULNERABLE("territory-invulnerable"),
+    COMMANDS_EDIT_PLAYER_DESC("commands.edit.player.desc", false),
+    COMMANDS_EDIT_PLAYER_DISCONNECTED("commands.edit.player.disconnected-player", false),
+    COMMANDS_EDIT_PLAYER_NO_DATA("commands.edit.player.player-no-data", false),
+    COMMANDS_EDIT_PLAYER_OUT_OF_BOUNDS("commands.edit.player.out-of-bounds", false),
 
-    POINT_SET_EMPIRE("point-set-empire"),
-    POINT_NEUTRALIZE("point-neutralize"),
-    HELP("help"),
-    ADMIN_HELP("admin-help"),
-    EMPIRE_HELP("empire-help");
-    
-    private final String message;
-    
-    LangMessage(final String message) {
-        this.message = message;
+    TERRITORY_HELP("territory-help", false),
+    TERRITORY_SET_EMPIRE("territory-set-empire", false),
+    TERRITORY_NEUTRALIZE("territory-neutralize", false),
+    TERRITORY_VULNERABLE("territory-vulnerable", false),
+    TERRITORY_INVULNERABLE("territory-invulnerable", false),
+
+    TITLE_TERRITORY_NEUTRALIZED("territory.titles.neutralized.title", true),
+    SUBTITLE_TERRITORY_NEUTRALIZED("territory.titles.neutralized.subtitle", true),
+    TITLE_TERRITORY_CONQUERED("territory.titles.conquered.title", true),
+    SUBTITLE_TERRITORY_CONQUERED("territory.titles.conquered.subtitle", true),
+    TITLE_TERRITORY_DEFENDED("territory.titles.defended.title", true),
+    SUBTITLE_TERRITORY_DEFENDED("territory.titles.defended.subtitle", true),
+
+    COMMANDS_RELOAD_DESC("commands.reload.desc", false),
+    COMMANDS_RELOAD_RESULT("commands.reload.result", false),
+
+    COMMANDS_SAVE_DESC("commands.save.desc", false),
+    COMMANDS_SAVE_RESULT("commands.save.result", false),
+
+    COMMANDS_EVAL_DESC("commands.eval.desc", false),
+    COMMANDS_EVAL_RESULT("commands.eval.result", false),
+
+    PLAYER_ONLINE("player.online", false),
+    PLAYER_OFFLINE("player.offline", false),
+
+    STORAGE_TYPE("storage.type", false),
+    FORMAT_DATETIME("format.datetime", false),
+    FORMAT_DATETIME_NEVER("format.datetime-never", false),
+    FORMAT_COUNTDOWN("format.countdown", false),
+    ;
+
+    private final String text;
+    private String displayText;
+    private final boolean nullable;
+
+    LangMessage(String text, boolean nullable) {
+        this.text = text;
+        this.nullable = nullable;
     }
-    
-    String getMessage() {
-        return this.message;
+
+    String getText() {
+        return this.text;
+    }
+
+    public String getDisplayText() {
+        return displayText;
+    }
+
+    public boolean isNullable() {
+        return nullable;
+    }
+
+    public void setDisplayText(String displayText) {
+        this.displayText = displayText;
     }
 }

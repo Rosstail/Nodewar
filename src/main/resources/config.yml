@@ -1,10 +1,11 @@
-mysql:
-  connector: none #can be mariadb / mysql / none
-  host: localhost
+storage:
+  type: LiteSQL # LiteSQL (local storage), MySQL, MariaDB, MongoDB
+  host: "localhost"
   port: 3306
-  database: database_name
-  username: root
+  database: "database_name"
+  username: "root"
   password: ""
+  save-delay: 300
 
 general:
   lang: en_EN

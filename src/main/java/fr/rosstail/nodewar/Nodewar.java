@@ -1,23 +1,13 @@
 package fr.rosstail.nodewar;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import fr.rosstail.nodewar.calendar.CalendarManager;
-import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.datahandlers.PlayerInfoManager;
-import fr.rosstail.nodewar.empires.EmpireManager;
-import fr.rosstail.nodewar.eventhandler.PlayerEventHandler;
-import fr.rosstail.nodewar.empires.Empire;
-import fr.rosstail.nodewar.required.DataBaseInteractions;
-import fr.rosstail.nodewar.required.FileResourcesUtils;
+import fr.rosstail.nodewar.apis.PAPIExpansion;
+import fr.rosstail.nodewar.player.PlayerDataManager;
+import fr.rosstail.nodewar.player.PlayerModel;
+import fr.rosstail.nodewar.storage.StorageManager;
+import fr.rosstail.nodewar.events.MinecraftEventHandler;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
-import fr.rosstail.nodewar.lang.PAPIExpansion;
-import fr.rosstail.nodewar.territory.WorldGuardInteractions;
-import fr.rosstail.nodewar.territory.zonehandlers.DynmapHandler;
-import fr.rosstail.nodewar.territory.zonehandlers.Territory;
-import fr.rosstail.nodewar.territory.eventhandlers.NodeWarEventsListener;
-import fr.rosstail.nodewar.territory.eventhandlers.WGRegionEventsListener;
-import fr.rosstail.nodewar.territory.zonehandlers.WorldTerritoryManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -30,117 +20,128 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Logger;
 
-public class Nodewar extends JavaPlugin implements Listener
-{
+public class Nodewar extends JavaPlugin implements Listener {
+    private YamlConfiguration config;
     private static final Logger log;
     private static Economy econ;
     private static Permission perms;
     private static final Chat chat;
     private static Nodewar instance;
-    private static String dimName;
-    
+    private static java.lang.String dimName;
+    private MinecraftEventHandler minecraftEventHandler;
+
     public void onLoad() {
     }
-    
+
     public static Nodewar getInstance() {
         return Nodewar.instance;
     }
-    
-    public static String getDimName() {
-        return Nodewar.dimName;
-    }
-    
-    public void onEnable() {
-        instance = this;
-        dimName = instance.getName().toLowerCase();
-        if (!new File("plugins/" + getName() + "/config.yml").exists()) {
+
+    public void loadCustomConfig() {
+        File fileConfig = new File("plugins/" + getName() + "/config.yml");
+        if (!(fileConfig.exists())) {
             AdaptMessage.print("Preparing default config.yml", AdaptMessage.prints.OUT);
             this.saveDefaultConfig();
         }
+        config = YamlConfiguration.loadConfiguration(fileConfig);
+
+        ConfigData.init(getCustomConfig());
+        initDefaultLocales();
+
+        LangManager.initCurrentLang(ConfigData.getConfigData().locale.lang);
+    }
+
+    private void initDefaultLocales() {
+        try {
+            FileResourcesUtils.generateYamlFile("lang", this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static java.lang.String getDimName() {
+        return Nodewar.dimName;
+    }
+
+    public void onEnable() {
+        instance = this;
+        dimName = instance.getName().toLowerCase();
+
+        AdaptMessage.initAdaptMessage(this);
+
+        loadCustomConfig();
+
+        this.createDataFolder();
+        StorageManager storageManager = StorageManager.initStorageManage(this);
+        storageManager.chooseDatabase();
 
         WorldGuardPlugin wgPlugin = this.getWGPlugin();
         if (wgPlugin != null) {
-            WGRegionEventsListener wgRegionEventsListener = new WGRegionEventsListener(this);
-            NodeWarEventsListener nodewarEventsListener = new NodeWarEventsListener();
-            getServer().getPluginManager().registerEvents(wgRegionEventsListener, wgPlugin);
-            getServer().getPluginManager().registerEvents(nodewarEventsListener, this);
+            AdaptMessage.print("Worldguard has been detected", AdaptMessage.prints.OUT);
+        } else {
+            AdaptMessage.print("Worldguard has not been found.", AdaptMessage.prints.ERROR);
+            this.onDisable();
         }
         this.initDefaultConfigs();
-        LangManager.initCurrentLang();
+
         if (Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PAPIExpansion(this).register();
             Bukkit.getPluginManager().registerEvents(this, this);
         }
-        EmpireManager.initEmpireManager(this);
-        EmpireManager.getEmpireManager().init();
+
         if (setupEconomy()) {
             AdaptMessage.print("[" + this.getName() + "] Hooked with Vault !", AdaptMessage.prints.OUT);
             setupPermissions();
         } else {
-            log.severe(String.format("[" + this.getName() + "] Didn't found Vault.", this.getDescription().getName()));
+            log.severe(java.lang.String.format("[" + this.getName() + "] Didn't found Vault.", this.getDescription().getName()));
         }
-        Bukkit.getPluginManager().registerEvents(new PlayerEventHandler(this), this);
-        if (Bukkit.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
-            Territory.initWorldTerritories(this);
-            for (final WorldTerritoryManager manager : WorldTerritoryManager.getUsedWorlds().values()) {
-                for (final Territory territory : manager.getTerritories().values()) {
-                    territory.setupSubTerritories();
-                    WorldTerritoryManager.setUpObjective(territory);
-                    territory.initTargets();
-                }
-            }
-            for (final Empire empire : EmpireManager.getEmpireManager().getEmpires().values()) {
-                empire.applyTerritories();
-            }
 
-            DynmapHandler.init(this);
-            DynmapHandler dynmapHandler = DynmapHandler.getDynmapHandler();
-            dynmapHandler.enable();
-
-        }
-        if (getCustomConfig().getBoolean("general.use-calendar")) {
-            CalendarManager.init(this);
-        }
-        String connectorStr = getCustomConfig().getString("mysql.connector");
-        if (connectorStr != null && !connectorStr.equalsIgnoreCase("none")) {
-            DataBaseInteractions.init(instance);
-        }
-        PlayerInfoManager.init(this);
-        PlayerInfoManager.getPlayerInfoManager().startTimer();
-        this.getCommand(dimName).setExecutor(new CommandManager());
-        //this.getCommand(dimName).setExecutor(new NodewarCommands(this));
+        minecraftEventHandler = new MinecraftEventHandler();
+        Bukkit.getPluginManager().registerEvents(minecraftEventHandler, this);
     }
-    
+
     private void initDefaultConfigs() {
         try {
-            FileResourcesUtils.main("worlds", this, false);
-            FileResourcesUtils.main("empires", this, false);
-            FileResourcesUtils.main("gui", this, false);
-            FileResourcesUtils.main("lang", this, false);
-            FileResourcesUtils.main("playerdata", this, false);
-        }
-        catch (IOException e) {
+            FileResourcesUtils.generateYamlFile("worlds", this);
+            FileResourcesUtils.generateYamlFile("empires", this);
+            FileResourcesUtils.generateYamlFile("gui", this);
+            FileResourcesUtils.generateYamlFile("lang", this);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
-    public void onDisable() {
-        WorldGuardInteractions.stopTimer();
-        if (getCustomConfig().getBoolean("general.use-calendar")) {
-            CalendarManager.getCalendarManager().stopCalenderSchedule();
+
+    /**
+     * Create the folder for player's datas
+     */
+    private void createDataFolder() {
+        File folder = new File(this.getDataFolder(), "data/");
+        if (!folder.exists()) {
+            java.lang.String message = this.getCustomConfig().getString("messages.creating-data-folder");
+            if (message != null) {
+                message = AdaptMessage.getAdaptMessage().adaptMessage(message);
+
+                getServer().getConsoleSender().sendMessage(message);
+            }
+            folder.mkdir();
         }
-        if (DynmapHandler.getDynmapHandler() != null) {
-            DynmapHandler.getDynmapHandler().disable();
-        }
-        PlayerInfoManager playerInfoManager = PlayerInfoManager.getPlayerInfoManager();
-        playerInfoManager.stopTimer();
-        playerInfoManager.getPlayerInfoMap().forEach((player, playerInfo) -> {
-            playerInfo.updateAll(false);
-        });
     }
-    
+
+    public void onDisable() {
+        minecraftEventHandler.setClosing(true);
+
+        Map<String, PlayerModel> playerModelMap = PlayerDataManager.getPlayerModelMap();
+        for (Map.Entry<java.lang.String, PlayerModel> entry : playerModelMap.entrySet()) {
+            java.lang.String s = entry.getKey();
+            PlayerModel model = entry.getValue();
+            StorageManager.getManager().updatePlayerModel(model, false);
+        }
+        StorageManager.getManager().disconnect();
+    }
+
     private boolean setupEconomy() {
         if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
@@ -152,21 +153,21 @@ public class Nodewar extends JavaPlugin implements Listener
         econ = rsp.getProvider();
         return true;
     }
-    
+
     private boolean setupPermissions() {
         final RegisteredServiceProvider<Permission> rsp = this.getServer().getServicesManager().getRegistration(Permission.class);
         perms = rsp.getProvider();
         return true;
     }
-    
+
     public static Economy getEconomy() {
         return econ;
     }
-    
+
     public static Permission getPermissions() {
         return perms;
     }
-    
+
     public static Chat getChat() {
         return chat;
     }
@@ -176,9 +177,9 @@ public class Nodewar extends JavaPlugin implements Listener
         if (!(plugin instanceof WorldGuardPlugin)) {
             return null;
         }
-        return (WorldGuardPlugin)plugin;
+        return (WorldGuardPlugin) plugin;
     }
-    
+
     static {
         log = Logger.getLogger("Minecraft");
         econ = null;
