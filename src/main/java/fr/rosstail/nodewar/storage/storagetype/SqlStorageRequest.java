@@ -52,7 +52,8 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     public void createNodewarTeamTable() {
-        String query = "CREATE TABLE IF NOT EXISTS " + teamTableName + " ( _id INT PRIMARY KEY," +
+        String query = "CREATE TABLE IF NOT EXISTS " + teamTableName + " ( " +
+                " id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " name VARCHAR(40) UNIQUE," +
                 " display VARCHAR(40) UNIQUE," +
                 " owner_uuid VARCHAR(40) UNIQUE REFERENCES " + playerTableName + " (uuid) ," +
@@ -66,7 +67,8 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     public void createNodewarTeamMemberTable() {
-        String query = "CREATE TABLE IF NOT EXISTS " + teamMemberTableName + " ( _id INT PRIMARY KEY UNIQUE NOT NULL," +
+        String query = "CREATE TABLE IF NOT EXISTS " + teamMemberTableName + " (" +
+                " id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " player_uuid VARCHAR(40) NOT NULL REFERENCES " + playerTableName + " (uuid) ," +
                 " team_id INT NOT NULL REFERENCES " + teamTableName + " (id) ," +
                 " rank INT NOT NULL," +
@@ -75,7 +77,8 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     public void createNodewarTeamRelationTable() {
-        String query = "CREATE TABLE IF NOT EXISTS " + teamRelationTableName + " ( _id INT PRIMARY KEY UNIQUE NOT NULL," +
+        String query = "CREATE TABLE IF NOT EXISTS " + teamRelationTableName + " (" +
+                " id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " first_team INT NOT NULL REFERENCES " + teamTableName + " (id) ," +
                 " second_team INT NOT NULL REFERENCES " + teamTableName + " (id) ," +
                 " relation_type INT NOT NULL," +
@@ -85,7 +88,8 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     public void createNodewarTerritoryTable() {
-        String query = "CREATE TABLE IF NOT EXISTS " + territoryTableName + " ( uuid varchar(40) PRIMARY KEY UNIQUE NOT NULL," +
+        String query = "CREATE TABLE IF NOT EXISTS " + territoryTableName + " ( " +
+                " uuid varchar(40) PRIMARY KEY UNIQUE NOT NULL," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
         executeSQL(query);
     }
@@ -133,6 +137,28 @@ public class SqlStorageRequest implements StorageRequest {
                 PlayerModel model = new PlayerModel(uuid, PlayerDataManager.getPlayerNameFromUUID(uuid));
                 model.setLastUpdate(result.getTimestamp("last_update").getTime());
                 return model;
+            }
+            result.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public TeamModel selectTeamModel(String teamName) {
+        String query = "SELECT * FROM " + teamTableName + " WHERE name = ?";
+        try {
+            ResultSet result = executeSQLQuery(connection, query, teamName);
+            if (result.next()) {
+                TeamModel teamModel = new TeamModel(teamName, result.getString("display"), result.getString("owner_uuid"));
+                teamModel.setHexColor(result.getString("hex_color"));
+                teamModel.setMembersAmount(-5);
+                teamModel.setPermanent(result.getBoolean("is_permanent"));
+                teamModel.setOpen(result.getBoolean("is_open"));
+                teamModel.setCreationDate(result.getTimestamp("creation_date"));
+                teamModel.setLastUpdate(result.getTimestamp("last_update"));
+                return teamModel;
             }
             result.close();
         } catch (SQLException e) {
@@ -208,6 +234,7 @@ public class SqlStorageRequest implements StorageRequest {
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
             }
+            System.out.println(query);
             return statement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -224,6 +251,7 @@ public class SqlStorageRequest implements StorageRequest {
         boolean execute = false;
         try {
             openConnection();
+            System.out.println("QUERY IS " + query);
             PreparedStatement statement = connection.prepareStatement(query);
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);

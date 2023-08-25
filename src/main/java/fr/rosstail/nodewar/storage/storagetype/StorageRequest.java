@@ -34,6 +34,14 @@ public interface StorageRequest {
     PlayerModel selectPlayerModel(String uuid);
 
     /**
+     * READ
+     * get team model from storage
+     * @param teamName The name identifier of the team
+     * @return the team model
+     */
+    TeamModel selectTeamModel(String teamName);
+
+    /**
      * UPDATE
      * Edit player model to storage
      * @param model The model to update

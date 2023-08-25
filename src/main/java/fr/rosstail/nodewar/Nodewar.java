@@ -2,6 +2,7 @@ package fr.rosstail.nodewar;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.apis.PAPIExpansion;
+import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.StorageManager;
@@ -101,6 +102,7 @@ public class Nodewar extends JavaPlugin implements Listener {
 
         minecraftEventHandler = new MinecraftEventHandler();
         Bukkit.getPluginManager().registerEvents(minecraftEventHandler, this);
+        this.getCommand(getName().toLowerCase()).setExecutor(new CommandManager());
     }
 
     private void initDefaultConfigs() {

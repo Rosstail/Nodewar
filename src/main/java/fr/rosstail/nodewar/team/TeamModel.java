@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 public class TeamModel {
     private String name;
     private String display;
-    private String hexColor;
+    private String hexColor = "#000000";
     private int membersAmount = 0;
     private String ownerUuid;
     private boolean open = false;
@@ -13,20 +13,17 @@ public class TeamModel {
     private Timestamp creationDate = new Timestamp(System.currentTimeMillis());
     private Timestamp lastUpdate = new Timestamp(System.currentTimeMillis());
 
-    public TeamModel(String ownerUuid, String name, String display, String hexColor) {
-        this.ownerUuid = ownerUuid;
+    public TeamModel(String name, String display, String ownerUuid) {
         this.name = name;
         this.display = display;
-        this.hexColor = hexColor;
-        this.membersAmount = 1;
-        this.permanent = false;
-    }
 
-    public TeamModel(String name, String display, String hexColor) {
-        this.name = name;
-        this.display = display;
-        this.hexColor = hexColor;
-        this.permanent = true;
+        if (ownerUuid != null) {
+            this.ownerUuid = ownerUuid;
+            this.membersAmount = 1;
+            this.permanent = false;
+        } else {
+            this.permanent = true;
+        }
     }
 
     public String getName() {

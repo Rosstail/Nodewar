@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.commands;
 
+import fr.rosstail.nodewar.commands.subcommands.HelpCommand;
 import fr.rosstail.nodewar.commands.subcommands.TeamCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
@@ -10,7 +11,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.command.defaults.HelpCommand;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,8 +36,8 @@ public class CommandManager implements CommandExecutor, TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
-            HelpCommand help = new HelpCommand();
-            help.execute(sender, null, null);
+            HelpCommand help = new HelpCommand(this);
+            help.perform(sender, args, null);
             return true;
         }
         String[] arguments = getCommandArguments(args);

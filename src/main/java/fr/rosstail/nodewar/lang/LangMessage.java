@@ -28,6 +28,10 @@ public enum LangMessage {
     COMMANDS_EDIT_PLAYER_NO_DATA("commands.edit.player.player-no-data", false),
     COMMANDS_EDIT_PLAYER_OUT_OF_BOUNDS("commands.edit.player.out-of-bounds", false),
 
+    COMMANDS_TEAM_DESC("commands.team.desc", false),
+    COMMANDS_TEAM_CREATE_DESC("commands.team.create.desc", false),
+    COMMANDS_TEAM_CREATE_RESULT("commands.team.create.result", false),
+
     TERRITORY_HELP("territory-help", false),
     TERRITORY_SET_EMPIRE("territory-set-empire", false),
     TERRITORY_NEUTRALIZE("territory-neutralize", false),

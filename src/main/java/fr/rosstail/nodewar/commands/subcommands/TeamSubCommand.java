@@ -19,7 +19,7 @@ public abstract class TeamSubCommand extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "team <subcommand>";
+        return "nodewar team <subcommand>";
     }
 
     @Override
@@ -33,7 +33,5 @@ public abstract class TeamSubCommand extends SubCommand {
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        return null;
-    }
+    public abstract List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments);
 }

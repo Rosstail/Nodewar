@@ -138,6 +138,23 @@ public class StorageManager {
     }
 
     /**
+     * READ
+     *
+     * @param teamName
+     */
+    public TeamModel selectTeamModel(String teamName) {
+        switch (type) {
+            case "mysql":
+                return mySqlStorageRequest.selectTeamModel(teamName);
+            case "mariadb":
+                return mariaDBStorageRequest.selectTeamModel(teamName);
+            case "mongodb":
+                return mongoDBStorageRequest.selectTeamModel(teamName);
+            default:
+                return liteSqlDBStorageRequest.selectTeamModel(teamName);
+        }
+    }
+    /**
      * UPDATE
      *
      * @param model

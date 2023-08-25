@@ -2,12 +2,10 @@ package fr.rosstail.nodewar.commands.subcommands.team;
 
 import fr.rosstail.nodewar.commands.subcommands.TeamSubCommand;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.storage.storagetype.StorageRequest;
 import fr.rosstail.nodewar.team.TeamModel;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TeamCreateCommand extends TeamSubCommand {
@@ -23,7 +21,7 @@ public class TeamCreateCommand extends TeamSubCommand {
 
     @Override
     public String getSyntax() {
-        return "team create <name> <display> <hexcolor>";
+        return "nodewar team create <name> <display> <hexcolor>";
     }
 
     @Override
@@ -33,16 +31,22 @@ public class TeamCreateCommand extends TeamSubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
-        if (args.length >= 5) {
+        if (args.length >= 4) {
+            String teamName = args[2];
+            String displayName = args[3];
+            TeamModel selectTeamModel = StorageManager.getManager().selectTeamModel(teamName);
+            if (selectTeamModel != null) {
+                sender.sendMessage("TeamCreateCommand - This team already exist in storage");
+                return;
+            }
             TeamModel teamModel;
             if (sender instanceof Player) {
-                teamModel = new TeamModel(((Player) sender).getUniqueId().toString(), args[2], args[3], args[4]);
+                teamModel = new TeamModel(teamName, displayName, ((Player) sender).getUniqueId().toString());
             } else {
-                teamModel = new TeamModel(null, args[2], args[3], args[4]);
+                teamModel = new TeamModel(teamName, displayName, null);
             }
-
-            sender.sendMessage("The creation of the team " + teamModel.getName() + " is "
-                    + StorageManager.getManager().insertTeamModel(teamModel));
+            sender.sendMessage("TeamCreateCommand - team " + teamModel.getName() + " created "
+                    + (StorageManager.getManager().insertTeamModel(teamModel) ? "successfully" : "unsuccessfully"));
         } else {
             System.out.println("TeamCreateCommand - Not enough args");
         }
@@ -50,11 +54,6 @@ public class TeamCreateCommand extends TeamSubCommand {
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        List<String> list = new ArrayList<>();
-        if (args.length > 3) {
-            list.add("#FFFFFF");
-        }
-
-        return list;
+        return null;
     }
 }
