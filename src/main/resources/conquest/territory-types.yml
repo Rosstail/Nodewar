@@ -1,0 +1,108 @@
+control-point:
+  prefix: "-cp-"
+  world: "amerish"
+  suffix: "-cp-"
+  objective:
+    type: control
+    attacker-ratio: 1
+    maximum-health: 10
+    neutralize: true
+  protected: false
+  dynmap:
+    marker:
+      set: cp # 'Nodewar' by default
+
+outpost: # basic configurations
+  prefix: "-o-" # none
+  world: "amerish"
+  suffix: "-o-" # none
+  objective:
+    type: siege
+    maximum-health: 40
+    rewards:
+      player-outpost-reward:
+        target: "player"
+        team-minimum-score: 25
+        player-minimum-score: 1
+        team-role: defender
+        player-team-role: defender
+        should-team-win: false
+        team-positions:
+          - "2"
+          - "3"
+        commands:
+          - "give [player] goldnugget 2"
+      winner-team-outpost-reward:
+        target: "team"
+        team-minimum-score: 500
+        team-role: attacker
+        should-team-win: true
+        commands:
+          - "nodewar team eco add 1000"
+          - "nodewar team message Your team won 1000 credits by capturing [territory_name]"
+      global-outpost-reward:
+        target: "server"
+        commands:
+          - "broadcast [territory_team_display] is victorious at [territory_display] !"
+  protected: false
+  bossbar:
+    style: "SEGMENTED_6" # SOLID or SEGMENTED_6/10/12/20
+
+small-outpost: # basic configurations
+  prefix: "-so-"
+  suffix: "-so-"
+  type: outpost
+
+large-outpost: # basic configurations
+  prefix: "-lo-"
+  suffix: "-lo-"
+  type: outpost
+  objective:
+    maximum-health: 100
+
+tower: # basic configurations
+  prefix: "-T-" # none
+  world: "amerish"
+  suffix: "-T-" # none
+  protected: false
+  bossbar:
+    style: "SEGMENTED_10" # SOLID or SEGMENTED_6/10/12/20
+
+facility: # basic configurations
+  prefix: "-F-" # none
+  world: "amerish"
+  suffix: "-F-" # none
+  protected: false
+  bossbar:
+    style: "SEGMENTED_10"
+
+amp-station:
+  prefix: "-AMP-"
+  suffix: "-Station-"
+  type: facility
+  bossbar:
+    style: "SEGMENTED_12"
+
+tech-plant:
+  prefix: "-TP-"
+  suffix: "-Tech Plant-"
+  type: facility
+  bossbar:
+    style: "SEGMENTED_12"
+
+biolab: # basic configurations
+  prefix: "-b-" # none
+  world: "amerish"
+  suffix: "-b-" # none
+  protected: false
+  objective:
+    type: siege
+    maximum-health: 100
+  bossbar:
+    style: "SEGMENTED_20"
+
+warpgate: # basic configurations
+  prefix: "-W-" # none
+  world: "amerish"
+  suffix: "-W-" # none
+  protected: true

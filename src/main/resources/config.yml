@@ -8,70 +8,66 @@ storage:
   save-delay: 300
 
 general:
-  lang: en_EN
   delay-between-database-updates: 300
   use-action-bar-on-actions: true
   debug-messages: true
   use-calendar: false
+  permission-plugin: auto # luckperms
+
+locale:
+  lang: en_EN
+  decimal-display: 1
+  title:
+    fade-in: 1
+    stay: 18
+    fade-out: 2
 
 map:
   update-delay: 5
 
-empires:
-  none-display: "&7No Empire"
+team:
+  system: "Nodewar" # Nodewar, Towny
+  creation-cost: 0
+  default-relation: neutral
+  none-color: "#CACACA"
+  deploy-timer: 10
+  deploy-cooldown: 120
+  maximum-members: 50 #-1 for infinite
+  name-min-length: 5
+  name-max-length: 11 # Maximum 33
+  shortname-min-length: 3
+  shortname-max-length: 5
 
-calendar:
-  wednesday-bf:
-    start:
-      day-name: wednesday
-      system-time: "18:00"
-      vulnerable: true
-      empire: neutral
-      worlds:
-        Fodlan:
-          territories:
-            - "garreg-mach"
-    end:
-      day-name: wednesday
-      system-time: "21:00"
-      vulnerable: false
-      worlds:
-        Fodlan:
-          territories:
-            - "garreg-mach"
-  friday-bf:
-    start:
-      day-name: friday
-      system-time: "20:00"
-      vulnerable: true
-      empire: neutral
-      worlds:
-        Fodlan:
-          territories:
-            - "garreg-mach"
-    end:
-      day-name: friday
-      system-time: "22:00"
-      vulnerable: false
-      worlds:
-        Fodlan:
-          territories:
-            - "garreg-mach"
-  sunday-bf:
-    start:
-      day-name: sunday
-      system-time: "16:00"
-      vulnerable: true
-      empire: neutral
-      worlds:
-        Fodlan:
-          territories:
-            - "garreg-mach"
-    end:
-      day-name: sunday
-      system-time: "20:00"
-      vulnerable: false
-      worlds:
-        Fodlan:
-          territories:
-            - "garreg-mach"
+bossbar:
+  color: # RED, YELLOW, BLUE, GREEN, PINK, PURPLE, WHITE
+    neutral: WHITE # no team
+    controlled: YELLOW # it's like neutral but controlled by a team
+    team: BLUE
+    ally: GREEN
+    truce: PURPLE
+    enemy: RED
+
+dynmap:
+  hide-by-default: false
+  use-3d-region: false # bugued, keep it false
+  dynmap-info-window: false
+  tick-per-update: 20
+  many-update-delay: 1
+  fill-opacity: 80
+
+battlefield:
+  list:
+    monday-bf:
+      display: "Monday's battlefield"
+      reset-team: true
+      end-battle-on-battlefield-end: true
+      # announcements: false
+      from:
+        day: "monday"
+        time: "18:00"
+      to:
+        day: "monday"
+        time: "21:00"
+      territory-types:
+        - "headquarter-koth"
+      territories: []

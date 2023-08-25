@@ -5,6 +5,7 @@ import fr.rosstail.nodewar.Nodewar;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.List;
 
 public class Lang {
 
@@ -32,20 +33,29 @@ public class Lang {
             AdaptMessage.print("Locale lang/" + langId + ".yml does not exists. use en_EN.yml from resources.", AdaptMessage.prints.WARNING);
         }
 
-
         for (LangMessage langMessage : LangMessage.values()) {
             String stringPath = langMessage.getText();
             String gotMessage = null;
             if (langConfig != null) {
-                gotMessage = langConfig.getString(stringPath);
-                if (gotMessage != null) {
+                if (langMessage.isList()) {
+                    gotMessage = String.join("\n", langConfig.getStringList(stringPath));
                     langMessage.setDisplayText(AdaptMessage.getAdaptMessage().adaptMessage(gotMessage));
+                } else {
+                    gotMessage = langConfig.getString(stringPath);
+                    if (gotMessage != null) {
+                        langMessage.setDisplayText(AdaptMessage.getAdaptMessage().adaptMessage(gotMessage));
+                    }
                 }
             }
 
             if (gotMessage == null && !langMessage.isNullable()) {
-                langMessage.setDisplayText(AdaptMessage.getAdaptMessage().adaptMessage(defaultLangConfig.getString(stringPath)));
+                if (langMessage.isList()) {
+                    langMessage.setDisplayText(AdaptMessage.getAdaptMessage().adaptMessage(String.join("\n", defaultLangConfig.getStringList(stringPath))));
+                } else {
+                    langMessage.setDisplayText(AdaptMessage.getAdaptMessage().adaptMessage(defaultLangConfig.getString(stringPath)));
+                }
             }
+
         }
     }
 

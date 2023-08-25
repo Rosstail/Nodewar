@@ -20,7 +20,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
      */
     @Override
     public boolean canRegister() {
-        return Bukkit.getPluginManager().getPlugin("Karma") != null;
+        return Bukkit.getPluginManager().getPlugin("Nodewar") != null;
     }
 
     /**
@@ -124,7 +124,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
     public String onPlaceholderRequest(Player player, String identifier) {
 
         if (player != null) {
-            return AdaptMessage.getAdaptMessage().adaptPlayerMessage(player, "[" + identifier + "]", PlayerType.PLAYER.getText());
+            return AdaptMessage.getAdaptMessage().adaptPlayerMessage(player, "[" + identifier + "]");
         }
 
         // We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)

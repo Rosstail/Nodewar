@@ -3,12 +3,14 @@ package fr.rosstail.nodewar.player;
 import org.bukkit.entity.Player;
 
 public class PlayerModel {
+    private int id;
     private String uuid;
     private String username;
+    private boolean teamOpen = true;
 
-    private String empireName;
+    private long lastDeploy = 0L;
+    private long lastUpdate = 0L;
 
-    private long lastUpdate = 0;
 
     /**
      * Constructor if the selected player is connected
@@ -35,8 +37,11 @@ public class PlayerModel {
      * @param playerModel
      */
     public PlayerModel(PlayerModel playerModel) {
+        this.id = playerModel.getId();
         this.uuid = playerModel.getUuid();
         this.username = playerModel.getUsername();
+        this.teamOpen = playerModel.isTeamOpen();
+        this.lastDeploy = playerModel.getLastDeploy();
         this.lastUpdate = playerModel.getLastUpdate();
     }
 
@@ -51,6 +56,14 @@ public class PlayerModel {
     /*
     Getters setters
      */
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getUuid() {
         return uuid;
@@ -76,11 +89,19 @@ public class PlayerModel {
         this.lastUpdate = lastUpdate;
     }
 
-    public String getTeamName() {
-        return empireName;
+    public boolean isTeamOpen() {
+        return teamOpen;
     }
 
-    public void setEmpireName(String empireName) {
-        this.empireName = empireName;
+    public void setTeamOpen(boolean teamOpen) {
+        this.teamOpen = teamOpen;
+    }
+
+    public long getLastDeploy() {
+        return lastDeploy;
+    }
+
+    public void setLastDeploy(long lastDeploy) {
+        this.lastDeploy = lastDeploy;
     }
 }

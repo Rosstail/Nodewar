@@ -1,0 +1,205 @@
+package fr.rosstail.nodewar.team;
+
+import fr.rosstail.nodewar.ConfigData;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.permissionmannager.PermissionManager;
+import fr.rosstail.nodewar.player.PlayerDataManager;
+import fr.rosstail.nodewar.storage.StorageManager;
+import fr.rosstail.nodewar.team.relation.NwTeamRelation;
+import fr.rosstail.nodewar.team.teammanagers.NwTeamManager;
+import fr.rosstail.nodewar.team.teammanagers.TownyTeamManager;
+import fr.rosstail.nodewar.territory.TerritoryManager;
+import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class TeamManager {
+
+    public static Map<String, Class<? extends NwITeamManager>> iTeamManagerMap = new HashMap<>();
+
+    private NwITeamManager iManager = null;
+
+    static {
+        iTeamManagerMap.put("nodewar", NwTeamManager.class);
+        iTeamManagerMap.put("Towny", TownyTeamManager.class);
+    }
+
+    /**
+     * Add custom objective from add-ons
+     *
+     * @param name
+     * @param customTeamManagerClass
+     * @return
+     */
+    public static boolean addCustomManager(String name, Class<? extends NwITeamManager> customTeamManagerClass) {
+        if (!iTeamManagerMap.containsKey(name)) {
+            iTeamManagerMap.put(name, customTeamManagerClass);
+            AdaptMessage.print("[Nodewar] Custom team " + name + " added to the list !", AdaptMessage.prints.OUT);
+            return true;
+        }
+        return false;
+    }
+
+    private static TeamManager manager;
+
+    private final HashSet<NwTeamInvite> teamInviteHashSet = new HashSet<>();
+
+    private TeamManager() {
+    }
+
+    public static void init() {
+        if (manager == null) {
+            manager = new TeamManager();
+        }
+    }
+
+    public String getUsedSystem() {
+        String system = ConfigData.getConfigData().team.system;
+        if (iTeamManagerMap.containsKey(system) && Bukkit.getServer().getPluginManager().getPlugin(system) != null) {
+            return system;
+        }
+
+        return null;
+    }
+
+    public void loadTeams() {
+        String system = ConfigData.getConfigData().team.system;
+
+        if (getUsedSystem() != null) {
+            Class<? extends NwITeamManager> managerClass = iTeamManagerMap.get(system);
+            Constructor<? extends NwITeamManager> managerConstructor;
+
+            try {
+                managerConstructor = managerClass.getDeclaredConstructor();
+                iManager = managerConstructor.newInstance();
+                AdaptMessage.print("[Nodewar] Using " + system + " team", AdaptMessage.prints.OUT);
+            } catch (NoSuchMethodException e) {
+                throw new IllegalArgumentException("Missing appropriate constructor in TeamManager class.", e);
+            } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            iManager = new NwTeamManager();
+        }
+
+        iManager.loadTeams();
+    }
+
+    public Map<NwITeam, TeamIRelation> getTeamsIRelations(NwITeam nwITeam) {
+        return iManager.getRelationMap(nwITeam);
+    }
+
+    public TeamIRelation getTeamRelation(NwITeam firstITeam, NwITeam secondITeam) {
+        return iManager.getRelation(firstITeam, secondITeam);
+    }
+
+    public void addNewTeam(NwITeam nwITeam) {
+        PermissionManager.getManager().createGroup(nwITeam.getName());
+        iManager.addITeam(nwITeam.getName(), nwITeam);
+    }
+
+    public void renameTeam(String newName, String oldName) {
+        NwITeam team = getStringTeamMap().get(oldName);
+        iManager.addITeam(newName, team);
+        StorageManager.getManager().updateTeamName(newName, team.getID());
+
+        TerritoryManager.getTerritoryManager().getTerritoryMap().entrySet().stream().filter(
+                stringTerritoryEntry -> stringTerritoryEntry.getValue().getOwnerITeam() == team
+        ).forEach(stringTerritoryEntry -> {
+            stringTerritoryEntry.getValue().setOwnerITeam(team);
+            stringTerritoryEntry.getValue().updateAllBossBar();
+        });
+
+        // remove group after to avoid WG instant repercussions
+        iManager.removeITeam(oldName);
+
+        DynmapHandler.getDynmapHandler().resumeRender();
+    }
+
+    public void deleteTeam(String teamName) {
+        NwITeam team = getStringTeamMap().get(teamName);
+        iManager.removeITeam(teamName);
+
+        PlayerDataManager.getPlayerDataMap().values().stream().filter(playerData ->
+                (playerData.getTeam() == team)).forEach(playerData -> {
+            TeamManager.getManager().deleteTeamMember(team, Bukkit.getPlayer(playerData.getUsername()), true);
+        });
+
+        team.getRelations().forEach((nwITeam, teamIRelation) -> {
+            NwTeamRelation nwTeamRelation = (NwTeamRelation) teamIRelation;
+            StorageManager.getManager().deleteTeamRelationModel(nwTeamRelation.getModel().getId());
+        });
+
+        TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory -> territory.getOwnerITeam() == team).collect(Collectors.toList()).forEach(territory -> {
+            Bukkit.getServer().getPluginManager().callEvent(new TerritoryOwnerNeutralizeEvent(territory, null, null));
+        });
+
+        PermissionManager.getManager().deleteGroup(teamName);
+        StorageManager.getManager().deleteTeamModel(team.getID());
+    }
+
+    public void createTeamMember(NwITeam nwITeam, Player player) {
+        iManager.addTeamMember(nwITeam, player);
+    }
+
+    public void deleteTeamMember(NwITeam nwITeam, Player player, boolean disband) {
+        iManager.deleteTeamMember(nwITeam, player, disband);
+
+    }
+
+    public Map<String, NwITeam> getStringTeamMap() {
+        return iManager.getStringITeamMap();
+    }
+
+    public static TeamManager getManager() {
+        return manager;
+    }
+
+    public NwITeam getPlayerTeam(Player player) {
+        return iManager.getPlayerTeam(player);
+    }
+
+    public NwITeam getTeam(String name) {
+        return iManager.getTeam(name);
+    }
+
+    public HashSet<NwTeamInvite> getTeamInviteHashSet() {
+        return teamInviteHashSet;
+    }
+
+    public void invitePlayerToTeam(@NotNull NwITeam nwITeam, Player sender, @NotNull Player receiver) {
+        iManager.addTeamInvite(nwITeam, sender, receiver);
+    }
+
+    public String generateRandomColor() {
+        StringBuilder randomHexColor;
+        List<ChatColor> colorList = Arrays.stream(ChatColor.values()).filter(ChatColor::isColor).collect(Collectors.toList());
+
+        if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1]) < 16) {
+
+            return colorList.get((int) (Math.random() * colorList.size())).name();
+        } else {
+            randomHexColor = new StringBuilder("#");
+
+            for (int i = 0; i < 6; i++) {
+                Random random = new Random();
+
+                randomHexColor.append(Integer.toHexString(random.nextInt(16)));
+            }
+
+        }
+        return randomHexColor.toString().toUpperCase();
+    }
+
+    public void createRelation(NwITeam originITeam, NwITeam targetITeam, RelationType type) {
+        iManager.createRelation(originITeam, targetITeam, type);
+    }
+}

@@ -1,32 +1,40 @@
 package fr.rosstail.nodewar.team;
 
+import fr.rosstail.nodewar.team.member.TeamMemberModel;
+import fr.rosstail.nodewar.team.relation.TeamRelationModel;
+
 import java.sql.Timestamp;
+import java.util.*;
 
 public class TeamModel {
+    private int id;
     private String name;
     private String display;
-    private String hexColor;
-    private int membersAmount = 0;
-    private String ownerUuid;
+    private String shortName;
+    private String teamColor;
     private boolean open = false;
-    private boolean permanent;
+    private boolean permanent = false;
+    private boolean openRelation = true;
     private Timestamp creationDate = new Timestamp(System.currentTimeMillis());
     private Timestamp lastUpdate = new Timestamp(System.currentTimeMillis());
 
-    public TeamModel(String ownerUuid, String name, String display, String hexColor) {
-        this.ownerUuid = ownerUuid;
+    private final Map<Integer, TeamMemberModel> teamMemberModelMap = new HashMap<>();
+    private final Map<Integer, TeamRelationModel> teamRelationModelMap = new HashMap<>();
+
+
+    public TeamModel(String name, String display, String shortName, String teamColor) {
         this.name = name;
         this.display = display;
-        this.hexColor = hexColor;
-        this.membersAmount = 1;
-        this.permanent = false;
+        this.shortName = shortName;
+        this.teamColor = teamColor;
     }
 
-    public TeamModel(String name, String display, String hexColor) {
-        this.name = name;
-        this.display = display;
-        this.hexColor = hexColor;
-        this.permanent = true;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -45,28 +53,20 @@ public class TeamModel {
         this.display = display;
     }
 
-    public String getOwnerUuid() {
-        return ownerUuid;
+    public String getShortName() {
+        return shortName;
     }
 
-    public void setOwnerUuid(String ownerUuid) {
-        this.ownerUuid = ownerUuid;
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
-    public int getMembersAmount() {
-        return membersAmount;
+    public String getTeamColor() {
+        return teamColor;
     }
 
-    public void setMembersAmount(int membersAmount) {
-        this.membersAmount = membersAmount;
-    }
-
-    public String getHexColor() {
-        return hexColor;
-    }
-
-    public void setHexColor(String hexColor) {
-        this.hexColor = hexColor;
+    public void setTeamColor(String teamColor) {
+        this.teamColor = teamColor;
     }
 
     public Timestamp getCreationDate() {
@@ -99,5 +99,21 @@ public class TeamModel {
 
     public void setLastUpdate(Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    public boolean isOpenRelation() {
+        return openRelation;
+    }
+
+    public void setOpenRelation(boolean openRelation) {
+        this.openRelation = openRelation;
+    }
+
+    public Map<Integer, TeamMemberModel> getTeamMemberModelMap() {
+        return teamMemberModelMap;
+    }
+
+    public Map<Integer, TeamRelationModel> getTeamRelationModelMap() {
+        return teamRelationModelMap;
     }
 }

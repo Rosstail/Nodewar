@@ -1,6 +1,10 @@
 package fr.rosstail.nodewar.player;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.protection.flags.Flags;
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.events.playerevents.PlayerDeployEvent;
+import fr.rosstail.nodewar.events.playerevents.PlayerInitDeployEvent;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
@@ -20,18 +24,22 @@ public class PlayerDataManager {
     private static final Nodewar plugin = Nodewar.getInstance();
     private static final AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
 
-    private static final Map<String, PlayerModel> playerModelMap = new HashMap<>();
+    private static final Map<String, PlayerData> playerDataMap = new HashMap<>();
+    private static final Map<Player, PlayerInitDeployEvent> playerInitDeployEventMap = new HashMap<>();
+    private static int deployScheduler;
 
-    public static PlayerModel initPlayerModelToMap(PlayerModel model) {
-        return playerModelMap.put(model.getUsername(), model);
+    public static void initPlayerDataToMap(PlayerData model) {
+        playerDataMap.put(model.getUsername(), model);
     }
 
-    public static PlayerModel removePlayerModelFromMap(Player player) {
-        return playerModelMap.remove(player.getName());
+    public static void removePlayerDataFromMap(Player player) {
+        playerDataMap.remove(player.getName());
     }
 
     public static String getPlayerNameFromUUID(String uuid) {
-        String playerName = "UnknownPlayer";
+        if (!Bukkit.getOnlineMode()) {
+            return uuid;
+        }
         try {
             URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -49,7 +57,7 @@ public class PlayerDataManager {
 
                 String response = responseBuilder.toString();
 
-                playerName = extractPlayerNameFromUUID(response);
+                return extractPlayerNameFromUUID(response);
 
             }
 
@@ -57,11 +65,12 @@ public class PlayerDataManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return playerName;
+        return null;
     }
 
     /**
      * Get player name using UUID from Mojang API
+     *
      * @param response
      * @return
      */
@@ -79,10 +88,14 @@ public class PlayerDataManager {
 
     /**
      * Get player name using username from Mojang API
+     *
      * @param username the name of targeted player
      * @return
      */
     public static String getPlayerUUIDFromName(String username) {
+        if (!Bukkit.getOnlineMode()) {
+            return username;
+        }
         try {
             URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + username);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -134,24 +147,50 @@ public class PlayerDataManager {
         return null;
     }
 
-    /*public static ItemStack getPlayerHead(final String playerName, final ItemStack item) {
+    public static void startDeployHandler() {
+        Runnable handlePlayerDeployEvents = () -> {
+            for (Map.Entry<Player, PlayerInitDeployEvent> entry : playerInitDeployEventMap.entrySet()) {
+                Player player = entry.getKey();
+                PlayerInitDeployEvent playerInitDeployEvent = entry.getValue();
+                if (playerInitDeployEvent.isCancelled()) {
+                    playerInitDeployEventMap.remove(player);
+                    if (playerInitDeployEvent.getStartTime() > System.currentTimeMillis()) {
+                        player.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DEPLOY_CANCELLED));
+                    }
+                } else {
+                    if (playerInitDeployEvent.getStartTime() <= System.currentTimeMillis()) {
+                        if (playerInitDeployEvent.getTerritory().getOwnerITeam() != playerInitDeployEvent.getPlayerITeam()) {
+                            playerInitDeployEvent.setCancelled(true);
+                        } else {
+                            PlayerDeployEvent playerDeployEvent = new PlayerDeployEvent(player,
+                                    BukkitAdapter.adapt(playerInitDeployEvent.getProtectedRegion().getFlag(Flags.TELE_LOC)));
+                            Bukkit.getPluginManager().callEvent(playerDeployEvent);
+                        }
+                        playerInitDeployEventMap.remove(player);
+                    } else if (playerInitDeployEvent.getTickLeft() % 20 == 0) {
+                        player.sendMessage((playerInitDeployEvent.getTickLeft() / 20) + " before deploy");
+                    }
+                    playerInitDeployEvent.setTickLeft(playerInitDeployEvent.getTickLeft() - 1);
+                }
+            }
+        };
 
-        final boolean isNewVersion = Arrays.stream(Material.values()).map((Function<? super Material, ?>)Enum::name).collect((Collector<? super Object, ?, List<? super Object>>) Collectors.toList()).contains("PLAYER_HEAD");
-        final Material type = Material.matchMaterial(isNewVersion ? "PLAYER_HEAD" : "SKULL_ITEM");
-        final ItemStack newItem = new ItemStack(type, item.getAmount());
-        if (!isNewVersion) {
-            item.setDurability((short)3);
+        deployScheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), handlePlayerDeployEvents, 1L, 1L);
+    }
+
+    public static Map<Player, PlayerInitDeployEvent> getPlayerInitDeployEventMap() {
+        return playerInitDeployEventMap;
+    }
+
+    public static void cancelPlayerDeploy(Player player) {
+        PlayerInitDeployEvent playerInitDeployEvent = playerInitDeployEventMap.get(player);
+        if (playerInitDeployEvent != null) {
+            playerInitDeployEvent.setCancelled(true);
         }
-        final SkullMeta skullMeta = (SkullMeta)newItem.getItemMeta();
-        skullMeta.setOwner(playerName);
-        newItem.setItemMeta(skullMeta);
-        return newItem;
+    }
 
-        return null;
-    }*/
-
-    public static Map<String, PlayerModel> getPlayerModelMap() {
-        return playerModelMap;
+    public static Map<String, PlayerData> getPlayerDataMap() {
+        return playerDataMap;
     }
 
     public static void stopTimer(int scheduler) {
@@ -159,8 +198,12 @@ public class PlayerDataManager {
     }
 
     public static void saveAllPlayerModelToStorage() {
-        getPlayerModelMap().forEach((s, model) -> {
+        getPlayerDataMap().forEach((s, model) -> {
             StorageManager.getManager().updatePlayerModel(model, true);
         });
+    }
+
+    public static PlayerData getPlayerDataFromMap(Player player) {
+        return getPlayerDataMap().get(player.getName());
     }
 }

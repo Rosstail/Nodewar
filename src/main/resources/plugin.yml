@@ -10,6 +10,7 @@ softdepend:
   - PlaceholderAPI
   - Dynmap
   - DynmapAPI
+  - Luckperms
 main: fr.rosstail.nodewar.Nodewar
 commands:
   nodewar:
@@ -17,121 +18,141 @@ commands:
     usage: /nodewar
     permission-message: You don't have permission !
     permission: nodewar.command
+    aliases: [nw]
 
 permissions:
   nodewar:
     default: true
+
   nodewar.command:
     default: true
+
+  nodewar.commmand.admin:
+    default: op
+
+  nodewar.command.team:
+    default: true
+  nodewar.command.team.check:
+    default: true
+  nodewar.command.team.create:
+    default: true
+  nodewar.command.team.deploy:
+    default: true
+  nodewar.command.team.join:
+    default: true
+  nodewar.command.team.leave:
+    default: true
+  nodewar.command.team.list:
+    default: true
+  nodewar.command.team.*:
+    default: op
+    children:
+      nodewar.command.team: true
+      nodewar.command.team.check: true
+      nodewar.command.team.create: true
+      nodewar.command.team.deploy: true
+      nodewar.command.team.join: true
+      nodewar.command.team.leave: true
+      nodewar.command.team.invites.*: true
+      nodewar.command.team.manage.*: true
+
+  nodewar.command.team.invites:
+    default: true
+  nodewar.command.team.invites.check:
+    default: true
+  nodewar.command.team.invites.close:
+    default: true
+  nodewar.command.team.invites.open:
+    default: true
+  nodewar.command.team.invites.*:
+    default: op
+    children:
+      nodewar.command.team.invites: true
+      nodewar.command.team.invites.check: true
+      nodewar.command.team.invites.close: true
+      nodewar.command.team.invites.open: true
+
+  nodewar.command.team.manage:
+    default: true
+  nodewar.command.team.manage.close:
+    default: true
+  nodewar.command.team.manage.color:
+    default: true
+  nodewar.command.team.manage.disband:
+    default: true
+  nodewar.command.team.manage.invite:
+    default: true
+  nodewar.command.team.manage.open:
+    default: true
+  nodewar.command.team.manage.*:
+    default: op
+    children:
+      nodewar.command.team.manage: true
+      nodewar.command.team.manage.close: true
+      nodewar.command.team.manage.color: true
+      nodewar.command.team.manage.disband: true
+      nodewar.command.team.manage.invite: true
+      nodewar.command.team.manage.open: true
+      nodewar.command.team.manage.member.*: true
+      nodewar.command.team.manage.relation.*: true
+
+  nodewar.command.team.manage.member:
+    default: true
+  nodewar.command.team.manage.member.demote:
+    default: true
+  nodewar.command.team.manage.member.kick:
+    default: true
+  nodewar.command.team.manage.member.promote:
+    default: true
+  nodewar.command.team.manage.member.transfer:
+    default: true
+  nodewar.command.team.manage.member.*:
+    default: op
+    children:
+      nodewar.command.team.manage.member: true
+      nodewar.command.team.manage.member.demote: true
+      nodewar.command.team.manage.member.kick: true
+      nodewar.command.team.manage.member.promote: true
+      nodewar.command.team.manage.member.transfer: true
+
+  nodewar.command.team.manage.relation:
+    default: true
+  nodewar.command.team.manage.relation.close:
+    default: true
+  nodewar.command.team.manage.relation.edit:
+    default: true
+  nodewar.command.team.manage.relation.invites:
+    default: true
+  nodewar.command.team.manage.relation.open:
+    default: true
+  nodewar.command.team.manage.relation.*:
+    default: op
+    children:
+      nodewar.command.team.manage.relation: true
+      nodewar.command.team.manage.relation.close: true
+      nodewar.command.team.manage.relation.edit: true
+      nodewar.command.team.manage.relation.invites: true
+      nodewar.command.team.manage.relation.open: true
+
+  nodewar.command.territory:
+    default: true
+  nodewar.command.territory.check:
+    default: true
+  nodewar.command.territory.*:
+    default: op
+    children:
+      nodewar.command.territory: true
+      nodewar.command.territory.check: true
+
   nodewar.command.*:
-    default: false
+    default: op
     children:
-      - nodewar.command.admin
-      - nodewar.command.empire
-      - nodewar.command.help
-  nodewar.command.admin:
+      nodewar.command: true
+      nodewar.command.admin: true
+      nodewar.command.team.*: true
+      nodewar.command.territory.*: true
+
+  nodewar.*:
     default: op
-  nodewar.command.admin.*:
-    default: false
     children:
-      - nodewar.command.admin.empire
-      - nodewar.command.admin.player
-      - nodewar.command.admin.territory
-  nodewar.command.admin.empire:
-    default: op
-  nodewar.command.admin.empire.*:
-    default: false
-    children:
-      - nodewar.command.admin.empire.create
-      - nodewar.command.admin.empire.disband
-      - nodewar.command.admin.empire.edit
-  nodewar.command.admin.empire.create:
-    default: op
-  nodewar.command.admin.empire.disband:
-    default: op
-  nodewar.command.admin.empire.edit:
-    default: op
-  nodewar.command.admin.empire.edit.*:
-    default: false
-    children:
-      - nodewar.command.admin.empire.edit.bossbarcolor
-      - nodewar.command.admin.empire.edit.color
-      - nodewar.command.admin.empire.edit.display
-      - nodewar.command.admin.empire.edit.friendlyfire
-  nodewar.command.admin.empire.edit.display:
-    default: op
-  nodewar.command.admin.empire.edit.color:
-    default: op
-  nodewar.command.admin.empire.edit.bossbarcolor:
-    default: op
-  nodewar.command.admin.empire.edit.friendlyfire:
-    default: op
-  nodewar.command.admin.empire.join:
-    default: op
-  nodewar.command.admin.empire.leave:
-    default: op
-  nodewar.command.admin.empire.list:
-    default: op
-  nodewar.command.admin.player:
-    default: op
-  nodewar.command.admin.player.*:
-    default: false
-    children:
-      - nodewar.command.admin.player.setempire
-      - nodewar.command.admin.player.removeempire
-  nodewar.command.admin.player.setempire:
-    default: op
-  nodewar.command.admin.player.removeempire:
-    default: op
-  nodewar.command.admin.territory:
-    default: op
-  nodewar.command.admin.territory.*:
-    default: false
-    children:
-      - nodewar.command.admin.territory.neutralize
-      - nodewar.command.admin.territory.setowner
-      - nodewar.command.admin.territory.vulnerability
-  nodewar.command.admin.territory.neutralize:
-    default: op
-  nodewar.command.admin.territory.setowner:
-    default: op
-  nodewar.command.admin.territory.vulnerability:
-    default: op
-  nodewar.command.empire:
-    default: true
-  nodewar.command.empire.*:
-    default: false
-    children:
-      - nodewar.command.empire.create
-      - nodewar.command.empire.disband
-      - nodewar.command.empire.edit
-      - nodewar.command.empire.join
-      - nodewar.command.empire.leave
-      - nodewar.command.empire.list
-  nodewar.command.empire.create:
-    default: true
-  nodewar.command.empire.edit:
-    default: true
-  nodewar.command.empire.edit.*:
-    default: false
-    children:
-      - nodewar.command.empire.edit.bossbarcolor
-      - nodewar.command.empire.edit.color
-      - nodewar.command.empire.edit.display
-      - nodewar.command.empire.edit.friendlyfire
-  nodewar.command.empire.edit.display:
-    default: true
-  nodewar.command.empire.edit.color:
-    default: true
-  nodewar.command.empire.edit.bossbarcolor:
-    default: true
-  nodewar.command.empire.edit.friendlyfire:
-    default: true
-  nodewar.command.empire.join:
-    default: true
-  nodewar.command.empire.leave:
-    default: true
-  nodewar.command.empire.list:
-    default: true
-  nodewar.command.help:
-    default: true
+      nodewar.command.*: true

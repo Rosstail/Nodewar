@@ -1,10 +1,15 @@
 package fr.rosstail.nodewar;
 
-import org.bukkit.Bukkit;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.team.RelationType;
+import org.bukkit.boss.BarColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ConfigData {
     private final Nodewar plugin = Nodewar.getInstance();
@@ -15,6 +20,11 @@ public class ConfigData {
     public final ConfigLocale locale;
 
     public final ConfigTeam team;
+    public final ConfigBattlefield battlefield;
+
+    public final ConfigBossBar bossbar;
+
+    public final ConfigDynmap dynmap;
 
     public class ConfigStorage {
         public final FileConfiguration configFile;
@@ -51,62 +61,145 @@ public class ConfigData {
         public final int titleFadeIn;
         public final int titleStay;
         public final int titleFadeOut;
-        //public final String dateTimeFormat;
-        //public final String countDownFormat;
+        public final String dateTimeFormat;
+        public final String countDownFormat;
 
         ConfigLocale(FileConfiguration config) {
             this.configFile = config;
 
-            lang = config.getString("locale.lang");
+            lang = config.getString("locale.lang", "en_EN");
             decNumber = config.getInt("locale.decimal-display");
             titleFadeIn = config.getInt("locale.title.fade-in");
             titleStay = config.getInt("locale.title.stay");
             titleFadeOut = config.getInt("locale.title.fade-out");
-            //dateTimeFormat = config.getString("locale.datetime-format");
-            //countDownFormat = config.getString("locale.countdown-format");
+            dateTimeFormat = config.getString("locale.datetime-format", "YYYY-MM-dd HH:mm:ss");
+            countDownFormat = config.getString("locale.countdown-format", "{dd} {HH}:{mm}:{ss}");
         }
-
-        /*public String getDateTimeFormat() {
-            if (dateTimeFormat == null) {
-                return "yyyy-MM-dd HH:mm:ss";
-            }
-            return dateTimeFormat;
-        }
-
-        public String getCountdownFormat() {
-            if (countDownFormat == null) {
-                return "{dd} {HH}:{mm}:{ss}";
-            }
-            return countDownFormat;
-        }*/
     }
 
     public class ConfigGeneral {
         public FileConfiguration configFile;
 
         public final float configVersion;
-        public final int topScoreLimit;
-        public final boolean useWorldGuard;
+        public final String defaultPermissionPlugin;
 
         ConfigGeneral(FileConfiguration config) {
             configFile = config;
 
             configVersion = (float) config.getDouble("general.config-version", 1.0F);
-            topScoreLimit = config.getInt("general.topscore-limit", 10);
-            useWorldGuard = Bukkit.getServer().getPluginManager().isPluginEnabled("WorldGuard") && config.getBoolean("general.use-worldguard", false);
-
+            defaultPermissionPlugin = config.getString("general.permission-plugin", "auto");
         }
     }
 
     public class ConfigTeam {
         public FileConfiguration configFile;
 
-        public final String teamSystem;
+        public final String system;
+        public final double creationCost;
+        public final RelationType defaultRelation;
+        public final String noneDisplay;
+        public final String noneColor;
+        public final int maximumMembers;
+        public final long deployTimer;
+        public final long deployCooldown;
+
+        public final short minimumNameLength;
+        public final short maximumNameLength;
+        public final short minimumShortnameLength;
+        public final short maximumShortNameLength;
 
         ConfigTeam(FileConfiguration config) {
             configFile = config;
 
-            teamSystem = config.getString("team.system", "nodewar");
+            system = config.getString("team.system", "Nodewar");
+            creationCost = config.getDouble("team.creation-cost");
+            String relationTypeStr = config.getString("team.default-relation", "neutral");
+            defaultRelation = RelationType.valueOf(relationTypeStr.toUpperCase());
+            noneDisplay = config.getString("team.none-display", "None");
+            noneColor = config.getString("team.none-color", "#CACACA");
+            maximumMembers = config.getInt("team.maximum-members", 50);
+            deployTimer = config.getLong("team.deploy-timer") * 1000;
+            deployCooldown = config.getLong("team.deploy-cooldown") * 1000;
+            minimumNameLength = (short) Math.min(config.getInt("team.name-min-length", 5), 33);
+            maximumNameLength = (short) Math.min(config.getInt("team.name-max-length", 20), 33);
+            minimumShortnameLength = (short) Math.min(config.getInt("team.shortname-min-length", 3), 40);
+            maximumShortNameLength = (short) Math.min(config.getInt("team.shortname-max-length", 5), 40);
+        }
+    }
+
+    public class ConfigBattlefield {
+        public FileConfiguration configFile;
+
+        public final List<String> alertTimers;
+
+        ConfigBattlefield(FileConfiguration config) {
+            configFile = config;
+            alertTimers = config.getStringList("battlefield.alerts");
+        }
+    }
+
+    public class ConfigBossBar {
+        public FileConfiguration configFile;
+
+        public final String[] relations = new String[]{"neutral", "team", "ally", "truce", "enemy"};
+        public final Map<String, BarColor> stringBarColorMap = new HashMap<>();
+
+        ConfigBossBar(FileConfiguration config) {
+            configFile = config;
+
+            for (String relation : relations) {
+                try {
+                    stringBarColorMap.put(relation, BarColor.valueOf(config.getString("bossbar.color." + relation)));
+                } catch (NullPointerException | IllegalArgumentException e) {
+                    AdaptMessage.print(
+                            "The color " + (config.getString("bossbar.color.") + relation) + " does not exist for relation "
+                                    + relation + ". Use PINK color instead"
+                            , AdaptMessage.prints.ERROR);
+                    stringBarColorMap.put(relation, BarColor.PINK);
+                }
+            }
+            try {
+                stringBarColorMap.put("controlled", BarColor.valueOf(config.getString("bossbar.color.controlled")));
+            } catch (NullPointerException | IllegalArgumentException e) {
+                AdaptMessage.print(
+                        "The color " + (config.getString("bossbar.color.controlled")
+                                + " does not exist for controlled territory. Use PINK color instead")
+                        , AdaptMessage.prints.ERROR);
+                stringBarColorMap.put("controlled", BarColor.PINK);
+            }
+        }
+    }
+
+    public class ConfigDynmap {
+        public FileConfiguration configFile;
+
+        public final int layerPriority = 20;
+        public final boolean hideByDefault;
+        public final boolean use3DRegions;
+
+        public final String infoWindow;
+        public final int minimumZoom = 0;
+        public final int maximumDepth = 16;
+        public final int tickPerUpdate;
+
+        public final int mapUpdateDelay;
+
+        public final float fillOpacity;
+
+        ConfigDynmap(FileConfiguration config) {
+            configFile = config;
+            hideByDefault = configFile.getBoolean("dynmap.hide-by-default", false);
+            use3DRegions = configFile.getBoolean("dynmap.use-3d-region", false);
+            infoWindow = configFile.getString("dynmap-info-window",
+                    "<div class=\"infowindow\">" +
+                            "<span style=\"font-size:120%;\">%regionname%</span>" +
+                            "<br /> Team <span style=\"font-weight:bold;\">%groupmembers%</span>" +
+                            "<br /> Flags<br />" +
+                            "<span style=\"font-weight:bold;\">  > %flags%</span>" +
+                            "</div>");
+            tickPerUpdate = Math.max(1, configFile.getInt("dynmap.tick-per-update", 20));
+            mapUpdateDelay = Math.max(1, configFile.getInt("dynmap.many-update-delay", 1));
+            fillOpacity = Math.max(0f, (float) configFile.getInt("dynmap.fill-opacity", 50) / 100);
         }
     }
 
@@ -119,6 +212,9 @@ public class ConfigData {
         this.locale = new ConfigLocale(readConfig(config, "locale"));
         this.general = new ConfigGeneral(readConfig(config, "general"));
         this.team = new ConfigTeam(readConfig(config, "team"));
+        this.battlefield = new ConfigBattlefield(readConfig(config, "battlefield"));
+        this.bossbar = new ConfigBossBar(readConfig(config, "bossbar"));
+        this.dynmap = new ConfigDynmap(readConfig(config, "dynmap"));
     }
 
     private FileConfiguration readConfig(FileConfiguration baseConfig, String item) {

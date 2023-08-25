@@ -1,6 +1,10 @@
 package fr.rosstail.nodewar.commands;
 
-import fr.rosstail.nodewar.commands.subcommands.TeamCommand;
+import fr.rosstail.nodewar.commands.subcommands.HelpCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.AdminCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.TeamCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.territory.AdminTerritoryCommand;
+import fr.rosstail.nodewar.commands.subcommands.territory.TerritoryCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -10,7 +14,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.command.defaults.HelpCommand;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Checking what method/class will be used on command, depending of command Sender and number of args.
+ * Checking what method/class will be used on command, depending on command Sender and number of args.
  */
 public class CommandManager implements CommandExecutor, TabExecutor {
 
@@ -30,14 +33,16 @@ public class CommandManager implements CommandExecutor, TabExecutor {
     private static final Pattern longParamPattern = Pattern.compile("^--[A-Za-z]+");
 
     public CommandManager() {
+        subCommands.add(new AdminCommand());
         subCommands.add(new TeamCommand());
+        subCommands.add(new TerritoryCommand());
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
-            HelpCommand help = new HelpCommand();
-            help.execute(sender, null, null);
+            HelpCommand help = new HelpCommand(this);
+            help.perform(sender, args, null);
             return true;
         }
         String[] arguments = getCommandArguments(args);
@@ -91,7 +96,7 @@ public class CommandManager implements CommandExecutor, TabExecutor {
     private static void permissionDenied(CommandSender sender, SubCommand command) {
         AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
         String message = LangManager.getMessage(LangMessage.COMMANDS_PERMISSION_DENIED);
-        message = adaptMessage.adaptPlayerMessage((Player) sender, message, PlayerType.PLAYER.getText());
+        message = adaptMessage.adaptPlayerMessage((Player) sender, message);
         message = adaptMessage.adaptMessage(message);
         message = message.replaceAll("\\[command]", command.getName());
         message = message.replaceAll("\\[permission]", command.getPermission());
@@ -112,66 +117,6 @@ public class CommandManager implements CommandExecutor, TabExecutor {
         if (e instanceof NumberFormatException) {
             sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE)));
             e.printStackTrace();
-        }
-    }
-
-    public static void commandsLauncher(Player player, List<String> commands) {
-        if (commands != null) {
-            commands.forEach(s -> {
-                placeCommands(player, s);
-            });
-        }
-    }
-
-    public static void commandsLauncher(Player attacker, Player victim, List<String> commands) {
-        if (commands != null) {
-            commands.forEach(s -> {
-                placeCommands(attacker, victim, s);
-            });
-        }
-    }
-
-    private static void placeCommands(Player player, String command) {
-        command = AdaptMessage.getAdaptMessage().adaptPlayerMessage(player, command, PlayerType.PLAYER.getText());
-
-        CommandSender senderOrTarget = Bukkit.getConsoleSender();
-
-        String regex = PlayerType.PLAYER.getText();
-        if (command.startsWith(regex)) {
-            command = command.replaceFirst(regex, "").trim();
-            senderOrTarget = player;
-        }
-        if (command.startsWith("[msg")) {
-            if (senderOrTarget instanceof Player) {
-                AdaptMessage.getAdaptMessage().sendToPlayer(player, command);
-            } else {
-                senderOrTarget.sendMessage(command.replaceAll("\\[msg(.+)?]", "").trim());
-            }
-        } else {
-            Bukkit.dispatchCommand(senderOrTarget, command);
-        }
-    }
-
-    private static void placeCommands(Player attacker, Player victim, String command) {
-        command = AdaptMessage.getAdaptMessage().adaptPvpMessage(attacker, victim, command);
-
-        CommandSender senderOrTarget = Bukkit.getConsoleSender();
-        if (command.startsWith(PlayerType.VICTIM.getText())) {
-            command = command.replaceFirst(PlayerType.VICTIM.getText(), "").trim();
-            senderOrTarget = victim;
-        } else if (command.startsWith(PlayerType.ATTACKER.getText())) {
-            command = command.replaceFirst(PlayerType.ATTACKER.getText(), "").trim();
-            senderOrTarget = attacker;
-        }
-
-        if (command.startsWith("[msg")) {
-            if (senderOrTarget instanceof Player) {
-                AdaptMessage.getAdaptMessage().sendToPlayer((Player) senderOrTarget, command);
-            } else {
-                senderOrTarget.sendMessage(command);
-            }
-        } else {
-            Bukkit.dispatchCommand(senderOrTarget, command);
         }
     }
 

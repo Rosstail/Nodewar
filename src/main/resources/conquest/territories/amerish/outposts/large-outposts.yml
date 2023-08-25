@@ -1,0 +1,40 @@
+---
+the-ascent:
+  display: The Ascent
+  type: large-outpost
+  regions:
+    - the-ascent
+  subterritories:
+    - the-ascent-spawn
+    - the-ascent-control-a
+    - the-ascent-control-b
+    - the-ascent-control-c
+  objective:
+    control-points:
+      the-ascent-control-a:
+        damage-per-second: 1
+        regen-per-second: 1
+      the-ascent-control-b:
+        damage-per-second: 1
+        regen-per-second: 1
+      the-ascent-control-c:
+        damage-per-second: 1
+        regen-per-second: 1
+
+the-ascent-control-a:
+  display: The Ascent - A
+  type: control-point
+  regions:
+    - the-ascent-control-a
+
+the-ascent-control-b:
+  display: The Ascent - B
+  type: control-point
+  regions:
+    - the-ascent-control-b
+
+the-ascent-control-c:
+  display: The Ascent - C
+  type: control-point
+  regions:
+    - the-ascent-control-c

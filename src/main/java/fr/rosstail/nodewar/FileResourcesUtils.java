@@ -47,14 +47,18 @@ public class FileResourcesUtils {
                 }
 
                 File file = new File(filePathInJAR);
-
-                if (!file.exists() && doGenerate) {
+                if (file.isDirectory()) {
+                    AdaptMessage.print(file.getPath() + " est un dossier", AdaptMessage.prints.WARNING);
+                    generateYamlFile(file.getPath(), plugin);
+                } else if (!file.exists() && doGenerate) {
                     plugin.saveResource(filePathInJAR, false);
                     AdaptMessage.print(" > Creating " + file + " config.", AdaptMessage.prints.OUT);
                 }
+
+
             }
 
-        } catch (URISyntaxException | IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -84,10 +88,10 @@ public class FileResourcesUtils {
         return new StringReader(new String(buffer));
     }
 
+
     // Get all paths from a folder that inside the JAR file
     private List<Path> getPathsFromResourceJAR(String folder)
             throws URISyntaxException, IOException {
-        String folderPath = folder.replaceAll(" ", "%20");
         List<Path> result;
 
         // get path of the current running JAR
@@ -95,13 +99,12 @@ public class FileResourcesUtils {
                 .getCodeSource()
                 .getLocation()
                 .toURI()
-                .getPath().replaceAll(" ", "%20");
+                .getPath();
 
         // file walks JAR
         URI uri = new URI("jar", "file:" + jarPath, null);
         try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
-
-            result = Files.walk(fs.getPath(URLEncoder.encode(folderPath, "UTF-8")))
+            result = Files.walk(fs.getPath(folder))
                     .filter(Files::isRegularFile)
                     .collect(Collectors.toList());
         }
