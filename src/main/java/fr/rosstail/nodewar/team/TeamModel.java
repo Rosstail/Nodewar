@@ -1,29 +1,32 @@
 package fr.rosstail.nodewar.team;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TeamModel {
+    private int id;
     private String name;
     private String display;
     private String hexColor = "#000000";
-    private int membersAmount = 0;
-    private String ownerUuid;
     private boolean open = false;
-    private boolean permanent;
+    private boolean permanent = false;
     private Timestamp creationDate = new Timestamp(System.currentTimeMillis());
     private Timestamp lastUpdate = new Timestamp(System.currentTimeMillis());
 
-    public TeamModel(String name, String display, String ownerUuid) {
+    private final Map<String, TeamMemberModel> memberModelMap = new HashMap<>();
+
+    public TeamModel(String name, String display) {
         this.name = name;
         this.display = display;
+    }
 
-        if (ownerUuid != null) {
-            this.ownerUuid = ownerUuid;
-            this.membersAmount = 1;
-            this.permanent = false;
-        } else {
-            this.permanent = true;
-        }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -40,22 +43,6 @@ public class TeamModel {
 
     public void setDisplay(String display) {
         this.display = display;
-    }
-
-    public String getOwnerUuid() {
-        return ownerUuid;
-    }
-
-    public void setOwnerUuid(String ownerUuid) {
-        this.ownerUuid = ownerUuid;
-    }
-
-    public int getMembersAmount() {
-        return membersAmount;
-    }
-
-    public void setMembersAmount(int membersAmount) {
-        this.membersAmount = membersAmount;
     }
 
     public String getHexColor() {
@@ -96,5 +83,9 @@ public class TeamModel {
 
     public void setLastUpdate(Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    public Map<String, TeamMemberModel> getMemberModelMap() {
+        return memberModelMap;
     }
 }

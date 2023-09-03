@@ -95,7 +95,7 @@ public class AdaptMessage {
     public String adaptPlayerMessage(Player player, String message, String playerType) {
         message = message.replaceAll("\\[" + playerType + "]", player.getName());
         if (!player.hasMetadata("NPC")) {
-            PlayerModel playerModel = PlayerDataManager.getPlayerModelMap().get(player.getName());
+            PlayerModel playerModel = PlayerDataManager.getPlayerDataMap().get(player.getName());
             message = adaptMessageToModel(playerModel, message, playerType);
         } else {
             message = message.replaceAll("\\[karma]", decimalFormat(player.getMetadata("Karma").get(0).asFloat(), '.'));

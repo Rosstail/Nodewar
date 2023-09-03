@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.storage.storagetype;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
+import fr.rosstail.nodewar.team.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
 import org.bukkit.Bukkit;
 
@@ -53,11 +54,9 @@ public class SqlStorageRequest implements StorageRequest {
 
     public void createNodewarTeamTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + teamTableName + " ( " +
-                " id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " name VARCHAR(40) UNIQUE," +
                 " display VARCHAR(40) UNIQUE," +
-                " owner_uuid VARCHAR(40) UNIQUE REFERENCES " + playerTableName + " (uuid) ," +
-                " member_amount INT NOT NULL," +
                 " hex_color VARCHAR(7)," +
                 " is_open BOOLEAN NOT NULL DEFAULT FALSE," +
                 " is_permanent BOOLEAN NOT NULL DEFAULT FALSE," +
@@ -68,22 +67,22 @@ public class SqlStorageRequest implements StorageRequest {
 
     public void createNodewarTeamMemberTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + teamMemberTableName + " (" +
-                " id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " player_uuid VARCHAR(40) NOT NULL REFERENCES " + playerTableName + " (uuid) ," +
                 " team_id INT NOT NULL REFERENCES " + teamTableName + " (id) ," +
-                " rank INT NOT NULL," +
+                " player_rank INT NOT NULL," +
                 " join_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
+
         executeSQL(query);
     }
 
     public void createNodewarTeamRelationTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + teamRelationTableName + " (" +
-                " id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " first_team INT NOT NULL REFERENCES " + teamTableName + " (id) ," +
                 " second_team INT NOT NULL REFERENCES " + teamTableName + " (id) ," +
                 " relation_type INT NOT NULL," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
-        System.out.println("Team Relation\n" + query);
         executeSQL(query);
     }
 
@@ -110,18 +109,30 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public boolean insertTeamModel(TeamModel model) {
-        String query = "INSERT INTO " + teamTableName + " (name, display, owner_uuid, member_amount, hex_color," +
-                "is_open, is_permanent)"
-                + " VALUES (?, ?, ?, ?, ?, ?, ?);";
+        String query = "INSERT INTO " + teamTableName + " (name, display, hex_color, is_open, is_permanent)"
+                + " VALUES (?, ?, ?, ?, ?);";
         String name = model.getName();
         String display = model.getDisplay();
-        String ownerUuid = model.getOwnerUuid();
         String hexColor = model.getHexColor();
         boolean open = model.isOpen();
         boolean permanent = model.isPermanent();
-        int members = model.getMembersAmount();
         try {
-            return executeSQLUpdate(query, name, display, ownerUuid, members, hexColor, open, permanent) > 0;
+            return executeSQLUpdate(query, name, display, hexColor, open, permanent) > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean insertTeamMemberModel(TeamMemberModel model) {
+        String query = "INSERT INTO " + teamMemberTableName + " (team_id, player_uuid, player_rank)"
+                + " VALUES (?, ?, ?);";
+        int teamId = model.getTeamId();
+        String memberUuid = model.getMemberUuid();
+        int memberRank = model.getRank();
+        try {
+            return executeSQLUpdate(query, teamId, memberUuid, memberRank) > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -146,19 +157,63 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     @Override
-    public TeamModel selectTeamModel(String teamName) {
+    public TeamModel selectTeamModelByName(String teamName) {
         String query = "SELECT * FROM " + teamTableName + " WHERE name = ?";
         try {
             ResultSet result = executeSQLQuery(connection, query, teamName);
             if (result.next()) {
-                TeamModel teamModel = new TeamModel(teamName, result.getString("display"), result.getString("owner_uuid"));
+                TeamModel teamModel = new TeamModel(teamName, result.getString("display"));
+                teamModel.setId(result.getInt("id"));
                 teamModel.setHexColor(result.getString("hex_color"));
-                teamModel.setMembersAmount(-5);
                 teamModel.setPermanent(result.getBoolean("is_permanent"));
                 teamModel.setOpen(result.getBoolean("is_open"));
                 teamModel.setCreationDate(result.getTimestamp("creation_date"));
                 teamModel.setLastUpdate(result.getTimestamp("last_update"));
                 return teamModel;
+            }
+            result.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public TeamModel selectTeamModelByOwnerUuid(String ownerUuid) {
+        String query = "SELECT * FROM " + teamTableName + " AS tt, " + teamMemberTableName + " AS tmt WHERE "
+                + "tt.id = tmt.team_id AND tmt.player_uuid = ? AND tmt.player_rank = 1";
+        try {
+            ResultSet result = executeSQLQuery(connection, query, ownerUuid);
+            if (result.next()) {
+                TeamModel teamModel = new TeamModel(result.getString("name"), result.getString("display"));
+                teamModel.setId(result.getInt("id"));
+                teamModel.setHexColor(result.getString("hex_color"));
+                teamModel.setPermanent(result.getBoolean("is_permanent"));
+                teamModel.setOpen(result.getBoolean("is_open"));
+                teamModel.setCreationDate(result.getTimestamp("creation_date"));
+                teamModel.setLastUpdate(result.getTimestamp("last_update"));
+                return teamModel;
+            }
+            result.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public TeamMemberModel selectTeamMemberModel(String playerUuid) {
+        String query = "SELECT * FROM " + teamMemberTableName + " WHERE player_uuid = ?";
+        try {
+            ResultSet result = executeSQLQuery(connection, query, playerUuid);
+            if (result.next()) {
+                TeamMemberModel teamMemberModel = new TeamMemberModel(
+                        result.getInt("team_id"),
+                        playerUuid,
+                        result.getInt("player_rank"),
+                        result.getTimestamp("join_time"));
+                teamMemberModel.setId(result.getInt("id"));
+                return teamMemberModel;
             }
             result.close();
         } catch (SQLException e) {
@@ -175,6 +230,7 @@ public class SqlStorageRequest implements StorageRequest {
             }
         });
     }
+
     @Override
     public void updatePlayerModel(PlayerModel model) {
         String query = "UPDATE " + playerTableName + " SET last_update = CURRENT_TIMESTAMP WHERE uuid = ?";
@@ -193,7 +249,7 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public void deletePlayerModel(String uuid) {
-        String query = "DELETE FROM " + pluginName + " WHERE uuid = ?";
+        String query = "DELETE FROM " + playerTableName + " WHERE uuid = ?";
         try {
             boolean success = executeSQLUpdate(query, uuid) > 0;
         } catch (SQLException e) {
@@ -201,9 +257,20 @@ public class SqlStorageRequest implements StorageRequest {
         }
     }
 
+    @Override
+    public void deleteTeamModel(int teamID) {
+        String query = "DELETE FROM " + teamTableName + " WHERE id = ?";
+        try {
+            boolean success = executeSQLUpdate(query, teamID) > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Executes an SQL request for INSERT, UPDATE and DELETE
-     * @param query # The query itself
+     *
+     * @param query  # The query itself
      * @param params #The values to put as WHERE
      * @return # Returns the number of rows affected
      */
@@ -223,7 +290,8 @@ public class SqlStorageRequest implements StorageRequest {
 
     /**
      * Executes an SQL request for SELECT
-     * @param query # The query itself
+     *
+     * @param query  # The query itself
      * @param params #The values to put as WHERE
      * @return # Returns the ResultSet of the request
      */
@@ -234,7 +302,6 @@ public class SqlStorageRequest implements StorageRequest {
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
             }
-            System.out.println(query);
             return statement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -244,6 +311,7 @@ public class SqlStorageRequest implements StorageRequest {
 
     /**
      * Executes an SQL request to CREATE TABLE
+     *
      * @param query # The query itself
      * @return # Returns if the request succeeded
      */
@@ -251,7 +319,6 @@ public class SqlStorageRequest implements StorageRequest {
         boolean execute = false;
         try {
             openConnection();
-            System.out.println("QUERY IS " + query);
             PreparedStatement statement = connection.prepareStatement(query);
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
@@ -286,6 +353,7 @@ public class SqlStorageRequest implements StorageRequest {
         }
         return connection;
     }
+
     public void closeConnection() {
         if (connection != null) {
             try {
@@ -300,7 +368,7 @@ public class SqlStorageRequest implements StorageRequest {
 
     public List<PlayerModel> selectPlayerModelListAsc(int limit) {
         List<String> onlineUuidList = new ArrayList<>();
-        PlayerDataManager.getPlayerModelMap().forEach((s, playerModel) -> {
+        PlayerDataManager.getPlayerDataMap().forEach((s, playerModel) -> {
             onlineUuidList.add(playerModel.getUuid());
         });
 
@@ -316,14 +384,14 @@ public class SqlStorageRequest implements StorageRequest {
             replacement.append(")");
             query += " WHERE " + pluginName + ".uuid NOT IN " + replacement;
         }
-        query += " ORDER BY " + pluginName +  ".karma ASC LIMIT ?";
+        query += " ORDER BY " + pluginName + ".karma ASC LIMIT ?";
         return selectPlayerModelList(query, limit);
     }
 
     public List<PlayerModel> selectPlayerModelListDesc(int limit) {
         List<String> onlineUUIDList = new ArrayList<>();
 
-        PlayerDataManager.getPlayerModelMap().forEach((s, playerModel) -> {
+        PlayerDataManager.getPlayerDataMap().forEach((s, playerModel) -> {
             onlineUUIDList.add(playerModel.getUuid());
         });
 
@@ -340,7 +408,7 @@ public class SqlStorageRequest implements StorageRequest {
             replacement.append(")");
             query += " WHERE " + pluginName + ".uuid NOT IN " + replacement;
         }
-        query += " ORDER BY " + pluginName +  ".karma DESC LIMIT ?";
+        query += " ORDER BY " + pluginName + ".karma DESC LIMIT ?";
         return selectPlayerModelList(query, limit);
     }
 

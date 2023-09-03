@@ -20,14 +20,14 @@ public class PlayerDataManager {
     private static final Nodewar plugin = Nodewar.getInstance();
     private static final AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
 
-    private static final Map<String, PlayerModel> playerModelMap = new HashMap<>();
+    private static final Map<String, PlayerData> playerDataMap = new HashMap<>();
 
-    public static PlayerModel initPlayerModelToMap(PlayerModel model) {
-        return playerModelMap.put(model.getUsername(), model);
+    public static PlayerData initPlayerDataToMap(PlayerData model) {
+        return playerDataMap.put(model.getUsername(), model);
     }
 
-    public static PlayerModel removePlayerModelFromMap(Player player) {
-        return playerModelMap.remove(player.getName());
+    public static PlayerData removePlayerDataFromMap(Player player) {
+        return playerDataMap.remove(player.getName());
     }
 
     public static String getPlayerNameFromUUID(String uuid) {
@@ -150,8 +150,8 @@ public class PlayerDataManager {
         return null;
     }*/
 
-    public static Map<String, PlayerModel> getPlayerModelMap() {
-        return playerModelMap;
+    public static Map<String, PlayerData> getPlayerDataMap() {
+        return playerDataMap;
     }
 
     public static void stopTimer(int scheduler) {
@@ -159,7 +159,7 @@ public class PlayerDataManager {
     }
 
     public static void saveAllPlayerModelToStorage() {
-        getPlayerModelMap().forEach((s, model) -> {
+        getPlayerDataMap().forEach((s, model) -> {
             StorageManager.getManager().updatePlayerModel(model, true);
         });
     }

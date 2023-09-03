@@ -3,6 +3,7 @@ package fr.rosstail.nodewar;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.apis.PAPIExpansion;
 import fr.rosstail.nodewar.commands.CommandManager;
+import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.StorageManager;
@@ -31,7 +32,7 @@ public class Nodewar extends JavaPlugin implements Listener {
     private static Permission perms;
     private static final Chat chat;
     private static Nodewar instance;
-    private static java.lang.String dimName;
+    private static String dimName;
     private MinecraftEventHandler minecraftEventHandler;
 
     public void onLoad() {
@@ -63,7 +64,7 @@ public class Nodewar extends JavaPlugin implements Listener {
         }
     }
 
-    public static java.lang.String getDimName() {
+    public static String getDimName() {
         return Nodewar.dimName;
     }
 
@@ -97,7 +98,7 @@ public class Nodewar extends JavaPlugin implements Listener {
             AdaptMessage.print("[" + this.getName() + "] Hooked with Vault !", AdaptMessage.prints.OUT);
             setupPermissions();
         } else {
-            log.severe(java.lang.String.format("[" + this.getName() + "] Didn't found Vault.", this.getDescription().getName()));
+            log.severe(String.format("[" + this.getName() + "] Didn't found Vault.", this.getDescription().getName()));
         }
 
         minecraftEventHandler = new MinecraftEventHandler();
@@ -122,7 +123,7 @@ public class Nodewar extends JavaPlugin implements Listener {
     private void createDataFolder() {
         File folder = new File(this.getDataFolder(), "data/");
         if (!folder.exists()) {
-            java.lang.String message = this.getCustomConfig().getString("messages.creating-data-folder");
+            String message = this.getCustomConfig().getString("messages.creating-data-folder");
             if (message != null) {
                 message = AdaptMessage.getAdaptMessage().adaptMessage(message);
 
@@ -135,9 +136,9 @@ public class Nodewar extends JavaPlugin implements Listener {
     public void onDisable() {
         minecraftEventHandler.setClosing(true);
 
-        Map<String, PlayerModel> playerModelMap = PlayerDataManager.getPlayerModelMap();
-        for (Map.Entry<java.lang.String, PlayerModel> entry : playerModelMap.entrySet()) {
-            java.lang.String s = entry.getKey();
+        Map<String, PlayerData> playerDataMap = PlayerDataManager.getPlayerDataMap();
+        for (Map.Entry<String, PlayerData> entry : playerDataMap.entrySet()) {
+            String s = entry.getKey();
             PlayerModel model = entry.getValue();
             StorageManager.getManager().updatePlayerModel(model, false);
         }

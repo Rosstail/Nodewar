@@ -1,0 +1,30 @@
+glacesang:
+  display: "&r&6Capitale - &cGlacesang"
+  description: "Capitale de la Coalition."
+  world: "olydri"
+  preset: "capital"
+  # prefix: "&cC" # capital
+  # protected: true # capital
+  default-owner-team: "coalition" # better used for permanent teams
+  regions:
+    - "glacesang"
+    - "palais-de-glacesang"
+    - "beffroi-de-persastre"
+    - "voliere-de-glacesang"
+  targets:
+    - "montagnes-etermines"
+  required-territory:
+    - "centralis"
+  objective:
+    type: "CAPTURE-THE-POINTS"
+    max-resistance: 225
+    points:
+      palais-de-glacesang:
+        defense-regen: 5
+        assault-regen: 5
+      beffroi-de-persastre:
+        defense-regen: 3
+        assault-regen: 3
+      voliere-de-glacesang:
+        defense-regen: 3
+        assault-regen: 3

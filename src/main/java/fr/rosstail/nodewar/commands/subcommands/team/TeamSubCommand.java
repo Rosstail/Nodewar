@@ -1,4 +1,4 @@
-package fr.rosstail.nodewar.commands.subcommands;
+package fr.rosstail.nodewar.commands.subcommands.team;
 
 import fr.rosstail.nodewar.commands.SubCommand;
 import org.bukkit.command.CommandSender;

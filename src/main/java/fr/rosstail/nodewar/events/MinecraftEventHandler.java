@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.events;
 
+import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.StorageManager;
@@ -16,23 +17,24 @@ public class MinecraftEventHandler implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        PlayerModel model = StorageManager.getManager().selectPlayerModel(player.getUniqueId().toString());
-        if (model == null) {
-            model = new PlayerModel(event.getPlayer());
-            StorageManager.getManager().insertPlayerModel(model);
-            PlayerDataManager.initPlayerModelToMap(model);
+        PlayerModel playerModel = StorageManager.getManager().selectPlayerModel(player.getUniqueId().toString());
+        PlayerData playerData;
+        if (playerModel == null) {
+            playerData = new PlayerData(event.getPlayer());
+            StorageManager.getManager().insertPlayerModel(playerData);
         } else {
-            PlayerDataManager.initPlayerModelToMap(model);
+            playerData = new PlayerData(playerModel);
         }
+        PlayerDataManager.initPlayerDataToMap(playerData);
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        PlayerModel model = PlayerDataManager.getPlayerModelMap().get(player.getName());
+        PlayerModel model = PlayerDataManager.getPlayerDataMap().get(player.getName());
         if (!isClosing) {
             StorageManager.getManager().updatePlayerModel(model, true);
-            PlayerDataManager.removePlayerModelFromMap(player);
+            PlayerDataManager.removePlayerDataFromMap(player);
         }
     }
 

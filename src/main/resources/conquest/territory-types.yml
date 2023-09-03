@@ -1,0 +1,26 @@
+default: # basic configurations
+  prefix: "" # none
+  protected: false
+  objective: none
+
+bridge: # pont
+fort: # fortin
+bastion: # bastion
+
+village: # hamlet
+capital: # capitale
+  required-capture-points: 55
+  required-territory-types:
+    capital: 1
+warpgate: # Spawn
+  prefix: "WG - "
+  protected: true # invulnerable to anything (except commands)
+  required-capture-points: -1 # -1 means invulnerable
+
+manor: # seigneurie
+barony: # baronnie
+viscounty: #viscomté
+county: # comté
+duchy: # duché
+kingdom: # royaume
+empire: # empire

@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.storage.storagetype;
 
 import fr.rosstail.nodewar.player.PlayerModel;
+import fr.rosstail.nodewar.team.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
 
 import java.util.List;
@@ -26,6 +27,14 @@ public interface StorageRequest {
     boolean insertTeamModel(TeamModel model);
 
     /**
+     * CREATE
+     * inert team member model into storage
+     * @param model the model to insert
+     * @return if the result is successful
+     */
+    boolean insertTeamMemberModel(TeamMemberModel model);
+
+    /**
      * READ
      * get player model from storage
      * @param uuid The uuid of player
@@ -39,7 +48,23 @@ public interface StorageRequest {
      * @param teamName The name identifier of the team
      * @return the team model
      */
-    TeamModel selectTeamModel(String teamName);
+    TeamModel selectTeamModelByName(String teamName);
+
+    /**
+     * READ
+     * get team model from storage
+     * @param ownerUuid The uuid of player owner
+     * @return the team model
+     */
+    TeamModel selectTeamModelByOwnerUuid(String ownerUuid);
+
+    /**
+     * READ
+     * get member team model from storage
+     * @param playerUuid The identifier of player
+     * @return the team member model
+     */
+    TeamMemberModel selectTeamMemberModel(String playerUuid);
 
     /**
      * UPDATE
@@ -54,6 +79,13 @@ public interface StorageRequest {
      * @param uuid The target uuid
      */
     void deletePlayerModel(String uuid);
+
+    /**
+     * DELETE
+     * destroys team model from storage
+     * @param teamID the team ID
+     */
+    void deleteTeamModel(int teamID);
 
     /**
      * SELECT get a list of player models with an order and a limit.

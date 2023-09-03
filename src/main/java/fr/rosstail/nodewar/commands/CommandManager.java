@@ -1,7 +1,7 @@
 package fr.rosstail.nodewar.commands;
 
 import fr.rosstail.nodewar.commands.subcommands.HelpCommand;
-import fr.rosstail.nodewar.commands.subcommands.TeamCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.TeamCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Checking what method/class will be used on command, depending of command Sender and number of args.
+ * Checking what method/class will be used on command, depending on command Sender and number of args.
  */
 public class CommandManager implements CommandExecutor, TabExecutor {
 

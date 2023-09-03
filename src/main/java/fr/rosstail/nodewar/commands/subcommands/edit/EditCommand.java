@@ -1,8 +1,11 @@
-package fr.rosstail.nodewar.commands.subcommands;
+package fr.rosstail.nodewar.commands.subcommands.edit;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.SubCommand;
-import fr.rosstail.nodewar.commands.subcommands.team.TeamCreateCommand;
+import fr.rosstail.nodewar.commands.subcommands.edit.territory.EditTerritoryCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.TeamCreateCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.TeamDisbandCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -12,14 +15,14 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TeamCommand extends TeamSubCommand {
-    public List<TeamSubCommand> subCommands = new ArrayList<>();
-    public TeamCommand() {
+public class EditCommand extends EditSubCommand {
+    public List<EditSubCommand> subCommands = new ArrayList<>();
+    public EditCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_CREATE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
-        subCommands.add(new TeamCreateCommand());
+        subCommands.add(new EditTerritoryCommand());
     }
 
     @Override
@@ -33,7 +36,7 @@ public class TeamCommand extends TeamSubCommand {
         }
 
         List<String> subCommandsStringList = new ArrayList<>();
-        for (TeamSubCommand subCommand : subCommands) {
+        for (EditSubCommand subCommand : subCommands) {
             subCommandsStringList.add(subCommand.getName());
         }
 
@@ -42,7 +45,7 @@ public class TeamCommand extends TeamSubCommand {
             return;
         }
 
-        for (TeamSubCommand subCommand : subCommands) {
+        for (EditSubCommand subCommand : subCommands) {
             if (subCommand.getName().equalsIgnoreCase(args[1])) {
                 subCommand.perform(sender, args, arguments);
             }
@@ -56,8 +59,8 @@ public class TeamCommand extends TeamSubCommand {
             List<String> list = new ArrayList<>();
             for (SubCommand subCommand : subCommands) {
                 list.add(subCommand.getName());
-                return list;
             }
+            return list;
         } else {
             for (SubCommand subCommand : subCommands) {
                 if (subCommand.getName().equalsIgnoreCase(args[1])) {
@@ -78,5 +81,4 @@ public class TeamCommand extends TeamSubCommand {
         }
         return subCommandHelp.toString();
     }
-
 }
