@@ -10,6 +10,8 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.events.MinecraftEventHandler;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.team.TeamDataManager;
+import fr.rosstail.nodewar.territory.TerritoryManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -49,6 +51,7 @@ public class Nodewar extends JavaPlugin implements Listener {
             this.saveDefaultConfig();
         }
         config = YamlConfiguration.loadConfiguration(fileConfig);
+        saveResource("conquest/territory-types.yml", false);
 
         ConfigData.init(getCustomConfig());
         initDefaultLocales();
@@ -73,6 +76,8 @@ public class Nodewar extends JavaPlugin implements Listener {
         dimName = instance.getName().toLowerCase();
 
         AdaptMessage.initAdaptMessage(this);
+        TeamDataManager.init(this);
+        TerritoryManager.init(this);
 
         loadCustomConfig();
 
@@ -104,12 +109,15 @@ public class Nodewar extends JavaPlugin implements Listener {
         minecraftEventHandler = new MinecraftEventHandler();
         Bukkit.getPluginManager().registerEvents(minecraftEventHandler, this);
         this.getCommand(getName().toLowerCase()).setExecutor(new CommandManager());
+
+        TerritoryManager.getTerritoryManager().loadTerritoryTypeConfig();
+        TerritoryManager.getTerritoryManager().loadTerritoryConfigs("plugins/" + getName() + "/conquest/territories");
     }
 
     private void initDefaultConfigs() {
         try {
-            FileResourcesUtils.generateYamlFile("worlds", this);
-            FileResourcesUtils.generateYamlFile("empires", this);
+            FileResourcesUtils.generateYamlFile("conquest", this);
+            FileResourcesUtils.generateYamlFile("conquest/territories", this);
             FileResourcesUtils.generateYamlFile("gui", this);
             FileResourcesUtils.generateYamlFile("lang", this);
         } catch (IOException e) {

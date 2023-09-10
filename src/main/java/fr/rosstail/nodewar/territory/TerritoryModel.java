@@ -1,24 +1,32 @@
 package fr.rosstail.nodewar.territory;
 
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TerritoryModel {
-
-    private int id;
+    private String typeName;
     private String worldName;
     private String name;
     private String display;
+    private String prefix;
+    private String suffix;
     private String ownerName;
-    private List<String> regionStringList;
+    private boolean underProtection;
+    private final List<String> regionStringList = new ArrayList<>();
+    private final List<String> subterritoryList = new ArrayList<>();
 
-    public int getId() {
-        return id;
+    private String objectiveTypeName;
+    private AttackRequirementsModel attackRequirementsModel;
+
+    public String getTypeName() {
+        return typeName;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public String getName() {
@@ -35,6 +43,29 @@ public class TerritoryModel {
 
     public void setDisplay(String display) {
         this.display = display;
+    }
+
+    public boolean isUnderProtection() {
+        return underProtection;
+    }
+
+    public void setUnderProtection(boolean underProtection) {
+        this.underProtection = underProtection;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
 
     public String getOwnerName() {
@@ -55,5 +86,48 @@ public class TerritoryModel {
 
     public List<String> getRegionStringList() {
         return regionStringList;
+    }
+
+    public List<String> getSubterritoryList() {
+        return subterritoryList;
+    }
+
+    public String getObjectiveTypeName() {
+        return objectiveTypeName;
+    }
+
+    public void setObjectiveTypeName(String objectiveTypeName) {
+        this.objectiveTypeName = objectiveTypeName;
+    }
+
+    public AttackRequirementsModel getAttackRequirementsModel() {
+        return attackRequirementsModel;
+    }
+
+    public void setAttackRequirementsModel(AttackRequirementsModel attackRequirementsModel) {
+        this.attackRequirementsModel = attackRequirementsModel;
+    }
+
+    public void printModel() {
+        StringBuilder message = new StringBuilder(getName() + " : " +
+                "\n > prefix: " + getPrefix() +  " | display: " + getDisplay() + " | suffix: " + getSuffix() +
+                "\n > world: " + getWorldName() +
+                "\n > type: " + getTypeName() +
+                "\n > owner: " + getOwnerName());
+
+        if (!getRegionStringList().isEmpty()) {
+            message.append("\n > regions:");
+            for (String s : getRegionStringList()) {
+                message.append("\n   - ").append(s);
+            }
+        }
+
+        if (!getSubterritoryList().isEmpty()) {
+            message.append("\n > subterritories:");
+            for (String s : getSubterritoryList()) {
+                message.append("\n   - ").append(s);
+            }
+        }
+        AdaptMessage.print(message.toString(), AdaptMessage.prints.OUT);
     }
 }

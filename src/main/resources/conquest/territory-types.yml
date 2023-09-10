@@ -1,26 +1,41 @@
-default: # basic configurations
-  prefix: "" # none
+outpost: # basic configurations
+  prefix: "-o-" # none
+  world: "amerish"
+  suffix: "-o-" # none
   protected: false
-  objective: none
 
-bridge: # pont
-fort: # fortin
-bastion: # bastion
+large-outpost: # basic configurations
+  prefix: "-lo-" # none
+  world: "amerish"
+  suffix: "-lo-" # none
+  protected: false
 
-village: # hamlet
-capital: # capitale
-  required-capture-points: 55
-  required-territory-types:
-    capital: 1
-warpgate: # Spawn
-  prefix: "WG - "
-  protected: true # invulnerable to anything (except commands)
-  required-capture-points: -1 # -1 means invulnerable
+tower: # basic configurations
+  prefix: "-T-" # none
+  world: "amerish"
+  suffix: "-T-" # none
+  protected: false
 
-manor: # seigneurie
-barony: # baronnie
-viscounty: #viscomté
-county: # comté
-duchy: # duché
-kingdom: # royaume
-empire: # empire
+facility: # basic configurations
+  prefix: "-F-" # none
+  world: "amerish"
+  suffix: "-F-" # none
+  protected: false
+
+tech-plant: # basic configurations
+  prefix: "-TP-" # none
+  world: "amerish"
+  suffix: "-TP-" # none
+  protected: false
+
+biolab: # basic configurations
+  prefix: "-b-" # none
+  world: "amerish"
+  suffix: "-b-" # none
+  protected: false
+
+warpgate: # basic configurations
+  prefix: "-W-" # none
+  world: "amerish"
+  suffix: "-W-" # none
+  protected: true
