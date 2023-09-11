@@ -1,7 +1,7 @@
 package fr.rosstail.nodewar.territory.attackrequirements;
 
 import fr.rosstail.nodewar.territory.TerritoryManager;
-import fr.rosstail.nodewar.territory.TerritoryType;
+import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;

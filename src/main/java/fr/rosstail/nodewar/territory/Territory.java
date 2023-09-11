@@ -3,10 +3,9 @@ package fr.rosstail.nodewar.territory;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.rosstail.nodewar.team.Team;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
-import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.types.ObjectiveSiege;
-import org.bukkit.block.data.type.Switch;
+import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -14,7 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Territory extends TerritoryModel {
+public class Territory {
+
+    private TerritoryModel territoryModel;
 
     private List<ProtectedRegion> regionList;
     private Map<Team, List<Player>> teamPlayerList;
@@ -28,29 +29,30 @@ public class Territory extends TerritoryModel {
     private AttackRequirements attackRequirements;
 
     Territory(ConfigurationSection section) {
-        super.setName(section.getName());
+        territoryModel = new TerritoryModel();
+        territoryModel.setName(section.getName());
 
         /*
         Set type to help load default type values
          */
-        super.setTypeName(section.getString("type", "default"));
-        setTerritoryType(TerritoryManager.getTerritoryManager().getTerritoryTypeFromMap(getTypeName()));
+        territoryModel.setTypeName(section.getString("type", "default"));
+        setTerritoryType(TerritoryManager.getTerritoryManager().getTerritoryTypeFromMap(territoryModel.getTypeName()));
 
         /*
         Set everything into model, including type
          */
-        super.setDisplay(section.getString("display", super.getName()));
-        super.getRegionStringList().addAll(section.getStringList("regions"));
-        super.getSubterritoryList().addAll(section.getStringList("subterritories"));
+        territoryModel.setDisplay(section.getString("display", territoryModel.getName()));
+        territoryModel.getRegionStringList().addAll(section.getStringList("regions"));
+        territoryModel.getSubterritoryList().addAll(section.getStringList("subterritories"));
 
-        super.setWorldName(section.getString("world", territoryType.getWorldName()));
-        super.setPrefix(section.getString("prefix", territoryType.getPrefix()));
-        super.setSuffix(section.getString("suffix", territoryType.getSuffix()));
-        super.setUnderProtection(section.getBoolean("protected", territoryType.isUnderProtection()));
+        territoryModel.setWorldName(section.getString("world", territoryType.getWorldName()));
+        territoryModel.setPrefix(section.getString("prefix", territoryType.getPrefix()));
+        territoryModel.setSuffix(section.getString("suffix", territoryType.getSuffix()));
+        territoryModel.setUnderProtection(section.getBoolean("protected", territoryType.isUnderProtection()));
 
-        super.setObjectiveTypeName(section.getString("objective.name", territoryType.getObjectiveTypeName()));
-        if (getObjectiveTypeName() != null) {
-            switch (getObjectiveTypeName()) {
+        territoryModel.setObjectiveTypeName(section.getString("objective.name", territoryType.getObjectiveTypeName()));
+        if (territoryModel.getObjectiveTypeName() != null) {
+            switch (territoryModel.getObjectiveTypeName()) {
                 case "siege":
                     ObjectiveSiege objectiveSiege = new ObjectiveSiege();
                     setObjective(objectiveSiege);
@@ -62,12 +64,23 @@ public class Territory extends TerritoryModel {
         }
 
         ConfigurationSection attackRequirementSection = section.getConfigurationSection("attack-requirements");
-        AttackRequirements territoryTypeRequirement = territoryType.getAttackRequirements();
+        AttackRequirements territoryTypeRequirement = territoryType.getAttackRequirements().clone();
+
         if (attackRequirementSection != null) {
             attackRequirements = new AttackRequirements(attackRequirementSection);
         } else if (territoryTypeRequirement != null) {
+            attackRequirements = territoryTypeRequirement.clone();
+            System.out.println(territoryTypeRequirement.equals(territoryType.getAttackRequirements()));
             attackRequirements = territoryTypeRequirement;
         }
+    }
+
+    public TerritoryModel getTerritoryModel() {
+        return territoryModel;
+    }
+
+    public void setTerritoryModel(TerritoryModel territoryModel) {
+        this.territoryModel = territoryModel;
     }
 
     public TerritoryType getTerritoryType() {

@@ -1,13 +1,24 @@
-package fr.rosstail.nodewar.territory;
+package fr.rosstail.nodewar.territory.type;
 
 
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class TerritoryType {
 
+    public TerritoryType() {
+        this.name = "default";
+        this.worldName = "world";
+        this.prefix = "pr.";
+        this.suffix = "su.";
+        this.underProtection = false;
+        this.objectiveTypeName = "none";
+    }
+
     private String name;
+    private String parentTypeString;
     private String worldName;
     private String prefix;
     private String suffix;
@@ -18,20 +29,15 @@ public class TerritoryType {
 
     public TerritoryType(ConfigurationSection section) {
         this.name = section.getName();
-        this.worldName = section.getString("world");
-        this.prefix = section.getString("prefix");
-        this.suffix = section.getString("suffix");
-        this.underProtection = section.getBoolean("protected", false);
-        this.objectiveTypeName = section.getString("objective.type");
-    }
+        this.parentTypeString = section.getString("type");
+        TerritoryType parentType = TerritoryManager.getTerritoryManager().getTerritoryTypeMap().get(this.parentTypeString);
 
-    public TerritoryType() {
-        this.name = "default";
-        this.worldName = "world";
-        this.prefix = "pr.";
-        this.suffix = "su.";
-        this.underProtection = false;
-        this.objectiveTypeName = "none";
+        this.worldName = section.getString("world", parentType !=  null ? parentType.getWorldName() : null);
+        this.prefix = section.getString("prefix", parentType !=  null ? parentType.getPrefix() : null);
+        this.suffix = section.getString("suffix", parentType !=  null ? parentType.getSuffix() : null);
+        this.underProtection = section.getBoolean("protected", parentType != null && parentType.isUnderProtection());
+        this.objectiveTypeName = section.getString("objective.type", parentType !=  null ? parentType.getObjectiveTypeName() : null);
+        this.attackRequirements = new AttackRequirements(section.getConfigurationSection("attack-requirements"));
     }
 
     public String getName() {

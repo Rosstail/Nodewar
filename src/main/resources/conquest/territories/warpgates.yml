@@ -1,0 +1,6 @@
+---
+indar-northern-warpgate:
+  display: Indar Northern
+  type: warpgate
+  regions:
+    - indar-northern-warpgate

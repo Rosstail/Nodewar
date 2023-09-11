@@ -1,41 +1,169 @@
 outpost: # basic configurations
   prefix: "-o-" # none
-  world: "amerish"
+  world: "indar"
   suffix: "-o-" # none
+  objective:
+    type: siege
+    maximum-health: 40
+    rewards:
+      minimum-score-requirement: 20
+      score-multiplier: 0.05
+      maximum-score-multiplier: 3
+      team-reward-index:
+        - '1': 2
+          '2': 1.5
+          '3': 1.25
+          default: 1
+      commands:
+        - default:
+            global-reward-commands:
+              - broadcast [team_display]&r emerged victorious at [territory_display]&r
+                !
+          attacker-team-winner:
+            requirements:
+              team-position:
+                - '1'
+              team-role: attacker
+            per-participant-team-reward-commands:
+              - teammessage [team_1_name] Congratulation, [team_display]&r, [territory_display]&r
+                is ours !
+            per-participant-reward-commands:
+              - give [player] diamond [evalint_(13*[player_score]+[team_reward-index])]
+              - give [player] emerald [evalint_(26*[player_score]+[team_reward-index])]
+              - give [player] golden_nugget [evalint_(39*[player_score]+[team_reward-index])]
+          defender-team-winner:
+            requirements:
+              team-position:
+                - '1'
+              team-role: defender
+            per-participant-team-reward-commands:
+              - teammessage [team_name] Good job, [team_display]&r, our territory prevail.
+            per-participant-reward-commands:
+              - give [player] diamond [evalint_(10*[player_score]+[team_reward-index])]
+              - give [player] emerald [evalint_(20*[player_score]+[team_reward-index])]
+              - give [player] golden_nugget [evalint_(30*[player_score]+[team_reward-index])]
+          lose-team-attacker:
+            requirements:
+              team-position:
+                - "!1"
+                - default
+              team-role: attacker
+            per-participant-team-reward-commands:
+              - teammessage [team_name] Gaaah... [team_display]&r has been captured by
+                [territory_team_display] !
+            per-participant-reward-commands:
+              - give [player] golden_nugget [evalint_(32*[player_score]+[team_reward-index])]
+          lose-team-defender:
+            requirements:
+              team-position:
+                - "!1"
+                - default
+              team-role: defender
+            per-participant-team-reward-commands:
+              - teammessage [team_name] Damned. [territory_display]&r has been lost to
+                [territory_team_display] !
+            per-participant-reward-commands:
+              - give [player] golden_nugget [evalint_(30*[player_score]+[team_reward-index])]
   protected: false
+  attack-requirements:
+    lattice-network:
+      types:
+        - warpgate
 
 large-outpost: # basic configurations
   prefix: "-lo-" # none
-  world: "amerish"
+  world: "indar"
   suffix: "-lo-" # none
   protected: false
 
 tower: # basic configurations
   prefix: "-T-" # none
-  world: "amerish"
+  world: "indar"
   suffix: "-T-" # none
   protected: false
 
 facility: # basic configurations
   prefix: "-F-" # none
-  world: "amerish"
+  world: "indar"
   suffix: "-F-" # none
   protected: false
 
 tech-plant: # basic configurations
   prefix: "-TP-" # none
-  world: "amerish"
+  world: "indar"
   suffix: "-TP-" # none
   protected: false
 
 biolab: # basic configurations
   prefix: "-b-" # none
-  world: "amerish"
+  world: "indar"
   suffix: "-b-" # none
   protected: false
+  objective:
+    type: siege
+    maximum-health: 100
+    rewards:
+      minimum-score-requirement: 20
+      score-multiplier: 0.05
+      maximum-score-multiplier: 3
+      team-reward-index:
+        - '1': 2
+          '2': 1.5
+          '3': 1.25
+          default: 1
+      commands:
+        - default:
+            global-reward-commands:
+              - broadcast [team_display]&r emerged victorious at [territory_display]&r
+                !
+          attacker-team-winner:
+            requirements:
+              team-position:
+                - '1'
+              team-role: attacker
+            per-participant-team-reward-commands:
+              - teammessage [team_1_name] Congratulation, [team_display]&r, [territory_display]&r
+                is ours !
+            per-participant-reward-commands:
+              - give [player] diamond [evalint_(13*[player_score]+[team_reward-index])]
+              - give [player] emerald [evalint_(26*[player_score]+[team_reward-index])]
+              - give [player] golden_nugget [evalint_(39*[player_score]+[team_reward-index])]
+          defender-team-winner:
+            requirements:
+              team-position:
+                - '1'
+              team-role: defender
+            per-participant-team-reward-commands:
+              - teammessage [team_name] Good job, [team_display]&r, our territory prevail.
+            per-participant-reward-commands:
+              - give [player] diamond [evalint_(10*[player_score]+[team_reward-index])]
+              - give [player] emerald [evalint_(20*[player_score]+[team_reward-index])]
+              - give [player] golden_nugget [evalint_(30*[player_score]+[team_reward-index])]
+          lose-team-attacker:
+            requirements:
+              team-position:
+                - "!1"
+                - default
+              team-role: attacker
+            per-participant-team-reward-commands:
+              - teammessage [team_name] Gaaah... [team_display]&r has been captured by
+                [territory_team_display] !
+            per-participant-reward-commands:
+              - give [player] golden_nugget [evalint_(32*[player_score]+[team_reward-index])]
+          lose-team-defender:
+            requirements:
+              team-position:
+                - "!1"
+                - default
+              team-role: defender
+            per-participant-team-reward-commands:
+              - teammessage [team_name] Damned. [territory_display]&r has been lost to
+                [territory_team_display] !
+            per-participant-reward-commands:
+              - give [player] golden_nugget [evalint_(30*[player_score]+[team_reward-index])]
 
 warpgate: # basic configurations
   prefix: "-W-" # none
-  world: "amerish"
+  world: "indar"
   suffix: "-W-" # none
   protected: true

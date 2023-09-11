@@ -1,10 +1,9 @@
 package fr.rosstail.nodewar.territory;
 
 import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.util.HashMap;
@@ -39,8 +38,8 @@ public class TerritoryManager {
                     yamlConfiguration.getKeys(false).forEach(s -> {
                         ConfigurationSection section = yamlConfiguration.getConfigurationSection(s);
                         Territory territory = new Territory(section);
-                        territory.printModel();
-                        territoryMap.put(territory.getName(), territory);
+                        territory.getTerritoryModel().printModel();
+                        territoryMap.put(territory.getTerritoryModel().getName(), territory);
                     });
                 }
             }

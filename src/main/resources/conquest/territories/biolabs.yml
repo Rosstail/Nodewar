@@ -1,0 +1,31 @@
+---
+saurva-biolab:
+  display: Saurva
+  type: biolab
+  regions:
+    - saurva-biolab
+  subterritories:
+    - saurva-biolab-spawn-east
+    - saurva-biolab-spawn-west
+    - saurva-biolab-capture-a
+    - saurva-biolab-capture-b
+    - saurva-biolab-capture-c
+  objective:
+    capture-points:
+      - saurva-bio-lab-capture-a:
+          attacker-health-point-per-second: -1
+          defender-health-point-per-second: 1
+        saurva-bio-lab-capture-b:
+          attacker-health-point-per-second: -1
+          defender-health-point-per-second: 1
+        saurva-bio-lab-capture-c:
+          attacker-health-point-per-second: -1
+          defender-health-point-per-second: 1
+  attack-requirements:
+    required-territories:
+      - first:
+          - saurva-overflow-depot
+      - second:
+          - saurva-data-storage
+      - third:
+          - saurva-south-fortress

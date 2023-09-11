@@ -1,0 +1,14 @@
+---
+saurva-data-storage:
+  display: Saurva data storage
+  type: outpost
+  regions:
+    - saurva-data-storage
+  subterritories:
+    - saurva-data-storage-spawn
+    - saurva-data-storage-capture-a
+  objective:
+    capture-points:
+      - saurva-data-storage-capture-a:
+          attacker-health-point-per-second: -1
+          defender-health-point-per-second: 1
