@@ -22,10 +22,13 @@ saurva-biolab:
           attacker-health-point-per-second: -1
           defender-health-point-per-second: 1
   attack-requirements:
+    territory-types-amount:
+      first:
+        warpgate: 12345
     required-territories:
-      - first:
-          - saurva-overflow-depot
-      - second:
-          - saurva-data-storage
-      - third:
-          - saurva-south-fortress
+      first:
+        - saurva-overflow-depot
+      second:
+        - saurva-data-storage
+      third:
+        - saurva-south-fortress

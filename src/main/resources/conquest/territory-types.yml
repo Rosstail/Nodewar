@@ -69,6 +69,9 @@ outpost: # basic configurations
     lattice-network:
       types:
         - warpgate
+    territory-types-amount:
+      first:
+        warpgate: 1
 
 large-outpost: # basic configurations
   prefix: "-lo-" # none
@@ -161,6 +164,13 @@ biolab: # basic configurations
                 [territory_team_display] !
             per-participant-reward-commands:
               - give [player] golden_nugget [evalint_(30*[player_score]+[team_reward-index])]
+  attack-requirements:
+    lattice-network:
+      types:
+        - warpgate
+    territory-types-amount:
+      first:
+        warpgate: 9
 
 warpgate: # basic configurations
   prefix: "-W-" # none

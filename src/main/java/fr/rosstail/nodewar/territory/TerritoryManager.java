@@ -38,7 +38,6 @@ public class TerritoryManager {
                     yamlConfiguration.getKeys(false).forEach(s -> {
                         ConfigurationSection section = yamlConfiguration.getConfigurationSection(s);
                         Territory territory = new Territory(section);
-                        territory.getTerritoryModel().printModel();
                         territoryMap.put(territory.getTerritoryModel().getName(), territory);
                     });
                 }

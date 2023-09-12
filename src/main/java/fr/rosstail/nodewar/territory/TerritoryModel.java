@@ -107,27 +107,4 @@ public class TerritoryModel {
     public void setAttackRequirementsModel(AttackRequirementsModel attackRequirementsModel) {
         this.attackRequirementsModel = attackRequirementsModel;
     }
-
-    public void printModel() {
-        StringBuilder message = new StringBuilder(getName() + " : " +
-                "\n > prefix: " + getPrefix() +  " | display: " + getDisplay() + " | suffix: " + getSuffix() +
-                "\n > world: " + getWorldName() +
-                "\n > type: " + getTypeName() +
-                "\n > owner: " + getOwnerName());
-
-        if (!getRegionStringList().isEmpty()) {
-            message.append("\n > regions:");
-            for (String s : getRegionStringList()) {
-                message.append("\n   - ").append(s);
-            }
-        }
-
-        if (!getSubterritoryList().isEmpty()) {
-            message.append("\n > subterritories:");
-            for (String s : getSubterritoryList()) {
-                message.append("\n   - ").append(s);
-            }
-        }
-        AdaptMessage.print(message.toString(), AdaptMessage.prints.OUT);
-    }
 }

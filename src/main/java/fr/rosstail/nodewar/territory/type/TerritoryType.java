@@ -38,9 +38,9 @@ public class TerritoryType {
         this.underProtection = section.getBoolean("protected", parentType != null && parentType.isUnderProtection());
         this.objectiveTypeName = section.getString("objective.type", parentType !=  null ? parentType.getObjectiveTypeName() : null);
         if (parentType != null) {
-            attackRequirementsModel = new AttackRequirementsModel(new AttackRequirementsModel(section), parentType.attackRequirementsModel);
+            attackRequirementsModel = new AttackRequirementsModel(new AttackRequirementsModel(section.getConfigurationSection("attack-requirements")), parentType.attackRequirementsModel);
         } else {
-            attackRequirementsModel = new AttackRequirementsModel(section);
+            attackRequirementsModel = new AttackRequirementsModel(section.getConfigurationSection("attack-requirements"));
         }
 
     }

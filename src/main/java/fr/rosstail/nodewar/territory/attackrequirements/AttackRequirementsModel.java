@@ -16,6 +16,9 @@ public class AttackRequirementsModel implements Cloneable {
     private Map<String, List<String>> territoryNameListMap = new HashMap<>();
 
     public AttackRequirementsModel(ConfigurationSection section) {
+        if (section == null) {
+            return;
+        }
         ConfigurationSection latticeSection = section.getConfigurationSection("lattice-network");
         ConfigurationSection territoryTypeAmountSection = section.getConfigurationSection("territory-types-amount");
         ConfigurationSection requiredTerritoriesSection = section.getConfigurationSection("required-territories");
@@ -43,7 +46,6 @@ public class AttackRequirementsModel implements Cloneable {
             requiredTerritoriesSection.getKeys(false).forEach(s -> {
                 territoryNameListMap.put(s, requiredTerritoriesSection.getStringList(s));
             });
-
         }
     }
 
