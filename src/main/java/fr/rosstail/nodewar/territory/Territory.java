@@ -6,7 +6,10 @@ import fr.rosstail.nodewar.team.Team;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.objective.Objective;
+import fr.rosstail.nodewar.territory.objective.types.ObjectiveControlPoint;
+import fr.rosstail.nodewar.territory.objective.types.ObjectiveKingOfTheHill;
 import fr.rosstail.nodewar.territory.objective.types.ObjectiveSiege;
+import fr.rosstail.nodewar.territory.objective.types.ObjectiveSiegeModel;
 import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -52,17 +55,26 @@ public class Territory {
         territoryModel.setSuffix(section.getString("suffix", territoryType.getSuffix()));
         territoryModel.setUnderProtection(section.getBoolean("protected", territoryType.isUnderProtection()));
 
+        ConfigurationSection objectiveSection = section.getConfigurationSection("objective");
         territoryModel.setObjectiveTypeName(section.getString("objective.name", territoryType.getObjectiveTypeName()));
+
         if (territoryModel.getObjectiveTypeName() != null) {
             switch (territoryModel.getObjectiveTypeName()) {
                 case "siege":
-                    ObjectiveSiege objectiveSiege = new ObjectiveSiege();
+                    ObjectiveSiege objectiveSiege = new ObjectiveSiege(new ObjectiveSiegeModel(objectiveSection), (ObjectiveSiegeModel) territoryType.getObjectiveModel());
                     setObjective(objectiveSiege);
                     break;
                 case "control-point":
-                    Objective objective1 = new Objective();
-                    setObjective(objective1);
+                    ObjectiveControlPoint objectiveControlPoint = new ObjectiveControlPoint();
+                    setObjective(objectiveControlPoint);
+                    break;
+                case "koth":
+                    ObjectiveKingOfTheHill objectiveKingOfTheHill = new ObjectiveKingOfTheHill();
+                    setObjective(objectiveKingOfTheHill);
+                    break;
             }
+        } else {
+            setObjective(new Objective());
         }
 
         ConfigurationSection attackRequirementSection = section.getConfigurationSection("attack-requirements");

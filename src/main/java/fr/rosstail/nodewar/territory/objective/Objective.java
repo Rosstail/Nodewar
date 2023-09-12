@@ -14,4 +14,12 @@ public class Objective {
     public void setReward(Reward reward) {
         this.reward = reward;
     }
+
+    public ObjectiveModel getObjectiveModel() {
+        return objectiveModel;
+    }
+
+    public void setObjectiveModel(ObjectiveModel objectiveModel) {
+        this.objectiveModel = objectiveModel;
+    }
 }

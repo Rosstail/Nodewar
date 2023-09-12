@@ -11,12 +11,12 @@ the-crown:
     - the-crown-control-c
   objective:
     control-points:
-      - the-crown-control-a:
+      the-crown-control-a:
           attacker-health-point-per-second: -1
           defender-health-point-per-second: 1
-      - the-crown-control-b:
+      the-crown-control-b:
           attacker-health-point-per-second: -1
           defender-health-point-per-second: 1
-      - the-crown-control-c:
+      the-crown-control-c:
           attacker-health-point-per-second: -1
           defender-health-point-per-second: 1

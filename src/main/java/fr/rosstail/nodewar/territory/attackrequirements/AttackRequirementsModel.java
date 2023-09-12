@@ -4,11 +4,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class AttackRequirementsModel implements Cloneable {
     private List<String> latticeNetworkStringList = new ArrayList<>();

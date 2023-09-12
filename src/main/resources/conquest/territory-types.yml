@@ -10,10 +10,10 @@ outpost: # basic configurations
       score-multiplier: 0.05
       maximum-score-multiplier: 3
       team-reward-index:
-        - '1': 2
-          '2': 1.5
-          '3': 1.25
-          default: 1
+        - 'winner-attacker': 2
+          'winner-defender': 1.5
+          'looser-attacker': 1.25
+          'looser-defender': 1
       commands:
         - default:
             global-reward-commands:

@@ -5,6 +5,9 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
+import fr.rosstail.nodewar.territory.objective.Objective;
+import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
+import fr.rosstail.nodewar.territory.objective.types.*;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class TerritoryType {
@@ -25,6 +28,7 @@ public class TerritoryType {
     private String suffix;
     private boolean underProtection;
     private String objectiveTypeName;
+    private ObjectiveModel objectiveModel;
     private AttackRequirementsModel attackRequirementsModel;
 
     public TerritoryType(ConfigurationSection section) {
@@ -37,6 +41,28 @@ public class TerritoryType {
         this.suffix = section.getString("suffix", parentType !=  null ? parentType.getSuffix() : null);
         this.underProtection = section.getBoolean("protected", parentType != null && parentType.isUnderProtection());
         this.objectiveTypeName = section.getString("objective.type", parentType !=  null ? parentType.getObjectiveTypeName() : null);
+
+        ConfigurationSection objectiveSection = section.getConfigurationSection("objective");
+
+        if (getObjectiveTypeName() != null) {
+            switch (getObjectiveTypeName()) {
+                case "siege":
+                    ObjectiveSiegeModel objectiveSiegeModel = new ObjectiveSiegeModel(objectiveSection);
+                    setObjectiveModel(objectiveSiegeModel);
+                    break;
+                case "control-point":
+                    ObjectiveControlPointModel objectiveControlPointModel = new ObjectiveControlPointModel(objectiveSection);
+                    setObjectiveModel(objectiveControlPointModel);
+                    break;
+                case "koth":
+                    //ObjectiveKingOfTheHillModel objectiveKingOfTheHillModel = new ObjectiveKingOfTheHill();
+                    //setObjectiveModel(objectiveKingOfTheHillModel);
+                    break;
+            }
+        } else {
+            setObjectiveModel(new ObjectiveModel(objectiveSection));
+        }
+
         if (parentType != null) {
             attackRequirementsModel = new AttackRequirementsModel(new AttackRequirementsModel(section.getConfigurationSection("attack-requirements")), parentType.attackRequirementsModel);
         } else {
@@ -87,6 +113,14 @@ public class TerritoryType {
 
     public void setObjectiveTypeName(String objectiveTypeName) {
         this.objectiveTypeName = objectiveTypeName;
+    }
+
+    public ObjectiveModel getObjectiveModel() {
+        return objectiveModel;
+    }
+
+    public void setObjectiveModel(ObjectiveModel objectiveModel) {
+        this.objectiveModel = objectiveModel;
     }
 
     public AttackRequirementsModel getAttackRequirementsModel() {
