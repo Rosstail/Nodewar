@@ -51,17 +51,17 @@ public class AttackRequirementsModel implements Cloneable {
 
     /**
      * Setup Merge two attack requirement models in order to create. Base parent, override by territory
-     * @param territoryModel
-     * @param parentModel
+     * @param childAtkReqModel
+     * @param parentAtkReqModel
      */
-    public AttackRequirementsModel(AttackRequirementsModel territoryModel, @NotNull AttackRequirementsModel parentModel) {
-        AttackRequirementsModel clonedParentModel = parentModel.clone();
+    public AttackRequirementsModel(AttackRequirementsModel childAtkReqModel, @NotNull AttackRequirementsModel parentAtkReqModel) {
+        AttackRequirementsModel clonedParentModel = parentAtkReqModel.clone();
         List<String> latticeNetworkStringSet = new ArrayList<>(clonedParentModel.latticeNetworkStringList);
         Map<String, Map<String, Integer>> territoryTypeNameAmountMap = new HashMap<>(clonedParentModel.getTerritoryTypeNameAmountMap());
         Map<String, List<String>> territoryNameListMap = new HashMap<>(clonedParentModel.getTerritoryNameListMap());
 
-        if (territoryModel != null) {
-            AttackRequirementsModel clonedTerritoryModel = territoryModel.clone();
+        if (childAtkReqModel != null) {
+            AttackRequirementsModel clonedTerritoryModel = childAtkReqModel.clone();
             for (String element : clonedTerritoryModel.latticeNetworkStringList) {
                 if (!element.startsWith("!")) {
                     latticeNetworkStringSet.add(element);

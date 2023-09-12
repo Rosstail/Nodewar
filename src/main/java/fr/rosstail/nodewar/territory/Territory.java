@@ -28,7 +28,7 @@ public class Territory {
 
     private Objective objective;
 
-    private AttackRequirements attackRequirements;
+    private final AttackRequirements attackRequirements;
 
     Territory(ConfigurationSection section) {
         territoryModel = new TerritoryModel();
@@ -59,7 +59,7 @@ public class Territory {
                     ObjectiveSiege objectiveSiege = new ObjectiveSiege();
                     setObjective(objectiveSiege);
                     break;
-                case "capture-point":
+                case "control-point":
                     Objective objective1 = new Objective();
                     setObjective(objective1);
             }
@@ -67,9 +67,7 @@ public class Territory {
 
         ConfigurationSection attackRequirementSection = section.getConfigurationSection("attack-requirements");
         AttackRequirementsModel sectionAttackRequirementsModel = new AttackRequirementsModel(attackRequirementSection);
-
         attackRequirements = new AttackRequirements(sectionAttackRequirementsModel, territoryType.getAttackRequirementsModel());
-        print();
     }
 
     public TerritoryModel getTerritoryModel() {
@@ -133,9 +131,6 @@ public class Territory {
             List<Territory> territoryList = entry.getValue();
             attackRequirementsMessage.append("\n    * ").append(s).append(":");
 
-            attackRequirements.getAttackRequirementsModel().getTerritoryNameListMap().get(s).forEach(s1 -> {
-                attackRequirementsMessage.append("\n      - ").append("jambon " + s1);
-            });
             for (Territory territory : territoryList) {
                 attackRequirementsMessage.append("\n      - ").append(territory.getTerritoryModel().getName());
             }

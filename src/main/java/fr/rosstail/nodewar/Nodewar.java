@@ -112,12 +112,16 @@ public class Nodewar extends JavaPlugin implements Listener {
 
         TerritoryManager.getTerritoryManager().loadTerritoryTypeConfig();
         TerritoryManager.getTerritoryManager().loadTerritoryConfigs("plugins/" + getName() + "/conquest/territories");
+        TerritoryManager.getTerritoryManager().getTerritoryMap().forEach((s, territory) -> territory.print());
     }
 
     private void initDefaultConfigs() {
         try {
             FileResourcesUtils.generateYamlFile("conquest", this);
             FileResourcesUtils.generateYamlFile("conquest/territories", this);
+            FileResourcesUtils.generateYamlFile("conquest/territories/indar", this);
+            FileResourcesUtils.generateYamlFile("conquest/territories/indar/facilities", this);
+            FileResourcesUtils.generateYamlFile("conquest/territories/indar/outposts", this);
             FileResourcesUtils.generateYamlFile("gui", this);
             FileResourcesUtils.generateYamlFile("lang", this);
         } catch (IOException e) {

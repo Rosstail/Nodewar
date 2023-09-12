@@ -7,18 +7,18 @@ saurva-biolab:
   subterritories:
     - saurva-biolab-spawn-east
     - saurva-biolab-spawn-west
-    - saurva-biolab-capture-a
-    - saurva-biolab-capture-b
-    - saurva-biolab-capture-c
+    - saurva-biolab-control-a
+    - saurva-biolab-control-b
+    - saurva-biolab-control-c
   objective:
-    capture-points:
-      - saurva-bio-lab-capture-a:
+    control-points:
+      - saurva-bio-lab-control-a:
           attacker-health-point-per-second: -1
           defender-health-point-per-second: 1
-        saurva-bio-lab-capture-b:
+        saurva-bio-lab-control-b:
           attacker-health-point-per-second: -1
           defender-health-point-per-second: 1
-        saurva-bio-lab-capture-c:
+        saurva-bio-lab-control-c:
           attacker-health-point-per-second: -1
           defender-health-point-per-second: 1
   attack-requirements:

@@ -73,11 +73,18 @@ outpost: # basic configurations
       first:
         warpgate: 1
 
+small-outpost: # basic configurations
+  prefix: "-so-"
+  suffix: "-so-"
+  type: outpost
+
 large-outpost: # basic configurations
-  prefix: "-lo-" # none
-  world: "indar"
-  suffix: "-lo-" # none
-  protected: false
+  prefix: "-lo-"
+  suffix: "-lo-"
+  type: outpost
+  objective:
+    maximum-health: 100
+
 
 tower: # basic configurations
   prefix: "-T-" # none
@@ -85,17 +92,23 @@ tower: # basic configurations
   suffix: "-T-" # none
   protected: false
 
+
 facility: # basic configurations
   prefix: "-F-" # none
   world: "indar"
   suffix: "-F-" # none
   protected: false
 
-tech-plant: # basic configurations
-  prefix: "-TP-" # none
-  world: "indar"
-  suffix: "-TP-" # none
-  protected: false
+amp-station:
+  prefix: "-AMP-"
+  suffix: "-Station-"
+  type: facility
+
+tech-plant:
+  prefix: "-TP-"
+  suffix: "-Tech Plant-"
+  type: facility
+
 
 biolab: # basic configurations
   prefix: "-b-" # none
@@ -171,6 +184,7 @@ biolab: # basic configurations
     territory-types-amount:
       first:
         warpgate: 9
+
 
 warpgate: # basic configurations
   prefix: "-W-" # none

@@ -1,4 +1,5 @@
 package fr.rosstail.nodewar.territory.objective.reward;
 
-public class Reward extends RewardModel {
+public class Reward {
+    private RewardModel rewardModel;
 }

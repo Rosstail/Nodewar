@@ -2,8 +2,9 @@ package fr.rosstail.nodewar.territory.objective;
 
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
 
-public class Objective extends ObjectiveModel {
+public class Objective {
 
+    private ObjectiveModel objectiveModel;
     private Reward reward;
 
     public Reward getReward() {
