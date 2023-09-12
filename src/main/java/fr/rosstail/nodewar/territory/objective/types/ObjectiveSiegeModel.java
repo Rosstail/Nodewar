@@ -15,18 +15,20 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
 
     public ObjectiveSiegeModel(ConfigurationSection section) {
         super(section);
+        if (section != null) {
 
-        String maxHealthStr = section.getString("max-health", "0");
-        this.maxHealthStr = maxHealthStr.matches("\\d+") ? maxHealthStr : "0";
+            String maxHealthStr = section.getString("max-health", "0");
+            this.maxHealthStr = maxHealthStr.matches("\\d+") ? maxHealthStr : "0";
 
-        if (section.isConfigurationSection("control-points")) {
-            ConfigurationSection controlConfigSection = section.getConfigurationSection("control-points");
-            controlConfigSection.getKeys(false).forEach(s -> {
-                ConfigurationSection controlSection = controlConfigSection.getConfigurationSection(s);
-                controlPointStringList.add(s);
-                damagePerSecondControlPointIntList.add(controlSection.getInt("attacker-health-point-per-second", 0));
-                regenPerSecondControlPointIntList.add(controlSection.getInt("defender-health-point-per-second", 0));
-            });
+            if (section.isConfigurationSection("control-points")) {
+                ConfigurationSection controlConfigSection = section.getConfigurationSection("control-points");
+                controlConfigSection.getKeys(false).forEach(s -> {
+                    ConfigurationSection controlSection = controlConfigSection.getConfigurationSection(s);
+                    controlPointStringList.add(s);
+                    damagePerSecondControlPointIntList.add(controlSection.getInt("attacker-health-point-per-second", 0));
+                    regenPerSecondControlPointIntList.add(controlSection.getInt("defender-health-point-per-second", 0));
+                });
+            }
         }
     }
 
