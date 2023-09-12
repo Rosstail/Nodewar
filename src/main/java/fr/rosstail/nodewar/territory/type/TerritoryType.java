@@ -4,6 +4,7 @@ package fr.rosstail.nodewar.territory.type;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
+import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class TerritoryType {
@@ -24,8 +25,7 @@ public class TerritoryType {
     private String suffix;
     private boolean underProtection;
     private String objectiveTypeName;
-
-    private AttackRequirements attackRequirements;
+    private AttackRequirementsModel attackRequirementsModel;
 
     public TerritoryType(ConfigurationSection section) {
         this.name = section.getName();
@@ -37,7 +37,12 @@ public class TerritoryType {
         this.suffix = section.getString("suffix", parentType !=  null ? parentType.getSuffix() : null);
         this.underProtection = section.getBoolean("protected", parentType != null && parentType.isUnderProtection());
         this.objectiveTypeName = section.getString("objective.type", parentType !=  null ? parentType.getObjectiveTypeName() : null);
-        this.attackRequirements = new AttackRequirements(section.getConfigurationSection("attack-requirements"));
+        if (parentType != null) {
+            attackRequirementsModel = new AttackRequirementsModel(new AttackRequirementsModel(section), parentType.attackRequirementsModel);
+        } else {
+            attackRequirementsModel = new AttackRequirementsModel(section);
+        }
+
     }
 
     public String getName() {
@@ -84,12 +89,12 @@ public class TerritoryType {
         this.objectiveTypeName = objectiveTypeName;
     }
 
-    public AttackRequirements getAttackRequirements() {
-        return attackRequirements;
+    public AttackRequirementsModel getAttackRequirementsModel() {
+        return attackRequirementsModel;
     }
 
-    public void setAttackRequirements(AttackRequirements attackRequirements) {
-        this.attackRequirements = attackRequirements;
+    public void setAttackRequirementsModel(AttackRequirementsModel attackRequirementsModel) {
+        this.attackRequirementsModel = attackRequirementsModel;
     }
 
     public void printModel() {

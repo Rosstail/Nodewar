@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.territory;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.rosstail.nodewar.team.Team;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
+import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.types.ObjectiveSiege;
 import fr.rosstail.nodewar.territory.type.TerritoryType;
@@ -64,15 +65,9 @@ public class Territory {
         }
 
         ConfigurationSection attackRequirementSection = section.getConfigurationSection("attack-requirements");
-        AttackRequirements territoryTypeRequirement = territoryType.getAttackRequirements().clone();
+        AttackRequirementsModel sectionAttackRequirementsModel = attackRequirementSection != null ? new AttackRequirementsModel(attackRequirementSection) : null;
 
-        if (attackRequirementSection != null) {
-            attackRequirements = new AttackRequirements(attackRequirementSection);
-        } else if (territoryTypeRequirement != null) {
-            attackRequirements = territoryTypeRequirement.clone();
-            System.out.println(territoryTypeRequirement.equals(territoryType.getAttackRequirements()));
-            attackRequirements = territoryTypeRequirement;
-        }
+        attackRequirements = new AttackRequirements(sectionAttackRequirementsModel, territoryType.getAttackRequirementsModel());
     }
 
     public TerritoryModel getTerritoryModel() {
