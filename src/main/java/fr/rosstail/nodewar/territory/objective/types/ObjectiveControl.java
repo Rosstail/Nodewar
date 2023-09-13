@@ -1,17 +1,13 @@
 package fr.rosstail.nodewar.territory.objective.types;
 
-import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.objective.Objective;
-
-import java.util.List;
-import java.util.Map;
 
 public class ObjectiveControl extends Objective {
 
-    float attackerRatio;
-    boolean needNeutralize;
-    int maxHealth;
-    int currentHealth;
+    private float attackerRatio;
+    private boolean needNeutralize;
+    private int maxHealth;
+    private int currentHealth;
 
     ObjectiveControlModel objectiveControlModel;
 
@@ -26,6 +22,38 @@ public class ObjectiveControl extends Objective {
 
         this.maxHealth = Integer.parseInt(this.objectiveControlModel.getMaxHealthStr());
         this.currentHealth = maxHealth;
+    }
+
+    public float getAttackerRatio() {
+        return attackerRatio;
+    }
+
+    public void setAttackerRatio(float attackerRatio) {
+        this.attackerRatio = attackerRatio;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public void setCurrentHealth(int currentHealth) {
+        this.currentHealth = currentHealth;
+    }
+
+    public boolean isNeedNeutralize() {
+        return needNeutralize;
+    }
+
+    public void setNeedNeutralize(boolean needNeutralize) {
+        this.needNeutralize = needNeutralize;
     }
 
     @Override
