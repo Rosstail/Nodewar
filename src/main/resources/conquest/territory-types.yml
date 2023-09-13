@@ -1,3 +1,21 @@
+control-point:
+  prefix: "-cp-"
+  world: "indar"
+  suffix: "-cp-"
+  objective:
+    type: control
+    attacker-ratio: 1
+    maximum-health: 10
+    neutralize: true
+  protected: false
+  attack-requirements:
+    lattice-network:
+      types:
+        - warpgate
+    territory-types-amount:
+      first:
+        warpgate: 1
+
 outpost: # basic configurations
   prefix: "-o-" # none
   world: "indar"

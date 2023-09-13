@@ -12,13 +12,13 @@ saurva-biolab:
     - saurva-biolab-control-c
   objective:
     control-points:
-      - saurva-bio-lab-control-a:
+      - saurva-biolab-control-a:
           damage-per-second: 1
           regen-per-second: 1
-        saurva-bio-lab-control-b:
+        saurva-biolab-control-b:
           damage-per-second: 1
           regen-per-second: 1
-        saurva-bio-lab-control-c:
+        saurva-biolab-control-c:
           damage-per-second: 1
           regen-per-second: 1
   attack-requirements:
@@ -32,3 +32,21 @@ saurva-biolab:
         - saurva-data-storage
       third:
         - saurva-south-fortress
+
+saurva-biolab-control-a:
+  display: Saurva - A
+  type: control-point
+  regions:
+    - saurva-biolab-control-a
+
+saurva-biolab-control-b:
+  display: Saurva - B
+  type: control-point
+  regions:
+    - saurva-biolab-control-b
+
+saurva-biolab-control-c:
+  display: Saurva - C
+  type: control-point
+  regions:
+    - saurva-biolab-control-c

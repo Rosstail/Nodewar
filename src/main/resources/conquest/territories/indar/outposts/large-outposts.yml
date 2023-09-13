@@ -23,51 +23,18 @@ the-crown:
 
 the-crown-control-a:
   display: The Crown - A
-  type: large-outpost
+  type: control-point
   regions:
     - the-crown-control-a
-  objective:
-    control-points:
-      the-crown-control-a:
-        damage-per-second: 1
-        regen-per-second: 1
-      the-crown-control-b:
-        damage-per-second: 1
-        regen-per-second: 1
-      the-crown-control-c:
-        damage-per-second: 1
-        regen-per-second: 1
 
 the-crown-control-b:
   display: The Crown - B
-  type: large-outpost
+  type: control-point
   regions:
     - the-crown-control-b
-  objective:
-    control-points:
-      the-crown-control-a:
-        damage-per-second: 1
-        regen-per-second: 1
-      the-crown-control-b:
-        damage-per-second: 1
-        regen-per-second: 1
-      the-crown-control-c:
-        damage-per-second: 1
-        regen-per-second: 1
 
 the-crown-control-c:
   display: The Crown - C
-  type: large-outpost
+  type: control-point
   regions:
     - the-crown-control-c
-  objective:
-    control-points:
-      the-crown-control-a:
-        damage-per-second: 1
-        regen-per-second: 1
-      the-crown-control-b:
-        damage-per-second: 1
-        regen-per-second: 1
-      the-crown-control-c:
-        damage-per-second: 1
-        regen-per-second: 1

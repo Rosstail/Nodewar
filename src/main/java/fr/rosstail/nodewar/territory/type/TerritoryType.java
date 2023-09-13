@@ -3,9 +3,7 @@ package fr.rosstail.nodewar.territory.type;
 
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.TerritoryManager;
-import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
-import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
 import fr.rosstail.nodewar.territory.objective.types.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -57,9 +55,9 @@ public class TerritoryType {
                     }
                     setObjectiveModel(objectiveSiegeModel);
                     break;
-                case "control-point":
-                    ObjectiveControlPointModel objectiveControlPointModel = new ObjectiveControlPointModel(objectiveSection);
-                    setObjectiveModel(objectiveControlPointModel);
+                case "control":
+                    ObjectiveControlModel objectiveControlModel = new ObjectiveControlModel(objectiveSection);
+                    setObjectiveModel(objectiveControlModel);
                     break;
                 case "koth":
                     //ObjectiveKingOfTheHillModel objectiveKingOfTheHillModel = new ObjectiveKingOfTheHill();

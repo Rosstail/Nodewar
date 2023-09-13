@@ -6,10 +6,7 @@ import fr.rosstail.nodewar.team.Team;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.objective.Objective;
-import fr.rosstail.nodewar.territory.objective.types.ObjectiveControlPoint;
-import fr.rosstail.nodewar.territory.objective.types.ObjectiveKingOfTheHill;
-import fr.rosstail.nodewar.territory.objective.types.ObjectiveSiege;
-import fr.rosstail.nodewar.territory.objective.types.ObjectiveSiegeModel;
+import fr.rosstail.nodewar.territory.objective.types.*;
 import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -34,7 +31,6 @@ public class Territory {
     private final AttackRequirements attackRequirements;
 
     Territory(ConfigurationSection section) {
-        System.out.println(section.getName());
         territoryModel = new TerritoryModel();
         territoryModel.setName(section.getName());
 
@@ -65,11 +61,11 @@ public class Territory {
                 case "siege":
                     setObjective(new ObjectiveSiege(new ObjectiveSiegeModel(objectiveSection), (ObjectiveSiegeModel) territoryType.getObjectiveModel()));
                     break;
-                case "control-point":
-                    setObjective(new ObjectiveControlPoint());
+                case "control":
+                    setObjective(new ObjectiveControl(new ObjectiveControlModel(objectiveSection), (ObjectiveControlModel) territoryType.getObjectiveModel()));
                     break;
                 case "koth":
-                    setObjective(new ObjectiveKingOfTheHill());
+                    setObjective(new ObjectiveKoth());
                     break;
             }
         } else {

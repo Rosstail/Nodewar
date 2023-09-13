@@ -15,11 +15,6 @@ saurva-data-storage:
 
 saurva-data-storage-control-a:
   display: Saurva data storage - A
-  type: small-outpost
+  type: control-point
   regions:
     - saurva-data-storage-control-a
-  objective:
-    control-points:
-      saurva-data-storage-control-a:
-        damage-per-second: 1
-        regen-per-second: 1
