@@ -36,18 +36,25 @@ public class TerritoryType {
         this.parentTypeString = section.getString("type");
         TerritoryType parentType = TerritoryManager.getTerritoryManager().getTerritoryTypeMap().get(this.parentTypeString);
 
-        this.worldName = section.getString("world", parentType !=  null ? parentType.getWorldName() : null);
-        this.prefix = section.getString("prefix", parentType !=  null ? parentType.getPrefix() : null);
-        this.suffix = section.getString("suffix", parentType !=  null ? parentType.getSuffix() : null);
+        this.worldName = section.getString("world", parentType != null ? parentType.getWorldName() : null);
+        this.prefix = section.getString("prefix", parentType != null ? parentType.getPrefix() : null);
+        this.suffix = section.getString("suffix", parentType != null ? parentType.getSuffix() : null);
         this.underProtection = section.getBoolean("protected", parentType != null && parentType.isUnderProtection());
-        this.objectiveTypeName = section.getString("objective.type", parentType !=  null ? parentType.getObjectiveTypeName() : null);
+        this.objectiveTypeName = section.getString("objective.type", parentType != null ? parentType.getObjectiveTypeName() : null);
 
         ConfigurationSection objectiveSection = section.getConfigurationSection("objective");
 
         if (getObjectiveTypeName() != null) {
             switch (getObjectiveTypeName()) {
                 case "siege":
-                    ObjectiveSiegeModel objectiveSiegeModel = new ObjectiveSiegeModel(objectiveSection);
+                    ObjectiveSiegeModel objectiveSiegeModel;
+                    if (parentType != null) {
+                        objectiveSiegeModel = new ObjectiveSiegeModel(
+                                new ObjectiveSiegeModel(objectiveSection).clone(),
+                                (ObjectiveSiegeModel) parentType.getObjectiveModel().clone());
+                    } else {
+                        objectiveSiegeModel = new ObjectiveSiegeModel(objectiveSection).clone();
+                    }
                     setObjectiveModel(objectiveSiegeModel);
                     break;
                 case "control-point":

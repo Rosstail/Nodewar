@@ -1,7 +1,6 @@
 package fr.rosstail.nodewar.territory;
 
 import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;

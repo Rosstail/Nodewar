@@ -17,22 +17,25 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
         super(section);
         if (section != null) {
 
-            String maxHealthStr = section.getString("max-health", "0");
-            this.maxHealthStr = maxHealthStr.matches("\\d+") ? maxHealthStr : "0";
+            String maxHealthStr = section.getString("maximum-health");
+            if (maxHealthStr != null && maxHealthStr.matches("\\d+")) {
+                this.maxHealthStr = maxHealthStr;
+            }
 
             if (section.isConfigurationSection("control-points")) {
                 ConfigurationSection controlConfigSection = section.getConfigurationSection("control-points");
                 controlConfigSection.getKeys(false).forEach(s -> {
                     ConfigurationSection controlSection = controlConfigSection.getConfigurationSection(s);
+
                     controlPointStringList.add(s);
-                    damagePerSecondControlPointIntList.add(controlSection.getInt("attacker-health-point-per-second", 0));
-                    regenPerSecondControlPointIntList.add(controlSection.getInt("defender-health-point-per-second", 0));
+                    damagePerSecondControlPointIntList.add(controlSection.getInt("damage-per-second", 0));
+                    regenPerSecondControlPointIntList.add(controlSection.getInt("regen-per-second", 0));
                 });
             }
         }
     }
 
-    ObjectiveSiegeModel(ObjectiveSiegeModel childObjectiveModel, ObjectiveSiegeModel parentObjectiveModel) {
+    public ObjectiveSiegeModel(ObjectiveSiegeModel childObjectiveModel, ObjectiveSiegeModel parentObjectiveModel) {
         super(childObjectiveModel.clone(), parentObjectiveModel.clone());
 
         this.maxHealthStr = childObjectiveModel.getMaxHealthString() != null ? childObjectiveModel.getMaxHealthString() : parentObjectiveModel.getMaxHealthString();

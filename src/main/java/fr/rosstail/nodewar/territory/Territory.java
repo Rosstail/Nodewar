@@ -34,6 +34,7 @@ public class Territory {
     private final AttackRequirements attackRequirements;
 
     Territory(ConfigurationSection section) {
+        System.out.println(section.getName());
         territoryModel = new TerritoryModel();
         territoryModel.setName(section.getName());
 
@@ -58,19 +59,17 @@ public class Territory {
         ConfigurationSection objectiveSection = section.getConfigurationSection("objective");
         territoryModel.setObjectiveTypeName(section.getString("objective.name", territoryType.getObjectiveTypeName()));
 
+
         if (territoryModel.getObjectiveTypeName() != null) {
             switch (territoryModel.getObjectiveTypeName()) {
                 case "siege":
-                    ObjectiveSiege objectiveSiege = new ObjectiveSiege(new ObjectiveSiegeModel(objectiveSection), (ObjectiveSiegeModel) territoryType.getObjectiveModel());
-                    setObjective(objectiveSiege);
+                    setObjective(new ObjectiveSiege(new ObjectiveSiegeModel(objectiveSection), (ObjectiveSiegeModel) territoryType.getObjectiveModel()));
                     break;
                 case "control-point":
-                    ObjectiveControlPoint objectiveControlPoint = new ObjectiveControlPoint();
-                    setObjective(objectiveControlPoint);
+                    setObjective(new ObjectiveControlPoint());
                     break;
                 case "koth":
-                    ObjectiveKingOfTheHill objectiveKingOfTheHill = new ObjectiveKingOfTheHill();
-                    setObjective(objectiveKingOfTheHill);
+                    setObjective(new ObjectiveKingOfTheHill());
                     break;
             }
         } else {
@@ -116,6 +115,14 @@ public class Territory {
                 "\n * World: " + territoryModel.getWorldName() +
                 "\n * Type: " + territoryModel.getTypeName() +
                 "\n * Protected: " + territoryModel.isUnderProtection();
+
+        StringBuilder objectiveRequirementsMessage = new StringBuilder("\n * Objective: " +
+                "\n   > type: " + territoryModel.getObjectiveTypeName());
+
+        objectiveRequirementsMessage.append(objective.print());
+
+        message = message + objectiveRequirementsMessage;
+
 
         StringBuilder attackRequirementsMessage = new StringBuilder("\n * Attack requirements:" +
                 "\n   > lattice types:");

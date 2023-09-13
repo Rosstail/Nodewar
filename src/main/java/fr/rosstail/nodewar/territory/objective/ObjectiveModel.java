@@ -13,7 +13,7 @@ public class ObjectiveModel implements Cloneable {
     public ObjectiveModel(ConfigurationSection section) {
         if (section != null) {
             this.objectiveTypeString = section.getString("type");
-            rewardModel = new RewardModel(section.getConfigurationSection("rewards"));
+            this.rewardModel = new RewardModel(section.getConfigurationSection("rewards"));
         }
     }
 

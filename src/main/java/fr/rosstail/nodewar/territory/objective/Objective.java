@@ -7,6 +7,10 @@ public class Objective {
     private ObjectiveModel objectiveModel;
     private Reward reward;
 
+    public Objective() {
+        setObjectiveModel(new ObjectiveModel(null));
+    }
+
     public Reward getReward() {
         return reward;
     }
@@ -21,5 +25,10 @@ public class Objective {
 
     public void setObjectiveModel(ObjectiveModel objectiveModel) {
         this.objectiveModel = objectiveModel;
+    }
+
+    public String print() {
+        // no objective
+        return "";
     }
 }

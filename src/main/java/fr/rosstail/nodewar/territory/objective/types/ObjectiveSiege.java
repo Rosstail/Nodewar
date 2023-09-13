@@ -1,6 +1,13 @@
 package fr.rosstail.nodewar.territory.objective.types;
 
+import fr.rosstail.nodewar.territory.Territory;
+import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.objective.Objective;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ObjectiveSiege extends Objective {
 
@@ -13,7 +20,6 @@ public class ObjectiveSiege extends Objective {
         ObjectiveSiegeModel clonedTerritoryObjectiveModel = territoryModel.clone();
         ObjectiveSiegeModel clonedTypeObjectiveModel = typeModel.clone();
         this.objectiveSiegeModel = new ObjectiveSiegeModel(clonedTerritoryObjectiveModel, clonedTypeObjectiveModel);
-
         this.maxHealth = Integer.parseInt(this.objectiveSiegeModel.getMaxHealthString());
         this.currentHealth = this.maxHealth;
     }
@@ -36,5 +42,46 @@ public class ObjectiveSiege extends Objective {
 
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
+    }
+
+    public Map<Territory, List<Integer>> getCapturePointsDamageRegenPerSecond() {
+        // territory | damage / regen | capturepoint
+        Map<Territory, List<Integer>> values = new HashMap<>();
+
+        List<String> controlPointStringList = objectiveSiegeModel.getControlPointStringList();
+        List<Integer> controlPointDamageList = objectiveSiegeModel.getDamagePerSecondControlPointIntList();
+        List<Integer> controlPointRegenList = objectiveSiegeModel.getRegenPerSecondControlPointIntList();
+
+        for (int i = 0; i < controlPointStringList.size(); i++) {
+            List<Integer> damageRegenList = new ArrayList<>();
+
+            String pointName = controlPointStringList.get(i);
+            if (TerritoryManager.getTerritoryManager().getTerritoryMap().containsKey(pointName)) {
+                Territory territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(pointName);
+
+                damageRegenList.add(controlPointDamageList.get(i));
+                damageRegenList.add(controlPointRegenList.get(i));
+
+                values.put(territory, damageRegenList);
+            }
+        }
+        return values;
+    }
+
+    @Override
+    public String print() {
+        StringBuilder builder = new StringBuilder("\n   > Health: " + currentHealth + " / " + maxHealth);
+
+        Map<Territory, List<Integer>> capturePointsDamageAndRegenPerSecond = getCapturePointsDamageRegenPerSecond();
+        if (!capturePointsDamageAndRegenPerSecond.isEmpty()) {
+            builder.append("\n   > Control points :");
+            capturePointsDamageAndRegenPerSecond.forEach((territory, lists) -> {
+                builder.append("\n     * ").append(territory.getTerritoryModel().getName()).append(": ");
+                builder.append("\n        - Damage: ").append(lists.get(0));
+                builder.append("\n        - Regen: ").append(lists.get(1));
+            });
+        }
+
+        return builder.toString();
     }
 }

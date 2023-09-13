@@ -9,6 +9,17 @@ saurva-data-storage:
     - saurva-data-storage-control-a
   objective:
     control-points:
-      - saurva-data-storage-control-a:
-          attacker-health-point-per-second: -1
-          defender-health-point-per-second: 1
+      saurva-data-storage-control-a:
+        damage-per-second: 1
+        regen-per-second: 1
+
+saurva-data-storage-control-a:
+  display: Saurva data storage - A
+  type: small-outpost
+  regions:
+    - saurva-data-storage-control-a
+  objective:
+    control-points:
+      saurva-data-storage-control-a:
+        damage-per-second: 1
+        regen-per-second: 1
