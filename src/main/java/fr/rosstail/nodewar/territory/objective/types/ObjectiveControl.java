@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.territory.objective.types;
 
 import fr.rosstail.nodewar.territory.objective.Objective;
+import fr.rosstail.nodewar.territory.objective.reward.Reward;
 
 public class ObjectiveControl extends Objective {
 
@@ -15,6 +16,8 @@ public class ObjectiveControl extends Objective {
         ObjectiveControlModel clonedTerritoryObjectiveModel = territoryModel.clone();
         ObjectiveControlModel clonedTypeObjectiveModel = typeModel.clone();
         this.objectiveControlModel = new ObjectiveControlModel(clonedTerritoryObjectiveModel, clonedTypeObjectiveModel);
+
+        this.setReward(new Reward(this.objectiveControlModel.getRewardModel()));
 
         this.attackerRatio = Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr());
         this.attackerRatio = Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr());
@@ -58,8 +61,8 @@ public class ObjectiveControl extends Objective {
 
     @Override
     public String print() {
-        return "\n   > Health: " + currentHealth + " / " + maxHealth +
-                "\n   > Attacker ratio: " + attackerRatio +
-                "\n   > Need neutralize: " + needNeutralize;
+        return "\n   > Health: " + getCurrentHealth() + " / " + getMaxHealth() +
+                "\n   > Attacker ratio: " + getAttackerRatio() +
+                "\n   > Need neutralize: " + isNeedNeutralize();
     }
 }

@@ -113,7 +113,7 @@ public class Territory {
                 "\n * Protected: " + territoryModel.isUnderProtection();
 
         StringBuilder objectiveRequirementsMessage = new StringBuilder("\n * Objective: " +
-                "\n   > type: " + territoryModel.getObjectiveTypeName());
+                "\n   > Type: " + territoryModel.getObjectiveTypeName());
 
         objectiveRequirementsMessage.append(objective.print());
 

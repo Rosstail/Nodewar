@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.territory.objective;
 
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
+import fr.rosstail.nodewar.territory.objective.reward.RewardModel;
 
 public class Objective {
 
@@ -9,6 +10,7 @@ public class Objective {
 
     public Objective() {
         setObjectiveModel(new ObjectiveModel(null));
+        setReward(new Reward(new RewardModel(null)));
     }
 
     public Reward getReward() {

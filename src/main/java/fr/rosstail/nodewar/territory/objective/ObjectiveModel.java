@@ -14,6 +14,9 @@ public class ObjectiveModel implements Cloneable {
         if (section != null) {
             this.objectiveTypeString = section.getString("type");
             this.rewardModel = new RewardModel(section.getConfigurationSection("rewards"));
+        } else {
+            this.objectiveTypeString = "none";
+            this.rewardModel = new RewardModel(null);
         }
     }
 
@@ -23,10 +26,27 @@ public class ObjectiveModel implements Cloneable {
         } else {
             this.objectiveTypeString = parentObjectiveModel.objectiveTypeString;
         }
+        if (childObjectiveModel.getRewardModel() != null) {
+            this.rewardModel = childObjectiveModel.getRewardModel();
+        } else {
+            this.rewardModel = parentObjectiveModel.getRewardModel();
+        }
     }
 
     public String getObjectiveTypeString() {
         return objectiveTypeString;
+    }
+
+    public void setObjectiveTypeString(String objectiveTypeString) {
+        this.objectiveTypeString = objectiveTypeString;
+    }
+
+    public RewardModel getRewardModel() {
+        return rewardModel;
+    }
+
+    public void setRewardModel(RewardModel rewardModel) {
+        this.rewardModel = rewardModel;
     }
 
     @Override
@@ -34,6 +54,9 @@ public class ObjectiveModel implements Cloneable {
         try {
             ObjectiveModel clone = (ObjectiveModel) super.clone();
             // TODO: copy mutable state here, so the clone can't change the internals of the original
+            clone.setObjectiveTypeString(getObjectiveTypeString());
+            clone.setRewardModel(getRewardModel().clone());
+
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();

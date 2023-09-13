@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.territory.objective.types;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.objective.Objective;
+import fr.rosstail.nodewar.territory.objective.reward.Reward;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +21,9 @@ public class ObjectiveSiege extends Objective {
         ObjectiveSiegeModel clonedTerritoryObjectiveModel = territoryModel.clone();
         ObjectiveSiegeModel clonedTypeObjectiveModel = typeModel.clone();
         this.objectiveSiegeModel = new ObjectiveSiegeModel(clonedTerritoryObjectiveModel, clonedTypeObjectiveModel);
+
+        this.setReward(new Reward(this.objectiveSiegeModel.getRewardModel()));
+
         this.maxHealth = Integer.parseInt(this.objectiveSiegeModel.getMaxHealthString());
         this.currentHealth = this.maxHealth;
     }
@@ -45,7 +49,6 @@ public class ObjectiveSiege extends Objective {
     }
 
     public Map<Territory, List<Integer>> getCapturePointsDamageRegenPerSecond() {
-        // territory | damage / regen | capturepoint
         Map<Territory, List<Integer>> values = new HashMap<>();
 
         List<String> controlPointStringList = objectiveSiegeModel.getControlPointStringList();
@@ -80,6 +83,15 @@ public class ObjectiveSiege extends Objective {
                 builder.append("\n        - Damage: ").append(lists.get(0));
                 builder.append("\n        - Regen: ").append(lists.get(1));
             });
+        }
+
+        if (!getReward().getRewardModel().getCommandStringList().isEmpty()) {
+            builder.append("\n   > Rewards:");
+            getReward().getRewardModel().getCommandStringList().forEach(s -> {
+                builder.append("\n     * ").append(s);
+            });
+        } else {
+            builder.append("\nNO REWARDS, NOOoOOoOO...");
         }
 
         return builder.toString();

@@ -12,14 +12,14 @@ the-crown:
   objective:
     control-points:
       the-crown-control-a:
-          damage-per-second: 1
-          regen-per-second: 1
+        damage-per-second: 1
+        regen-per-second: 1
       the-crown-control-b:
-          damage-per-second: 1
-          regen-per-second: 1
+        damage-per-second: 1
+        regen-per-second: 1
       the-crown-control-c:
-          damage-per-second: 1
-          regen-per-second: 1
+        damage-per-second: 1
+        regen-per-second: 1
 
 the-crown-control-a:
   display: The Crown - A

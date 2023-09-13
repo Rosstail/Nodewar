@@ -12,15 +12,15 @@ saurva-biolab:
     - saurva-biolab-control-c
   objective:
     control-points:
-      - saurva-biolab-control-a:
-          damage-per-second: 1
-          regen-per-second: 1
-        saurva-biolab-control-b:
-          damage-per-second: 1
-          regen-per-second: 1
-        saurva-biolab-control-c:
-          damage-per-second: 1
-          regen-per-second: 1
+      saurva-biolab-control-a:
+        damage-per-second: 1
+        regen-per-second: 1
+      saurva-biolab-control-b:
+        damage-per-second: 1
+        regen-per-second: 1
+      saurva-biolab-control-c:
+        damage-per-second: 1
+        regen-per-second: 1
   attack-requirements:
     territory-types-amount:
       first:

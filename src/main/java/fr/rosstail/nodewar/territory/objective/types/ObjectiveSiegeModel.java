@@ -39,7 +39,6 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
         super(childObjectiveModel.clone(), parentObjectiveModel.clone());
 
         this.maxHealthStr = childObjectiveModel.getMaxHealthString() != null ? childObjectiveModel.getMaxHealthString() : parentObjectiveModel.getMaxHealthString();
-
         this.controlPointStringList.addAll(parentObjectiveModel.getControlPointStringList());
         this.damagePerSecondControlPointIntList.addAll(parentObjectiveModel.getDamagePerSecondControlPointIntList());
         this.regenPerSecondControlPointIntList.addAll(parentObjectiveModel.getRegenPerSecondControlPointIntList());
@@ -55,6 +54,8 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
                 regenPerSecondControlPointIntList.add(childRegenPerSecond);
             }
         }
+
+        this.setRewardModel(childObjectiveModel.getRewardModel() != null ? childObjectiveModel.getRewardModel() : parentObjectiveModel.getRewardModel());
     }
 
     public String getMaxHealthString() {
