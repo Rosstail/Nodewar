@@ -35,8 +35,9 @@ outpost: # basic configurations
       commands:
         default:
           global-reward-commands:
-            - broadcast [team_display]&r emerged victorious at [territory_display]&r
-              !
+            - broadcast OUTPOST REWARD
+          #  - broadcast [team_display]&r emerged victorious at [territory_display]&r
+          #    !
           #attacker-team-winner:
           #  requirements:
           #    team-position:
@@ -148,8 +149,9 @@ biolab: # basic configurations
       commands:
         default:
           global-reward-commands:
-            - broadcast [team_display]&r emerged victorious at [territory_display]&r
-              !
+            - broadcast BIOLAB VICTOREH
+            # - broadcast [team_display]&r emerged victorious at [territory_display]&r
+            #  !
         attacker-team-winner:
           requirements:
             team-position:

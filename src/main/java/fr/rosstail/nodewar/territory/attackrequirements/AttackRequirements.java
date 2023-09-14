@@ -13,10 +13,10 @@ public class AttackRequirements {
 
     private final AttackRequirementsModel attackRequirementsModel;
 
-    public AttackRequirements(AttackRequirementsModel territoryModel, AttackRequirementsModel typeModel) {
-        AttackRequirementsModel clonedTerritoryModel = territoryModel.clone();
-        AttackRequirementsModel clonedTypeModel = typeModel.clone();
-        this.attackRequirementsModel = new AttackRequirementsModel(clonedTerritoryModel, clonedTypeModel);
+    public AttackRequirements(AttackRequirementsModel childModel, AttackRequirementsModel parentModel) {
+        AttackRequirementsModel clonedChildModel = childModel.clone();
+        AttackRequirementsModel clonedParentModel = parentModel.clone();
+        this.attackRequirementsModel = new AttackRequirementsModel(clonedChildModel, clonedParentModel);
     }
 
     public Map<String, TerritoryType> getLatticeNetwork() {

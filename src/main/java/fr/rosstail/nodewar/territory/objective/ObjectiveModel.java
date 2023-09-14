@@ -26,11 +26,8 @@ public class ObjectiveModel implements Cloneable {
         } else {
             this.objectiveTypeString = parentObjectiveModel.objectiveTypeString;
         }
-        if (childObjectiveModel.getRewardModel() != null) {
-            this.rewardModel = childObjectiveModel.getRewardModel();
-        } else {
-            this.rewardModel = parentObjectiveModel.getRewardModel();
-        }
+
+        this.rewardModel = new RewardModel(childObjectiveModel.getRewardModel(), parentObjectiveModel.getRewardModel());
     }
 
     public String getObjectiveTypeString() {

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class RewardModel implements Cloneable {
 
-    private final List<String> commandStringList = new ArrayList<>();
+    private List<String> commandStringList = new ArrayList<>();
 
     public RewardModel(ConfigurationSection section) {
         if (section != null) {
@@ -19,19 +19,24 @@ public class RewardModel implements Cloneable {
         RewardModel cloneChildRewardModel = childRewardModel.clone();
         RewardModel cloneParentRewardModel = parentRewardModel.clone();
 
-        commandStringList.addAll(!cloneChildRewardModel.getCommandStringList().isEmpty() ? cloneChildRewardModel.getCommandStringList() : cloneParentRewardModel.getCommandStringList());
+        if (!cloneChildRewardModel.getCommandStringList().isEmpty() || !cloneParentRewardModel.getCommandStringList().isEmpty()) {
+            commandStringList.addAll(!cloneChildRewardModel.getCommandStringList().isEmpty() ? cloneChildRewardModel.getCommandStringList() : cloneParentRewardModel.getCommandStringList());
+        }
     }
 
     public List<String> getCommandStringList() {
         return commandStringList;
     }
 
+    public void setCommandStringList(List<String> commandStringList) {
+        this.commandStringList = commandStringList;
+    }
+
     @Override
     public RewardModel clone() {
         try {
             RewardModel clone = (RewardModel) super.clone();
-
-            clone.getCommandStringList().addAll(commandStringList);
+            clone.setCommandStringList(new ArrayList<>(getCommandStringList()));
 
             return clone;
         } catch (CloneNotSupportedException e) {

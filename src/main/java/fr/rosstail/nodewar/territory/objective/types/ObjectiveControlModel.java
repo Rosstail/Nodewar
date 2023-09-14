@@ -37,6 +37,7 @@ public class ObjectiveControlModel extends ObjectiveModel {
         this.attackerRatioStr = childObjectiveModel.getAttackerRatioStr() != null ? childObjectiveModel.getAttackerRatioStr() : parentObjectiveModel.getAttackerRatioStr();
         this.maximumHealthStr = childObjectiveModel.getMaxHealthStr() != null ? childObjectiveModel.getMaxHealthStr() : parentObjectiveModel.getMaxHealthStr();
         this.needNeutralizeStepStr = childObjectiveModel.getNeedNeutralizeStepStr() != null ? childObjectiveModel.getNeedNeutralizeStepStr() : parentObjectiveModel.getNeedNeutralizeStepStr();
+        this.needNeutralizeStepStr = childObjectiveModel.getNeedNeutralizeStepStr() != null ? childObjectiveModel.getNeedNeutralizeStepStr() : parentObjectiveModel.getNeedNeutralizeStepStr();
     }
 
     public String getAttackerRatioStr() {

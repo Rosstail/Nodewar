@@ -9,9 +9,9 @@ import java.util.List;
 public class ObjectiveSiegeModel extends ObjectiveModel {
 
     private String maxHealthStr;
-    private final List<String> controlPointStringList = new ArrayList<>();
-    private final List<Integer> damagePerSecondControlPointIntList = new ArrayList<>();
-    private final List<Integer> regenPerSecondControlPointIntList = new ArrayList<>();
+    private List<String> controlPointStringList = new ArrayList<>();
+    private List<Integer> damagePerSecondControlPointIntList = new ArrayList<>();
+    private List<Integer> regenPerSecondControlPointIntList = new ArrayList<>();
 
     public ObjectiveSiegeModel(ConfigurationSection section) {
         super(section);
@@ -54,8 +54,6 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
                 regenPerSecondControlPointIntList.add(childRegenPerSecond);
             }
         }
-
-        this.setRewardModel(childObjectiveModel.getRewardModel() != null ? childObjectiveModel.getRewardModel() : parentObjectiveModel.getRewardModel());
     }
 
     public String getMaxHealthString() {
@@ -70,12 +68,24 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
         return controlPointStringList;
     }
 
+    public void setControlPointStringList(List<String> controlPointStringList) {
+        this.controlPointStringList = controlPointStringList;
+    }
+
     public List<Integer> getDamagePerSecondControlPointIntList() {
         return damagePerSecondControlPointIntList;
     }
 
+    public void setDamagePerSecondControlPointIntList(List<Integer> damagePerSecondControlPointIntList) {
+        this.damagePerSecondControlPointIntList = damagePerSecondControlPointIntList;
+    }
+
     public List<Integer> getRegenPerSecondControlPointIntList() {
         return regenPerSecondControlPointIntList;
+    }
+
+    public void setRegenPerSecondControlPointIntList(List<Integer> regenPerSecondControlPointIntList) {
+        this.regenPerSecondControlPointIntList = regenPerSecondControlPointIntList;
     }
 
     @Override
@@ -85,9 +95,9 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
 
         clone.setMaxHealthStr(getMaxHealthString());
 
-        clone.controlPointStringList.addAll(getControlPointStringList());
-        clone.damagePerSecondControlPointIntList.addAll(getDamagePerSecondControlPointIntList());
-        clone.regenPerSecondControlPointIntList.addAll(getRegenPerSecondControlPointIntList());
+        clone.setControlPointStringList(new ArrayList<>(getControlPointStringList()));
+        clone.setDamagePerSecondControlPointIntList(new ArrayList<>(getDamagePerSecondControlPointIntList()));
+        clone.setRegenPerSecondControlPointIntList(new ArrayList<>(getRegenPerSecondControlPointIntList()));
         return clone;
     }
 }

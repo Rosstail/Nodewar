@@ -10,7 +10,7 @@ public class Objective {
 
     public Objective() {
         setObjectiveModel(new ObjectiveModel(null));
-        setReward(new Reward(new RewardModel(null)));
+        setReward(new Reward(new RewardModel(null), new RewardModel(null)));
     }
 
     public Reward getReward() {

@@ -12,12 +12,12 @@ public class ObjectiveControl extends Objective {
 
     ObjectiveControlModel objectiveControlModel;
 
-    public ObjectiveControl(ObjectiveControlModel territoryModel, ObjectiveControlModel typeModel) {
-        ObjectiveControlModel clonedTerritoryObjectiveModel = territoryModel.clone();
-        ObjectiveControlModel clonedTypeObjectiveModel = typeModel.clone();
-        this.objectiveControlModel = new ObjectiveControlModel(clonedTerritoryObjectiveModel, clonedTypeObjectiveModel);
+    public ObjectiveControl(ObjectiveControlModel childModel, ObjectiveControlModel parentModel) {
+        ObjectiveControlModel clonedChildObjectiveModel = childModel.clone();
+        ObjectiveControlModel clonedParentObjectiveModel = parentModel.clone();
+        this.objectiveControlModel = new ObjectiveControlModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
 
-        this.setReward(new Reward(this.objectiveControlModel.getRewardModel()));
+        this.setReward(new Reward(clonedChildObjectiveModel.getRewardModel(), clonedParentObjectiveModel.getRewardModel()));
 
         this.attackerRatio = Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr());
         this.attackerRatio = Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr());

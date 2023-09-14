@@ -17,13 +17,12 @@ public class ObjectiveSiege extends Objective {
 
     private final ObjectiveSiegeModel objectiveSiegeModel;
 
-    public ObjectiveSiege(ObjectiveSiegeModel territoryModel, ObjectiveSiegeModel typeModel) {
-        ObjectiveSiegeModel clonedTerritoryObjectiveModel = territoryModel.clone();
-        ObjectiveSiegeModel clonedTypeObjectiveModel = typeModel.clone();
-        this.objectiveSiegeModel = new ObjectiveSiegeModel(clonedTerritoryObjectiveModel, clonedTypeObjectiveModel);
+    public ObjectiveSiege(ObjectiveSiegeModel childModel, ObjectiveSiegeModel parentModel) {
+        ObjectiveSiegeModel clonedChildObjectiveModel = childModel.clone();
+        ObjectiveSiegeModel clonedParentObjectiveModel = parentModel.clone();
+        this.objectiveSiegeModel = new ObjectiveSiegeModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
 
-        this.setReward(new Reward(this.objectiveSiegeModel.getRewardModel()));
-
+        this.setReward(new Reward(clonedChildObjectiveModel.getRewardModel(), clonedParentObjectiveModel.getRewardModel()));
         this.maxHealth = Integer.parseInt(this.objectiveSiegeModel.getMaxHealthString());
         this.currentHealth = this.maxHealth;
     }
@@ -90,8 +89,6 @@ public class ObjectiveSiege extends Objective {
             getReward().getRewardModel().getCommandStringList().forEach(s -> {
                 builder.append("\n     * ").append(s);
             });
-        } else {
-            builder.append("\nNO REWARDS, NOOoOOoOO...");
         }
 
         return builder.toString();

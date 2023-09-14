@@ -48,8 +48,8 @@ public class TerritoryType {
                     ObjectiveSiegeModel objectiveSiegeModel;
                     if (parentType != null) {
                         objectiveSiegeModel = new ObjectiveSiegeModel(
-                                new ObjectiveSiegeModel(objectiveSection).clone(),
-                                (ObjectiveSiegeModel) parentType.getObjectiveModel().clone());
+                                new ObjectiveSiegeModel(objectiveSection),
+                                (ObjectiveSiegeModel) parentType.getObjectiveModel());
                     } else {
                         objectiveSiegeModel = new ObjectiveSiegeModel(objectiveSection).clone();
                     }
@@ -142,7 +142,8 @@ public class TerritoryType {
                 "\n > suffix: " + getSuffix() +
                 "\n > world: " + getWorldName() +
                 "\n > protected: " + isUnderProtection() +
-                "\n > objective: " + getObjectiveTypeName()
+                "\n > objective: " + getObjectiveTypeName() +
+                "\n > Rewards: " + getObjectiveModel().getRewardModel().getCommandStringList()
         );
 
         AdaptMessage.print(message.toString(), AdaptMessage.prints.OUT);
