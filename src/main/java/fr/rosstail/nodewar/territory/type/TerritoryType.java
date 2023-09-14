@@ -143,7 +143,8 @@ public class TerritoryType {
                 "\n > world: " + getWorldName() +
                 "\n > protected: " + isUnderProtection() +
                 "\n > objective: " + getObjectiveTypeName() +
-                "\n > Rewards: " + getObjectiveModel().getRewardModel().getCommandStringList()
+                "\n > Rewards: " + getObjectiveModel().getRewardModel().getCommandStringList() +
+                "\n_____________"
         );
 
         AdaptMessage.print(message.toString(), AdaptMessage.prints.OUT);

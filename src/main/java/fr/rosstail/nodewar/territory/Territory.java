@@ -151,7 +151,7 @@ public class Territory {
             }
         }
 
-        message = message + attackRequirementsMessage;
+        message = message + attackRequirementsMessage + "\n------------";
         AdaptMessage.print(message, AdaptMessage.prints.OUT);
     }
 }

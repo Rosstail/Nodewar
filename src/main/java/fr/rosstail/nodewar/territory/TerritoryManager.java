@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.territory;
 
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -50,6 +51,7 @@ public class TerritoryManager {
 
         File fileConfig = new File("plugins/" + plugin.getName() + "/conquest/territory-types.yml");
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileConfig);
+        AdaptMessage.print("============", AdaptMessage.prints.OUT);
         yamlConfiguration.getKeys(false).forEach(s -> {
             ConfigurationSection section = yamlConfiguration.getConfigurationSection(s);
             TerritoryType territoryType = new TerritoryType(section);
