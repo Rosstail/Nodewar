@@ -17,7 +17,12 @@ public class ObjectiveControl extends Objective {
         ObjectiveControlModel clonedParentObjectiveModel = parentModel.clone();
         this.objectiveControlModel = new ObjectiveControlModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
 
-        this.setReward(new Reward(clonedChildObjectiveModel.getRewardModel(), clonedParentObjectiveModel.getRewardModel()));
+        clonedParentObjectiveModel.getStringRewardModelMap().forEach((s, rewardModel) -> {
+            if (clonedChildObjectiveModel.getStringRewardModelMap().containsKey(s)) {
+                getStringRewardMap().put(s, new Reward(clonedChildObjectiveModel.getStringRewardModelMap().get(s),
+                        clonedParentObjectiveModel.getStringRewardModelMap().get(s)));
+            }
+        });
 
         this.attackerRatio = Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr());
         this.attackerRatio = Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr());

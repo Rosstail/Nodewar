@@ -4,19 +4,29 @@ import fr.rosstail.nodewar.territory.objective.reward.RewardModel;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ObjectiveModel implements Cloneable {
 
     private String objectiveTypeString;
 
-    private RewardModel rewardModel;
+    private Map<String, RewardModel> stringRewardModelMap = new HashMap<>();
 
     public ObjectiveModel(ConfigurationSection section) {
         if (section != null) {
             this.objectiveTypeString = section.getString("type");
-            this.rewardModel = new RewardModel(section.getConfigurationSection("rewards"));
+            ConfigurationSection rewardListSection = section.getConfigurationSection("rewards");
+            if (rewardListSection != null) {
+                rewardListSection.getKeys(false).forEach(s -> {
+                    ConfigurationSection rewardSection = rewardListSection.getConfigurationSection(s);
+                    stringRewardModelMap.put(s, new RewardModel(rewardSection));
+
+                });
+            }
         } else {
             this.objectiveTypeString = "none";
-            this.rewardModel = new RewardModel(null);
         }
     }
 
@@ -27,7 +37,8 @@ public class ObjectiveModel implements Cloneable {
             this.objectiveTypeString = parentObjectiveModel.objectiveTypeString;
         }
 
-        this.rewardModel = new RewardModel(childObjectiveModel.getRewardModel(), parentObjectiveModel.getRewardModel());
+        this.stringRewardModelMap.putAll(parentObjectiveModel.stringRewardModelMap);
+        this.stringRewardModelMap.putAll(childObjectiveModel.stringRewardModelMap);
     }
 
     public String getObjectiveTypeString() {
@@ -38,12 +49,8 @@ public class ObjectiveModel implements Cloneable {
         this.objectiveTypeString = objectiveTypeString;
     }
 
-    public RewardModel getRewardModel() {
-        return rewardModel;
-    }
-
-    public void setRewardModel(RewardModel rewardModel) {
-        this.rewardModel = rewardModel;
+    public Map<String, RewardModel> getStringRewardModelMap() {
+        return stringRewardModelMap;
     }
 
     @Override
@@ -52,7 +59,7 @@ public class ObjectiveModel implements Cloneable {
             ObjectiveModel clone = (ObjectiveModel) super.clone();
             // TODO: copy mutable state here, so the clone can't change the internals of the original
             clone.setObjectiveTypeString(getObjectiveTypeString());
-            clone.setRewardModel(getRewardModel().clone());
+            clone.stringRewardModelMap.putAll(getStringRewardModelMap());
 
             return clone;
         } catch (CloneNotSupportedException e) {

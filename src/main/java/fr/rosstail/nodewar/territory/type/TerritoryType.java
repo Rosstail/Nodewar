@@ -142,11 +142,31 @@ public class TerritoryType {
                 "\n > suffix: " + getSuffix() +
                 "\n > world: " + getWorldName() +
                 "\n > protected: " + isUnderProtection() +
-                "\n > objective: " + getObjectiveTypeName() +
-                "\n > Rewards: " + getObjectiveModel().getRewardModel().getCommandStringList() +
-                "\n_____________"
+                "\n > objective: " + getObjectiveTypeName()
         );
 
+        if (!getObjectiveModel().getStringRewardModelMap().isEmpty()) {
+            message.append("\n > Rewards: ");
+
+            getObjectiveModel().getStringRewardModelMap().forEach((s, rewardModel) -> {
+                message.append("\n   * " + s + ":");
+                message.append("\n     - target: " + rewardModel.getTargetName());
+                message.append("\n     - minimumTeamScore: " + rewardModel.getMinimumTeamScoreStr());
+                message.append("\n     - minimumPlayerScore: " + rewardModel.getMinimumPlayerScoreStr());
+                message.append("\n     - teamRole: " + rewardModel.getTeamRole());
+                message.append("\n     - playerTeamRole: " + rewardModel.getPlayerTeamRole());
+                message.append("\n     - shouldTeamWinStr: " + rewardModel.getShouldTeamWinStr());
+                if (!rewardModel.getTeamPositions().isEmpty()) {
+                    message.append("\n     - teamPositions: " + rewardModel.getTeamPositions());
+                }
+                if (!rewardModel.getCommandList().isEmpty()) {
+                    message.append("\n     - commands: " + rewardModel.getCommandList());
+                }
+            });
+
+        }
+
+        message.append("\n_____________");
         AdaptMessage.print(message.toString(), AdaptMessage.prints.OUT);
     }
 }

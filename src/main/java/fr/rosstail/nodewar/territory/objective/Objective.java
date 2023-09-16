@@ -3,22 +3,24 @@ package fr.rosstail.nodewar.territory.objective;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
 import fr.rosstail.nodewar.territory.objective.reward.RewardModel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Objective {
 
     private ObjectiveModel objectiveModel;
-    private Reward reward;
+    private Map<String, Reward> stringRewardMap = new HashMap<>();
 
     public Objective() {
         setObjectiveModel(new ObjectiveModel(null));
-        setReward(new Reward(new RewardModel(null), new RewardModel(null)));
     }
 
-    public Reward getReward() {
-        return reward;
+    public Map<String, Reward> getStringRewardMap() {
+        return stringRewardMap;
     }
 
-    public void setReward(Reward reward) {
-        this.reward = reward;
+    public void setStringRewardMap(Map<String, Reward> stringRewardMap) {
+        this.stringRewardMap = stringRewardMap;
     }
 
     public ObjectiveModel getObjectiveModel() {

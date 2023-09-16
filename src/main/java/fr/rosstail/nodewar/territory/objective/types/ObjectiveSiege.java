@@ -4,6 +4,7 @@ import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
+import fr.rosstail.nodewar.territory.objective.reward.RewardModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +23,14 @@ public class ObjectiveSiege extends Objective {
         ObjectiveSiegeModel clonedParentObjectiveModel = parentModel.clone();
         this.objectiveSiegeModel = new ObjectiveSiegeModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
 
-        this.setReward(new Reward(clonedChildObjectiveModel.getRewardModel(), clonedParentObjectiveModel.getRewardModel()));
+        clonedParentObjectiveModel.getStringRewardModelMap().forEach((s, rewardModel) -> {
+            getStringRewardMap().put(s, new Reward(rewardModel));
+        });
+
+        clonedChildObjectiveModel.getStringRewardModelMap().forEach((s, rewardModel) -> {
+            getStringRewardMap().put(s, new Reward(rewardModel));
+        });
+
         this.maxHealth = Integer.parseInt(this.objectiveSiegeModel.getMaxHealthString());
         this.currentHealth = this.maxHealth;
     }
@@ -84,10 +92,23 @@ public class ObjectiveSiege extends Objective {
             });
         }
 
-        if (!getReward().getRewardModel().getCommandStringList().isEmpty()) {
-            builder.append("\n   > Rewards:");
-            getReward().getRewardModel().getCommandStringList().forEach(s -> {
-                builder.append("\n     * ").append(s);
+        if (!getObjectiveModel().getStringRewardModelMap().isEmpty()) {
+            builder.append("\n > Rewards: ");
+
+            getObjectiveModel().getStringRewardModelMap().forEach((s, rewardModel) -> {
+                builder.append("\n   * " + s + ":");
+                builder.append("\n     - target: " + rewardModel.getTargetName());
+                builder.append("\n     - minimumTeamScore: " + rewardModel.getMinimumTeamScoreStr());
+                builder.append("\n     - minimumPlayerScore: " + rewardModel.getMinimumPlayerScoreStr());
+                builder.append("\n     - teamRole: " + rewardModel.getTeamRole());
+                builder.append("\n     - playerTeamRole: " + rewardModel.getPlayerTeamRole());
+                builder.append("\n     - shouldTeamWinStr: " + rewardModel.getShouldTeamWinStr());
+                if (!rewardModel.getTeamPositions().isEmpty()) {
+                    builder.append("\n     - teamPositions: " + rewardModel.getTeamPositions());
+                }
+                if (!rewardModel.getCommandList().isEmpty()) {
+                    builder.append("\n     - commands: " + rewardModel.getCommandList());
+                }
             });
         }
 
