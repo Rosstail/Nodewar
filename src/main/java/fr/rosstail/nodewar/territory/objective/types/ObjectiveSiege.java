@@ -22,14 +22,7 @@ public class ObjectiveSiege extends Objective {
         ObjectiveSiegeModel clonedChildObjectiveModel = childModel.clone();
         ObjectiveSiegeModel clonedParentObjectiveModel = parentModel.clone();
         this.objectiveSiegeModel = new ObjectiveSiegeModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
-
-        clonedParentObjectiveModel.getStringRewardModelMap().forEach((s, rewardModel) -> {
-            getStringRewardMap().put(s, new Reward(rewardModel));
-        });
-
-        clonedChildObjectiveModel.getStringRewardModelMap().forEach((s, rewardModel) -> {
-            getStringRewardMap().put(s, new Reward(rewardModel));
-        });
+        setObjectiveModel(this.objectiveSiegeModel);
 
         this.maxHealth = Integer.parseInt(this.objectiveSiegeModel.getMaxHealthString());
         this.currentHealth = this.maxHealth;

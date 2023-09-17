@@ -53,13 +53,17 @@ public class ObjectiveModel implements Cloneable {
         return stringRewardModelMap;
     }
 
+    public void setStringRewardModelMap(Map<String, RewardModel> stringRewardModelMap) {
+        this.stringRewardModelMap = stringRewardModelMap;
+    }
+
     @Override
     public ObjectiveModel clone() {
         try {
             ObjectiveModel clone = (ObjectiveModel) super.clone();
             // TODO: copy mutable state here, so the clone can't change the internals of the original
             clone.setObjectiveTypeString(getObjectiveTypeString());
-            clone.stringRewardModelMap.putAll(getStringRewardModelMap());
+            clone.setStringRewardModelMap(new HashMap<>(getStringRewardModelMap()));
 
             return clone;
         } catch (CloneNotSupportedException e) {
