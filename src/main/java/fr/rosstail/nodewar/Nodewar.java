@@ -115,6 +115,8 @@ public class Nodewar extends JavaPlugin implements Listener {
         AdaptMessage.print("=============", AdaptMessage.prints.OUT);
         TerritoryManager.getTerritoryManager().getTerritoryMap().forEach((s, territory) -> territory.print());
         AdaptMessage.print("=====END=====", AdaptMessage.prints.OUT);
+
+        TeamDataManager.getTeamDataManager().loadTeams();
     }
 
     private void initDefaultConfigs() {

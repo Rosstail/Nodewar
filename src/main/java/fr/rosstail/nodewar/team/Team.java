@@ -1,9 +1,21 @@
 package fr.rosstail.nodewar.team;
 
-public class Team extends TeamModel {
+public class Team {
+
+    private TeamModel teamModel;
     public Team(String name, String display) {
-        super(name, display);
+        teamModel = new TeamModel(name, display);
     }
 
+    public Team(TeamModel teamModel) {
+        this.teamModel = teamModel;
+    }
 
+    public TeamModel getTeamModel() {
+        return teamModel;
+    }
+
+    public void setTeamModel(TeamModel teamModel) {
+        this.teamModel = teamModel;
+    }
 }

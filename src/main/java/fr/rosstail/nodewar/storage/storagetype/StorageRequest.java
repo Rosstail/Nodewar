@@ -4,7 +4,11 @@ import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface StorageRequest {
 
@@ -57,6 +61,12 @@ public interface StorageRequest {
      * @return the team model
      */
     TeamModel selectTeamModelByOwnerUuid(String ownerUuid);
+
+    /**
+     * Get all team models from the database
+     * @return
+     */
+    Map<String, TeamModel> selectAllTeamModel();
 
     /**
      * READ

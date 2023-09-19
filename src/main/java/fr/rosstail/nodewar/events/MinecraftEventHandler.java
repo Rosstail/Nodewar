@@ -7,8 +7,8 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.*;
 
 public class MinecraftEventHandler implements Listener {
 
@@ -36,6 +36,31 @@ public class MinecraftEventHandler implements Listener {
             StorageManager.getManager().updatePlayerModel(model, true);
             PlayerDataManager.removePlayerDataFromMap(player);
         }
+    }
+
+    @EventHandler
+    public void onPlayerKick(final PlayerKickEvent e) {
+
+    }
+
+    @EventHandler
+    public void onPlayerMove(final PlayerMoveEvent e) {
+
+    }
+
+    @EventHandler
+    public void onPlayerTeleport(final PlayerTeleportEvent e) {
+
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(final PlayerRespawnEvent e) {
+
+    }
+
+    @EventHandler
+    public void onPlayerDeath(final PlayerDeathEvent e) {
+        
     }
 
     public boolean isClosing() {

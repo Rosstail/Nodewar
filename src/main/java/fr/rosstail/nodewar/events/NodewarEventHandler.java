@@ -1,2 +1,4 @@
-package fr.rosstail.nodewar.events;public class NodewarEventHandler {
+package fr.rosstail.nodewar.events;
+
+public class NodewarEventHandler {
 }

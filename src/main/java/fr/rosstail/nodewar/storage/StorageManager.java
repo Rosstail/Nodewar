@@ -14,6 +14,7 @@ import fr.rosstail.nodewar.team.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
 
 import java.util.List;
+import java.util.Map;
 
 public class StorageManager {
     private static StorageManager manager;
@@ -166,6 +167,23 @@ public class StorageManager {
                 return mongoDBStorageRequest.selectTeamModelByName(teamName);
             default:
                 return liteSqlDBStorageRequest.selectTeamModelByName(teamName);
+        }
+    }
+
+    /**
+     * SELECT ALL TEAM MODEL
+     *
+     */
+    public Map<String, TeamModel> selectAllTeamModel() {
+        switch (type) {
+            case "mysql":
+                return mySqlStorageRequest.selectAllTeamModel();
+            case "mariadb":
+                return mariaDBStorageRequest.selectAllTeamModel();
+            case "mongodb":
+                return mongoDBStorageRequest.selectAllTeamModel();
+            default:
+                return liteSqlDBStorageRequest.selectAllTeamModel();
         }
     }
 

@@ -3,6 +3,8 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.storage.StorageManager;
+import fr.rosstail.nodewar.team.Team;
+import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
 import org.bukkit.command.CommandSender;
@@ -45,6 +47,7 @@ public class TeamCreateCommand extends TeamSubCommand {
         if (args.length >= 4) {
             String teamName = args[2];
             String displayName = args[3];
+            String ownerUuid = null;
             TeamModel selectTeamModel = StorageManager.getManager().selectTeamModelByName(teamName);
             if (selectTeamModel != null) {
                 sender.sendMessage("TeamCreateCommand - This team already exist in storage");
@@ -52,33 +55,36 @@ public class TeamCreateCommand extends TeamSubCommand {
             }
             TeamModel teamModel = new TeamModel(teamName, displayName);
             if (sender instanceof Player) {
-                String ownerUuid = ((Player) sender).getUniqueId().toString();
+                ownerUuid = ((Player) sender).getUniqueId().toString();
 
                 TeamMemberModel selectTeamMember = StorageManager.getManager().selectTeamMemberModel(ownerUuid);
                 if (selectTeamMember != null) {
                     sender.sendMessage("You are already on a team");
                     return;
                 }
+            } else {
+                teamModel.setPermanent(true);
+            }
 
-                boolean insertTeam = StorageManager.getManager().insertTeamModel(teamModel);
-                if (insertTeam) {
-                    sender.sendMessage("Team added successfully");
-                    teamModel.setId(StorageManager.getManager().selectTeamModelByName(teamName).getId());
+            boolean insertTeam = StorageManager.getManager().insertTeamModel(teamModel);
+            if (insertTeam) {
+                TeamDataManager.getTeamDataManager().getStringTeamMap().put(teamModel.getName(), new Team(teamModel));
+                sender.sendMessage("Team added successfully");
+                teamModel.setId(StorageManager.getManager().selectTeamModelByName(teamName).getId());
+                if (ownerUuid != null) {
                     TeamMemberModel teamMemberModel =
                             new TeamMemberModel(teamModel.getId(), ownerUuid, 1, new Timestamp(System.currentTimeMillis()));
                     teamModel.getMemberModelMap().put(ownerUuid, teamMemberModel);
                     boolean insertOwnerMember = StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
 
-                    if(insertOwnerMember) {
+                    if (insertOwnerMember) {
                         sender.sendMessage("Member added successfully");
                     } else {
                         sender.sendMessage("Member added unsuccessfully");
                     }
-                } else {
-                    sender.sendMessage("Team added unsuccessfully");
                 }
             } else {
-                teamModel.setPermanent(true);
+                sender.sendMessage("Team added unsuccessfully");
             }
         } else {
             sender.sendMessage("TeamCreateCommand - Not enough args");

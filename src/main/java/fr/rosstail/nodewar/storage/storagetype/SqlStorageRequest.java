@@ -3,13 +3,16 @@ package fr.rosstail.nodewar.storage.storagetype;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
+import fr.rosstail.nodewar.team.Team;
 import fr.rosstail.nodewar.team.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SqlStorageRequest implements StorageRequest {
     private final Nodewar plugin = Nodewar.getInstance();
@@ -47,7 +50,7 @@ public class SqlStorageRequest implements StorageRequest {
     public void createNodewarPlayerTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + playerTableName +
                 " (uuid varchar(40) PRIMARY KEY UNIQUE NOT NULL," +
-                " team_id INT REFERENCES " + teamTableName + " (_id) ," +
+                //" team_id INT REFERENCES " + teamTableName + " (_id) ," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
         executeSQL(query);
     }
@@ -159,23 +162,17 @@ public class SqlStorageRequest implements StorageRequest {
     @Override
     public TeamModel selectTeamModelByName(String teamName) {
         String query = "SELECT * FROM " + teamTableName + " WHERE name = ?";
+        TeamModel teamModel = null;
         try {
             ResultSet result = executeSQLQuery(connection, query, teamName);
             if (result.next()) {
-                TeamModel teamModel = new TeamModel(teamName, result.getString("display"));
-                teamModel.setId(result.getInt("id"));
-                teamModel.setHexColor(result.getString("hex_color"));
-                teamModel.setPermanent(result.getBoolean("is_permanent"));
-                teamModel.setOpen(result.getBoolean("is_open"));
-                teamModel.setCreationDate(result.getTimestamp("creation_date"));
-                teamModel.setLastUpdate(result.getTimestamp("last_update"));
-                return teamModel;
+                 teamModel = getTeamModelFromResult(result, teamName);
             }
             result.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return teamModel;
     }
 
     @Override
@@ -199,6 +196,35 @@ public class SqlStorageRequest implements StorageRequest {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public Map<String, TeamModel> selectAllTeamModel() {
+        Map<String, TeamModel> stringTeamModelMap = new HashMap<>();
+        String query = "SELECT * FROM " + teamTableName;
+        try {
+            ResultSet result = executeSQLQuery(connection, query);
+            while (result.next()) {
+                String name = result.getString("name");
+                TeamModel teamModel = getTeamModelFromResult(result, name);
+                stringTeamModelMap.put(name, teamModel);
+            }
+            result.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return stringTeamModelMap;
+    }
+
+    private TeamModel getTeamModelFromResult(ResultSet result, String name) throws SQLException {
+        TeamModel teamModel = new TeamModel(name, result.getString("display"));
+        teamModel.setId(result.getInt("id"));
+        teamModel.setHexColor(result.getString("hex_color"));
+        teamModel.setPermanent(result.getBoolean("is_permanent"));
+        teamModel.setOpen(result.getBoolean("is_open"));
+        teamModel.setCreationDate(result.getTimestamp("creation_date"));
+        teamModel.setLastUpdate(result.getTimestamp("last_update"));
+        return teamModel;
     }
 
     @Override
@@ -430,4 +456,15 @@ public class SqlStorageRequest implements StorageRequest {
         return modelList;
     }
 
+    public String getTeamTableName() {
+        return teamTableName;
+    }
+
+    public String getTeamMemberTableName() {
+        return teamMemberTableName;
+    }
+
+    public String getTeamRelationTableName() {
+        return teamRelationTableName;
+    }
 }
