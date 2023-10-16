@@ -3,6 +3,8 @@ package fr.rosstail.nodewar;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.apis.PAPIExpansion;
 import fr.rosstail.nodewar.commands.CommandManager;
+import fr.rosstail.nodewar.events.NodewarEventHandler;
+import fr.rosstail.nodewar.events.WorldguardEventHandler;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
@@ -36,6 +38,8 @@ public class Nodewar extends JavaPlugin implements Listener {
     private static Nodewar instance;
     private static String dimName;
     private MinecraftEventHandler minecraftEventHandler;
+    private WorldguardEventHandler worldguardEventHandler;
+    private NodewarEventHandler nodewarEventHandler;
 
     public void onLoad() {
     }
@@ -107,7 +111,12 @@ public class Nodewar extends JavaPlugin implements Listener {
         }
 
         minecraftEventHandler = new MinecraftEventHandler();
+        worldguardEventHandler = new WorldguardEventHandler();
+        nodewarEventHandler = new NodewarEventHandler();
         Bukkit.getPluginManager().registerEvents(minecraftEventHandler, this);
+        Bukkit.getPluginManager().registerEvents(worldguardEventHandler, this);
+        Bukkit.getPluginManager().registerEvents(nodewarEventHandler, this);
+
         this.getCommand(getName().toLowerCase()).setExecutor(new CommandManager());
 
         TerritoryManager.getTerritoryManager().loadTerritoryTypeConfig();
@@ -151,6 +160,8 @@ public class Nodewar extends JavaPlugin implements Listener {
 
     public void onDisable() {
         minecraftEventHandler.setClosing(true);
+        worldguardEventHandler.setClosing(true);
+        nodewarEventHandler.setClosing(true);
 
         Map<String, PlayerData> playerDataMap = PlayerDataManager.getPlayerDataMap();
         for (Map.Entry<String, PlayerData> entry : playerDataMap.entrySet()) {

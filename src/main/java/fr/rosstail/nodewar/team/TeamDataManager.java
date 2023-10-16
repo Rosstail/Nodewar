@@ -27,8 +27,15 @@ public class TeamDataManager {
         StorageManager.getManager().selectAllTeamModel().forEach((s, teamModel) -> {
             Team team = new Team(teamModel);
             stringTeamMap.put(s, team);
-            System.out.println("Added team " + s + " / " + team.getTeamModel().getDisplay());
         });
+    }
+
+    public void addNewTeam(Team team) {
+        getStringTeamMap().put(team.getTeamModel().getName(), team);
+    }
+
+    public void removeDeletedTeam(String teamName) {
+        getStringTeamMap().remove(teamName);
     }
 
     public Map<String, Team> getStringTeamMap() {

@@ -1,9 +1,13 @@
 package fr.rosstail.nodewar.events;
 
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.StorageManager;
+import fr.rosstail.nodewar.territory.TerritoryManager;
+import org.bukkit.Location;
+import org.bukkit.Warning;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,13 +29,16 @@ public class MinecraftEventHandler implements Listener {
         } else {
             playerData = new PlayerData(playerModel);
         }
+
         PlayerDataManager.initPlayerDataToMap(playerData);
+        checkPlayerPosition(player, player.getLocation());
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         PlayerModel model = PlayerDataManager.getPlayerDataMap().get(player.getName());
+        checkPlayerPosition(player, player.getLocation());
         if (!isClosing) {
             StorageManager.getManager().updatePlayerModel(model, true);
             PlayerDataManager.removePlayerDataFromMap(player);
@@ -40,27 +47,55 @@ public class MinecraftEventHandler implements Listener {
 
     @EventHandler
     public void onPlayerKick(final PlayerKickEvent e) {
-
+        Player player = e.getPlayer();
+        if (player.hasMetadata("NPC")) {
+            return;
+        }
+        checkPlayerPosition(player, player.getLocation());
     }
 
     @EventHandler
     public void onPlayerMove(final PlayerMoveEvent e) {
+        Player player = e.getPlayer();
+        if (player.hasMetadata("NPC")) {
+            return;
+        }
 
+        checkPlayerPosition(player, e.getTo());
     }
 
     @EventHandler
     public void onPlayerTeleport(final PlayerTeleportEvent e) {
+        Player player = e.getPlayer();
+        if (player.hasMetadata("NPC")) {
+            return;
+        }
 
+        checkPlayerPosition(player, e.getTo());
     }
 
     @EventHandler
     public void onPlayerRespawn(final PlayerRespawnEvent e) {
+        Player player = e.getPlayer();
+        if (player.hasMetadata("NPC")) {
+            return;
+        }
 
+        checkPlayerPosition(player, e.getRespawnLocation());
     }
 
     @EventHandler
     public void onPlayerDeath(final PlayerDeathEvent e) {
-        
+        Player player = e.getEntity();
+        if (player.hasMetadata("NPC")) {
+            return;
+        }
+
+        checkPlayerPosition(player, player.getLocation());
+    }
+
+    public void checkPlayerPosition(Player player, Location location) {
+        TerritoryManager.getTerritoryManager().playerRegionPresenceManager(player, location);
     }
 
     public boolean isClosing() {

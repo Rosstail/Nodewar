@@ -27,7 +27,6 @@ public class ObjectiveControl extends Objective {
         this.attackerRatio = Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr());
         this.attackerRatio = Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr());
         this.needNeutralize = Boolean.parseBoolean(this.objectiveControlModel.getNeedNeutralizeStepStr());
-
         this.maxHealth = Integer.parseInt(this.objectiveControlModel.getMaxHealthStr());
         this.currentHealth = maxHealth;
     }

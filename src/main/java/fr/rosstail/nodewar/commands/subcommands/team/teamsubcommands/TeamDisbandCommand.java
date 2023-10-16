@@ -3,6 +3,8 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.storage.StorageManager;
+import fr.rosstail.nodewar.team.Team;
+import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.TeamModel;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -46,6 +48,7 @@ public class TeamDisbandCommand extends TeamSubCommand {
             if (teamModel != null) {
                 sender.sendMessage("Disbanded team");
                 StorageManager.getManager().deleteTeamModel(teamModel.getId());
+                TeamDataManager.getTeamDataManager().removeDeletedTeam(teamModel.getName());
             } else {
                 sender.sendMessage("You are not owner of any team");
             }

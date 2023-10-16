@@ -1,6 +1,10 @@
 package fr.rosstail.nodewar.territory;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.Team;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
@@ -8,6 +12,8 @@ import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.types.*;
 import fr.rosstail.nodewar.territory.type.TerritoryType;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -19,7 +25,7 @@ public class Territory {
 
     private TerritoryModel territoryModel;
 
-    private List<ProtectedRegion> regionList;
+    private World world;
     private Map<Team, List<Player>> teamPlayerList;
 
     private final List<ProtectedRegion> protectedRegionList = new ArrayList<>();
@@ -29,6 +35,8 @@ public class Territory {
     private Objective objective;
 
     private final AttackRequirements attackRequirements;
+
+    private final List<Player> players = new ArrayList<>();
 
     Territory(ConfigurationSection section) {
         territoryModel = new TerritoryModel();
@@ -75,6 +83,23 @@ public class Territory {
         ConfigurationSection attackRequirementSection = section.getConfigurationSection("attack-requirements");
         AttackRequirementsModel sectionAttackRequirementsModel = new AttackRequirementsModel(attackRequirementSection);
         attackRequirements = new AttackRequirements(sectionAttackRequirementsModel, territoryType.getAttackRequirementsModel());
+
+        world = Bukkit.getWorld(territoryModel.getWorldName());
+
+        if (world != null) {
+            final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+            final RegionManager regions = container.get(BukkitAdapter.adapt(world));
+            if (regions != null) {
+                getTerritoryModel().getRegionStringList().forEach(s -> {
+                    if (regions.hasRegion(s)) {
+                        protectedRegionList.add(regions.getRegion(s));
+                        System.out.println("added " + s + " region to " + territoryModel.getName());
+                    }
+                });
+            }
+        } else {
+            AdaptMessage.print(getTerritoryModel().getDisplay() + " ", AdaptMessage.prints.WARNING);
+        }
     }
 
     public TerritoryModel getTerritoryModel() {
@@ -153,5 +178,21 @@ public class Territory {
 
         message = message + attackRequirementsMessage + "\n------------";
         AdaptMessage.print(message, AdaptMessage.prints.OUT);
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+    public List<ProtectedRegion> getProtectedRegionList() {
+        return protectedRegionList;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
     }
 }

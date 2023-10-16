@@ -83,6 +83,7 @@ public class TeamCreateCommand extends TeamSubCommand {
                         sender.sendMessage("Member added unsuccessfully");
                     }
                 }
+                TeamDataManager.getTeamDataManager().addNewTeam(new Team(teamModel));
             } else {
                 sender.sendMessage("Team added unsuccessfully");
             }

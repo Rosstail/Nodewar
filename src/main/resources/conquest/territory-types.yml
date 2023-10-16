@@ -1,6 +1,6 @@
 control-point:
   prefix: "-cp-"
-  world: "indar"
+  world: "amerish"
   suffix: "-cp-"
   objective:
     type: control
@@ -18,7 +18,7 @@ control-point:
 
 outpost: # basic configurations
   prefix: "-o-" # none
-  world: "indar"
+  world: "amerish"
   suffix: "-o-" # none
   objective:
     type: siege
@@ -72,14 +72,14 @@ large-outpost: # basic configurations
 
 tower: # basic configurations
   prefix: "-T-" # none
-  world: "indar"
+  world: "amerish"
   suffix: "-T-" # none
   protected: false
 
 
 facility: # basic configurations
   prefix: "-F-" # none
-  world: "indar"
+  world: "amerish"
   suffix: "-F-" # none
   protected: false
 
@@ -96,7 +96,7 @@ tech-plant:
 
 biolab: # basic configurations
   prefix: "-b-" # none
-  world: "indar"
+  world: "amerish"
   suffix: "-b-" # none
   protected: false
   objective:
@@ -113,6 +113,6 @@ biolab: # basic configurations
 
 warpgate: # basic configurations
   prefix: "-W-" # none
-  world: "indar"
+  world: "amerish"
   suffix: "-W-" # none
   protected: true
