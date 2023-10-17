@@ -14,8 +14,9 @@ public class TerritoryBossBar {
         this.territoryBossBarModel = new TerritoryBossBarModel(clonedChildModel, clonedParentModel);
 
         try {
+            AdaptMessage.print("style used : " + this.territoryBossBarModel.getStyle(), AdaptMessage.prints.WARNING);
             this.barStyle = BarStyle.valueOf(this.territoryBossBarModel.getStyle());
-        } catch (IllegalArgumentException e) {
+        } catch (NullPointerException | IllegalArgumentException e) {
             AdaptMessage.print(
                     "The style " + this.territoryBossBarModel.getStyle() +
                             " does not exist. Using SEGMENTED_6 color instead"

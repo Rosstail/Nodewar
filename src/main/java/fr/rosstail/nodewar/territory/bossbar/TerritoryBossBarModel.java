@@ -15,6 +15,7 @@ public class TerritoryBossBarModel implements Cloneable {
 
     public TerritoryBossBarModel(TerritoryBossBarModel childModel, TerritoryBossBarModel parentModel) {
         TerritoryBossBarModel clonedParentModel = parentModel.clone();
+        System.out.println(childModel.getStyle() + " " +  parentModel.getStyle());
         clonedParentModel.setStyle(childModel.getStyle() != null ? childModel.getStyle() : parentModel.getStyle());
     }
 
@@ -24,6 +25,7 @@ public class TerritoryBossBarModel implements Cloneable {
 
     public void setStyle(String style) {
         this.style = style;
+        System.out.println("Set style AAAA " + style);
     }
 
     @Override

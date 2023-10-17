@@ -76,6 +76,12 @@ public class TerritoryType {
             attackRequirementsModel = new AttackRequirementsModel(section.getConfigurationSection("attack-requirements"));
         }
 
+        if (parentType != null) {
+            territoryBossBarModel = new TerritoryBossBarModel(new TerritoryBossBarModel(section.getConfigurationSection("bossbar")), parentType.territoryBossBarModel);
+        } else {
+            territoryBossBarModel = new TerritoryBossBarModel(section.getConfigurationSection("bossbar"));
+        }
+
     }
 
     public String getName() {
@@ -175,6 +181,9 @@ public class TerritoryType {
             });
 
         }
+
+        message.append(" > bossbar:");
+        message.append("\n    - style: " + territoryBossBarModel.getStyle());
 
         message.append("\n_____________");
         AdaptMessage.print(message.toString(), AdaptMessage.prints.OUT);
