@@ -20,6 +20,14 @@ map:
 empires:
   none-display: "&7No Empire"
 
+bossbar:
+  color:
+    default: WHITE #RED, YELLOW, BLUE, GREEN, PINK, PURPLE, WHITE
+    team: BLUE
+    ally: GREEN
+    truce: PURPLE
+    enemy: RED
+
 calendar:
   wednesday-bf:
     start:

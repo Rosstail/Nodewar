@@ -9,6 +9,7 @@ public class TerritoryEnteredEvent extends TerritoryEvent
 {
     public TerritoryEnteredEvent(final Territory territory, final Player player, final Event parent) {
         super(territory, player, parent);
+        territory.getStringBossBarMap().get("enemy").addPlayer(player);
         /*final World world = player.getWorld();
         if (TerritoryManager.getUsedWorlds().containsKey(world)) {
             TerritoryManager.getUsedWorlds().get(world).getTerritories().forEach((s, territory) -> {

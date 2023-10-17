@@ -1,7 +1,7 @@
 package fr.rosstail.nodewar.territory;
 
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
+import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,7 @@ public class TerritoryModel {
     private final List<String> subterritoryList = new ArrayList<>();
 
     private String objectiveTypeName;
+    private TerritoryBossBarModel bossBarModel;
     private AttackRequirementsModel attackRequirementsModel;
 
     public String getTypeName() {
@@ -98,6 +99,14 @@ public class TerritoryModel {
 
     public void setObjectiveTypeName(String objectiveTypeName) {
         this.objectiveTypeName = objectiveTypeName;
+    }
+
+    public TerritoryBossBarModel getBossBarModel() {
+        return bossBarModel;
+    }
+
+    public void setBossBarModel(TerritoryBossBarModel bossBarModel) {
+        this.bossBarModel = bossBarModel;
     }
 
     public AttackRequirementsModel getAttackRequirementsModel() {

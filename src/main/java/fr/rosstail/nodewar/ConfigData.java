@@ -1,10 +1,15 @@
 package fr.rosstail.nodewar;
 
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConfigData {
     private final Nodewar plugin = Nodewar.getInstance();
@@ -15,6 +20,8 @@ public class ConfigData {
     public final ConfigLocale locale;
 
     public final ConfigTeam team;
+
+    public final ConfigBossBar bossbar;
 
     public class ConfigStorage {
         public final FileConfiguration configFile;
@@ -110,6 +117,29 @@ public class ConfigData {
         }
     }
 
+    public class ConfigBossBar {
+        public FileConfiguration configFile;
+
+        public final String[] relations = new String[]{"default", "team", "ally", "truce", "enemy"};
+        public final Map<String, BarColor> stringBarColorMap = new HashMap<>();
+
+        ConfigBossBar(FileConfiguration config) {
+            configFile = config;
+
+            for (String relation : relations) {
+                try {
+                    stringBarColorMap.put(relation, BarColor.valueOf(config.getString("color.") + relation));
+                } catch (IllegalArgumentException e) {
+                    AdaptMessage.print(
+                            "The color " + (config.getString("color.") + relation) + " does not exist for relation "
+                                    + relation + ". Use PINK color instead"
+                            , AdaptMessage.prints.ERROR);
+                    stringBarColorMap.put(relation, BarColor.PINK);
+                }
+            }
+        }
+    }
+
     public final FileConfiguration config;
 
     ConfigData(FileConfiguration config) {
@@ -119,6 +149,7 @@ public class ConfigData {
         this.locale = new ConfigLocale(readConfig(config, "locale"));
         this.general = new ConfigGeneral(readConfig(config, "general"));
         this.team = new ConfigTeam(readConfig(config, "team"));
+        this.bossbar = new ConfigBossBar(readConfig(config, "bossbar"));
     }
 
     private FileConfiguration readConfig(FileConfiguration baseConfig, String item) {

@@ -4,6 +4,7 @@ package fr.rosstail.nodewar.territory.type;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
+import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
 import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
 import fr.rosstail.nodewar.territory.objective.types.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -27,6 +28,7 @@ public class TerritoryType {
     private boolean underProtection;
     private String objectiveTypeName;
     private ObjectiveModel objectiveModel;
+    private TerritoryBossBarModel territoryBossBarModel;
     private AttackRequirementsModel attackRequirementsModel;
 
     public TerritoryType(ConfigurationSection section) {
@@ -126,6 +128,14 @@ public class TerritoryType {
 
     public void setObjectiveModel(ObjectiveModel objectiveModel) {
         this.objectiveModel = objectiveModel;
+    }
+
+    public TerritoryBossBarModel getTerritoryBossBarModel() {
+        return territoryBossBarModel;
+    }
+
+    public void setTerritoryBossBarModel(TerritoryBossBarModel territoryBossBarModel) {
+        this.territoryBossBarModel = territoryBossBarModel;
     }
 
     public AttackRequirementsModel getAttackRequirementsModel() {

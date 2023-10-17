@@ -56,6 +56,8 @@ outpost: # basic configurations
     territory-types-amount:
       first:
         warpgate: 1
+  bossbar:
+    style: "SEGMENTED_6" # SOLID or SEGMENTED_6/10/12/20
 
 small-outpost: # basic configurations
   prefix: "-so-"
@@ -75,6 +77,8 @@ tower: # basic configurations
   world: "amerish"
   suffix: "-T-" # none
   protected: false
+  bossbar:
+    style: "SEGMENTED_10" # SOLID or SEGMENTED_6/10/12/20
 
 
 facility: # basic configurations
@@ -82,16 +86,22 @@ facility: # basic configurations
   world: "amerish"
   suffix: "-F-" # none
   protected: false
+  bossbar:
+    style: "SEGMENTED_10"
 
 amp-station:
   prefix: "-AMP-"
   suffix: "-Station-"
   type: facility
+  bossbar:
+    style: "SEGMENTED_12"
 
 tech-plant:
   prefix: "-TP-"
   suffix: "-Tech Plant-"
   type: facility
+  bossbar:
+    style: "SEGMENTED_12"
 
 
 biolab: # basic configurations
@@ -109,6 +119,8 @@ biolab: # basic configurations
     territory-types-amount:
       first:
         warpgate: 9
+  bossbar:
+    style: "SEGMENTED_20"
 
 
 warpgate: # basic configurations

@@ -5,19 +5,26 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.Team;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
+import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBar;
+import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.types.*;
 import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,9 +41,13 @@ public class Territory {
 
     private Objective objective;
 
+    private final TerritoryBossBar territoryBossBar;
+
     private final AttackRequirements attackRequirements;
 
     private final List<Player> players = new ArrayList<>();
+
+    private final Map<String, BossBar> stringBossBarMap = new HashMap<>();
 
     Territory(ConfigurationSection section) {
         territoryModel = new TerritoryModel();
@@ -80,6 +91,10 @@ public class Territory {
             setObjective(new Objective());
         }
 
+        ConfigurationSection bossBarSection = section.getConfigurationSection("bossbar");
+        TerritoryBossBarModel sectionBossBarModel = new TerritoryBossBarModel(bossBarSection);
+        territoryBossBar = new TerritoryBossBar(sectionBossBarModel, territoryType.getTerritoryBossBarModel());
+
         ConfigurationSection attackRequirementSection = section.getConfigurationSection("attack-requirements");
         AttackRequirementsModel sectionAttackRequirementsModel = new AttackRequirementsModel(attackRequirementSection);
         attackRequirements = new AttackRequirements(sectionAttackRequirementsModel, territoryType.getAttackRequirementsModel());
@@ -99,6 +114,14 @@ public class Territory {
             }
         } else {
             AdaptMessage.print(getTerritoryModel().getDisplay() + " ", AdaptMessage.prints.WARNING);
+        }
+
+        for (String relation : ConfigData.getConfigData().bossbar.relations) {
+            stringBossBarMap.put(relation, Bukkit.createBossBar(
+                    territoryModel.getDisplay(),
+                    ConfigData.getConfigData().bossbar.stringBarColorMap.get(relation),
+                    territoryBossBar.getBarStyle()
+            ));
         }
     }
 
@@ -194,5 +217,9 @@ public class Territory {
 
     public List<Player> getPlayers() {
         return players;
+    }
+
+    public Map<String, BossBar> getStringBossBarMap() {
+        return stringBossBarMap;
     }
 }
