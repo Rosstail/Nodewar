@@ -14,7 +14,6 @@ public class TeamModel {
     private Timestamp creationDate = new Timestamp(System.currentTimeMillis());
     private Timestamp lastUpdate = new Timestamp(System.currentTimeMillis());
 
-    private final Map<String, TeamMemberModel> memberModelMap = new HashMap<>();
 
     public TeamModel(String name, String display) {
         this.name = name;
@@ -83,9 +82,5 @@ public class TeamModel {
 
     public void setLastUpdate(Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
-    }
-
-    public Map<String, TeamMemberModel> getMemberModelMap() {
-        return memberModelMap;
     }
 }

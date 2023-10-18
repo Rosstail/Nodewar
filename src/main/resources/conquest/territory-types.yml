@@ -71,7 +71,6 @@ large-outpost: # basic configurations
   objective:
     maximum-health: 100
 
-
 tower: # basic configurations
   prefix: "-T-" # none
   world: "amerish"
@@ -79,7 +78,6 @@ tower: # basic configurations
   protected: false
   bossbar:
     style: "SEGMENTED_10" # SOLID or SEGMENTED_6/10/12/20
-
 
 facility: # basic configurations
   prefix: "-F-" # none
@@ -103,7 +101,6 @@ tech-plant:
   bossbar:
     style: "SEGMENTED_12"
 
-
 biolab: # basic configurations
   prefix: "-b-" # none
   world: "amerish"
@@ -121,7 +118,6 @@ biolab: # basic configurations
         warpgate: 9
   bossbar:
     style: "SEGMENTED_20"
-
 
 warpgate: # basic configurations
   prefix: "-W-" # none

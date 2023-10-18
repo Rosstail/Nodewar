@@ -71,19 +71,15 @@ public class TeamCreateCommand extends TeamSubCommand {
                 TeamDataManager.getTeamDataManager().getStringTeamMap().put(teamModel.getName(), new Team(teamModel));
                 sender.sendMessage("Team added successfully");
                 teamModel.setId(StorageManager.getManager().selectTeamModelByName(teamName).getId());
+                Team team = new Team(teamModel);
+                TeamDataManager.getTeamDataManager().addNewTeam(team);
+
                 if (ownerUuid != null) {
                     TeamMemberModel teamMemberModel =
                             new TeamMemberModel(teamModel.getId(), ownerUuid, 1, new Timestamp(System.currentTimeMillis()));
-                    teamModel.getMemberModelMap().put(ownerUuid, teamMemberModel);
-                    boolean insertOwnerMember = StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
-
-                    if (insertOwnerMember) {
-                        sender.sendMessage("Member added successfully");
-                    } else {
-                        sender.sendMessage("Member added unsuccessfully");
-                    }
+                    team.getMemberModelMap().put(ownerUuid, teamMemberModel);
+                    StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
                 }
-                TeamDataManager.getTeamDataManager().addNewTeam(new Team(teamModel));
             } else {
                 sender.sendMessage("Team added unsuccessfully");
             }

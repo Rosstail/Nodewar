@@ -228,7 +228,35 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     @Override
-    public TeamMemberModel selectTeamMemberModel(String playerUuid) {
+    public Map<String, TeamMemberModel> selectTeamMemberModelByTeamUuid(String teamName) {
+        Map<String, TeamMemberModel> memberModelMap = new HashMap<>();
+
+        String query = "SELECT p.uuid, tm.*, tt.id " +
+                "FROM " + teamMemberTableName + " AS tm, " + teamTableName + " AS tt, " + playerTableName + " AS p " +
+                "WHERE p.uuid = tm.player_uuid " +
+                "AND tt.id = tm.team_id " +
+                "AND tt.name = ? " +
+                "ORDER BY tm.player_rank DESC";
+        try {
+            ResultSet result = executeSQLQuery(connection, query, teamName);
+            if (result.next()) {
+                TeamMemberModel teamMemberModel = new TeamMemberModel(
+                        result.getInt("id"),
+                        result.getString("uuid"),
+                        result.getInt("player_rank"),
+                        result.getTimestamp("join_time"));
+                teamMemberModel.setId(result.getInt("id"));
+                memberModelMap.put(result.getString("uuid"), teamMemberModel);
+            }
+            result.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return memberModelMap;
+    }
+
+    @Override
+    public TeamMemberModel selectTeamMemberModelByPlayerUuid(String playerUuid) {
         String query = "SELECT * FROM " + teamMemberTableName + " WHERE player_uuid = ?";
         try {
             ResultSet result = executeSQLQuery(connection, query, playerUuid);
@@ -390,52 +418,6 @@ public class SqlStorageRequest implements StorageRequest {
                 e.printStackTrace();
             }
         }
-    }
-
-    public List<PlayerModel> selectPlayerModelListAsc(int limit) {
-        List<String> onlineUuidList = new ArrayList<>();
-        PlayerDataManager.getPlayerDataMap().forEach((s, playerModel) -> {
-            onlineUuidList.add(playerModel.getUuid());
-        });
-
-        String query = "SELECT * FROM " + pluginName;
-        if (onlineUuidList.size() > 0) {
-            StringBuilder replacement = new StringBuilder("(");
-            for (int i = 0; i < onlineUuidList.size(); i++) {
-                replacement.append("'").append(onlineUuidList.get(i)).append("'");
-                if (i < onlineUuidList.size() - 1) {
-                    replacement.append(",");
-                }
-            }
-            replacement.append(")");
-            query += " WHERE " + pluginName + ".uuid NOT IN " + replacement;
-        }
-        query += " ORDER BY " + pluginName + ".karma ASC LIMIT ?";
-        return selectPlayerModelList(query, limit);
-    }
-
-    public List<PlayerModel> selectPlayerModelListDesc(int limit) {
-        List<String> onlineUUIDList = new ArrayList<>();
-
-        PlayerDataManager.getPlayerDataMap().forEach((s, playerModel) -> {
-            onlineUUIDList.add(playerModel.getUuid());
-        });
-
-        String query = "SELECT * FROM " + pluginName;
-
-        if (onlineUUIDList.size() > 0) {
-            StringBuilder replacement = new StringBuilder("(");
-            for (int i = 0; i < onlineUUIDList.size(); i++) {
-                replacement.append("'").append(onlineUUIDList.get(i)).append("'");
-                if (i < onlineUUIDList.size() - 1) {
-                    replacement.append(",");
-                }
-            }
-            replacement.append(")");
-            query += " WHERE " + pluginName + ".uuid NOT IN " + replacement;
-        }
-        query += " ORDER BY " + pluginName + ".karma DESC LIMIT ?";
-        return selectPlayerModelList(query, limit);
     }
 
     @Override

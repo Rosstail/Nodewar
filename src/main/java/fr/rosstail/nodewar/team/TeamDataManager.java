@@ -28,6 +28,14 @@ public class TeamDataManager {
             Team team = new Team(teamModel);
             stringTeamMap.put(s, team);
         });
+
+        stringTeamMap.forEach((s, team) -> {
+            Map<String, TeamMemberModel> teamMemberModelMap =
+                    StorageManager.getManager().selectTeamMemberModelByTeamUuid(s);
+            teamMemberModelMap.forEach((s1, teamMemberModel) -> {
+                team.getMemberModelMap().put(s1, teamMemberModel);
+            });
+        });
     }
 
     public void addNewTeam(Team team) {

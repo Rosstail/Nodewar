@@ -13,7 +13,6 @@ import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
 
-import java.util.List;
 import java.util.Map;
 
 public class StorageManager {
@@ -205,6 +204,19 @@ public class StorageManager {
         }
     }
 
+    public Map<String, TeamMemberModel> selectTeamMemberModelByTeamUuid(String teamName) {
+        switch (type) {
+            case "mysql":
+                return mySqlStorageRequest.selectTeamMemberModelByTeamUuid(teamName);
+            case "mariadb":
+                return mariaDBStorageRequest.selectTeamMemberModelByTeamUuid(teamName);
+            case "mongodb":
+                return mongoDBStorageRequest.selectTeamMemberModelByTeamUuid(teamName);
+            default:
+                return liteSqlDBStorageRequest.selectTeamMemberModelByTeamUuid(teamName);
+        }
+    }
+
     /**
      * READ
      *
@@ -213,13 +225,13 @@ public class StorageManager {
     public TeamMemberModel selectTeamMemberModel(String player_uuid) {
         switch (type) {
             case "mysql":
-                return mySqlStorageRequest.selectTeamMemberModel(player_uuid);
+                return mySqlStorageRequest.selectTeamMemberModelByPlayerUuid(player_uuid);
             case "mariadb":
-                return mariaDBStorageRequest.selectTeamMemberModel(player_uuid);
+                return mariaDBStorageRequest.selectTeamMemberModelByPlayerUuid(player_uuid);
             case "mongodb":
-                return mongoDBStorageRequest.selectTeamMemberModel(player_uuid);
+                return mongoDBStorageRequest.selectTeamMemberModelByPlayerUuid(player_uuid);
             default:
-                return liteSqlDBStorageRequest.selectTeamMemberModel(player_uuid);
+                return liteSqlDBStorageRequest.selectTeamMemberModelByPlayerUuid(player_uuid);
         }
     }
 
@@ -303,32 +315,6 @@ public class StorageManager {
             default:
                 liteSqlDBStorageRequest.deleteTeamModel(teamID);
                 break;
-        }
-    }
-
-    public List<PlayerModel> selectPlayerModelListTop(int limit) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.selectPlayerModelListDesc(limit);
-            case "mariadb":
-                return mariaDBStorageRequest.selectPlayerModelListDesc(limit);
-            case "mongodb":
-                return mongoDBStorageRequest.selectPlayerModelListDesc(limit);
-            default:
-                return liteSqlDBStorageRequest.selectPlayerModelListDesc(limit);
-        }
-    }
-
-    public List<PlayerModel> selectPlayerModelListBottom(int limit) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.selectPlayerModelListAsc(limit);
-            case "mariadb":
-                return mariaDBStorageRequest.selectPlayerModelListAsc(limit);
-            case "mongodb":
-                return mongoDBStorageRequest.selectPlayerModelListAsc(limit);
-            default:
-                return liteSqlDBStorageRequest.selectPlayerModelListAsc(limit);
         }
     }
 
