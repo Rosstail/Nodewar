@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.territory.bossbar;
 
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.boss.BarStyle;
 
 public class TerritoryBossBar {
@@ -12,16 +13,19 @@ public class TerritoryBossBar {
         TerritoryBossBarModel clonedChildModel = childModel.clone();
         TerritoryBossBarModel clonedParentModel = parentModel.clone();
         this.territoryBossBarModel = new TerritoryBossBarModel(clonedChildModel, clonedParentModel);
-
-        try {
-            AdaptMessage.print("style used : " + this.territoryBossBarModel.getStyle(), AdaptMessage.prints.WARNING);
-            this.barStyle = BarStyle.valueOf(this.territoryBossBarModel.getStyle());
-        } catch (NullPointerException | IllegalArgumentException e) {
-            AdaptMessage.print(
-                    "The style " + this.territoryBossBarModel.getStyle() +
-                            " does not exist. Using SEGMENTED_6 color instead"
-                    , AdaptMessage.prints.ERROR);
-            this.barStyle = BarStyle.SEGMENTED_6;
+        String styleString = this.territoryBossBarModel.getStyle();
+        if (styleString != null) {
+            try {
+                this.barStyle = BarStyle.valueOf(this.territoryBossBarModel.getStyle());
+            } catch (IllegalArgumentException e) {
+                AdaptMessage.print(
+                        "The style " + this.territoryBossBarModel.getStyle() +
+                                " does not exist. Using SEGMENTED_6 color instead"
+                        , AdaptMessage.prints.ERROR);
+                this.barStyle = BarStyle.SEGMENTED_6;
+            }
+        } else {
+            this.barStyle = BarStyle.SOLID;
         }
     }
 

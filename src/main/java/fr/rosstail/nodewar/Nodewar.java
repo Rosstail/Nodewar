@@ -132,9 +132,6 @@ public class Nodewar extends JavaPlugin implements Listener {
         try {
             FileResourcesUtils.generateYamlFile("conquest", this);
             FileResourcesUtils.generateYamlFile("conquest/territories", this);
-            FileResourcesUtils.generateYamlFile("conquest/territories/indar", this);
-            FileResourcesUtils.generateYamlFile("conquest/territories/indar/facilities", this);
-            FileResourcesUtils.generateYamlFile("conquest/territories/indar/outposts", this);
             FileResourcesUtils.generateYamlFile("gui", this);
             FileResourcesUtils.generateYamlFile("lang", this);
         } catch (IOException e) {

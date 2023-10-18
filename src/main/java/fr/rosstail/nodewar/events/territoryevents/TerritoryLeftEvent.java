@@ -18,7 +18,9 @@ public class TerritoryLeftEvent extends TerritoryEvent
      */
     public TerritoryLeftEvent(final Territory territory, final Player player, final Event parent) {
         super(territory, player, parent);
-        territory.getStringBossBarMap().get("enemy").removePlayer(player);
+        territory.getStringBossBarMap().forEach((s, bossBar) -> {
+            bossBar.removePlayer(player);
+        });
 
 
         /*boolean found = false;

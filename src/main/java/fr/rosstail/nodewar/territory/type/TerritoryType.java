@@ -182,7 +182,7 @@ public class TerritoryType {
 
         }
 
-        message.append(" > bossbar:");
+        message.append("\n > bossbar:");
         message.append("\n    - style: " + territoryBossBarModel.getStyle());
 
         message.append("\n_____________");

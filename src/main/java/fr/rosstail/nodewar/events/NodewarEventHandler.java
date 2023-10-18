@@ -15,8 +15,6 @@ public class NodewarEventHandler implements Listener {
         Player player = event.getPlayer();
         Territory territory = event.getTerritory();
         territory.getPlayers().add(player);
-
-        player.sendMessage("You have entered the territory " + territory.getTerritoryModel().getDisplay());
     }
 
     @EventHandler
@@ -24,8 +22,6 @@ public class NodewarEventHandler implements Listener {
         Player player = event.getPlayer();
         Territory territory = event.getTerritory();
         territory.getPlayers().remove(player);
-
-        player.sendMessage("You have left the territory " + territory.getTerritoryModel().getDisplay());
     }
 
 

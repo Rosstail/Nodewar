@@ -128,10 +128,10 @@ public class ConfigData {
 
             for (String relation : relations) {
                 try {
-                    stringBarColorMap.put(relation, BarColor.valueOf(config.getString("color.") + relation));
+                    stringBarColorMap.put(relation, BarColor.valueOf(config.getString("bossbar.color." + relation)));
                 } catch (NullPointerException | IllegalArgumentException e) {
                     AdaptMessage.print(
-                            "The color " + (config.getString("color.") + relation) + " does not exist for relation "
+                            "The color " + (config.getString("bossbar.color.") + relation) + " does not exist for relation "
                                     + relation + ". Use PINK color instead"
                             , AdaptMessage.prints.ERROR);
                     stringBarColorMap.put(relation, BarColor.PINK);
