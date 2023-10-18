@@ -7,6 +7,7 @@ public class Team {
 
     private TeamModel teamModel;
     private final Map<String, TeamMemberModel> memberModelMap = new HashMap<>();
+    private final Map<String, TeamRelationModel> relationModelMap = new HashMap<>();
     public Team(String name, String display) {
         teamModel = new TeamModel(name, display);
     }
@@ -25,5 +26,9 @@ public class Team {
 
     public Map<String, TeamMemberModel> getMemberModelMap() {
         return memberModelMap;
+    }
+
+    public Map<String, TeamRelationModel> getRelationModelMap() {
+        return relationModelMap;
     }
 }

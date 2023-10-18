@@ -120,7 +120,7 @@ public class ConfigData {
     public class ConfigBossBar {
         public FileConfiguration configFile;
 
-        public final String[] relations = new String[]{"default", "team", "ally", "truce", "enemy"};
+        public final String[] relations = new String[]{"neutral", "team", "ally", "truce", "enemy"};
         public final Map<String, BarColor> stringBarColorMap = new HashMap<>();
 
         ConfigBossBar(FileConfiguration config) {

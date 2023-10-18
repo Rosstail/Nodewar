@@ -12,6 +12,7 @@ import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
+import fr.rosstail.nodewar.team.TeamRelationModel;
 
 import java.util.Map;
 
@@ -186,24 +187,6 @@ public class StorageManager {
         }
     }
 
-    /**
-     * READ
-     *
-     * @param ownerUuid
-     */
-    public TeamModel selectTeamModelByOwnerUuid(String ownerUuid) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.selectTeamModelByOwnerUuid(ownerUuid);
-            case "mariadb":
-                return mariaDBStorageRequest.selectTeamModelByOwnerUuid(ownerUuid);
-            case "mongodb":
-                return mongoDBStorageRequest.selectTeamModelByOwnerUuid(ownerUuid);
-            default:
-                return liteSqlDBStorageRequest.selectTeamModelByOwnerUuid(ownerUuid);
-        }
-    }
-
     public Map<String, TeamMemberModel> selectTeamMemberModelByTeamUuid(String teamName) {
         switch (type) {
             case "mysql":
@@ -214,6 +197,19 @@ public class StorageManager {
                 return mongoDBStorageRequest.selectTeamMemberModelByTeamUuid(teamName);
             default:
                 return liteSqlDBStorageRequest.selectTeamMemberModelByTeamUuid(teamName);
+        }
+    }
+
+    public Map<String, TeamRelationModel> selectTeamRelationModelByTeamUuid(String teamName) {
+        switch (type) {
+            case "mysql":
+                return mySqlStorageRequest.selectTeamRelationModelByTeamUuid(teamName);
+            case "mariadb":
+                return mariaDBStorageRequest.selectTeamRelationModelByTeamUuid(teamName);
+            case "mongodb":
+                return mongoDBStorageRequest.selectTeamRelationModelByTeamUuid(teamName);
+            default:
+                return liteSqlDBStorageRequest.selectTeamRelationModelByTeamUuid(teamName);
         }
     }
 

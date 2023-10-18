@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.storage.storagetype;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
+import fr.rosstail.nodewar.team.TeamRelationModel;
 
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,13 @@ public interface StorageRequest {
      * @return the team member model
      */
     Map<String, TeamMemberModel> selectTeamMemberModelByTeamUuid(String teamUuid);
+    /**
+     * READ
+     * get all member team model from storage
+     * @param teamUuid The identifier of the team
+     * @return the team relation model
+     */
+    Map<String, TeamRelationModel> selectTeamRelationModelByTeamUuid(String teamUuid);
 
     /**
      * READ

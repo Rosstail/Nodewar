@@ -48,8 +48,8 @@ public class TeamCreateCommand extends TeamSubCommand {
             String teamName = args[2];
             String displayName = args[3];
             String ownerUuid = null;
-            TeamModel selectTeamModel = StorageManager.getManager().selectTeamModelByName(teamName);
-            if (selectTeamModel != null) {
+
+            if (TeamDataManager.getTeamDataManager().getStringTeamMap().get(teamName) != null) {
                 sender.sendMessage("TeamCreateCommand - This team already exist in storage");
                 return;
             }
@@ -57,8 +57,8 @@ public class TeamCreateCommand extends TeamSubCommand {
             if (sender instanceof Player) {
                 ownerUuid = ((Player) sender).getUniqueId().toString();
 
-                TeamMemberModel selectTeamMember = StorageManager.getManager().selectTeamMemberModel(ownerUuid);
-                if (selectTeamMember != null) {
+                List<Team> teamList = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender).getUniqueId().toString());
+                if (!teamList.isEmpty()) {
                     sender.sendMessage("You are already on a team");
                     return;
                 }

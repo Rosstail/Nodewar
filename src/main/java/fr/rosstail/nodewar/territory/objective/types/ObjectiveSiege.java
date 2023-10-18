@@ -18,7 +18,8 @@ public class ObjectiveSiege extends Objective {
 
     private final ObjectiveSiegeModel objectiveSiegeModel;
 
-    public ObjectiveSiege(ObjectiveSiegeModel childModel, ObjectiveSiegeModel parentModel) {
+    public ObjectiveSiege(Territory territory, ObjectiveSiegeModel childModel, ObjectiveSiegeModel parentModel) {
+        super(territory);
         ObjectiveSiegeModel clonedChildObjectiveModel = childModel.clone();
         ObjectiveSiegeModel clonedParentObjectiveModel = parentModel.clone();
         this.objectiveSiegeModel = new ObjectiveSiegeModel(clonedChildObjectiveModel, clonedParentObjectiveModel);

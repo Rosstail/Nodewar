@@ -1,7 +1,14 @@
 package fr.rosstail.nodewar.territory.objective.types;
 
+import fr.rosstail.nodewar.player.PlayerData;
+import fr.rosstail.nodewar.player.PlayerDataManager;
+import fr.rosstail.nodewar.team.Team;
+import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ObjectiveControl extends Objective {
 
@@ -12,7 +19,8 @@ public class ObjectiveControl extends Objective {
 
     ObjectiveControlModel objectiveControlModel;
 
-    public ObjectiveControl(ObjectiveControlModel childModel, ObjectiveControlModel parentModel) {
+    public ObjectiveControl(Territory territory, ObjectiveControlModel childModel, ObjectiveControlModel parentModel) {
+        super(territory);
         ObjectiveControlModel clonedChildObjectiveModel = childModel.clone();
         ObjectiveControlModel clonedParentObjectiveModel = parentModel.clone();
         this.objectiveControlModel = new ObjectiveControlModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
@@ -68,5 +76,33 @@ public class ObjectiveControl extends Objective {
         return "\n   > Health: " + getCurrentHealth() + " / " + getMaxHealth() +
                 "\n   > Attacker ratio: " + getAttackerRatio() +
                 "\n   > Need neutralize: " + isNeedNeutralize();
+    }
+
+    @Override
+    public void applyProgress() {
+        int total = territory.getPlayers().size();
+        Map<Team, Integer> teamIntegerMap = getEmpirePlayerOnTerritory();
+        float defenderRatio = (float) teamIntegerMap.get(territory.getOwnerTeam()) / total;
+
+
+    }
+
+    private Map<Team, Integer> getEmpirePlayerOnTerritory() {
+        Map<Team, Integer> teamIntegerMap = new HashMap<>();
+
+        territory.getPlayers().forEach(player -> {
+            PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
+            Team playerTeam = playerData.getTeam();
+
+            if (playerTeam != null) {
+                if (!teamIntegerMap.containsKey(playerTeam)) {
+                    teamIntegerMap.put(playerTeam, 1);
+                } else {
+                    teamIntegerMap.put(playerTeam, teamIntegerMap.get(playerTeam) + 1);
+                }
+            }
+        });
+
+        return teamIntegerMap;
     }
 }

@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TeamDisbandCommand extends TeamSubCommand {
     @Override
@@ -42,15 +43,22 @@ public class TeamDisbandCommand extends TeamSubCommand {
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
-        sender.sendMessage("disband");
         if (sender instanceof Player) {
-            TeamModel teamModel = StorageManager.getManager().selectTeamModelByOwnerUuid(((Player) sender).getUniqueId().toString());
-            if (teamModel != null) {
-                sender.sendMessage("Disbanded team");
-                StorageManager.getManager().deleteTeamModel(teamModel.getId());
-                TeamDataManager.getTeamDataManager().removeDeletedTeam(teamModel.getName());
-            } else {
+            boolean disband = false;
+            List<Team> teamList = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender).getUniqueId().toString());
+            if (!teamList.isEmpty()) {
+                Team team = teamList.get(0);
+                if (team.getMemberModelMap().get(((Player) sender).getUniqueId().toString()).getRank() == 1) {
+                    disband = true;
+                    StorageManager.getManager().deleteTeamModel(team.getTeamModel().getId());
+                    TeamDataManager.getTeamDataManager().removeDeletedTeam(team.getTeamModel().getName());
+                }
+            }
+
+            if (!disband){
                 sender.sendMessage("You are not owner of any team");
+            } else {
+                sender.sendMessage("Disbanded team");
             }
         }
     }

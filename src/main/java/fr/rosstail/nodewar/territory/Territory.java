@@ -49,6 +49,8 @@ public class Territory {
 
     private final Map<String, BossBar> stringBossBarMap = new HashMap<>();
 
+    private Team ownerTeam;
+
     Territory(ConfigurationSection section) {
         territoryModel = new TerritoryModel();
         territoryModel.setName(section.getName());
@@ -78,17 +80,17 @@ public class Territory {
         if (territoryModel.getObjectiveTypeName() != null) {
             switch (territoryModel.getObjectiveTypeName()) {
                 case "siege":
-                    setObjective(new ObjectiveSiege(new ObjectiveSiegeModel(objectiveSection), (ObjectiveSiegeModel) territoryType.getObjectiveModel()));
+                    setObjective(new ObjectiveSiege(this, new ObjectiveSiegeModel(objectiveSection), (ObjectiveSiegeModel) territoryType.getObjectiveModel()));
                     break;
                 case "control":
-                    setObjective(new ObjectiveControl(new ObjectiveControlModel(objectiveSection), (ObjectiveControlModel) territoryType.getObjectiveModel()));
+                    setObjective(new ObjectiveControl(this, new ObjectiveControlModel(objectiveSection), (ObjectiveControlModel) territoryType.getObjectiveModel()));
                     break;
                 case "koth":
-                    setObjective(new ObjectiveKoth());
+                    setObjective(new ObjectiveKoth(this));
                     break;
             }
         } else {
-            setObjective(new Objective());
+            setObjective(new Objective(this));
         }
 
         ConfigurationSection bossBarSection = section.getConfigurationSection("bossbar");
@@ -220,5 +222,13 @@ public class Territory {
 
     public Map<String, BossBar> getStringBossBarMap() {
         return stringBossBarMap;
+    }
+
+    public Team getOwnerTeam() {
+        return ownerTeam;
+    }
+
+    public void setOwnerTeam(Team ownerTeam) {
+        this.ownerTeam = ownerTeam;
     }
 }

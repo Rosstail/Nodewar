@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.territory.objective;
 
+import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
 import fr.rosstail.nodewar.territory.objective.reward.RewardModel;
 
@@ -8,10 +9,12 @@ import java.util.Map;
 
 public class Objective {
 
-    private ObjectiveModel objectiveModel;
-    private Map<String, Reward> stringRewardMap = new HashMap<>();
+    protected Territory territory;
+    protected ObjectiveModel objectiveModel;
+    protected Map<String, Reward> stringRewardMap = new HashMap<>();
 
-    public Objective() {
+    public Objective(Territory territory) {
+        this.territory = territory;
         setObjectiveModel(new ObjectiveModel(null));
     }
 
@@ -31,8 +34,12 @@ public class Objective {
         this.objectiveModel = objectiveModel;
     }
 
+    public void applyProgress() {
+        System.out.println("Apply objective progress");
+    }
+
     public String print() {
         // no objective
-        return "";
+        return "objective placeholder";
     }
 }

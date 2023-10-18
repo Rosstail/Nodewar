@@ -20,9 +20,12 @@ map:
 empires:
   none-display: "&7No Empire"
 
+teams:
+  default-relation: neutral
+
 bossbar:
   color:
-    default: WHITE #RED, YELLOW, BLUE, GREEN, PINK, PURPLE, WHITE
+    neutral: WHITE #RED, YELLOW, BLUE, GREEN, PINK, PURPLE, WHITE
     team: BLUE
     ally: GREEN
     truce: PURPLE

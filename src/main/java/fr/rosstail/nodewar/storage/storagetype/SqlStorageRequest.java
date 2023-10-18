@@ -6,6 +6,7 @@ import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.Team;
 import fr.rosstail.nodewar.team.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
+import fr.rosstail.nodewar.team.TeamRelationModel;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
@@ -253,6 +254,31 @@ public class SqlStorageRequest implements StorageRequest {
             e.printStackTrace();
         }
         return memberModelMap;
+    }
+
+    @Override
+    public Map<String, TeamRelationModel> selectTeamRelationModelByTeamUuid(String teamUuid) {
+        Map<String, TeamRelationModel> teamRelationModelMap = new HashMap<>();
+        String query = "SELECT tr.*, tt.name " +
+                "FROM " + teamRelationTableName + "AS tr, " + teamTableName + " AS tt " +
+                " WHERE tt.first_team = ? OR tr.second_team = ? AND tt.id = tr_";
+        try {
+            ResultSet result = executeSQLQuery(connection, query, teamUuid, teamUuid);
+            if (result.next()) {
+                TeamRelationModel teamRelationModel = new TeamRelationModel(
+                        result.getInt("first_team"),
+                        result.getInt("second_team"),
+                        result.getInt("relation_type"));
+                teamRelationModel.setId(result.getInt("id"));
+                System.err.println("NEED HELP HERE");
+                //teamRelationModelMap.put(teamRelationModel.getId(), teamRelationModel);
+            }
+            result.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.err.println("NEED HELP HERE TOO");
+        return null;
     }
 
     @Override
