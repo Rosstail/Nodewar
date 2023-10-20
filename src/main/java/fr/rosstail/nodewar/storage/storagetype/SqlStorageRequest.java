@@ -3,10 +3,10 @@ package fr.rosstail.nodewar.storage.storagetype;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
-import fr.rosstail.nodewar.team.Team;
-import fr.rosstail.nodewar.team.TeamMemberModel;
-import fr.rosstail.nodewar.team.TeamModel;
-import fr.rosstail.nodewar.team.TeamRelationModel;
+import fr.rosstail.nodewar.team.*;
+import fr.rosstail.nodewar.territory.Territory;
+import fr.rosstail.nodewar.territory.TerritoryManager;
+import fr.rosstail.nodewar.territory.TerritoryModel;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
@@ -85,14 +85,14 @@ public class SqlStorageRequest implements StorageRequest {
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " first_team INT NOT NULL REFERENCES " + teamTableName + " (id) ," +
                 " second_team INT NOT NULL REFERENCES " + teamTableName + " (id) ," +
-                " relation_type INT NOT NULL," +
-                " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
+                " relation_type INT NOT NULL);";
         executeSQL(query);
     }
 
     public void createNodewarTerritoryTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + territoryTableName + " ( " +
-                " uuid varchar(40) PRIMARY KEY UNIQUE NOT NULL," +
+                " id varchar(40) PRIMARY KEY UNIQUE NOT NULL," +
+                " owner_team_id INT NOT NULL," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
         executeSQL(query);
     }
@@ -144,6 +144,19 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     @Override
+    public boolean insertTerritoryModel(TerritoryModel model) {
+        String query = "INSERT INTO " + territoryTableName + " (name)"
+                + " VALUES (?);";
+        String territoryName = model.getName();
+        try {
+            return executeSQLUpdate(query, territoryName) > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
     public PlayerModel selectPlayerModel(String uuid) {
         String query = "SELECT * FROM " + playerTableName + " WHERE uuid = ?";
         try {
@@ -167,7 +180,7 @@ public class SqlStorageRequest implements StorageRequest {
         try {
             ResultSet result = executeSQLQuery(connection, query, teamName);
             if (result.next()) {
-                 teamModel = getTeamModelFromResult(result, teamName);
+                teamModel = getTeamModelFromResult(result, teamName);
             }
             result.close();
         } catch (SQLException e) {
@@ -259,26 +272,29 @@ public class SqlStorageRequest implements StorageRequest {
     @Override
     public Map<String, TeamRelationModel> selectTeamRelationModelByTeamUuid(String teamUuid) {
         Map<String, TeamRelationModel> teamRelationModelMap = new HashMap<>();
-        String query = "SELECT tr.*, tt.name " +
-                "FROM " + teamRelationTableName + "AS tr, " + teamTableName + " AS tt " +
-                " WHERE tt.first_team = ? OR tr.second_team = ? AND tt.id = tr_";
+        String query = "SELECT t.name AS other_team_name, tr.*\n" +
+                "FROM " + teamRelationTableName + " AS tr\n" +
+                "JOIN " + teamTableName + " AS tt ON (tr.first_team = tt.id OR tr.second_team = tt.id)\n" +
+                "JOIN " + teamTableName + " AS t ON t.id = CASE \n" +
+                "    WHEN tr.first_team = tt.id THEN tr.second_team\n" +
+                "    ELSE tr.first_team\n" +
+                "    END\n" +
+                "WHERE tt.name = ?;";
         try {
-            ResultSet result = executeSQLQuery(connection, query, teamUuid, teamUuid);
+            ResultSet result = executeSQLQuery(connection, query, teamUuid);
             if (result.next()) {
                 TeamRelationModel teamRelationModel = new TeamRelationModel(
                         result.getInt("first_team"),
                         result.getInt("second_team"),
                         result.getInt("relation_type"));
                 teamRelationModel.setId(result.getInt("id"));
-                System.err.println("NEED HELP HERE");
-                //teamRelationModelMap.put(teamRelationModel.getId(), teamRelationModel);
+                teamRelationModelMap.put(result.getString("other_team_name"), teamRelationModel);
             }
             result.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.err.println("NEED HELP HERE TOO");
-        return null;
+        return teamRelationModelMap;
     }
 
     @Override
@@ -302,6 +318,22 @@ public class SqlStorageRequest implements StorageRequest {
         return null;
     }
 
+    public Map<String, String> selectAllTerritoryOwner() {
+        Map<String, String> stringMap = new HashMap<>();
+        String query = "SELECT tt.name, ttr.* FROM " + territoryTableName + " AS ttr, 'nodewar_teams' as tt " +
+                "WHERE tt.id = ttr.owner_team_id";
+        try {
+            ResultSet result = executeSQLQuery(connection, query);
+            while (result.next()) {
+                stringMap.put(result.getString("id"), result.getString("name"));
+            }
+            result.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return stringMap;
+    }
+
     public void updatePlayerModelAsync(PlayerModel model) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
@@ -321,6 +353,28 @@ public class SqlStorageRequest implements StorageRequest {
 
             if (success) {
                 model.setLastUpdate(System.currentTimeMillis());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateTerritoryModel(TerritoryModel model) {
+        String query = "UPDATE " + territoryTableName + " SET owner_team_id = ?, last_update = CURRENT_TIMESTAMP WHERE name = ?";
+        try {
+            String ownerName = model.getOwnerName();
+            Team team = TeamDataManager.getTeamDataManager().getStringTeamMap().get(ownerName);
+            if (team != null) {
+                executeSQLUpdate(query,
+                        team.getTeamModel().getId(),
+                        model.getName()
+                );
+            } else {
+                executeSQLUpdate(query,
+                        null,
+                        model.getName()
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -13,6 +13,7 @@ import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
 import fr.rosstail.nodewar.team.TeamRelationModel;
+import fr.rosstail.nodewar.territory.TerritoryModel;
 
 import java.util.Map;
 
@@ -231,6 +232,23 @@ public class StorageManager {
         }
     }
 
+    /**
+     * READ
+     *
+     */
+    public Map<String, String> selectAllTerritoryOwner() {
+        switch (type) {
+            case "mysql":
+                return mySqlStorageRequest.selectAllTerritoryOwner();
+            case "mariadb":
+                return mariaDBStorageRequest.selectAllTerritoryOwner();
+            case "mongodb":
+                return mongoDBStorageRequest.selectAllTerritoryOwner();
+            default:
+                return liteSqlDBStorageRequest.selectAllTerritoryOwner();
+        }
+    }
+
 
     /**
      * UPDATE
@@ -266,6 +284,28 @@ public class StorageManager {
                 } else {
                     liteSqlDBStorageRequest.updatePlayerModel(model);
                 }
+                break;
+        }
+    }
+
+    /**
+     * UPDATE
+     *
+     * @param model
+     */
+    public void updateTerritoryModel(TerritoryModel model, boolean async) {
+        switch (type) {
+            case "mysql":
+                mySqlStorageRequest.updateTerritoryModel(model);
+                break;
+            case "mariadb":
+                mariaDBStorageRequest.updateTerritoryModel(model);
+                break;
+            case "mongodb":
+                mongoDBStorageRequest.updateTerritoryModel(model);
+                break;
+            default:
+                liteSqlDBStorageRequest.updateTerritoryModel(model);
                 break;
         }
     }

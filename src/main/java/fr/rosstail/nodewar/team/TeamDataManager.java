@@ -1,7 +1,10 @@
 package fr.rosstail.nodewar.team;
 
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.storage.StorageManager;
+import fr.rosstail.nodewar.territory.Territory;
+import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -15,6 +18,7 @@ public class TeamDataManager {
     private final Nodewar plugin;
 
     private final Map<String, Team> stringTeamMap = new HashMap<>();
+
     private TeamDataManager(Nodewar plugin) {
         this.plugin = plugin;
     }
@@ -45,6 +49,14 @@ public class TeamDataManager {
                 team.getRelationModelMap().put(s1, teamRelationModel);
             });
         });
+
+
+        Map<String, Territory> territoryMap = TerritoryManager.getTerritoryManager().getTerritoryMap();
+        StorageManager.getManager().selectAllTerritoryOwner().forEach((territoryName, ownerName) -> {
+            if (territoryMap.containsKey(territoryName) && getStringTeamMap().containsKey(ownerName)) {
+                territoryMap.get(territoryName).setOwnerTeam(getStringTeamMap().get(ownerName));
+            }
+        });
     }
 
     public void addNewTeam(Team team) {
@@ -63,9 +75,19 @@ public class TeamDataManager {
         return teamDataManager;
     }
 
-    public List<Team> getTeamOfPlayer(String playerUuid) {
-        return TeamDataManager.getTeamDataManager().getStringTeamMap().values().stream().filter(team ->
+    public Team getTeamOfPlayer(String playerUuid) {
+        List<Team> teams = TeamDataManager.getTeamDataManager().getStringTeamMap().values().stream().filter(team ->
                 team.getMemberModelMap().containsKey(playerUuid)
         ).collect(Collectors.toList());
+
+        if (!teams.isEmpty()) {
+            if (teams.size() > 1) {
+                AdaptMessage.print("The player with uuid " + playerUuid +
+                        " is in multiple teams. using the first one only", AdaptMessage.prints.WARNING);
+            }
+            return teams.get(0);
+        }
+
+        return null;
     }
 }

@@ -20,7 +20,8 @@ map:
 empires:
   none-display: "&7No Empire"
 
-teams:
+team:
+  #system: "nodewar"
   default-relation: neutral
 
 bossbar:

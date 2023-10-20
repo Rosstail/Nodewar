@@ -57,8 +57,8 @@ public class TeamCreateCommand extends TeamSubCommand {
             if (sender instanceof Player) {
                 ownerUuid = ((Player) sender).getUniqueId().toString();
 
-                List<Team> teamList = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender).getUniqueId().toString());
-                if (!teamList.isEmpty()) {
+                Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender).getUniqueId().toString());
+                if (playerTeam != null) {
                     sender.sendMessage("You are already on a team");
                     return;
                 }

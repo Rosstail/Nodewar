@@ -45,13 +45,12 @@ public class TeamDisbandCommand extends TeamSubCommand {
         }
         if (sender instanceof Player) {
             boolean disband = false;
-            List<Team> teamList = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender).getUniqueId().toString());
-            if (!teamList.isEmpty()) {
-                Team team = teamList.get(0);
-                if (team.getMemberModelMap().get(((Player) sender).getUniqueId().toString()).getRank() == 1) {
+            Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender).getUniqueId().toString());
+            if (playerTeam != null) {
+                if (playerTeam.getMemberModelMap().get(((Player) sender).getUniqueId().toString()).getRank() == 1) {
                     disband = true;
-                    StorageManager.getManager().deleteTeamModel(team.getTeamModel().getId());
-                    TeamDataManager.getTeamDataManager().removeDeletedTeam(team.getTeamModel().getName());
+                    StorageManager.getManager().deleteTeamModel(playerTeam.getTeamModel().getId());
+                    TeamDataManager.getTeamDataManager().removeDeletedTeam(playerTeam.getTeamModel().getName());
                 }
             }
 

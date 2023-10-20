@@ -4,6 +4,7 @@ import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
 import fr.rosstail.nodewar.team.TeamRelationModel;
+import fr.rosstail.nodewar.territory.TerritoryModel;
 
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,14 @@ public interface StorageRequest {
      * @return if the result is successful
      */
     boolean insertTeamMemberModel(TeamMemberModel model);
+
+    /**
+     * CREATE
+     * inert territory model into storage
+     * @param model the model to insert
+     * @return if the result is successful
+     */
+    boolean insertTerritoryModel(TerritoryModel model);
 
     /**
      * READ
@@ -90,11 +99,26 @@ public interface StorageRequest {
     TeamMemberModel selectTeamMemberModelByPlayerUuid(String playerUuid);
 
     /**
+     * READ
+     * get all territories owner from storage
+     * @return all stored territory names with owners
+     */
+    Map<String, String> selectAllTerritoryOwner();
+
+    /**
      * UPDATE
      * Edit player model to storage
      * @param model The model to update
      */
     void updatePlayerModel(PlayerModel model);
+
+
+    /**
+     * UPDATE
+     * Edit territory model to storage
+     * @param model The model to update
+     */
+    void updateTerritoryModel(TerritoryModel model);
 
     /**
      * DELETE

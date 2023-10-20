@@ -109,11 +109,13 @@ public class ConfigData {
         public FileConfiguration configFile;
 
         public final String teamSystem;
+        public final String defaultRelation;
 
         ConfigTeam(FileConfiguration config) {
             configFile = config;
 
             teamSystem = config.getString("team.system", "nodewar");
+            defaultRelation = config.getString("team.default-relation", "neutral");
         }
     }
 
