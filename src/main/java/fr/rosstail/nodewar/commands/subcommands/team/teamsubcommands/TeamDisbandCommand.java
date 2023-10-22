@@ -2,6 +2,8 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
+import fr.rosstail.nodewar.player.PlayerData;
+import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.Team;
 import fr.rosstail.nodewar.team.TeamDataManager;
@@ -50,7 +52,10 @@ public class TeamDisbandCommand extends TeamSubCommand {
                 if (playerTeam.getMemberModelMap().get(((Player) sender).getUniqueId().toString()).getRank() == 1) {
                     disband = true;
                     StorageManager.getManager().deleteTeamModel(playerTeam.getTeamModel().getId());
-                    TeamDataManager.getTeamDataManager().removeDeletedTeam(playerTeam.getTeamModel().getName());
+                    PlayerDataManager.getPlayerDataMap().values().stream().filter(playerData ->
+                            (playerData.getTeam() == playerTeam)).forEach(playerData -> {
+                                playerData.setTeam(null);
+                    });
                 }
             }
 
