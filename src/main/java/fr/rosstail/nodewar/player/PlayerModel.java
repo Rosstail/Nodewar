@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.player;
 import org.bukkit.entity.Player;
 
 public class PlayerModel {
+    private int id;
     private String uuid;
     private String username;
 
@@ -35,6 +36,7 @@ public class PlayerModel {
      * @param playerModel
      */
     public PlayerModel(PlayerModel playerModel) {
+        this.id = playerModel.getId();
         this.uuid = playerModel.getUuid();
         this.username = playerModel.getUsername();
         this.lastUpdate = playerModel.getLastUpdate();
@@ -51,6 +53,14 @@ public class PlayerModel {
     /*
     Getters setters
      */
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getUuid() {
         return uuid;

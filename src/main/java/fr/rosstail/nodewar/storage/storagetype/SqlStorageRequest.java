@@ -4,8 +4,6 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.*;
-import fr.rosstail.nodewar.territory.Territory;
-import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 import org.bukkit.Bukkit;
 
@@ -49,15 +47,16 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     public void createNodewarPlayerTable() {
-        String query = "CREATE TABLE IF NOT EXISTS " + playerTableName +
-                " (uuid varchar(40) PRIMARY KEY UNIQUE NOT NULL," +
-                //" team_id INT REFERENCES " + teamTableName + " (_id) ," +
+        String query = "CREATE TABLE IF NOT EXISTS " + playerTableName + " (" +
+                " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
+                " uuid varchar(40) UNIQUE NOT NULL," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
+
         executeSQL(query);
     }
 
     public void createNodewarTeamTable() {
-        String query = "CREATE TABLE IF NOT EXISTS " + teamTableName + " ( " +
+        String query = "CREATE TABLE IF NOT EXISTS " + teamTableName + " (" +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " name VARCHAR(40) UNIQUE," +
                 " display VARCHAR(40) UNIQUE," +
@@ -72,9 +71,13 @@ public class SqlStorageRequest implements StorageRequest {
     public void createNodewarTeamMemberTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + teamMemberTableName + " (" +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
-                " player_uuid VARCHAR(40) NOT NULL REFERENCES " + playerTableName + " (uuid) ," +
-                " team_id INT NOT NULL REFERENCES " + teamTableName + " (id) ," +
-                " player_rank INT NOT NULL," +
+                " player_id INTEGER NOT NULL" +
+                    " REFERENCES " + playerTableName + " (id)" +
+                    " ON DELETE CASCADE," +
+                " team_id INTEGER NOT NULL" +
+                    " REFERENCES " + teamTableName + " (id)" +
+                    " ON DELETE CASCADE," +
+                " player_rank INTEGER NOT NULL," +
                 " join_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
 
         executeSQL(query);
@@ -83,16 +86,22 @@ public class SqlStorageRequest implements StorageRequest {
     public void createNodewarTeamRelationTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + teamRelationTableName + " (" +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
-                " first_team INT NOT NULL REFERENCES " + teamTableName + " (id) ," +
-                " second_team INT NOT NULL REFERENCES " + teamTableName + " (id) ," +
-                " relation_type INT NOT NULL);";
+                " first_team_id INTEGER NOT NULL" +
+                    " REFERENCES " + teamTableName + " (id)" +
+                    " ON DELETE CASCADE," +
+                " second_team_id INTEGER NOT NULL" +
+                    " REFERENCES " + teamTableName + " (id)" +
+                    " ON DELETE CASCADE," +
+                " relation_type INTEGER NOT NULL);";
         executeSQL(query);
     }
 
     public void createNodewarTerritoryTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + territoryTableName + " ( " +
                 " id varchar(40) PRIMARY KEY UNIQUE NOT NULL," +
-                " owner_team_id INT NOT NULL," +
+                " owner_team_id INTEGER NOT NULL" +
+                    " REFERENCES " + teamTableName + " (id)" +
+                    " ON DELETE SET NULL," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
         executeSQL(query);
     }
@@ -104,7 +113,8 @@ public class SqlStorageRequest implements StorageRequest {
 
         String uuid = model.getUuid();
         try {
-            return executeSQLUpdate(query, uuid) > 0;
+            model.setId(executeSQLUpdate(query, uuid));
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -130,10 +140,12 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public boolean insertTeamMemberModel(TeamMemberModel model) {
-        String query = "INSERT INTO " + teamMemberTableName + " (team_id, player_uuid, player_rank)"
+        String query = "INSERT INTO " + teamMemberTableName + " (team_id, " +
+                "player_id, " +
+                "player_rank)"
                 + " VALUES (?, ?, ?);";
         int teamId = model.getTeamId();
-        String memberUuid = model.getMemberUuid();
+        int memberUuid = model.getPlayerId();
         int memberRank = model.getRank();
         try {
             return executeSQLUpdate(query, teamId, memberUuid, memberRank) > 0;
@@ -163,6 +175,7 @@ public class SqlStorageRequest implements StorageRequest {
             ResultSet result = executeSQLQuery(connection, query, uuid);
             if (result.next()) {
                 PlayerModel model = new PlayerModel(uuid, PlayerDataManager.getPlayerNameFromUUID(uuid));
+                model.setId(result.getInt("id"));
                 model.setLastUpdate(result.getTimestamp("last_update").getTime());
                 return model;
             }
@@ -191,8 +204,8 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public TeamModel selectTeamModelByOwnerUuid(String ownerUuid) {
-        String query = "SELECT * FROM " + teamTableName + " AS tt, " + teamMemberTableName + " AS tmt WHERE "
-                + "tt.id = tmt.team_id AND tmt.player_uuid = ? AND tmt.player_rank = 1";
+        String query = "SELECT * FROM " + teamTableName + " AS tt, " + teamMemberTableName + " AS tmt, " + playerTableName + " AS pt " +
+                "WHERE tt.id = tmt.team_id AND tmt.player_id = pt.id AND tmt.player_rank = 1 AND pt.uuid = ?";
         try {
             ResultSet result = executeSQLQuery(connection, query, ownerUuid);
             if (result.next()) {
@@ -242,12 +255,12 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     @Override
-    public Map<String, TeamMemberModel> selectTeamMemberModelByTeamUuid(String teamName) {
-        Map<String, TeamMemberModel> memberModelMap = new HashMap<>();
+    public Map<Integer, TeamMemberModel> selectTeamMemberModelByTeamUuid(String teamName) {
+        Map<Integer, TeamMemberModel> memberModelMap = new HashMap<>();
 
         String query = "SELECT p.uuid, tm.*, tt.id " +
                 "FROM " + teamMemberTableName + " AS tm, " + teamTableName + " AS tt, " + playerTableName + " AS p " +
-                "WHERE p.uuid = tm.player_uuid " +
+                "WHERE p.id = tm.player_id " +
                 "AND tt.id = tm.team_id " +
                 "AND tt.name = ? " +
                 "ORDER BY tm.player_rank DESC";
@@ -256,11 +269,11 @@ public class SqlStorageRequest implements StorageRequest {
             if (result.next()) {
                 TeamMemberModel teamMemberModel = new TeamMemberModel(
                         result.getInt("id"),
-                        result.getString("uuid"),
+                        result.getInt("player_id"),
                         result.getInt("player_rank"),
                         result.getTimestamp("join_time"));
                 teamMemberModel.setId(result.getInt("id"));
-                memberModelMap.put(result.getString("uuid"), teamMemberModel);
+                memberModelMap.put(result.getInt("player_id"), teamMemberModel);
             }
             result.close();
         } catch (SQLException e) {
@@ -274,18 +287,18 @@ public class SqlStorageRequest implements StorageRequest {
         Map<String, TeamRelationModel> teamRelationModelMap = new HashMap<>();
         String query = "SELECT t.name AS other_team_name, tr.*\n" +
                 "FROM " + teamRelationTableName + " AS tr\n" +
-                "JOIN " + teamTableName + " AS tt ON (tr.first_team = tt.id OR tr.second_team = tt.id)\n" +
+                "JOIN " + teamTableName + " AS tt ON (tr.first_team_id = tt.id OR tr.second_team_id = tt.id)\n" +
                 "JOIN " + teamTableName + " AS t ON t.id = CASE \n" +
-                "    WHEN tr.first_team = tt.id THEN tr.second_team\n" +
-                "    ELSE tr.first_team\n" +
+                "    WHEN tr.first_team_id = tt.id THEN tr.second_team_id\n" +
+                "    ELSE tr.first_team_id\n" +
                 "    END\n" +
                 "WHERE tt.name = ?;";
         try {
             ResultSet result = executeSQLQuery(connection, query, teamUuid);
             if (result.next()) {
                 TeamRelationModel teamRelationModel = new TeamRelationModel(
-                        result.getInt("first_team"),
-                        result.getInt("second_team"),
+                        result.getInt("first_team_id"),
+                        result.getInt("second_team_id"),
                         result.getInt("relation_type"));
                 teamRelationModel.setId(result.getInt("id"));
                 teamRelationModelMap.put(result.getString("other_team_name"), teamRelationModel);
@@ -298,14 +311,14 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     @Override
-    public TeamMemberModel selectTeamMemberModelByPlayerUuid(String playerUuid) {
-        String query = "SELECT * FROM " + teamMemberTableName + " WHERE player_uuid = ?";
+    public TeamMemberModel selectTeamMemberModelByPlayerId(int playerId) {
+        String query = "SELECT * FROM " + teamMemberTableName + " WHERE player_id = ?";
         try {
-            ResultSet result = executeSQLQuery(connection, query, playerUuid);
+            ResultSet result = executeSQLQuery(connection, query, playerId);
             if (result.next()) {
                 TeamMemberModel teamMemberModel = new TeamMemberModel(
                         result.getInt("team_id"),
-                        playerUuid,
+                        playerId,
                         result.getInt("player_rank"),
                         result.getTimestamp("join_time"));
                 teamMemberModel.setId(result.getInt("id"));
@@ -320,7 +333,7 @@ public class SqlStorageRequest implements StorageRequest {
 
     public Map<String, String> selectAllTerritoryOwner() {
         Map<String, String> stringMap = new HashMap<>();
-        String query = "SELECT tt.name, ttr.* FROM " + territoryTableName + " AS ttr, 'nodewar_teams' as tt " +
+        String query = "SELECT tt.name, ttr.* FROM " + territoryTableName + " AS ttr, " + teamTableName + " AS tt " +
                 "WHERE tt.id = ttr.owner_team_id";
         try {
             ResultSet result = executeSQLQuery(connection, query);
@@ -393,7 +406,8 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public void deleteTeamModel(int teamID) {
-        String query = "DELETE FROM " + teamTableName + " WHERE id = ?";
+        String query = "DELETE FROM " + teamTableName +
+                " WHERE id = ?";
         try {
             boolean success = executeSQLUpdate(query, teamID) > 0;
         } catch (SQLException e) {
@@ -409,17 +423,31 @@ public class SqlStorageRequest implements StorageRequest {
      * @return # Returns the number of rows affected
      */
     private int executeSQLUpdate(String query, Object... params) throws SQLException {
-        int result = 0;
+        int affectedRows = 0;
         openConnection();
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
             }
-            result = statement.executeUpdate();
+
+            affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                }
+                else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return result;
+        return affectedRows;
     }
 
     /**
@@ -518,6 +546,10 @@ public class SqlStorageRequest implements StorageRequest {
         return modelList;
     }
 
+    public String getPlayerTableName() {
+        return playerTableName;
+    }
+
     public String getTeamTableName() {
         return teamTableName;
     }
@@ -528,5 +560,9 @@ public class SqlStorageRequest implements StorageRequest {
 
     public String getTeamRelationTableName() {
         return teamRelationTableName;
+    }
+
+    protected Connection getConnection() {
+        return connection;
     }
 }

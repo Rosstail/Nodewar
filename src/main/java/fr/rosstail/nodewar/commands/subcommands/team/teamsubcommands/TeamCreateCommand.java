@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
+import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.Team;
 import fr.rosstail.nodewar.team.TeamDataManager;
@@ -47,7 +48,7 @@ public class TeamCreateCommand extends TeamSubCommand {
         if (args.length >= 4) {
             String teamName = args[2];
             String displayName = args[3];
-            String ownerUuid = null;
+            int ownerId = 0;
 
             if (TeamDataManager.getTeamDataManager().getStringTeamMap().get(teamName) != null) {
                 sender.sendMessage("TeamCreateCommand - This team already exist in storage");
@@ -55,9 +56,10 @@ public class TeamCreateCommand extends TeamSubCommand {
             }
             TeamModel teamModel = new TeamModel(teamName, displayName);
             if (sender instanceof Player) {
-                ownerUuid = ((Player) sender).getUniqueId().toString();
+                Player senderPlayer = (Player) sender;
+                ownerId = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName()).getId();
 
-                Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender).getUniqueId().toString());
+                Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
                 if (playerTeam != null) {
                     sender.sendMessage("You are already on a team");
                     return;
@@ -74,10 +76,10 @@ public class TeamCreateCommand extends TeamSubCommand {
                 Team team = new Team(teamModel);
                 TeamDataManager.getTeamDataManager().addNewTeam(team);
 
-                if (ownerUuid != null) {
+                if (ownerId != 0) {
                     TeamMemberModel teamMemberModel =
-                            new TeamMemberModel(teamModel.getId(), ownerUuid, 1, new Timestamp(System.currentTimeMillis()));
-                    team.getMemberModelMap().put(ownerUuid, teamMemberModel);
+                            new TeamMemberModel(teamModel.getId(), ownerId, 1, new Timestamp(System.currentTimeMillis()));
+                    team.getMemberModelMap().put(ownerId, teamMemberModel);
                     StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
                 }
             } else {

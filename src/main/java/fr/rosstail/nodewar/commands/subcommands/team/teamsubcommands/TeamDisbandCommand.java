@@ -46,20 +46,25 @@ public class TeamDisbandCommand extends TeamSubCommand {
             return;
         }
         if (sender instanceof Player) {
+            Player player = ((Player) sender).getPlayer();
             boolean disband = false;
-            Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender).getUniqueId().toString());
+            Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
             if (playerTeam != null) {
-                if (playerTeam.getMemberModelMap().get(((Player) sender).getUniqueId().toString()).getRank() == 1) {
+                if (playerTeam.getMemberModelMap().get(PlayerDataManager.getPlayerDataMap().get(player.getName()).getId()).getRank() == 1) {
                     disband = true;
                     StorageManager.getManager().deleteTeamModel(playerTeam.getTeamModel().getId());
                     PlayerDataManager.getPlayerDataMap().values().stream().filter(playerData ->
                             (playerData.getTeam() == playerTeam)).forEach(playerData -> {
-                                playerData.setTeam(null);
+                        playerData.setTeam(null);
                     });
+                } else {
+                    sender.sendMessage("you do not have enough rank on your team");
                 }
+            } else {
+                sender.sendMessage("Your team is null");
             }
 
-            if (!disband){
+            if (!disband) {
                 sender.sendMessage("You are not owner of any team");
             } else {
                 sender.sendMessage("Disbanded team");

@@ -55,7 +55,7 @@ public class TeamRelationCommand extends TeamSubCommand {
             }
             String relationType = args[2];
             String targetTeamName = args[3];
-            Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender).getUniqueId().toString());
+            Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender));
             Team targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
             if (playerTeam == null) {
                 sender.sendMessage("You are part of no team");
@@ -107,7 +107,7 @@ public class TeamRelationCommand extends TeamSubCommand {
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender.getUniqueId().toString());
+        Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
         if (args.length <= 3) {
             List<String> relations = new ArrayList<>();
             Collections.addAll(relations, ConfigData.getConfigData().bossbar.relations);

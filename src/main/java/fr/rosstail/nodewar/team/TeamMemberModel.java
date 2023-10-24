@@ -1,29 +1,27 @@
 package fr.rosstail.nodewar.team;
 
-import org.bukkit.scoreboard.Team;
-
 import java.sql.Timestamp;
 
 public class TeamMemberModel {
-    private int Id;
+    private int id;
     private int teamId;
-    private String memberUuid;
+    private int playerId;
     private int rank; //1 OWNER, 2 Admin, 3 Lieutenant, 4 Member, 5 Recruit
     private Timestamp joinDate;
 
-    public TeamMemberModel(int teamId, String memberUuid, int rank, Timestamp joinDate) {
+    public TeamMemberModel(int teamId, int playerId, int rank, Timestamp joinDate) {
         this.teamId = teamId;
-        this.memberUuid = memberUuid;
+        this.playerId = playerId;
         this.rank = rank;
         this.joinDate = joinDate;
     }
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public int getTeamId() {
@@ -34,12 +32,12 @@ public class TeamMemberModel {
         this.teamId = teamId;
     }
 
-    public String getMemberUuid() {
-        return memberUuid;
+    public int getPlayerId() {
+        return playerId;
     }
 
-    public void setMemberUuid(String memberUuid) {
-        this.memberUuid = memberUuid;
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
     }
 
     public int getRank() {

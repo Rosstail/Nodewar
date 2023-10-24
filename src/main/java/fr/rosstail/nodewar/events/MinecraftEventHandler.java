@@ -30,11 +30,12 @@ public class MinecraftEventHandler implements Listener {
             StorageManager.getManager().insertPlayerModel(playerData);
         } else {
             playerData = new PlayerData(playerModel);
-            Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player.getUniqueId().toString());
-            playerData.setTeam(playerTeam);
         }
 
         PlayerDataManager.initPlayerDataToMap(playerData);
+        Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
+        playerData.setTeam(playerTeam);
+
         checkPlayerPosition(player, player.getLocation());
     }
 

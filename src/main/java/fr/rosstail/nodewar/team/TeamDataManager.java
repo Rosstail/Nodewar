@@ -2,6 +2,8 @@ package fr.rosstail.nodewar.team;
 
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.player.PlayerData;
+import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
@@ -33,13 +35,15 @@ public class TeamDataManager {
         stringTeamMap.clear();
         StorageManager.getManager().selectAllTeamModel().forEach((s, teamModel) -> {
             Team team = new Team(teamModel);
+            System.out.println("Team loaded " + s);
             stringTeamMap.put(s, team);
         });
 
         stringTeamMap.forEach((s, team) -> {
-            Map<String, TeamMemberModel> teamMemberModelMap =
+            Map<Integer, TeamMemberModel> teamMemberModelMap =
                     StorageManager.getManager().selectTeamMemberModelByTeamUuid(s);
             teamMemberModelMap.forEach((s1, teamMemberModel) -> {
+                System.out.println("Add member to team " + s + " " + s1 + " rank " + teamMemberModel.getRank() + " player id " + teamMemberModel.getId());
                 team.getMemberModelMap().put(s1, teamMemberModel);
             });
 
@@ -75,14 +79,15 @@ public class TeamDataManager {
         return teamDataManager;
     }
 
-    public Team getTeamOfPlayer(String playerUuid) {
+    public Team getTeamOfPlayer(Player player) {
+        PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
         List<Team> teams = TeamDataManager.getTeamDataManager().getStringTeamMap().values().stream().filter(team ->
-                team.getMemberModelMap().containsKey(playerUuid)
+                team.getMemberModelMap().containsKey(playerData.getId())
         ).collect(Collectors.toList());
 
         if (!teams.isEmpty()) {
             if (teams.size() > 1) {
-                AdaptMessage.print("The player with uuid " + playerUuid +
+                AdaptMessage.print("The player with data id " + playerData.getId() +
                         " is in multiple teams. using the first one only", AdaptMessage.prints.WARNING);
             }
             return teams.get(0);

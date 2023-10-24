@@ -81,7 +81,7 @@ public interface StorageRequest {
      * @param teamUuid The identifier of the team
      * @return the team member model
      */
-    Map<String, TeamMemberModel> selectTeamMemberModelByTeamUuid(String teamUuid);
+    Map<Integer, TeamMemberModel> selectTeamMemberModelByTeamUuid(String teamUuid);
     /**
      * READ
      * get all member team model from storage
@@ -93,10 +93,10 @@ public interface StorageRequest {
     /**
      * READ
      * get member team model from storage
-     * @param playerUuid The identifier of player
+     * @param playerId The identifier of player in database
      * @return the team member model
      */
-    TeamMemberModel selectTeamMemberModelByPlayerUuid(String playerUuid);
+    TeamMemberModel selectTeamMemberModelByPlayerId(int playerId);
 
     /**
      * READ

@@ -188,7 +188,7 @@ public class StorageManager {
         }
     }
 
-    public Map<String, TeamMemberModel> selectTeamMemberModelByTeamUuid(String teamName) {
+    public Map<Integer, TeamMemberModel> selectTeamMemberModelByTeamUuid(String teamName) {
         switch (type) {
             case "mysql":
                 return mySqlStorageRequest.selectTeamMemberModelByTeamUuid(teamName);
@@ -217,18 +217,18 @@ public class StorageManager {
     /**
      * READ
      *
-     * @param player_uuid
+     * @param playerId
      */
-    public TeamMemberModel selectTeamMemberModel(String player_uuid) {
+    public TeamMemberModel selectTeamMemberModel(int playerId) {
         switch (type) {
             case "mysql":
-                return mySqlStorageRequest.selectTeamMemberModelByPlayerUuid(player_uuid);
+                return mySqlStorageRequest.selectTeamMemberModelByPlayerId(playerId);
             case "mariadb":
-                return mariaDBStorageRequest.selectTeamMemberModelByPlayerUuid(player_uuid);
+                return mariaDBStorageRequest.selectTeamMemberModelByPlayerId(playerId);
             case "mongodb":
-                return mongoDBStorageRequest.selectTeamMemberModelByPlayerUuid(player_uuid);
+                return mongoDBStorageRequest.selectTeamMemberModelByPlayerId(playerId);
             default:
-                return liteSqlDBStorageRequest.selectTeamMemberModelByPlayerUuid(player_uuid);
+                return liteSqlDBStorageRequest.selectTeamMemberModelByPlayerId(playerId);
         }
     }
 

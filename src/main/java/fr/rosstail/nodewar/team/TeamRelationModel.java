@@ -1,9 +1,7 @@
 package fr.rosstail.nodewar.team;
 
-import java.sql.Timestamp;
-
 public class TeamRelationModel {
-    private int Id;
+    private int id;
     private int firstTeamId;
     private int secondTeamId;
     private int relation;
@@ -15,11 +13,11 @@ public class TeamRelationModel {
     }
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public int getFirstTeamId() {
