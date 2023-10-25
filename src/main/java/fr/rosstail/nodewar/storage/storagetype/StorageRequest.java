@@ -92,18 +92,11 @@ public interface StorageRequest {
 
     /**
      * READ
-     * get member team model from storage
-     * @param playerId The identifier of player in database
-     * @return the team member model
-     */
-    TeamMemberModel selectTeamMemberModelByPlayerId(int playerId);
-
-    /**
-     * READ
      * get all territories owner from storage
+     *
      * @return all stored territory names with owners
      */
-    Map<String, String> selectAllTerritoryOwner();
+    List<TerritoryModel> selectAllTerritoryModel();
 
     /**
      * UPDATE
@@ -112,6 +105,12 @@ public interface StorageRequest {
      */
     void updatePlayerModel(PlayerModel model);
 
+    /**
+     * UPDATE
+     * Edit team model to storage
+     * @param model The model to update
+     */
+    void updateTeamModel(TeamModel model);
 
     /**
      * UPDATE
@@ -141,4 +140,10 @@ public interface StorageRequest {
      * @return the models found
      */
     List<PlayerModel> selectPlayerModelList(String order, int limit);
+
+    /**
+     * DELETE player from the team members table
+     * @param playerId the id of player
+     */
+    void deleteTeamMemberModel(int playerId);
 }

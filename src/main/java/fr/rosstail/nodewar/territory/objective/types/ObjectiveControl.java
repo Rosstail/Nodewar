@@ -80,15 +80,31 @@ public class ObjectiveControl extends Objective {
 
     @Override
     public void applyProgress() {
-        int total = territory.getPlayers().size();
+        int totalPlayers = territory.getPlayers().size();
         Map<Team, Integer> teamIntegerMap = getEmpirePlayerOnTerritory();
-        float defenderRatio = (float) teamIntegerMap.get(territory.getOwnerTeam()) / total;
+        Map<Team, Float> attackerRatioMap = new HashMap<>();
 
+        float defenderRatio = teamIntegerMap.get(territory.getOwnerTeam()) / Math.max(totalPlayers, 1F);
+        teamIntegerMap.forEach((team, integer) -> {
+            if (team != territory.getOwnerTeam()) {
+                attackerRatioMap.put(team, integer / Math.max(totalPlayers, 1F));
+            }
+        });
 
+        if (defenderRatio > 0F) {
+            System.out.println("Defender " + territory.getOwnerTeam().getTeamModel().getName() + " ratio at " + territory.getTerritoryModel().getName() + " is " + defenderRatio);
+        }
+
+        attackerRatioMap.forEach((team, aFloat) -> {
+            if (aFloat > 0F) {
+                System.out.println("Attacker " + team.getTeamModel().getName() + " ratio at " + territory.getTerritoryModel().getName() + " is " + aFloat);
+            }
+        });
     }
 
     private Map<Team, Integer> getEmpirePlayerOnTerritory() {
         Map<Team, Integer> teamIntegerMap = new HashMap<>();
+        teamIntegerMap.put(territory.getOwnerTeam(), 0); //guarantee
 
         territory.getPlayers().forEach(player -> {
             PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());

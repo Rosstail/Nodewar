@@ -119,13 +119,18 @@ public class Nodewar extends JavaPlugin implements Listener {
 
         this.getCommand(getName().toLowerCase()).setExecutor(new CommandManager());
 
-        TerritoryManager.getTerritoryManager().loadTerritoryTypeConfig();
-        TerritoryManager.getTerritoryManager().loadTerritoryConfigs("plugins/" + getName() + "/conquest/territories");
+        TerritoryManager territoryManager = TerritoryManager.getTerritoryManager();
+
+        territoryManager.loadTerritoryTypeConfig();
+        territoryManager.loadTerritoryConfigs("plugins/" + getName() + "/conquest/territories");
         AdaptMessage.print("=============", AdaptMessage.prints.OUT);
-        TerritoryManager.getTerritoryManager().getTerritoryMap().forEach((s, territory) -> territory.print());
+        territoryManager.getTerritoryMap().forEach((s, territory) -> territory.print());
         AdaptMessage.print("=====END=====", AdaptMessage.prints.OUT);
 
         TeamDataManager.getTeamDataManager().loadTeams();
+        territoryManager.setupTerritoriesOwner();
+
+        PointInPolygon.main(null);
     }
 
     private void initDefaultConfigs() {

@@ -30,7 +30,7 @@ public class TerritoryEnteredEvent extends TerritoryEvent
                     TeamRelationModel relationModel = playerTeam.getRelationModelMap().get(ownerTeamName);
                     type = ConfigData.getConfigData().bossbar.relations[relationModel.getRelation()];
                 } else {
-                    System.out.println("nope");
+                    System.out.println("nope " + playerTeam.getTeamModel().getName() + " vs " + ownerTeamName);
                 }
             } else {
                 System.out.println("player team is null");

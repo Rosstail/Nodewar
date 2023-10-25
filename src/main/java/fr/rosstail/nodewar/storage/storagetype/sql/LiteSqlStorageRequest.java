@@ -2,10 +2,6 @@ package fr.rosstail.nodewar.storage.storagetype.sql;
 
 import fr.rosstail.nodewar.storage.storagetype.SqlStorageRequest;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 public class LiteSqlStorageRequest extends SqlStorageRequest {
 
     public LiteSqlStorageRequest(String pluginName) {
@@ -77,6 +73,19 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
                     " REFERENCES " + getTeamTableName() + " (id)" +
                     " ON DELETE CASCADE," +
                 " relation_type INTEGER NOT NULL," +
+                " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
+        executeSQL(query);
+    }
+
+    @Override
+    public void createNodewarTerritoryTable() {
+        String query = "CREATE TABLE IF NOT EXISTS " + getTerritoryTableName() + " ( " +
+                " id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                " name varchar(40) UNIQUE NOT NULL," +
+                " world varchar(40) NOT NULL," +
+                " owner_team_id INTEGER " +
+                    " REFERENCES " + getTeamTableName() + " (id)" +
+                    " ON DELETE SET NULL," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
         executeSQL(query);
     }

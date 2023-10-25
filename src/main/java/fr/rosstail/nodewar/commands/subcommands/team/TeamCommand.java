@@ -2,9 +2,7 @@ package fr.rosstail.nodewar.commands.subcommands.team;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.SubCommand;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.TeamCreateCommand;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.TeamDisbandCommand;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.TeamRelationCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.*;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -24,6 +22,8 @@ public class TeamCommand extends TeamSubCommand {
         subCommands.add(new TeamCreateCommand());
         subCommands.add(new TeamDisbandCommand());
         subCommands.add(new TeamRelationCommand());
+        subCommands.add(new TeamJoinCommand());
+        subCommands.add(new TeamLeaveCommand());
     }
 
     @Override

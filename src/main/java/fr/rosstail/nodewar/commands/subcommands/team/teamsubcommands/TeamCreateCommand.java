@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
+import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.Team;
@@ -42,12 +43,16 @@ public class TeamCreateCommand extends TeamSubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
+        String teamName;
+        String displayName;
+        Player senderPlayer = null;
+        Team playerTeam;
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
         if (args.length >= 4) {
-            String teamName = args[2];
-            String displayName = args[3];
+            teamName = args[2];
+            displayName = args[3];
             int ownerId = 0;
 
             if (TeamDataManager.getTeamDataManager().getStringTeamMap().get(teamName) != null) {
@@ -56,10 +61,11 @@ public class TeamCreateCommand extends TeamSubCommand {
             }
             TeamModel teamModel = new TeamModel(teamName, displayName);
             if (sender instanceof Player) {
-                Player senderPlayer = (Player) sender;
-                ownerId = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName()).getId();
+                senderPlayer = (Player) sender;
+                PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
+                ownerId = playerData.getId();
 
-                Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
+                playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
                 if (playerTeam != null) {
                     sender.sendMessage("You are already on a team");
                     return;
@@ -70,16 +76,19 @@ public class TeamCreateCommand extends TeamSubCommand {
 
             boolean insertTeam = StorageManager.getManager().insertTeamModel(teamModel);
             if (insertTeam) {
-                TeamDataManager.getTeamDataManager().getStringTeamMap().put(teamModel.getName(), new Team(teamModel));
-                sender.sendMessage("Team added successfully");
+                playerTeam = new Team(teamModel);
+                TeamDataManager.getTeamDataManager().addNewTeam(playerTeam);
                 teamModel.setId(StorageManager.getManager().selectTeamModelByName(teamName).getId());
-                Team team = new Team(teamModel);
-                TeamDataManager.getTeamDataManager().addNewTeam(team);
 
-                if (ownerId != 0) {
+                sender.sendMessage("Team added successfully");
+
+                if (senderPlayer != null) {
+                    PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
+                    playerData.setTeam(playerTeam);
+
                     TeamMemberModel teamMemberModel =
                             new TeamMemberModel(teamModel.getId(), ownerId, 1, new Timestamp(System.currentTimeMillis()));
-                    team.getMemberModelMap().put(ownerId, teamMemberModel);
+                    playerTeam.getMemberModelMap().put(ownerId, teamMemberModel);
                     StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
                 }
             } else {

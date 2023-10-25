@@ -34,6 +34,10 @@ public class PlayerData extends PlayerModel {
         this.team = team;
     }
 
+    public void removeTeam() {
+        this.team = null;
+    }
+
     public List<ProtectedRegion> getProtectedRegionList() {
         return protectedRegionList;
     }

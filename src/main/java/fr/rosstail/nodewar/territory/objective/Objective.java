@@ -1,8 +1,9 @@
 package fr.rosstail.nodewar.territory.objective;
 
+import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
-import fr.rosstail.nodewar.territory.objective.reward.RewardModel;
+import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,9 +14,12 @@ public class Objective {
     protected ObjectiveModel objectiveModel;
     protected Map<String, Reward> stringRewardMap = new HashMap<>();
 
+    protected int scheduler;
+
     public Objective(Territory territory) {
         this.territory = territory;
         setObjectiveModel(new ObjectiveModel(null));
+        startObjective();
     }
 
     public Map<String, Reward> getStringRewardMap() {
@@ -35,7 +39,17 @@ public class Objective {
     }
 
     public void applyProgress() {
-        System.out.println("Apply objective progress");
+        //TODO apply Progress
+    }
+
+    public void startObjective() {
+        scheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), () -> {
+            applyProgress();
+        }, 0L, 20L);
+    }
+
+    public void stopObjective() {
+        Bukkit.getScheduler().cancelTask(scheduler);
     }
 
     public String print() {

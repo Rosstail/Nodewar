@@ -53,14 +53,6 @@ public class TeamDataManager {
                 team.getRelationModelMap().put(s1, teamRelationModel);
             });
         });
-
-
-        Map<String, Territory> territoryMap = TerritoryManager.getTerritoryManager().getTerritoryMap();
-        StorageManager.getManager().selectAllTerritoryOwner().forEach((territoryName, ownerName) -> {
-            if (territoryMap.containsKey(territoryName) && getStringTeamMap().containsKey(ownerName)) {
-                territoryMap.get(territoryName).setOwnerTeam(getStringTeamMap().get(ownerName));
-            }
-        });
     }
 
     public void addNewTeam(Team team) {

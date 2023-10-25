@@ -12,6 +12,9 @@ import fr.rosstail.nodewar.events.regionevents.RegionLeftEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
+import fr.rosstail.nodewar.storage.StorageManager;
+import fr.rosstail.nodewar.team.Team;
+import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -79,6 +82,27 @@ public class TerritoryManager {
             TerritoryType territoryType = new TerritoryType(section);
             territoryType.printModel();
             territoryTypeMap.put(territoryType.getName(), territoryType);
+        });
+    }
+
+    public void setupTerritoriesOwner() {
+        Map<String, Team> stringTeamMap = TeamDataManager.getTeamDataManager().getStringTeamMap();
+        List<TerritoryModel> territoryOwnerMap = StorageManager.getManager().selectAllTerritoryModel();
+        getTerritoryMap().forEach((s, territory) -> {
+            List<TerritoryModel> models = territoryOwnerMap.stream().filter(model ->
+                model.getWorldName().equalsIgnoreCase(territory.getTerritoryModel().getWorldName())
+            ).filter(model ->
+                model.getName().equalsIgnoreCase(territory.getTerritoryModel().getName())
+            ).collect(Collectors.toList());
+
+            if (!models.isEmpty()) {
+                String ownerName = models.get(0).getOwnerName();
+                if (ownerName != null && stringTeamMap.containsKey(ownerName)) {
+                    territory.setOwnerTeam(stringTeamMap.get(ownerName));
+                }
+            } else {
+                StorageManager.getManager().insertTerritoryOwner(territory.getTerritoryModel());
+            }
         });
     }
 
