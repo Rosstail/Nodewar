@@ -171,6 +171,8 @@ public class Nodewar extends JavaPlugin implements Listener {
             PlayerModel model = entry.getValue();
             StorageManager.getManager().updatePlayerModel(model, false);
         }
+
+        TerritoryManager.getTerritoryManager().stopAllObjective();
         StorageManager.getManager().disconnect();
     }
 

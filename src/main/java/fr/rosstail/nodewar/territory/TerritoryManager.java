@@ -171,4 +171,10 @@ public class TerritoryManager {
         });
 
     }
+
+    public void stopAllObjective() {
+        getTerritoryMap().forEach((s, territory) -> {
+            territory.getObjective().stopObjective();
+        });
+    }
 }

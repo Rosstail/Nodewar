@@ -29,14 +29,9 @@ public class TerritoryEnteredEvent extends TerritoryEvent
                 } else if (playerTeam.getRelationModelMap().containsKey(ownerTeamName)) {
                     TeamRelationModel relationModel = playerTeam.getRelationModelMap().get(ownerTeamName);
                     type = ConfigData.getConfigData().bossbar.relations[relationModel.getRelation()];
-                } else {
-                    System.out.println("nope " + playerTeam.getTeamModel().getName() + " vs " + ownerTeamName);
                 }
-            } else {
-                System.out.println("player team is null");
             }
         } else {
-            System.out.println("owner is null");
             type = "neutral";
         }
         territory.getStringBossBarMap().get(type).addPlayer(player);

@@ -230,6 +230,5 @@ public class Territory {
 
     public void setOwnerTeam(Team ownerTeam) {
         this.ownerTeam = ownerTeam;
-        System.out.println(territoryModel.getName() + " " + ownerTeam.getTeamModel().getName());
     }
 }

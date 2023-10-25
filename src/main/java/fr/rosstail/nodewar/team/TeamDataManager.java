@@ -35,7 +35,6 @@ public class TeamDataManager {
         stringTeamMap.clear();
         StorageManager.getManager().selectAllTeamModel().forEach((s, teamModel) -> {
             Team team = new Team(teamModel);
-            System.out.println("Team loaded " + s);
             stringTeamMap.put(s, team);
         });
 
@@ -43,7 +42,6 @@ public class TeamDataManager {
             Map<Integer, TeamMemberModel> teamMemberModelMap =
                     StorageManager.getManager().selectTeamMemberModelByTeamUuid(s);
             teamMemberModelMap.forEach((s1, teamMemberModel) -> {
-                System.out.println("Add member to team " + s + " " + s1 + " rank " + teamMemberModel.getRank() + " player id " + teamMemberModel.getId());
                 team.getMemberModelMap().put(s1, teamMemberModel);
             });
 

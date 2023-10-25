@@ -43,9 +43,7 @@ public class Objective {
     }
 
     public void startObjective() {
-        scheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), () -> {
-            applyProgress();
-        }, 0L, 20L);
+        scheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), this::applyProgress, 0L, 20L);
     }
 
     public void stopObjective() {
