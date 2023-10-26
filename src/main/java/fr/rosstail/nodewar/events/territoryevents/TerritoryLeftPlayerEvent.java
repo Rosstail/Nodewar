@@ -1,6 +1,5 @@
 package fr.rosstail.nodewar.events.territoryevents;
 
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.rosstail.nodewar.territory.Territory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -9,14 +8,14 @@ import org.bukkit.event.Event;
  * event that is triggered after a player left a WorldGuard region
  * @author mewin<mewin001@hotmail.de>
  */
-public class TerritoryLeftEvent extends TerritoryEvent
+public class TerritoryLeftPlayerEvent extends TerritoryPlayerEvent
 {
     /**
      * creates a new RegionLeftEvent
      * @param territory the territory the player has left
      * @param player the player who triggered the event
      */
-    public TerritoryLeftEvent(final Territory territory, final Player player, final Event parent) {
+    public TerritoryLeftPlayerEvent(final Territory territory, final Player player, final Event parent) {
         super(territory, player, parent);
         territory.getStringBossBarMap().forEach((s, bossBar) -> {
             bossBar.removePlayer(player);

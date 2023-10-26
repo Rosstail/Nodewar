@@ -5,10 +5,9 @@ import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.team.Team;
+import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.TeamMemberModel;
-import fr.rosstail.nodewar.team.TeamModel;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -46,7 +45,7 @@ public class TeamJoinCommand extends TeamSubCommand {
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         Player senderPlayer;
         String teamName;
-        Team team;
+        NwTeam nwTeam;
         PlayerData playerData;
         TeamMemberModel teamMemberModel;
         if (!CommandManager.canLaunchCommand(sender, this)) {
@@ -69,18 +68,18 @@ public class TeamJoinCommand extends TeamSubCommand {
         }
 
         teamName = args[2];
-        team = TeamDataManager.getTeamDataManager().getStringTeamMap().get(teamName);
+        nwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(teamName);
 
-        if (team == null) {
+        if (nwTeam == null) {
             sender.sendMessage("TeamJoinCommand - This team does not exist");
             return;
         }
 
         sender.sendMessage("TODO joining " + teamName + " team.");
-        teamMemberModel = new TeamMemberModel(team.getTeamModel().getId(), playerData.getId(), 5, new Timestamp(System.currentTimeMillis()));
+        teamMemberModel = new TeamMemberModel(nwTeam.getTeamModel().getId(), playerData.getId(), 5, new Timestamp(System.currentTimeMillis()));
         StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
-        team.getMemberModelMap().put(playerData.getId(), teamMemberModel);
-        playerData.setTeam(team);
+        nwTeam.getMemberModelMap().put(playerData.getId(), teamMemberModel);
+        playerData.setTeam(nwTeam);
     }
 
     @Override

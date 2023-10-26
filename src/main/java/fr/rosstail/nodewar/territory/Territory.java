@@ -7,9 +7,10 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.lang.AdaptMessage;
-import fr.rosstail.nodewar.team.Team;
+import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
+import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBar;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
 import fr.rosstail.nodewar.territory.objective.Objective;
@@ -17,8 +18,6 @@ import fr.rosstail.nodewar.territory.objective.types.*;
 import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -33,13 +32,15 @@ public class Territory {
     private TerritoryModel territoryModel;
 
     private World world;
-    private Map<Team, List<Player>> teamPlayerList;
+    private Map<NwTeam, List<Player>> teamPlayerList;
 
     private final List<ProtectedRegion> protectedRegionList = new ArrayList<>();
 
     private TerritoryType territoryType;
 
     private Objective objective;
+
+    private Battle currentBattle = new Battle();
 
     private final TerritoryBossBar territoryBossBar;
 
@@ -49,7 +50,7 @@ public class Territory {
 
     private final Map<String, BossBar> stringBossBarMap = new HashMap<>();
 
-    private Team ownerTeam;
+    private NwTeam ownerNwTeam;
 
     Territory(ConfigurationSection section) {
         territoryModel = new TerritoryModel();
@@ -90,7 +91,22 @@ public class Territory {
                     break;
             }
         } else {
-            setObjective(new Objective(this));
+            setObjective(new Objective(this) {
+                @Override
+                public NwTeam checkNeutralization() {
+                    return null;
+                }
+
+                @Override
+                public NwTeam checkWinner() {
+                    return null;
+                }
+
+                @Override
+                public void applyProgress() {
+
+                }
+            });
         }
 
         ConfigurationSection bossBarSection = section.getConfigurationSection("bossbar");
@@ -154,56 +170,6 @@ public class Territory {
         return attackRequirements;
     }
 
-    public void print() {
-        String message = territoryModel.getName() + " : " +
-                "\n * Display: " + territoryModel.getPrefix() + territoryModel.getDisplay() + territoryModel.getSuffix() +
-                "\n * World: " + territoryModel.getWorldName() +
-                "\n * Type: " + territoryModel.getTypeName() +
-                "\n * Protected: " + territoryModel.isUnderProtection();
-
-        StringBuilder objectiveRequirementsMessage = new StringBuilder("\n * Objective: " +
-                "\n   > Type: " + territoryModel.getObjectiveTypeName());
-
-        objectiveRequirementsMessage.append(objective.print());
-
-        message = message + objectiveRequirementsMessage;
-
-
-        StringBuilder attackRequirementsMessage = new StringBuilder("\n * Attack requirements:" +
-                "\n   > lattice types:");
-        for (Map.Entry<String, TerritoryType> entry : attackRequirements.getLatticeNetwork().entrySet()) {
-            String s = entry.getKey();
-            TerritoryType territoryType1 = entry.getValue();
-            attackRequirementsMessage.append("\n     - ").append(territoryType1.getName());
-        }
-
-        attackRequirementsMessage.append("\n   > types amounts:");
-        for (Map.Entry<String, Map<TerritoryType, Integer>> e : attackRequirements.getTerritoryTypeAmountMap().entrySet()) {
-            String s1 = e.getKey();
-            Map<TerritoryType, Integer> territoryTypeIntegerMap = e.getValue();
-            attackRequirementsMessage.append("\n    * ").append(s1).append(":");
-            for (Map.Entry<TerritoryType, Integer> entry : territoryTypeIntegerMap.entrySet()) {
-                TerritoryType territoryType1 = entry.getKey();
-                Integer integer = entry.getValue();
-                attackRequirementsMessage.append("\n      - ").append(territoryType1.getName()).append(":").append(integer);
-            }
-        }
-
-        attackRequirementsMessage.append("\n   > required territories:");
-        for (Map.Entry<String, List<Territory>> entry : attackRequirements.getTerritoryListMap().entrySet()) {
-            String s = entry.getKey();
-            List<Territory> territoryList = entry.getValue();
-            attackRequirementsMessage.append("\n    * ").append(s).append(":");
-
-            for (Territory territory : territoryList) {
-                attackRequirementsMessage.append("\n      - ").append(territory.getTerritoryModel().getName());
-            }
-        }
-
-        message = message + attackRequirementsMessage + "\n------------";
-        AdaptMessage.print(message, AdaptMessage.prints.OUT);
-    }
-
     public World getWorld() {
         return world;
     }
@@ -224,11 +190,19 @@ public class Territory {
         return stringBossBarMap;
     }
 
-    public Team getOwnerTeam() {
-        return ownerTeam;
+    public NwTeam getOwnerTeam() {
+        return ownerNwTeam;
     }
 
-    public void setOwnerTeam(Team ownerTeam) {
-        this.ownerTeam = ownerTeam;
+    public void setOwnerTeam(NwTeam ownerNwTeam) {
+        this.ownerNwTeam = ownerNwTeam;
+    }
+
+    public Battle getCurrentBattle() {
+        return currentBattle;
+    }
+
+    public void setCurrentBattle(Battle currentBattle) {
+        this.currentBattle = currentBattle;
     }
 }

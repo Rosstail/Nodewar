@@ -1,7 +1,7 @@
 package fr.rosstail.nodewar.events;
 
-import fr.rosstail.nodewar.events.territoryevents.TerritoryEnteredEvent;
-import fr.rosstail.nodewar.events.territoryevents.TerritoryLeftEvent;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryEnteredPlayerEvent;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryLeftPlayerEvent;
 import fr.rosstail.nodewar.territory.Territory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,14 +11,14 @@ public class NodewarEventHandler implements Listener {
     private boolean isClosing = false;
 
     @EventHandler
-    public void OnTerritoryEnterEvent(final TerritoryEnteredEvent event) {
+    public void OnTerritoryEnterEvent(final TerritoryEnteredPlayerEvent event) {
         Player player = event.getPlayer();
         Territory territory = event.getTerritory();
         territory.getPlayers().add(player);
     }
 
     @EventHandler
-    public void OnTerritoryLeaveEvent(final TerritoryLeftEvent event) {
+    public void OnTerritoryLeaveEvent(final TerritoryLeftPlayerEvent event) {
         Player player = event.getPlayer();
         Territory territory = event.getTerritory();
         territory.getPlayers().remove(player);

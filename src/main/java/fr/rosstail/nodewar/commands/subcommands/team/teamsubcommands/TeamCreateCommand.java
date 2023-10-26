@@ -5,7 +5,7 @@ import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.team.Team;
+import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
@@ -46,7 +46,7 @@ public class TeamCreateCommand extends TeamSubCommand {
         String teamName;
         String displayName;
         Player senderPlayer = null;
-        Team playerTeam;
+        NwTeam playerNwTeam;
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
@@ -65,8 +65,8 @@ public class TeamCreateCommand extends TeamSubCommand {
                 PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
                 ownerId = playerData.getId();
 
-                playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
-                if (playerTeam != null) {
+                playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
+                if (playerNwTeam != null) {
                     sender.sendMessage("You are already on a team");
                     return;
                 }
@@ -76,19 +76,19 @@ public class TeamCreateCommand extends TeamSubCommand {
 
             boolean insertTeam = StorageManager.getManager().insertTeamModel(teamModel);
             if (insertTeam) {
-                playerTeam = new Team(teamModel);
-                TeamDataManager.getTeamDataManager().addNewTeam(playerTeam);
+                playerNwTeam = new NwTeam(teamModel);
+                TeamDataManager.getTeamDataManager().addNewTeam(playerNwTeam);
                 teamModel.setId(StorageManager.getManager().selectTeamModelByName(teamName).getId());
 
                 sender.sendMessage("Team added successfully");
 
                 if (senderPlayer != null) {
                     PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
-                    playerData.setTeam(playerTeam);
+                    playerData.setTeam(playerNwTeam);
 
                     TeamMemberModel teamMemberModel =
                             new TeamMemberModel(teamModel.getId(), ownerId, 1, new Timestamp(System.currentTimeMillis()));
-                    playerTeam.getMemberModelMap().put(ownerId, teamMemberModel);
+                    playerNwTeam.getMemberModelMap().put(ownerId, teamMemberModel);
                     StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
                 }
             } else {

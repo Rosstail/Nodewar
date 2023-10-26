@@ -5,7 +5,7 @@ import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.team.Team;
+import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -47,15 +47,15 @@ public class TeamOpenCommand extends TeamSubCommand {
         }
         if (sender instanceof Player) {
             Player player = ((Player) sender).getPlayer();
-            Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
+            NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
             PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
 
-            if (playerTeam == null) {
+            if (playerNwTeam == null) {
                 sender.sendMessage("Your team is null");
                 return;
             }
 
-            if (playerTeam.getMemberModelMap().get(playerData.getId()).getRank() != 1) {
+            if (playerNwTeam.getMemberModelMap().get(playerData.getId()).getRank() != 1) {
                 sender.sendMessage("you do not have enough rank on your team");
                 return;
             }
@@ -66,10 +66,10 @@ public class TeamOpenCommand extends TeamSubCommand {
             }
 
             value = Boolean.parseBoolean(args[2]);
-            playerTeam.getTeamModel().setOpen(value);
+            playerNwTeam.getTeamModel().setOpen(value);
 
             sender.sendMessage("Your team is now " + (value ? "open" : "closed"));
-            StorageManager.getManager().updateTeamModel(playerTeam.getTeamModel());
+            StorageManager.getManager().updateTeamModel(playerNwTeam.getTeamModel());
         }
     }
 

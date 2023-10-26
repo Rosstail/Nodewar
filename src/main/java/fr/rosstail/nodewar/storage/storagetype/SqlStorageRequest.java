@@ -408,10 +408,10 @@ public class SqlStorageRequest implements StorageRequest {
         String query = "UPDATE " + territoryTableName + " SET owner_team_id = ?, last_update = CURRENT_TIMESTAMP WHERE name = ?";
         try {
             String ownerName = model.getOwnerName();
-            Team team = TeamDataManager.getTeamDataManager().getStringTeamMap().get(ownerName);
-            if (team != null) {
+            NwTeam nwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(ownerName);
+            if (nwTeam != null) {
                 executeSQLUpdate(query,
-                        team.getTeamModel().getId(),
+                        nwTeam.getTeamModel().getId(),
                         model.getName()
                 );
             } else {

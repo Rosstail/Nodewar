@@ -3,13 +3,10 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
-import fr.rosstail.nodewar.player.PlayerDataManager;
-import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,33 +52,33 @@ public class TeamRelationCommand extends TeamSubCommand {
             }
             String relationType = args[2];
             String targetTeamName = args[3];
-            Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender));
-            Team targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
-            if (playerTeam == null) {
+            NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender));
+            NwTeam targetNwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
+            if (playerNwTeam == null) {
                 sender.sendMessage("You are part of no team");
                 return;
             }
-            if (playerTeam.getMemberModelMap().get(((Player) sender).getUniqueId().toString()).getRank() > 1) {
+            if (playerNwTeam.getMemberModelMap().get(((Player) sender).getUniqueId().toString()).getRank() > 1) {
                 sender.sendMessage("You are not the owner of the team");
                 return;
             }
-            if (targetTeam == null) {
+            if (targetNwTeam == null) {
                 sender.sendMessage("This team does not exist " + targetTeamName);
                 return;
             }
 
-            if (targetTeam.equals(playerTeam)) {
+            if (targetNwTeam.equals(playerNwTeam)) {
                 sender.sendMessage("You cannot edit relation with your own team");
                 return;
             }
 
             String defaultRelation = ConfigData.getConfigData().team.defaultRelation;
 
-            if (playerTeam.getRelationModelMap().containsKey(targetTeamName)) {
+            if (playerNwTeam.getRelationModelMap().containsKey(targetTeamName)) {
                 if (!relationType.equalsIgnoreCase(defaultRelation)) {
                     List<String> relations = new ArrayList<>();
                     Collections.addAll(relations, ConfigData.getConfigData().bossbar.relations);
-                    TeamRelationModel playerTeamRelationModel = playerTeam.getRelationModelMap().get(targetTeamName);
+                    TeamRelationModel playerTeamRelationModel = playerNwTeam.getRelationModelMap().get(targetTeamName);
                     playerTeamRelationModel.setRelation(relations.indexOf(relationType));
                 } else {
                     if (!relationType.equalsIgnoreCase(defaultRelation) || Arrays.stream(arguments).collect(
@@ -107,15 +104,15 @@ public class TeamRelationCommand extends TeamSubCommand {
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
+        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
         if (args.length <= 3) {
             List<String> relations = new ArrayList<>();
             Collections.addAll(relations, ConfigData.getConfigData().bossbar.relations);
             return relations;
         } else if (args.length == 4) {
             List<String> teams = new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().keySet());
-            if (playerTeam != null) {
-                teams.remove(playerTeam.getTeamModel().getName());
+            if (playerNwTeam != null) {
+                teams.remove(playerNwTeam.getTeamModel().getName());
             }
             return teams;
         }

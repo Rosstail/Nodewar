@@ -2,17 +2,14 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
-import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.team.Team;
+import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
-import fr.rosstail.nodewar.team.TeamModel;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TeamDisbandCommand extends TeamSubCommand {
     @Override
@@ -48,13 +45,13 @@ public class TeamDisbandCommand extends TeamSubCommand {
         if (sender instanceof Player) {
             Player player = ((Player) sender).getPlayer();
             boolean disband = false;
-            Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
-            if (playerTeam != null) {
-                if (playerTeam.getMemberModelMap().get(PlayerDataManager.getPlayerDataMap().get(player.getName()).getId()).getRank() == 1) {
+            NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
+            if (playerNwTeam != null) {
+                if (playerNwTeam.getMemberModelMap().get(PlayerDataManager.getPlayerDataMap().get(player.getName()).getId()).getRank() == 1) {
                     disband = true;
-                    StorageManager.getManager().deleteTeamModel(playerTeam.getTeamModel().getId());
+                    StorageManager.getManager().deleteTeamModel(playerNwTeam.getTeamModel().getId());
                     PlayerDataManager.getPlayerDataMap().values().stream().filter(playerData ->
-                            (playerData.getTeam() == playerTeam)).forEach(playerData -> {
+                            (playerData.getTeam() == playerNwTeam)).forEach(playerData -> {
                         playerData.setTeam(null);
                     });
                 } else {

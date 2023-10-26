@@ -13,7 +13,7 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.team.Team;
+import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.Bukkit;
@@ -86,7 +86,7 @@ public class TerritoryManager {
     }
 
     public void setupTerritoriesOwner() {
-        Map<String, Team> stringTeamMap = TeamDataManager.getTeamDataManager().getStringTeamMap();
+        Map<String, NwTeam> stringTeamMap = TeamDataManager.getTeamDataManager().getStringTeamMap();
         List<TerritoryModel> territoryOwnerMap = StorageManager.getManager().selectAllTerritoryModel();
         getTerritoryMap().forEach((s, territory) -> {
             List<TerritoryModel> models = territoryOwnerMap.stream().filter(model ->

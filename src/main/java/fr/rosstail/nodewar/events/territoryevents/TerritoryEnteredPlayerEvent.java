@@ -1,33 +1,30 @@
 package fr.rosstail.nodewar.events.territoryevents;
 
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
-import fr.rosstail.nodewar.team.Team;
+import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamRelationModel;
 import fr.rosstail.nodewar.territory.Territory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
-import java.util.Random;
-
-public class TerritoryEnteredEvent extends TerritoryEvent
+public class TerritoryEnteredPlayerEvent extends TerritoryPlayerEvent
 {
-    public TerritoryEnteredEvent(final Territory territory, final Player player, final Event parent) {
+    public TerritoryEnteredPlayerEvent(final Territory territory, final Player player, final Event parent) {
         super(territory, player, parent);
         PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
-        Team playerTeam = playerData.getTeam();
-        Team ownerTeam = territory.getOwnerTeam();
+        NwTeam playerNwTeam = playerData.getTeam();
+        NwTeam ownerNwTeam = territory.getOwnerTeam();
         String type = ConfigData.getConfigData().team.defaultRelation;
 
-        if (ownerTeam != null) {
-            String ownerTeamName = ownerTeam.getTeamModel().getName();
-            if (playerTeam != null) {
-                if (ownerTeam == playerTeam) {
+        if (ownerNwTeam != null) {
+            String ownerTeamName = ownerNwTeam.getTeamModel().getName();
+            if (playerNwTeam != null) {
+                if (ownerNwTeam == playerNwTeam) {
                     type = ConfigData.getConfigData().bossbar.relations[1];
-                } else if (playerTeam.getRelationModelMap().containsKey(ownerTeamName)) {
-                    TeamRelationModel relationModel = playerTeam.getRelationModelMap().get(ownerTeamName);
+                } else if (playerNwTeam.getRelationModelMap().containsKey(ownerTeamName)) {
+                    TeamRelationModel relationModel = playerNwTeam.getRelationModelMap().get(ownerTeamName);
                     type = ConfigData.getConfigData().bossbar.relations[relationModel.getRelation()];
                 }
             }

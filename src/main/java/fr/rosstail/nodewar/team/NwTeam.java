@@ -3,16 +3,16 @@ package fr.rosstail.nodewar.team;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Team {
+public class NwTeam {
 
     private TeamModel teamModel;
     private final Map<Integer, TeamMemberModel> memberModelMap = new HashMap<>();
     private final Map<String, TeamRelationModel> relationModelMap = new HashMap<>();
-    public Team(String name, String display) {
+    public NwTeam(String name, String display) {
         teamModel = new TeamModel(name, display);
     }
 
-    public Team(TeamModel teamModel) {
+    public NwTeam(TeamModel teamModel) {
         this.teamModel = teamModel;
     }
 

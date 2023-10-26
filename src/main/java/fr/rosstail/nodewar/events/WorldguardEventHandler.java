@@ -3,8 +3,8 @@ package fr.rosstail.nodewar.events;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.rosstail.nodewar.events.regionevents.RegionEnteredEvent;
 import fr.rosstail.nodewar.events.regionevents.RegionLeftEvent;
-import fr.rosstail.nodewar.events.territoryevents.TerritoryEnteredEvent;
-import fr.rosstail.nodewar.events.territoryevents.TerritoryLeftEvent;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryEnteredPlayerEvent;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryLeftPlayerEvent;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
@@ -31,7 +31,7 @@ public class WorldguardEventHandler implements Listener {
                 )
         ).forEach(territory -> {
             if (playerData.getProtectedRegionList().stream().anyMatch(territory.getProtectedRegionList()::contains)) {
-                TerritoryEnteredEvent enteredEvent = new TerritoryEnteredEvent(territory, player, event);
+                TerritoryEnteredPlayerEvent enteredEvent = new TerritoryEnteredPlayerEvent(territory, player, event);
                 Bukkit.getPluginManager().callEvent(enteredEvent);
             } else {
                 player.sendMessage("Region " + region.getId() + " is not registered yet. Needs a fix sometime");
@@ -53,7 +53,7 @@ public class WorldguardEventHandler implements Listener {
                 )
         ).forEach(territory -> {
             if (playerData.getProtectedRegionList().stream().noneMatch(territory.getProtectedRegionList()::contains)) {
-                TerritoryLeftEvent leftEvent = new TerritoryLeftEvent(territory, player, event);
+                TerritoryLeftPlayerEvent leftEvent = new TerritoryLeftPlayerEvent(territory, player, event);
                 Bukkit.getPluginManager().callEvent(leftEvent);
             }
 

@@ -5,8 +5,6 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.territory.Territory;
-import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -19,7 +17,7 @@ public class TeamDataManager {
     private static TeamDataManager teamDataManager;
     private final Nodewar plugin;
 
-    private final Map<String, Team> stringTeamMap = new HashMap<>();
+    private final Map<String, NwTeam> stringTeamMap = new HashMap<>();
 
     private TeamDataManager(Nodewar plugin) {
         this.plugin = plugin;
@@ -34,8 +32,8 @@ public class TeamDataManager {
     public void loadTeams() {
         stringTeamMap.clear();
         StorageManager.getManager().selectAllTeamModel().forEach((s, teamModel) -> {
-            Team team = new Team(teamModel);
-            stringTeamMap.put(s, team);
+            NwTeam nwTeam = new NwTeam(teamModel);
+            stringTeamMap.put(s, nwTeam);
         });
 
         stringTeamMap.forEach((s, team) -> {
@@ -53,15 +51,15 @@ public class TeamDataManager {
         });
     }
 
-    public void addNewTeam(Team team) {
-        getStringTeamMap().put(team.getTeamModel().getName(), team);
+    public void addNewTeam(NwTeam nwTeam) {
+        getStringTeamMap().put(nwTeam.getTeamModel().getName(), nwTeam);
     }
 
     public void removeDeletedTeam(String teamName) {
         getStringTeamMap().remove(teamName);
     }
 
-    public Map<String, Team> getStringTeamMap() {
+    public Map<String, NwTeam> getStringTeamMap() {
         return stringTeamMap;
     }
 
@@ -69,18 +67,18 @@ public class TeamDataManager {
         return teamDataManager;
     }
 
-    public Team getTeamOfPlayer(Player player) {
+    public NwTeam getTeamOfPlayer(Player player) {
         PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
-        List<Team> teams = TeamDataManager.getTeamDataManager().getStringTeamMap().values().stream().filter(team ->
+        List<NwTeam> nwTeams = TeamDataManager.getTeamDataManager().getStringTeamMap().values().stream().filter(team ->
                 team.getMemberModelMap().containsKey(playerData.getId())
         ).collect(Collectors.toList());
 
-        if (!teams.isEmpty()) {
-            if (teams.size() > 1) {
+        if (!nwTeams.isEmpty()) {
+            if (nwTeams.size() > 1) {
                 AdaptMessage.print("The player with data id " + playerData.getId() +
                         " is in multiple teams. using the first one only", AdaptMessage.prints.WARNING);
             }
-            return teams.get(0);
+            return nwTeams.get(0);
         }
 
         return null;

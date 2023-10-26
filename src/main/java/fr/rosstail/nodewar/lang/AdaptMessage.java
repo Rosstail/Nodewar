@@ -5,6 +5,11 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.apis.ExpressionCalculator;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
+import fr.rosstail.nodewar.territory.Territory;
+import fr.rosstail.nodewar.territory.TerritoryModel;
+import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
+import fr.rosstail.nodewar.territory.objective.Objective;
+import fr.rosstail.nodewar.territory.type.TerritoryType;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
@@ -293,5 +298,58 @@ public class AdaptMessage {
         }
 
         return totalTimeMs;
+    }
+
+    public void printTerritory(Territory territory) {
+        TerritoryModel territoryModel = territory.getTerritoryModel();
+        Objective objective = territory.getObjective();
+        AttackRequirements attackRequirements = territory.getAttackRequirements();
+        String message = territoryModel.getName() + " : " +
+                "\n * Display: " + territoryModel.getPrefix() + territoryModel.getDisplay() + territoryModel.getSuffix() +
+                "\n * World: " + territoryModel.getWorldName() +
+                "\n * Type: " + territoryModel.getTypeName() +
+                "\n * Protected: " + territoryModel.isUnderProtection();
+
+        StringBuilder objectiveRequirementsMessage = new StringBuilder("\n * Objective: " +
+                "\n   > Type: " + territoryModel.getObjectiveTypeName());
+
+        objectiveRequirementsMessage.append(objective.print());
+
+        message = message + objectiveRequirementsMessage;
+
+
+        StringBuilder attackRequirementsMessage = new StringBuilder("\n * Attack requirements:" +
+                "\n   > lattice types:");
+        for (Map.Entry<String, TerritoryType> entry : attackRequirements.getLatticeNetwork().entrySet()) {
+            String s = entry.getKey();
+            TerritoryType territoryType1 = entry.getValue();
+            attackRequirementsMessage.append("\n     - ").append(territoryType1.getName());
+        }
+
+        attackRequirementsMessage.append("\n   > types amounts:");
+        for (Map.Entry<String, Map<TerritoryType, Integer>> e : attackRequirements.getTerritoryTypeAmountMap().entrySet()) {
+            String s1 = e.getKey();
+            Map<TerritoryType, Integer> territoryTypeIntegerMap = e.getValue();
+            attackRequirementsMessage.append("\n    * ").append(s1).append(":");
+            for (Map.Entry<TerritoryType, Integer> entry : territoryTypeIntegerMap.entrySet()) {
+                TerritoryType territoryType1 = entry.getKey();
+                Integer integer = entry.getValue();
+                attackRequirementsMessage.append("\n      - ").append(territoryType1.getName()).append(":").append(integer);
+            }
+        }
+
+        attackRequirementsMessage.append("\n   > required territories:");
+        for (Map.Entry<String, List<Territory>> entry : attackRequirements.getTerritoryListMap().entrySet()) {
+            String s = entry.getKey();
+            List<Territory> requiredTerritoryList = entry.getValue();
+            attackRequirementsMessage.append("\n    * ").append(s).append(":");
+
+            for (Territory requiredterritory : requiredTerritoryList) {
+                attackRequirementsMessage.append("\n      - ").append(requiredterritory.getTerritoryModel().getName());
+            }
+        }
+
+        message = message + attackRequirementsMessage + "\n------------";
+        AdaptMessage.print(message, AdaptMessage.prints.OUT);
     }
 }

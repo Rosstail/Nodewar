@@ -1,15 +1,13 @@
 package fr.rosstail.nodewar.events;
 
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.team.Team;
+import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.Location;
-import org.bukkit.Warning;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,8 +31,8 @@ public class MinecraftEventHandler implements Listener {
         }
 
         PlayerDataManager.initPlayerDataToMap(playerData);
-        Team playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
-        playerData.setTeam(playerTeam);
+        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
+        playerData.setTeam(playerNwTeam);
 
         checkPlayerPosition(player, player.getLocation());
     }

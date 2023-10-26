@@ -1,17 +1,15 @@
 package fr.rosstail.nodewar.player;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import fr.rosstail.nodewar.team.Team;
+import fr.rosstail.nodewar.team.NwTeam;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PlayerData extends PlayerModel {
 
-    private Team team;
+    private NwTeam nwTeam;
 
     private final List<ProtectedRegion> protectedRegionList = new ArrayList<>();
     public PlayerData(Player player) {
@@ -26,16 +24,16 @@ public class PlayerData extends PlayerModel {
         super(playerModel);
     }
 
-    public Team getTeam() {
-        return team;
+    public NwTeam getTeam() {
+        return nwTeam;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setTeam(NwTeam nwTeam) {
+        this.nwTeam = nwTeam;
     }
 
     public void removeTeam() {
-        this.team = null;
+        this.nwTeam = null;
     }
 
     public List<ProtectedRegion> getProtectedRegionList() {
