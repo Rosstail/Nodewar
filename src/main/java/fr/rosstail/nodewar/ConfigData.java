@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar;
 
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.team.RelationType;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BossBar;
@@ -110,13 +111,14 @@ public class ConfigData {
         public FileConfiguration configFile;
 
         public final String teamSystem;
-        public final String defaultRelation;
+        public final RelationType defaultRelation;
 
         ConfigTeam(FileConfiguration config) {
             configFile = config;
 
             teamSystem = config.getString("team.system", "nodewar");
-            defaultRelation = config.getString("team.default-relation", "neutral");
+            String relationTypeStr = config.getString("team.default-relation", "neutral");
+            defaultRelation = RelationType.valueOf(relationTypeStr.toUpperCase());
         }
     }
 

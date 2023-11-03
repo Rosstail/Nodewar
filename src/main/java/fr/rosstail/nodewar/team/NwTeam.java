@@ -1,13 +1,16 @@
 package fr.rosstail.nodewar.team;
 
+import org.bukkit.entity.Player;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class NwTeam {
 
-    private TeamModel teamModel;
-    private final Map<Integer, TeamMemberModel> memberModelMap = new HashMap<>();
-    private final Map<String, TeamRelationModel> relationModelMap = new HashMap<>();
+    private final TeamModel teamModel;
+    private final Map<Player, TeamMember> memberMap = new HashMap<>();
+    private final Map<String, TeamRelation> relationMap = new HashMap<>();
+
     public NwTeam(String name, String display) {
         teamModel = new TeamModel(name, display);
     }
@@ -16,19 +19,15 @@ public class NwTeam {
         this.teamModel = teamModel;
     }
 
-    public TeamModel getTeamModel() {
+    public TeamModel getModel() {
         return teamModel;
     }
 
-    public void setTeamModel(TeamModel teamModel) {
-        this.teamModel = teamModel;
+    public Map<Player, TeamMember> getMemberMap() {
+        return memberMap;
     }
 
-    public Map<Integer, TeamMemberModel> getMemberModelMap() {
-        return memberModelMap;
-    }
-
-    public Map<String, TeamRelationModel> getRelationModelMap() {
-        return relationModelMap;
+    public Map<String, TeamRelation> getRelationMap() {
+        return relationMap;
     }
 }

@@ -6,6 +6,7 @@ import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
+import fr.rosstail.nodewar.team.TeamMember;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -33,6 +34,10 @@ public class MinecraftEventHandler implements Listener {
         PlayerDataManager.initPlayerDataToMap(playerData);
         NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
         playerData.setTeam(playerNwTeam);
+        if (playerNwTeam != null) {
+            playerNwTeam.getMemberMap().put(player, new TeamMember(player,
+                    playerNwTeam, playerNwTeam.getModel().getTeamMemberModelMap().get(playerData.getId())));
+        }
 
         checkPlayerPosition(player, player.getLocation());
     }

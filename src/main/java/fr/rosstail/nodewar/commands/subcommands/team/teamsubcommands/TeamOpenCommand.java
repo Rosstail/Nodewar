@@ -7,6 +7,7 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
+import fr.rosstail.nodewar.team.TeamRank;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -55,7 +56,7 @@ public class TeamOpenCommand extends TeamSubCommand {
                 return;
             }
 
-            if (playerNwTeam.getMemberModelMap().get(playerData.getId()).getRank() != 1) {
+            if (playerNwTeam.getMemberMap().get(playerData.getId()).getRank() != TeamRank.OWNER) {
                 sender.sendMessage("you do not have enough rank on your team");
                 return;
             }
@@ -66,10 +67,10 @@ public class TeamOpenCommand extends TeamSubCommand {
             }
 
             value = Boolean.parseBoolean(args[2]);
-            playerNwTeam.getTeamModel().setOpen(value);
+            playerNwTeam.getModel().setOpen(value);
 
             sender.sendMessage("Your team is now " + (value ? "open" : "closed"));
-            StorageManager.getManager().updateTeamModel(playerNwTeam.getTeamModel());
+            StorageManager.getManager().updateTeamModel(playerNwTeam.getModel());
         }
     }
 

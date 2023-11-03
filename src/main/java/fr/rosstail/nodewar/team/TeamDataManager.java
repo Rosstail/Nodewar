@@ -40,19 +40,21 @@ public class TeamDataManager {
             Map<Integer, TeamMemberModel> teamMemberModelMap =
                     StorageManager.getManager().selectTeamMemberModelByTeamUuid(s);
             teamMemberModelMap.forEach((s1, teamMemberModel) -> {
-                team.getMemberModelMap().put(s1, teamMemberModel);
+                team.getModel().getTeamMemberModelMap().put(s1, teamMemberModel);
             });
 
             Map<String, TeamRelationModel> teamRelationModelMap =
                     StorageManager.getManager().selectTeamRelationModelByTeamUuid(s);
             teamRelationModelMap.forEach((s1, teamRelationModel) -> {
-                team.getRelationModelMap().put(s1, teamRelationModel);
+                team.getModel().getTeamRelationModelMap().put(teamRelationModel.getSecondTeamId(), teamRelationModel);
+                team.getRelationMap().put(s1,
+                        new TeamRelation(TeamDataManager.getTeamDataManager().getStringTeamMap().get(s1), RelationType.values()[teamRelationModel.getRelation()], teamRelationModel));
             });
         });
     }
 
     public void addNewTeam(NwTeam nwTeam) {
-        getStringTeamMap().put(nwTeam.getTeamModel().getName(), nwTeam);
+        getStringTeamMap().put(nwTeam.getModel().getName(), nwTeam);
     }
 
     public void removeDeletedTeam(String teamName) {
@@ -70,7 +72,7 @@ public class TeamDataManager {
     public NwTeam getTeamOfPlayer(Player player) {
         PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
         List<NwTeam> nwTeams = TeamDataManager.getTeamDataManager().getStringTeamMap().values().stream().filter(team ->
-                team.getMemberModelMap().containsKey(playerData.getId())
+                team.getModel().getTeamMemberModelMap().containsKey(playerData.getId())
         ).collect(Collectors.toList());
 
         if (!nwTeams.isEmpty()) {

@@ -6,6 +6,7 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
+import fr.rosstail.nodewar.team.TeamRank;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -47,9 +48,9 @@ public class TeamDisbandCommand extends TeamSubCommand {
             boolean disband = false;
             NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
             if (playerNwTeam != null) {
-                if (playerNwTeam.getMemberModelMap().get(PlayerDataManager.getPlayerDataMap().get(player.getName()).getId()).getRank() == 1) {
+                if (playerNwTeam.getMemberMap().get(PlayerDataManager.getPlayerDataMap().get(player.getName()).getId()).getRank() == TeamRank.OWNER) {
                     disband = true;
-                    StorageManager.getManager().deleteTeamModel(playerNwTeam.getTeamModel().getId());
+                    StorageManager.getManager().deleteTeamModel(playerNwTeam.getModel().getId());
                     PlayerDataManager.getPlayerDataMap().values().stream().filter(playerData ->
                             (playerData.getTeam() == playerNwTeam)).forEach(playerData -> {
                         playerData.setTeam(null);

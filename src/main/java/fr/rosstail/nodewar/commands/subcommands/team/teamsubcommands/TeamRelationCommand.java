@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,11 +45,17 @@ public class TeamRelationCommand extends TeamSubCommand {
             return;
         }
         if (sender instanceof Player) {
+            RelationType relationType;
             if (args.length < 4) {
                 sender.sendMessage("Not enough args RELATION TEAM");
                 return;
             }
-            String relationType = args[2];
+            try {
+                 relationType = RelationType.valueOf(args[2]);
+            } catch (IllegalArgumentException e) {
+                sender.sendMessage("This relation type does not exist");
+                return;
+            }
             String targetTeamName = args[3];
             NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender));
             NwTeam targetNwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
@@ -58,7 +63,7 @@ public class TeamRelationCommand extends TeamSubCommand {
                 sender.sendMessage("You are part of no team");
                 return;
             }
-            if (playerNwTeam.getMemberModelMap().get(((Player) sender).getUniqueId().toString()).getRank() > 1) {
+            if (playerNwTeam.getMemberMap().get(((Player) sender)).getRank() != TeamRank.OWNER) {
                 sender.sendMessage("You are not the owner of the team");
                 return;
             }
@@ -72,17 +77,14 @@ public class TeamRelationCommand extends TeamSubCommand {
                 return;
             }
 
-            String defaultRelation = ConfigData.getConfigData().team.defaultRelation;
+            RelationType defaultRelation = ConfigData.getConfigData().team.defaultRelation;
 
-            if (playerNwTeam.getRelationModelMap().containsKey(targetTeamName)) {
-                if (!relationType.equalsIgnoreCase(defaultRelation)) {
-                    List<String> relations = new ArrayList<>();
-                    Collections.addAll(relations, ConfigData.getConfigData().bossbar.relations);
-                    TeamRelationModel playerTeamRelationModel = playerNwTeam.getRelationModelMap().get(targetTeamName);
-                    playerTeamRelationModel.setRelation(relations.indexOf(relationType));
+            if (playerNwTeam.getRelationMap().containsKey(targetTeamName)) {
+                if (!relationType.equals(defaultRelation)) {
+                    TeamRelation playerTeamRelation = playerNwTeam.getRelationMap().get(targetTeamName);
+                    playerTeamRelation.setRelationType(relationType);
                 } else {
-                    if (!relationType.equalsIgnoreCase(defaultRelation) || Arrays.stream(arguments).collect(
-                            Collectors.toList()).contains("-e")) {
+                    if (Arrays.stream(arguments).collect(Collectors.toList()).contains("-e")) {
                         sender.sendMessage("TEST - UPDATE EXPLICITE relation to " + relationType + " with team " + targetTeamName);
                         //StorageManager.getManager().ins; //
                     } else {
@@ -91,7 +93,7 @@ public class TeamRelationCommand extends TeamSubCommand {
                     }
                 }
             } else {
-                if (!relationType.equalsIgnoreCase(defaultRelation) || Arrays.stream(arguments).collect(
+                if (!relationType.equals(defaultRelation) || Arrays.stream(arguments).collect(
                         Collectors.toList()).contains("-e")) {
                     sender.sendMessage("TEST - INSERT relation to " + relationType + " with team " + targetTeamName);
                     //StorageManager.getManager().ins; //
@@ -107,12 +109,16 @@ public class TeamRelationCommand extends TeamSubCommand {
         NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
         if (args.length <= 3) {
             List<String> relations = new ArrayList<>();
-            Collections.addAll(relations, ConfigData.getConfigData().bossbar.relations);
+
+            for (RelationType value : RelationType.values()) {
+                relations.add(value.toString().toLowerCase());
+            }
+
             return relations;
         } else if (args.length == 4) {
             List<String> teams = new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().keySet());
             if (playerNwTeam != null) {
-                teams.remove(playerNwTeam.getTeamModel().getName());
+                teams.remove(playerNwTeam.getModel().getName());
             }
             return teams;
         }

@@ -4,32 +4,27 @@ import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
-import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
-import fr.rosstail.nodewar.team.TeamDataManager;
-import fr.rosstail.nodewar.team.TeamMember;
 import fr.rosstail.nodewar.team.TeamMemberModel;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
-public class TeamJoinCommand extends TeamSubCommand {
+public class TeamCheckCommand extends TeamSubCommand {
     @Override
     public String getName() {
-        return "join";
+        return "check";
     }
 
     @Override
     public String getDescription() {
-        return "Desc join nodewar team";
+        return "Desc check nodewar team";
     }
 
     @Override
     public String getSyntax() {
-        return "nodewar team join <name>";
+        return "nodewar team check";
     }
 
     @Override
@@ -60,32 +55,27 @@ public class TeamJoinCommand extends TeamSubCommand {
         senderPlayer = ((Player) sender).getPlayer();
         playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
 
-        if (playerData.getTeam() != null) {
-            sender.sendMessage("You are already on a team");
-            return;
-        } else if (args.length < 3) {
-            sender.sendMessage("TeamCreateCommand - Not enough args");
+        if (playerData.getTeam() == null) {
+            sender.sendMessage("You are not on a team");
             return;
         }
 
-        teamName = args[2];
-        nwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(teamName);
-
-        if (nwTeam == null) {
-            sender.sendMessage("TeamJoinCommand - This team does not exist");
-            return;
-        }
-
-        sender.sendMessage("TODO joining " + teamName + " team.");
-        teamMemberModel = new TeamMemberModel(nwTeam.getModel().getId(), playerData.getId(), 3, new Timestamp(System.currentTimeMillis()));
-        TeamMember teamMember = new TeamMember(senderPlayer, nwTeam, teamMemberModel);
-        StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
-        nwTeam.getMemberMap().put(senderPlayer, teamMember);
-        playerData.setTeam(nwTeam);
+        NwTeam playerTeam = playerData.getTeam();
+        sender.sendMessage(playerTeam.getModel().getName() + " / " + playerTeam.getModel().getDisplay());
+        sender.sendMessage(" > Rank: " + playerTeam.getMemberMap().get(senderPlayer).getRank().toString());
+        sender.sendMessage(" > Members: " + playerTeam.getMemberMap().size() + " / " + playerTeam.getModel().getTeamMemberModelMap().size());
+        sender.sendMessage(" > Connected:");
+        playerTeam.getMemberMap().forEach((player, teamMember) -> {
+            sender.sendMessage("    - " + player.getName());
+        });
+        sender.sendMessage(" > Relations:");
+        playerTeam.getRelationMap().forEach((s, teamRelation) -> {
+            sender.sendMessage("    - " + s + " " + teamRelation.getRelationType().toString());
+        });
     }
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        return new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().keySet());
+        return null;
     }
 }

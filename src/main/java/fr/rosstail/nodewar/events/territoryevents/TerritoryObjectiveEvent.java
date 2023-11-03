@@ -8,7 +8,7 @@ import org.bukkit.event.HandlerList;
 public class TerritoryObjectiveEvent extends Event {
     private static final HandlerList handlerList;
     private final Territory territory;
-    public NwTeam nwTeam;
+    private final NwTeam nwTeam;
     public Event parentEvent;
 
     TerritoryObjectiveEvent(final Territory territory, final NwTeam nwTeam, final Event parentEvent) {
@@ -23,6 +23,10 @@ public class TerritoryObjectiveEvent extends Event {
 
     public Territory getTerritory() {
         return territory;
+    }
+
+    public NwTeam getNwTeam() {
+        return nwTeam;
     }
 
     public static HandlerList getHandlerList() {

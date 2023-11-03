@@ -2,17 +2,20 @@ package fr.rosstail.nodewar.territory.objective.types;
 
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.TeamRelations;
-import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangePlayerEvent;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwTeam;
+import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,21 +94,34 @@ public class ObjectiveControl extends Objective {
         teamMemberOnTerritory.clear();
         teamMemberOnTerritory.putAll(getNwTeamPlayerOnTerritory());
         Battle currentBattle = territory.getCurrentBattle();
-        checkAdvantage();
-        checkNeutralization();
+        NwTeam currentAdvantage = currentBattle.getAdvantagedTeam();
+        NwTeam newAdvantage = checkAdvantage();
+        if (currentAdvantage != newAdvantage) {
+            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantage, null);
+            Bukkit.getPluginManager().callEvent(advantageChangeEvent);
+
+            currentBattle.setAdvantageTeam(newAdvantage);
+        }
+
+        NwTeam neutralizer = checkNeutralization();
+        NwTeam winnerTeam = checkWinner();
+        if (neutralizer != null) {
+            neutralize(neutralizer);
+        } else if (winnerTeam != null) {
+            win(winnerTeam);
+        }
         updateHealth();
 
         if (!currentBattle.isBattleStarted() && currentHealth < maxHealth) {
             currentBattle.setBattleStatus(BattleStatus.STARTING);
         }
 
-        territory.getStringBossBarMap().forEach((s, bossBar) -> {
+        territory.getRelationBossBarMap().forEach((s, bossBar) -> {
             bossBar.setProgress((float) currentHealth / maxHealth);
         });
     }
 
-    public void checkAdvantage() {
-        Battle currentBattle = territory.getCurrentBattle();
+    public NwTeam checkAdvantage() {
         NwTeam defenderTeam = territory.getOwnerTeam();
         int greatestAttackerEffective = 0;
         int defenderEffective = 0;
@@ -113,11 +129,17 @@ public class ObjectiveControl extends Objective {
 
         for (Map.Entry<NwTeam, Integer> entry : teamMemberOnTerritory.entrySet()) {
             NwTeam attackerTeam = entry.getKey();
-            int relation = TeamRelations.valueOf(ConfigData.getConfigData().team.defaultRelation.toUpperCase()).ordinal();
-            if (attackerTeam.getRelationModelMap().containsKey(defenderTeam.getTeamModel().getName())) {
-                relation = attackerTeam.getRelationModelMap().get(defenderTeam.getTeamModel().getName()).getRelation();
+            RelationType relation = ConfigData.getConfigData().team.defaultRelation;
+
+            if (defenderTeam != null) {
+                if (defenderTeam == attackerTeam) {
+                    relation = RelationType.TEAM;
+                } else if (attackerTeam.getRelationMap().containsKey(defenderTeam.getModel().getName())) {
+                    relation = attackerTeam.getRelationMap().get(defenderTeam.getModel().getName()).getRelationType();
+                }
             }
-            if (relation == 4) {
+
+            if (defenderTeam == null || relation == RelationType.ENEMY) {
                 Integer force = entry.getValue();
                 if (attackerTeam != territory.getOwnerTeam()) {
                     if (force >= greatestAttackerEffective) {
@@ -134,24 +156,23 @@ public class ObjectiveControl extends Objective {
         }
 
         if (greatestAttackerEffective == 0 && defenderEffective == 0) {
-            currentBattle.setAdvantageTeam(null);
-            return;
+            return null;
         }
 
         float attackerDefenderRatio = (float) greatestAttackerEffective / (greatestAttackerEffective + defenderEffective);
-        if (greatestAttacker.size() != 1) { //Multiple attackers or None
+        if (greatestAttacker.size() > 1) { //Multiple attackers or None
             if (attackerDefenderRatio >= minAttackerRatio) {
-                currentBattle.setAdvantageTeam(null);
+                return null;
             } else {
-                currentBattle.setAdvantageTeam(defenderTeam);
+                return defenderTeam;
             }
         } else { //One attacker
             if (attackerDefenderRatio >= minAttackerRatio) {
-                currentBattle.setAdvantageTeam(greatestAttacker.get(0));
+                return greatestAttacker.get(0);
             } else if (defenderEffective > 0) {
-                currentBattle.setAdvantageTeam(defenderTeam);
+                return defenderTeam;
             } else {
-                currentBattle.setAdvantageTeam(null);
+                return null;
             }
         }
     }
@@ -185,14 +206,14 @@ public class ObjectiveControl extends Objective {
 
     public void neutralize(NwTeam winnerTeam) {
         Territory territory = super.territory;
-        TerritoryOwnerChangePlayerEvent event = new TerritoryOwnerChangePlayerEvent(territory, null, null);
+        TerritoryOwnerNeutralizeEvent event = new TerritoryOwnerNeutralizeEvent(territory, winnerTeam, null);
         Bukkit.getPluginManager().callEvent(event);
     }
 
     public void win(NwTeam winnerTeam) {
         Territory territory = super.territory;
         territory.getCurrentBattle().setWinnerTeam(winnerTeam);
-        TerritoryOwnerChangePlayerEvent event = new TerritoryOwnerChangePlayerEvent(territory, winnerTeam, null);
+        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
         Bukkit.getPluginManager().callEvent(event);
     }
 
@@ -202,7 +223,7 @@ public class ObjectiveControl extends Objective {
             teamIntegerMap.put(territory.getOwnerTeam(), 0); //guarantee
         }
 
-        territory.getPlayers().forEach(player -> {
+        for (Player player : territory.getPlayers()) {
             PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
             NwTeam playerNwTeam = playerData.getTeam();
 
@@ -213,7 +234,7 @@ public class ObjectiveControl extends Objective {
                     teamIntegerMap.put(playerNwTeam, teamIntegerMap.get(playerNwTeam) + 1);
                 }
             }
-        });
+        }
 
         return teamIntegerMap;
     }
@@ -223,7 +244,7 @@ public class ObjectiveControl extends Objective {
         NwTeam advantagedTeam = territory.getCurrentBattle().getAdvantagedTeam();
 
         if (advantagedTeam != null) {
-            if (advantagedTeam.equals(defenderTeam)) {
+            if (defenderTeam == null || advantagedTeam.equals(defenderTeam)) {
                 setCurrentHealth(Math.min(++currentHealth, maxHealth));
             } else {
                 setCurrentHealth(Math.max(0, --currentHealth));

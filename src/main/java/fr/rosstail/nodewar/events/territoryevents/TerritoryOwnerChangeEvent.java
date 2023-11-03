@@ -4,9 +4,9 @@ import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import org.bukkit.event.Event;
 
-public class TerritoryOwnerChangePlayerEvent extends TerritoryObjectiveEvent {
+public class TerritoryOwnerChangeEvent extends TerritoryObjectiveEvent {
 
-    public TerritoryOwnerChangePlayerEvent(Territory territory, NwTeam nwTeam, Event parentEvent) {
+    public TerritoryOwnerChangeEvent(Territory territory, NwTeam nwTeam, Event parentEvent) {
         super(territory, nwTeam, parentEvent);
     }
 }

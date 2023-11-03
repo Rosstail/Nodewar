@@ -301,7 +301,7 @@ public class AdaptMessage {
     }
 
     public void printTerritory(Territory territory) {
-        TerritoryModel territoryModel = territory.getTerritoryModel();
+        TerritoryModel territoryModel = territory.getModel();
         Objective objective = territory.getObjective();
         AttackRequirements attackRequirements = territory.getAttackRequirements();
         String message = territoryModel.getName() + " : " +
@@ -345,7 +345,7 @@ public class AdaptMessage {
             attackRequirementsMessage.append("\n    * ").append(s).append(":");
 
             for (Territory requiredterritory : requiredTerritoryList) {
-                attackRequirementsMessage.append("\n      - ").append(requiredterritory.getTerritoryModel().getName());
+                attackRequirementsMessage.append("\n      - ").append(requiredterritory.getModel().getName());
             }
         }
 

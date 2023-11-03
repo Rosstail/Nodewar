@@ -411,7 +411,7 @@ public class SqlStorageRequest implements StorageRequest {
             NwTeam nwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(ownerName);
             if (nwTeam != null) {
                 executeSQLUpdate(query,
-                        nwTeam.getTeamModel().getId(),
+                        nwTeam.getModel().getId(),
                         model.getName()
                 );
             } else {

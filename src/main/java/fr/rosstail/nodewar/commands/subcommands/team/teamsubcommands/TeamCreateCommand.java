@@ -5,10 +5,7 @@ import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.team.NwTeam;
-import fr.rosstail.nodewar.team.TeamDataManager;
-import fr.rosstail.nodewar.team.TeamMemberModel;
-import fr.rosstail.nodewar.team.TeamModel;
+import fr.rosstail.nodewar.team.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -87,8 +84,9 @@ public class TeamCreateCommand extends TeamSubCommand {
                     playerData.setTeam(playerNwTeam);
 
                     TeamMemberModel teamMemberModel =
-                            new TeamMemberModel(teamModel.getId(), ownerId, 1, new Timestamp(System.currentTimeMillis()));
-                    playerNwTeam.getMemberModelMap().put(ownerId, teamMemberModel);
+                            new TeamMemberModel(teamModel.getId(), ownerId, 0, new Timestamp(System.currentTimeMillis()));
+                    TeamMember teamMember = new TeamMember(senderPlayer, playerNwTeam, teamMemberModel);
+                    playerNwTeam.getMemberMap().put(senderPlayer, teamMember);
                     StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
                 }
             } else {

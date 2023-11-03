@@ -7,7 +7,12 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.player.PlayerData;
+import fr.rosstail.nodewar.player.PlayerDataManager;
+import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
+import fr.rosstail.nodewar.team.RelationType;
+import fr.rosstail.nodewar.team.TeamRelation;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.battle.Battle;
@@ -48,7 +53,7 @@ public class Territory {
 
     private final List<Player> players = new ArrayList<>();
 
-    private final Map<String, BossBar> stringBossBarMap = new HashMap<>();
+    private final Map<RelationType, BossBar> relationBossBarMap = new HashMap<>();
 
     private NwTeam ownerNwTeam;
 
@@ -123,26 +128,61 @@ public class Territory {
             final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
             final RegionManager regions = container.get(BukkitAdapter.adapt(world));
             if (regions != null) {
-                getTerritoryModel().getRegionStringList().forEach(s -> {
+                getModel().getRegionStringList().forEach(s -> {
                     if (regions.hasRegion(s)) {
                         protectedRegionList.add(regions.getRegion(s));
                     }
                 });
             }
         } else {
-            AdaptMessage.print(getTerritoryModel().getDisplay() + " ", AdaptMessage.prints.WARNING);
+            AdaptMessage.print(getModel().getDisplay() + " ", AdaptMessage.prints.WARNING);
         }
 
-        for (String relation : ConfigData.getConfigData().bossbar.relations) {
-            stringBossBarMap.put(relation, Bukkit.createBossBar(
+        for (RelationType relation : RelationType.values()) {
+            relationBossBarMap.put(relation, Bukkit.createBossBar(
                     territoryModel.getDisplay(),
-                    ConfigData.getConfigData().bossbar.stringBarColorMap.get(relation),
+                    ConfigData.getConfigData().bossbar.stringBarColorMap.get(relation.toString().toLowerCase()),
                     territoryBossBar.getBarStyle()
             ));
         }
     }
 
-    public TerritoryModel getTerritoryModel() {
+    public void updateAllBossBar() {
+        getRelationBossBarMap().forEach((relationType, bossBar) -> {
+            bossBar.removeAll();
+        });
+
+        getPlayers().forEach(this::addPlayerToBossBar);
+    }
+
+    public void addPlayerToBossBar(Player player) {
+        RelationType type = RelationType.NEUTRAL;
+        NwTeam territoryUsedTeam = null;
+        PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
+        NwTeam playerTeam = playerData.getTeam();
+
+        if (ownerNwTeam != null) {
+            territoryUsedTeam = ownerNwTeam;
+        } else if (currentBattle.getAdvantagedTeam() != null){
+            territoryUsedTeam = currentBattle.getAdvantagedTeam();
+        }
+
+        if (territoryUsedTeam != null) {
+            type = ConfigData.getConfigData().team.defaultRelation;
+            String ownerTeamName = territoryUsedTeam.getModel().getName();
+            if (playerTeam != null) {
+                if (territoryUsedTeam == playerTeam) {
+                    type = RelationType.values()[1];
+                } else if (playerTeam.getRelationMap().containsKey(ownerTeamName)) {
+                    TeamRelation relation = playerTeam.getRelationMap().get(ownerTeamName);
+                    type = relation.getRelationType();
+                }
+            }
+        }
+        getRelationBossBarMap().get(type).addPlayer(player);
+    }
+
+    public TerritoryModel getModel() {
         return territoryModel;
     }
 
@@ -186,8 +226,8 @@ public class Territory {
         return players;
     }
 
-    public Map<String, BossBar> getStringBossBarMap() {
-        return stringBossBarMap;
+    public Map<RelationType, BossBar> getRelationBossBarMap() {
+        return relationBossBarMap;
     }
 
     public NwTeam getOwnerTeam() {
@@ -196,6 +236,8 @@ public class Territory {
 
     public void setOwnerTeam(NwTeam ownerNwTeam) {
         this.ownerNwTeam = ownerNwTeam;
+        getModel().setOwnerName(ownerNwTeam != null ? ownerNwTeam.getModel().getName() : null);
+        StorageManager.getManager().updateTerritoryModel(getModel(), true);
     }
 
     public Battle getCurrentBattle() {

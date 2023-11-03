@@ -6,6 +6,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.regionevents.RegionEnteredEvent;
 import fr.rosstail.nodewar.events.regionevents.RegionLeftEvent;
@@ -14,7 +15,9 @@ import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
+import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.team.TeamDataManager;
+import fr.rosstail.nodewar.team.TeamRelation;
 import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -60,7 +63,7 @@ public class TerritoryManager {
 
                         ConfigurationSection section = yamlConfiguration.getConfigurationSection(s);
                         Territory territory = new Territory(section);
-                        territoryMap.put(territory.getTerritoryModel().getName(), territory);
+                        territoryMap.put(territory.getModel().getName(), territory);
                     });
                 }
             }
@@ -90,9 +93,9 @@ public class TerritoryManager {
         List<TerritoryModel> territoryOwnerMap = StorageManager.getManager().selectAllTerritoryModel();
         getTerritoryMap().forEach((s, territory) -> {
             List<TerritoryModel> models = territoryOwnerMap.stream().filter(model ->
-                model.getWorldName().equalsIgnoreCase(territory.getTerritoryModel().getWorldName())
+                model.getWorldName().equalsIgnoreCase(territory.getModel().getWorldName())
             ).filter(model ->
-                model.getName().equalsIgnoreCase(territory.getTerritoryModel().getName())
+                model.getName().equalsIgnoreCase(territory.getModel().getName())
             ).collect(Collectors.toList());
 
             if (!models.isEmpty()) {
@@ -101,7 +104,7 @@ public class TerritoryManager {
                     territory.setOwnerTeam(stringTeamMap.get(ownerName));
                 }
             } else {
-                StorageManager.getManager().insertTerritoryOwner(territory.getTerritoryModel());
+                StorageManager.getManager().insertTerritoryOwner(territory.getModel());
             }
         });
     }
@@ -132,9 +135,9 @@ public class TerritoryManager {
     public void addRegionToTerritory(String worldName, ProtectedRegion region) {
         System.out.println(territoryMap.entrySet().stream()
                 .filter(
-                        x -> x.getValue().getTerritoryModel().getRegionStringList().contains(region.getId())
+                        x -> x.getValue().getModel().getRegionStringList().contains(region.getId())
                 ).filter(
-                        x -> x.getValue().getTerritoryModel().getWorldName().equalsIgnoreCase(worldName)
+                        x -> x.getValue().getModel().getWorldName().equalsIgnoreCase(worldName)
                 ).count());
     }
 

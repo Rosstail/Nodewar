@@ -5,9 +5,7 @@ import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.team.NwTeam;
-import fr.rosstail.nodewar.team.TeamDataManager;
-import fr.rosstail.nodewar.team.TeamMemberModel;
+import fr.rosstail.nodewar.team.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -45,7 +43,7 @@ public class TeamLeaveCommand extends TeamSubCommand {
         Player senderPlayer;
         NwTeam nwTeam;
         PlayerData playerData;
-        TeamMemberModel teamMemberModel;
+        TeamMember teamMember;
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
@@ -63,16 +61,16 @@ public class TeamLeaveCommand extends TeamSubCommand {
             return;
         }
 
-        sender.sendMessage("TODO leaving " + nwTeam.getTeamModel().getName() + " team.");
-        teamMemberModel = nwTeam.getMemberModelMap().get(playerData.getId());
+        sender.sendMessage("TODO leaving " + nwTeam.getModel().getName() + " team.");
+        teamMember = nwTeam.getMemberMap().get(playerData.getId());
 
-        if (teamMemberModel.getRank() == 1 ) {
+        if (teamMember.getRank() == TeamRank.OWNER) {
             sender.sendMessage("You cannot leave the team while you are his owner");
             return;
         }
 
-        StorageManager.getManager().deleteTeamMemberModel(teamMemberModel.getId());
-        nwTeam.getMemberModelMap().put(playerData.getId(), teamMemberModel);
+        StorageManager.getManager().deleteTeamMemberModel(teamMember.getModel().getId());
+        nwTeam.getMemberMap().put(senderPlayer, teamMember);
         playerData.removeTeam();
     }
 

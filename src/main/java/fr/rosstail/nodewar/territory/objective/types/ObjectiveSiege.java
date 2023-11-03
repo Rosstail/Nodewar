@@ -4,8 +4,6 @@ import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.objective.Objective;
-import fr.rosstail.nodewar.territory.objective.reward.Reward;
-import fr.rosstail.nodewar.territory.objective.reward.RewardModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,7 +94,7 @@ public class ObjectiveSiege extends Objective {
         if (!capturePointsDamageAndRegenPerSecond.isEmpty()) {
             builder.append("\n   > Control points :");
             capturePointsDamageAndRegenPerSecond.forEach((territory, lists) -> {
-                builder.append("\n     * ").append(territory.getTerritoryModel().getName()).append(": ");
+                builder.append("\n     * ").append(territory.getModel().getName()).append(": ");
                 builder.append("\n        - Damage: ").append(lists.get(0));
                 builder.append("\n        - Regen: ").append(lists.get(1));
             });
