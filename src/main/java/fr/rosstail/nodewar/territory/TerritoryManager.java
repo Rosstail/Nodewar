@@ -109,6 +109,12 @@ public class TerritoryManager {
         });
     }
 
+    public void setupTerritoriesObjective() {
+        getTerritoryMap().forEach((s, territory) -> {
+            territory.setupObjective();
+        });
+    }
+
     public static TerritoryManager getTerritoryManager() {
         return territoryManager;
     }

@@ -139,7 +139,7 @@ public class ObjectiveControl extends Objective {
                 }
             }
 
-            if (defenderTeam == null || relation == RelationType.ENEMY) {
+            if (defenderTeam == null || relation == RelationType.ENEMY || relation == RelationType.TEAM) {
                 Integer force = entry.getValue();
                 if (attackerTeam != territory.getOwnerTeam()) {
                     if (force >= greatestAttackerEffective) {

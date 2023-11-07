@@ -43,8 +43,10 @@ public class Territory {
 
     private TerritoryType territoryType;
 
+    private ConfigurationSection objectiveSection;
     private Objective objective;
 
+    private Battle previousBattle;
     private Battle currentBattle = new Battle();
 
     private final TerritoryBossBar territoryBossBar;
@@ -79,11 +81,11 @@ public class Territory {
         territoryModel.setSuffix(section.getString("suffix", territoryType.getSuffix()));
         territoryModel.setUnderProtection(section.getBoolean("protected", territoryType.isUnderProtection()));
 
-        ConfigurationSection objectiveSection = section.getConfigurationSection("objective");
+        objectiveSection = section.getConfigurationSection("objective");
         territoryModel.setObjectiveTypeName(section.getString("objective.name", territoryType.getObjectiveTypeName()));
 
 
-        if (territoryModel.getObjectiveTypeName() != null) {
+        /*if (territoryModel.getObjectiveTypeName() != null) {
             switch (territoryModel.getObjectiveTypeName()) {
                 case "siege":
                     setObjective(new ObjectiveSiege(this, new ObjectiveSiegeModel(objectiveSection), (ObjectiveSiegeModel) territoryType.getObjectiveModel()));
@@ -112,7 +114,7 @@ public class Territory {
 
                 }
             });
-        }
+        }*/
 
         ConfigurationSection bossBarSection = section.getConfigurationSection("bossbar");
         TerritoryBossBarModel sectionBossBarModel = new TerritoryBossBarModel(bossBarSection);
@@ -240,11 +242,48 @@ public class Territory {
         StorageManager.getManager().updateTerritoryModel(getModel(), true);
     }
 
+    public Battle getPreviousBattle() {
+        return previousBattle;
+    }
+
     public Battle getCurrentBattle() {
         return currentBattle;
     }
 
     public void setCurrentBattle(Battle currentBattle) {
         this.currentBattle = currentBattle;
+    }
+
+    public void setupObjective() {
+        if (territoryModel.getObjectiveTypeName() != null) {
+            switch (territoryModel.getObjectiveTypeName()) {
+                case "siege":
+                    setObjective(new ObjectiveSiege(this, new ObjectiveSiegeModel(objectiveSection), (ObjectiveSiegeModel) territoryType.getObjectiveModel()));
+                    break;
+                case "control":
+                    setObjective(new ObjectiveControl(this, new ObjectiveControlModel(objectiveSection), (ObjectiveControlModel) territoryType.getObjectiveModel()));
+                    break;
+                case "koth":
+                    setObjective(new ObjectiveKoth(this));
+                    break;
+            }
+        } else {
+            setObjective(new Objective(this) {
+                @Override
+                public NwTeam checkNeutralization() {
+                    return null;
+                }
+
+                @Override
+                public NwTeam checkWinner() {
+                    return null;
+                }
+
+                @Override
+                public void applyProgress() {
+
+                }
+            });
+        }
     }
 }

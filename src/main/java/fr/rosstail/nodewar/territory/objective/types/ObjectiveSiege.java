@@ -1,19 +1,31 @@
 package fr.rosstail.nodewar.territory.objective.types;
 
+import fr.rosstail.nodewar.ConfigData;
+import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.team.NwTeam;
+import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
+import fr.rosstail.nodewar.territory.battle.Battle;
+import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.objective.Objective;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ObjectiveSiege extends Objective {
 
     private int maxHealth;
     private int currentHealth;
+
+    private final List<Territory> controlPointList = new ArrayList<>();
+    Map<NwTeam, Integer> teamScoreMap = new HashMap<>();
 
     private final ObjectiveSiegeModel objectiveSiegeModel;
 
@@ -22,14 +34,181 @@ public class ObjectiveSiege extends Objective {
         ObjectiveSiegeModel clonedChildObjectiveModel = childModel.clone();
         ObjectiveSiegeModel clonedParentObjectiveModel = parentModel.clone();
         this.objectiveSiegeModel = new ObjectiveSiegeModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
+        objectiveSiegeModel.getControlPointStringList().forEach(s -> {
+            controlPointList.addAll(TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(
+                    (territory1 -> territory1.getModel().getName().equalsIgnoreCase(s)
+                            && territory1.getWorld() == territory.getWorld())
+            ).collect(Collectors.toList()));
+        });
+
         setObjectiveModel(this.objectiveSiegeModel);
 
         this.maxHealth = Integer.parseInt(this.objectiveSiegeModel.getMaxHealthString());
         this.currentHealth = this.maxHealth;
     }
 
-    public ObjectiveSiegeModel getObjectiveSiegeModel() {
-        return objectiveSiegeModel;
+    public void updateTeamScorePerSecond() {
+        teamScoreMap.clear();
+        teamScoreMap.put(territory.getOwnerTeam(), 0);
+        controlPointList.forEach(controlPointTerritory -> {
+            NwTeam controlTeam = controlPointTerritory.getOwnerTeam();
+            if (controlTeam != null) {
+                String controlPointName = controlPointTerritory.getModel().getName();
+                String controlTeamName = controlTeam.getModel().getName();
+                int scorePerSecond = 0;
+
+                if (teamScoreMap.get(controlTeam) != null) {
+                    scorePerSecond = teamScoreMap.get(controlTeam);
+                }
+
+                scorePerSecond += objectiveSiegeModel.getRegenPerSecondControlPointIntMap().get(controlPointName);
+                teamScoreMap.put(controlTeam, scorePerSecond);
+            }
+        });
+    }
+
+    public NwTeam checkAdvantage() {
+        NwTeam defenderTeam = territory.getOwnerTeam();
+        int greatestAttackerScore = 0;
+        int defenderScore = 0;
+        final ArrayList<NwTeam> greatestAttacker = new ArrayList<>();
+
+        for (Map.Entry<NwTeam, Integer> entry : teamScoreMap.entrySet()) {
+            NwTeam attackerTeam = entry.getKey();
+            RelationType relation = ConfigData.getConfigData().team.defaultRelation;
+
+            if (defenderTeam != null) {
+                if (defenderTeam == attackerTeam) {
+                    relation = RelationType.TEAM;
+                } else if (attackerTeam.getRelationMap().containsKey(defenderTeam.getModel().getName())) {
+                    relation = attackerTeam.getRelationMap().get(defenderTeam.getModel().getName()).getRelationType();
+                }
+            }
+
+            if (defenderTeam == null || relation == RelationType.ENEMY || relation == RelationType.TEAM) {
+                Integer force = entry.getValue();
+                if (attackerTeam != territory.getOwnerTeam()) {
+                    if (force >= greatestAttackerScore) {
+                        if (force > greatestAttackerScore) {
+                            greatestAttackerScore = force;
+                            greatestAttacker.clear();
+                        }
+                        greatestAttacker.add(attackerTeam);
+                    }
+                } else {
+                    defenderScore = force;
+                }
+            }
+        }
+
+        if (greatestAttackerScore == 0 && defenderScore == 0) {
+            return null;
+        }
+
+        if (greatestAttacker.size() > 1) { //Multiple attackers or None
+            int totalAttackerScore = 2 * greatestAttackerScore;
+            if (totalAttackerScore >= defenderScore) {
+                if (totalAttackerScore > defenderScore) {
+                    setCurrentHealth(Math.max(0, currentHealth - greatestAttackerScore));
+                }
+                return null;
+            } else {
+                setCurrentHealth(Math.min(currentHealth + defenderScore, maxHealth));
+                return defenderTeam;
+            }
+        } else { //One attacker
+            if (greatestAttackerScore > defenderScore) {
+                setCurrentHealth(Math.max(0, currentHealth - greatestAttackerScore));
+                return greatestAttacker.get(0);
+            } else if (defenderScore > greatestAttackerScore) {
+                setCurrentHealth(Math.min(currentHealth + defenderScore, maxHealth));
+                return defenderTeam;
+            }
+            return null;
+        }
+    }
+
+
+    public Map<Territory, List<Integer>> getCapturePointsDamageRegenPerSecond() {
+        Map<Territory, List<Integer>> values = new HashMap<>();
+
+        List<String> controlPointStringList = objectiveSiegeModel.getControlPointStringList();
+        Map<String, Integer> controlPointDamageMap = objectiveSiegeModel.getDamagePerSecondControlPointIntMap();
+        Map<String, Integer> controlPointRegenMap = objectiveSiegeModel.getRegenPerSecondControlPointIntMap();
+
+        for (String s : controlPointStringList) {
+            List<Integer> damageRegenList = new ArrayList<>();
+
+            if (TerritoryManager.getTerritoryManager().getTerritoryMap().containsKey(s)) {
+                Territory territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(s);
+
+                damageRegenList.add(controlPointDamageMap.get(s));
+                damageRegenList.add(controlPointRegenMap.get(s));
+
+                values.put(territory, damageRegenList);
+            }
+        }
+
+        return values;
+    }
+
+    @Override
+    public NwTeam checkNeutralization() {
+        return null;
+    }
+
+    @Override
+    public NwTeam checkWinner() {
+        NwTeam ownerTeam = territory.getOwnerTeam();
+        NwTeam advantagedTeam = territory.getCurrentBattle().getAdvantagedTeam();
+        if (currentHealth <= 0 && ownerTeam != advantagedTeam) {
+            return advantagedTeam;
+        } else if (currentHealth >= maxHealth && ownerTeam == advantagedTeam) {
+            return ownerTeam;
+        }
+        return null;
+    }
+
+    public void win(NwTeam winnerTeam) {
+        Territory territory = super.territory;
+        currentHealth = maxHealth;
+        territory.getCurrentBattle().setWinnerTeam(winnerTeam);
+        territory.getCurrentBattle().setBattleStatus(BattleStatus.ENDING);
+        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
+        Bukkit.getPluginManager().callEvent(event);
+    }
+
+    @Override
+    public void applyProgress() {
+        Battle currentBattle = territory.getCurrentBattle();
+        updateTeamScorePerSecond();
+        NwTeam currentAdvantage = currentBattle.getAdvantagedTeam();
+        NwTeam newAdvantage = checkAdvantage(); //Also apply damage/regen
+
+        if (currentAdvantage != newAdvantage) {
+            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantage, null);
+            Bukkit.getPluginManager().callEvent(advantageChangeEvent);
+
+            currentBattle.setAdvantageTeam(newAdvantage);
+        }
+
+        NwTeam winnerTeam = checkWinner();
+        if (currentBattle.isBattleStarted() && winnerTeam != null) {
+            win(winnerTeam);
+        }
+
+        if (!currentBattle.isBattleStarted() && currentHealth < maxHealth) {
+            currentBattle.setBattleStatus(BattleStatus.STARTING);
+        }
+
+        territory.getRelationBossBarMap().forEach((s, bossBar) -> {
+            bossBar.setProgress((float) currentHealth / maxHealth);
+        });
+    }
+
+    @Override
+    public void startObjective() {
+        scheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), this::applyProgress, 20L, 20L);
     }
 
     public int getMaxHealth() {
@@ -48,42 +227,8 @@ public class ObjectiveSiege extends Objective {
         this.currentHealth = currentHealth;
     }
 
-    public Map<Territory, List<Integer>> getCapturePointsDamageRegenPerSecond() {
-        Map<Territory, List<Integer>> values = new HashMap<>();
-
-        List<String> controlPointStringList = objectiveSiegeModel.getControlPointStringList();
-        List<Integer> controlPointDamageList = objectiveSiegeModel.getDamagePerSecondControlPointIntList();
-        List<Integer> controlPointRegenList = objectiveSiegeModel.getRegenPerSecondControlPointIntList();
-
-        for (int i = 0; i < controlPointStringList.size(); i++) {
-            List<Integer> damageRegenList = new ArrayList<>();
-
-            String pointName = controlPointStringList.get(i);
-            if (TerritoryManager.getTerritoryManager().getTerritoryMap().containsKey(pointName)) {
-                Territory territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(pointName);
-
-                damageRegenList.add(controlPointDamageList.get(i));
-                damageRegenList.add(controlPointRegenList.get(i));
-
-                values.put(territory, damageRegenList);
-            }
-        }
-        return values;
-    }
-
-    @Override
-    public NwTeam checkNeutralization() {
-        return null;
-    }
-
-    @Override
-    public NwTeam checkWinner() {
-        return null;
-    }
-
-    @Override
-    public void applyProgress() {
-
+    public ObjectiveSiegeModel getObjectiveSiegeModel() {
+        return objectiveSiegeModel;
     }
 
     @Override
