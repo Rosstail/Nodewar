@@ -112,8 +112,8 @@ public class ObjectiveControl extends Objective {
         }
         updateHealth();
 
-        if (!currentBattle.isBattleStarted() && currentHealth < maxHealth) {
-            currentBattle.setBattleStatus(BattleStatus.STARTING);
+        if (currentBattle.isBattleWaiting() && currentHealth < maxHealth) {
+            currentBattle.setBattleStatus(BattleStatus.ONGOING);
         }
 
         territory.getRelationBossBarMap().forEach((s, bossBar) -> {

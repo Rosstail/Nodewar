@@ -57,8 +57,11 @@ public class Battle {
         this.battleStatus = battleStatus;
     }
 
+    public boolean isBattleWaiting() {
+        return this.battleStatus.equals(BattleStatus.WAITING);
+    }
     public boolean isBattleStarted() {
-        return this.battleStatus.equals(BattleStatus.STARTING) || this.battleStatus.equals(BattleStatus.ONGOING);
+        return this.battleStatus.equals(BattleStatus.ONGOING);
     }
 
     public long getBattleStartTime() {

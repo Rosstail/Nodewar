@@ -6,10 +6,6 @@ public enum BattleStatus {
      */
     WAITING,
     /**
-     * When condition to start battle met, prepare all the battlefield
-     */
-    STARTING,
-    /**
      * Main phase of the battle.
      */
     ONGOING,
