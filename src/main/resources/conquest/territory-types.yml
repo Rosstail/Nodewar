@@ -26,11 +26,11 @@ outpost: # basic configurations
     rewards:
       player-outpost-reward:
         target: "player"
-        team-minimum-score: 25str
-        player-minimum-score: 1str
+        team-minimum-score: 25
+        player-minimum-score: 1
         team-role: defender
         player-team-role: defender
-        should-team-win: falsestr
+        should-team-win: false
         team-positions:
           - "2"
           - "3"
@@ -43,7 +43,7 @@ outpost: # basic configurations
         should-team-win: true
         commands:
           - "nodewar team eco add 1000"
-          - "nodewar team Your team won 1000 credits by capturing [territory_name]"
+          - "nodewar team message Your team won 1000 credits by capturing [territory_name]"
       global-outpost-reward:
         target: "server"
         commands:

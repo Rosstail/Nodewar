@@ -39,6 +39,7 @@ public class ObjectiveControl extends Objective {
         this.objectiveControlModel = new ObjectiveControlModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
 
         clonedParentObjectiveModel.getStringRewardModelMap().forEach((s, rewardModel) -> {
+            System.out.println("aaaaaaaaaaaaa " + s);
             if (clonedChildObjectiveModel.getStringRewardModelMap().containsKey(s)) {
                 getStringRewardMap().put(s, new Reward(clonedChildObjectiveModel.getStringRewardModelMap().get(s),
                         clonedParentObjectiveModel.getStringRewardModelMap().get(s)));
@@ -215,6 +216,24 @@ public class ObjectiveControl extends Objective {
         territory.getCurrentBattle().setWinnerTeam(winnerTeam);
         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
         Bukkit.getPluginManager().callEvent(event);
+
+
+        stringRewardMap.forEach((s, reward) -> {
+            for (String command : reward.getRewardModel().getCommandList()) {
+                System.out.println(" >  " + command);
+                if (reward.getRewardModel().getTargetName().equalsIgnoreCase("player")) {
+                    territory.getPlayers().forEach(player -> {
+                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("\\[player]", player.getName()));
+                    });
+                } else if (reward.getRewardModel().getTargetName().equalsIgnoreCase("team")) {
+                    teamMemberOnTerritory.forEach((nwTeam, integer) -> {
+                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("\\[team_name]", nwTeam.getModel().getName()));
+                    });
+                } else {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+                }
+            }
+        });
     }
 
     private Map<NwTeam, Integer> getNwTeamPlayerOnTerritory() {

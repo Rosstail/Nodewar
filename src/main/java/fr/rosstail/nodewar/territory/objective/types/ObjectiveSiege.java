@@ -11,6 +11,7 @@ import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.objective.Objective;
+import fr.rosstail.nodewar.territory.objective.reward.Reward;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -41,6 +42,10 @@ public class ObjectiveSiege extends Objective {
             ).collect(Collectors.toList()));
         });
 
+        getObjectiveSiegeModel().getStringRewardModelMap().forEach((s, rewardModel) -> {
+            getStringRewardMap().put(s, new Reward(rewardModel));
+        });
+
         setObjectiveModel(this.objectiveSiegeModel);
 
         this.maxHealth = Integer.parseInt(this.objectiveSiegeModel.getMaxHealthString());
@@ -49,7 +54,9 @@ public class ObjectiveSiege extends Objective {
 
     public void updateTeamScorePerSecond() {
         teamScoreMap.clear();
-        teamScoreMap.put(territory.getOwnerTeam(), 0);
+        if (territory.getOwnerTeam() != null) {
+            teamScoreMap.put(territory.getOwnerTeam(), 0);
+        }
         controlPointList.forEach(controlPointTerritory -> {
             NwTeam controlTeam = controlPointTerritory.getOwnerTeam();
             if (controlTeam != null) {
@@ -176,13 +183,29 @@ public class ObjectiveSiege extends Objective {
         territory.getCurrentBattle().setBattleStatus(BattleStatus.ENDING);
         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
         Bukkit.getPluginManager().callEvent(event);
+
+        getStringRewardMap().forEach((s, reward) -> {
+            for (String command : reward.getRewardModel().getCommandList()) {
+                if (reward.getRewardModel().getTargetName().equalsIgnoreCase("player")) {
+                    territory.getPlayers().forEach(player -> {
+                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("\\[player_name]", player.getName()));
+                    });
+                } else if (reward.getRewardModel().getTargetName().equalsIgnoreCase("team") && winnerTeam != null) {
+                    teamScoreMap.forEach((nwTeam, integer) -> {
+                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("\\[team_name]", nwTeam.getModel().getName()));
+                    });
+                } else {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+                }
+            }
+        });
     }
 
     @Override
     public void applyProgress() {
         Battle currentBattle = territory.getCurrentBattle();
-        updateTeamScorePerSecond();
         NwTeam currentAdvantage = currentBattle.getAdvantagedTeam();
+        updateTeamScorePerSecond();
         NwTeam newAdvantage = checkAdvantage(); //Also apply damage/regen
 
         if (currentAdvantage != newAdvantage) {
@@ -245,22 +268,22 @@ public class ObjectiveSiege extends Objective {
             });
         }
 
-        if (!getObjectiveModel().getStringRewardModelMap().isEmpty()) {
-            builder.append("\n > Rewards: ");
+        if (!getStringRewardMap().isEmpty()) {
+            builder.append("\n > yaaay Rewards: ");
 
-            getObjectiveModel().getStringRewardModelMap().forEach((s, rewardModel) -> {
+            getStringRewardMap().forEach((s, reward) -> {
                 builder.append("\n   * " + s + ":");
-                builder.append("\n     - target: " + rewardModel.getTargetName());
-                builder.append("\n     - minimumTeamScore: " + rewardModel.getMinimumTeamScoreStr());
-                builder.append("\n     - minimumPlayerScore: " + rewardModel.getMinimumPlayerScoreStr());
-                builder.append("\n     - teamRole: " + rewardModel.getTeamRole());
-                builder.append("\n     - playerTeamRole: " + rewardModel.getPlayerTeamRole());
-                builder.append("\n     - shouldTeamWinStr: " + rewardModel.getShouldTeamWinStr());
-                if (!rewardModel.getTeamPositions().isEmpty()) {
-                    builder.append("\n     - teamPositions: " + rewardModel.getTeamPositions());
+                builder.append("\n     - target: " + reward.getRewardModel().getTargetName());
+                builder.append("\n     - minimumTeamScore: " + reward.getRewardModel().getMinimumTeamScoreStr());
+                builder.append("\n     - minimumPlayerScore: " + reward.getRewardModel().getMinimumPlayerScoreStr());
+                builder.append("\n     - teamRole: " + reward.getRewardModel().getTeamRole());
+                builder.append("\n     - playerTeamRole: " + reward.getRewardModel().getPlayerTeamRole());
+                builder.append("\n     - shouldTeamWinStr: " + reward.getRewardModel().getShouldTeamWinStr());
+                if (!reward.getRewardModel().getTeamPositions().isEmpty()) {
+                    builder.append("\n     - teamPositions: " + reward.getRewardModel().getTeamPositions());
                 }
-                if (!rewardModel.getCommandList().isEmpty()) {
-                    builder.append("\n     - commands: " + rewardModel.getCommandList());
+                if (!reward.getRewardModel().getCommandList().isEmpty()) {
+                    builder.append("\n     - commands: " + reward.getRewardModel().getCommandList());
                 }
             });
         }
