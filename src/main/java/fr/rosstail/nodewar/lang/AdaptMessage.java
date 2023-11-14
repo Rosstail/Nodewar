@@ -5,6 +5,7 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.apis.ExpressionCalculator;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
+import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
@@ -109,6 +110,30 @@ public class AdaptMessage {
             message = ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(player, message));
         }
         return adaptMessage(message);
+    }
+
+    public String adaptTeamMessage(NwTeam team, String message) {
+        message = message.replaceAll("\\[team_name]", team.getModel().getName());
+        message = message.replaceAll("\\[team_id]", String.valueOf(team.getModel().getId()));
+        message = message.replaceAll("\\[team_display]", team.getModel().getDisplay());
+        message = message.replaceAll("\\[team_hexcolor]", team.getModel().getHexColor());
+        message = message.replaceAll("\\[team_open]", String.valueOf(team.getModel().isOpen()));
+        message = message.replaceAll("\\[team_permanent]", String.valueOf(team.getModel().isPermanent()));
+        message = message.replaceAll("\\[team_creation_date]", String.valueOf(team.getModel().getCreationDate()));
+
+        return message;
+    }
+
+    public String adaptTerritoryMessage(Territory territory, String message) {
+        message = message.replaceAll("\\[territory_name]", territory.getModel().getName());
+        message = message.replaceAll("\\[territory_display]", territory.getModel().getDisplay());
+        message = message.replaceAll("\\[territory_world]", territory.getModel().getWorldName());
+        message = message.replaceAll("\\[territory_prefix]", territory.getModel().getPrefix());
+        message = message.replaceAll("\\[territory_suffix]", territory.getModel().getSuffix());
+        message = message.replaceAll("\\[territory_team_name]", territory.getOwnerTeam().getModel().getName());
+        message = message.replaceAll("\\[territory_objective_name]", territory.getModel().getObjectiveTypeName());
+
+        return message;
     }
 
     public String adaptMessageToModel(PlayerModel playerModel, String message, String playerType) {

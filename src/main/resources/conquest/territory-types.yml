@@ -47,7 +47,7 @@ outpost: # basic configurations
       global-outpost-reward:
         target: "server"
         commands:
-          - "broadcast [team_name] is victorious at [territory_name] !"
+          - "broadcast [territory_team_name] is victorious at [territory_name] !"
   protected: false
   attack-requirements:
     lattice-network:

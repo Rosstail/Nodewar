@@ -5,6 +5,7 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwTeam;
@@ -221,20 +222,21 @@ public class ObjectiveControl extends Objective {
         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
         Bukkit.getPluginManager().callEvent(event);
 
+        AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
 
         stringRewardMap.forEach((s, reward) -> {
             for (String command : reward.getRewardModel().getCommandList()) {
-                System.out.println(" >  " + command);
+                String finalCommand = adaptMessage.adaptTerritoryMessage(territory, command);
                 if (reward.getRewardModel().getTargetName().equalsIgnoreCase("player")) {
                     territory.getPlayers().forEach(player -> {
-                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("\\[player]", player.getName()));
+                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), finalCommand.replaceAll("\\[player]", player.getName()));
                     });
                 } else if (reward.getRewardModel().getTargetName().equalsIgnoreCase("team")) {
                     teamMemberOnTerritory.forEach((nwTeam, integer) -> {
-                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("\\[team_name]", nwTeam.getModel().getName()));
+                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptTeamMessage(nwTeam, finalCommand));
                     });
                 } else {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
                 }
             }
         });
