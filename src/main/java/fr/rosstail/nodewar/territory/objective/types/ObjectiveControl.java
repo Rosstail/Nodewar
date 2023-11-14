@@ -93,7 +93,11 @@ public class ObjectiveControl extends Objective {
     @Override
     public void applyProgress() {
         teamMemberOnTerritory.clear();
-        teamMemberOnTerritory.putAll(getNwTeamPlayerOnTerritory());
+        getNwTeamPlayerOnTerritory().forEach((nwTeam, integer) -> {
+            if (territory.getAttackRequirements().checkAttackRequirement(nwTeam)) {
+                teamMemberOnTerritory.put(nwTeam, integer);
+            }
+        });
         Battle currentBattle = territory.getCurrentBattle();
         NwTeam currentAdvantage = currentBattle.getAdvantagedTeam();
         NwTeam newAdvantage = checkAdvantage();
@@ -113,7 +117,7 @@ public class ObjectiveControl extends Objective {
         }
         updateHealth();
 
-        if (currentBattle.isBattleWaiting() && currentHealth < maxHealth) {
+        if (currentBattle.isBattleWaiting() && (currentAdvantage == null && newAdvantage != null || currentHealth < maxHealth)) {
             currentBattle.setBattleStatus(BattleStatus.ONGOING);
         }
 

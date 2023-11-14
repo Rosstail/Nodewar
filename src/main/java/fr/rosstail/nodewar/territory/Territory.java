@@ -122,7 +122,7 @@ public class Territory {
 
         ConfigurationSection attackRequirementSection = section.getConfigurationSection("attack-requirements");
         AttackRequirementsModel sectionAttackRequirementsModel = new AttackRequirementsModel(attackRequirementSection);
-        attackRequirements = new AttackRequirements(sectionAttackRequirementsModel, territoryType.getAttackRequirementsModel());
+        attackRequirements = new AttackRequirements(this, sectionAttackRequirementsModel, territoryType.getAttackRequirementsModel());
 
         world = Bukkit.getWorld(territoryModel.getWorldName());
 

@@ -1,6 +1,16 @@
 ---
-indar-northern-warpgate:
-  display: Indar Northern
+amerish-eastern-warpgate:
+  display: Amerish eastern
   type: warpgate
   regions:
-    - indar-northern-warpgate
+    - amerish-eastern-warpgate
+amerish-southern-warpgate:
+  display: Amerish southern
+  type: warpgate
+  regions:
+    - amerish-southern-warpgate
+amerish-western-warpgate:
+  display: Amerish western
+  type: warpgate
+  regions:
+    - amerish-western-warpgate
