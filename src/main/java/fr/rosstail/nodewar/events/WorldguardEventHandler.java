@@ -49,7 +49,7 @@ public class WorldguardEventHandler implements Listener {
 
         TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(
                 territory -> (
-                        territory.getWorld().equals(world) && territory.getModel().getRegionStringList().contains(region.getId())
+                        territory.getWorld() == world && territory.getModel().getRegionStringList().contains(region.getId())
                 )
         ).forEach(territory -> {
             if (playerData.getProtectedRegionList().stream().noneMatch(territory.getProtectedRegionList()::contains)) {
