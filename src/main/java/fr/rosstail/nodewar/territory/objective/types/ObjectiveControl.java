@@ -267,11 +267,13 @@ public class ObjectiveControl extends Objective {
     public void updateHealth() {
         NwTeam defenderTeam = territory.getOwnerTeam();
         NwTeam advantagedTeam = territory.getCurrentBattle().getAdvantagedTeam();
+        RelationType relationType = RelationType.NEUTRAL;
 
         if (advantagedTeam != null) {
             if (defenderTeam == null || advantagedTeam.equals(defenderTeam)) {
                 setCurrentHealth(Math.min(++currentHealth, maxHealth));
             } else {
+                //Avoid it if not enemy
                 setCurrentHealth(Math.max(0, --currentHealth));
             }
         }

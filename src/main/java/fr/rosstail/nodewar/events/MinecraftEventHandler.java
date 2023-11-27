@@ -47,6 +47,10 @@ public class MinecraftEventHandler implements Listener {
         Player player = event.getPlayer();
         PlayerModel model = PlayerDataManager.getPlayerDataMap().get(player.getName());
         checkPlayerPosition(player, player.getLocation());
+        TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory ->
+                territory.getPlayers().contains(player)).forEach(territory -> {
+                    territory.getPlayers().remove(player);
+        });
         if (!isClosing) {
             StorageManager.getManager().updatePlayerModel(model, true);
             PlayerDataManager.removePlayerDataFromMap(player);
