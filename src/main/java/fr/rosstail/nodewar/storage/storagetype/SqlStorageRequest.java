@@ -4,6 +4,8 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.*;
+import fr.rosstail.nodewar.team.member.TeamMemberModel;
+import fr.rosstail.nodewar.team.relation.TeamRelationModel;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 import org.bukkit.Bukkit;
 
@@ -158,6 +160,22 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     @Override
+    public boolean insertTeamRelationModel(TeamRelationModel model) {
+        String query = "INSERT INTO " + teamRelationTableName
+                + " (first_team_id, second_team_id, relation_type)"
+                + " VALUES (?, ?, ?);";
+        long firstTeamId = model.getFirstTeamId();
+        long secondTeamId = model.getSecondTeamId();
+        int relationId = model.getRelation();
+        try {
+            return executeSQLUpdate(query, firstTeamId, secondTeamId, relationId) > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
     public boolean insertTerritoryModel(TerritoryModel model) {
         String query = "INSERT INTO " + territoryTableName + " (name, world)"
                 + " VALUES (?, ?);";
@@ -304,8 +322,28 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     @Override
-    public Map<String, TeamRelationModel> selectTeamRelationModelByTeamUuid(String teamUuid) {
+    public ArrayList<TeamRelationModel> selectAllTeamRelationModel() {
+        ArrayList<TeamRelationModel> teamRelationModelArrayList= new ArrayList<>();
+        String query = "SELECT * FROM " + teamRelationTableName + ";";
+        try {
+            ResultSet result = executeSQLQuery(connection, query);
+            while (result.next()) {
+                TeamRelationModel teamRelationModel = new TeamRelationModel(
+                        result.getInt("first_team_id"),
+                        result.getInt("second_team_id"),
+                        result.getInt("relation_type"));
+                teamRelationModel.setId(result.getInt("id"));
+                teamRelationModelArrayList.add(teamRelationModel);
+            }
+            result.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return teamRelationModelArrayList;
+    }
 
+    @Override
+    public Map<String, TeamRelationModel> selectTeamRelationModelByTeamUuid(String teamUuid) {
         Map<String, TeamRelationModel> teamRelationModelMap = new HashMap<>();
         String query = "SELECT t.name AS other_team_name, tr.*\n" +
                 "FROM " + teamRelationTableName + " AS tr\n" +

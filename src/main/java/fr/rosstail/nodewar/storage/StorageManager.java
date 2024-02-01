@@ -10,11 +10,12 @@ import fr.rosstail.nodewar.storage.storagetype.sql.MySqlStorageRequest;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
-import fr.rosstail.nodewar.team.TeamMemberModel;
+import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
-import fr.rosstail.nodewar.team.TeamRelationModel;
+import fr.rosstail.nodewar.team.relation.TeamRelationModel;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -214,6 +215,23 @@ public class StorageManager {
                 return mongoDBStorageRequest.selectTeamMemberModelByTeamUuid(teamName);
             default:
                 return liteSqlDBStorageRequest.selectTeamMemberModelByTeamUuid(teamName);
+        }
+    }
+
+
+    /**
+     * SELECT ALL TEAM RELATION MODEL
+     */
+    public ArrayList<TeamRelationModel> selectAllTeamRelationModel() {
+        switch (type) {
+            case "mysql":
+                return mySqlStorageRequest.selectAllTeamRelationModel();
+            case "mariadb":
+                return mariaDBStorageRequest.selectAllTeamRelationModel();
+            case "mongodb":
+                return mongoDBStorageRequest.selectAllTeamRelationModel();
+            default:
+                return liteSqlDBStorageRequest.selectAllTeamRelationModel();
         }
     }
 

@@ -6,7 +6,7 @@ import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
-import fr.rosstail.nodewar.team.TeamMember;
+import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -28,7 +28,7 @@ public class MinecraftEventHandler implements Listener {
             playerData = new PlayerData(event.getPlayer());
             StorageManager.getManager().insertPlayerModel(playerData);
         } else {
-            playerData = new PlayerData(playerModel);
+            playerData = new PlayerData(player, playerModel);
         }
 
         PlayerDataManager.initPlayerDataToMap(playerData);
@@ -46,11 +46,16 @@ public class MinecraftEventHandler implements Listener {
     public void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         PlayerModel model = PlayerDataManager.getPlayerDataMap().get(player.getName());
+        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
+
         checkPlayerPosition(player, player.getLocation());
         TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory ->
                 territory.getPlayers().contains(player)).forEach(territory -> {
                     territory.getPlayers().remove(player);
         });
+        if (playerNwTeam != null) {
+            playerNwTeam.getMemberMap().remove(player);
+        }
         if (!isClosing) {
             StorageManager.getManager().updatePlayerModel(model, true);
             PlayerDataManager.removePlayerDataFromMap(player);

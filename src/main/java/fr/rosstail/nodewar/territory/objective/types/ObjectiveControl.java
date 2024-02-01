@@ -5,7 +5,6 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwTeam;
@@ -19,6 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -140,8 +140,8 @@ public class ObjectiveControl extends Objective {
             if (defenderTeam != null) {
                 if (defenderTeam == attackerTeam) {
                     relation = RelationType.TEAM;
-                } else if (attackerTeam.getRelationMap().containsKey(defenderTeam.getModel().getName())) {
-                    relation = attackerTeam.getRelationMap().get(defenderTeam.getModel().getName()).getRelationType();
+                } else if (attackerTeam.getRelations().containsKey(defenderTeam.getModel().getName())) {
+                    relation = attackerTeam.getRelations().get(defenderTeam.getModel().getName()).getRelationType();
                 }
             }
 
@@ -219,27 +219,10 @@ public class ObjectiveControl extends Objective {
     public void win(NwTeam winnerTeam) {
         Territory territory = super.territory;
         territory.getCurrentBattle().setWinnerTeam(winnerTeam);
+        handleRewards(new ArrayList<>(Collections.singleton(winnerTeam)));
         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
         Bukkit.getPluginManager().callEvent(event);
 
-        AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
-
-        stringRewardMap.forEach((s, reward) -> {
-            for (String command : reward.getRewardModel().getCommandList()) {
-                String finalCommand = adaptMessage.adaptTerritoryMessage(territory, command);
-                if (reward.getRewardModel().getTargetName().equalsIgnoreCase("player")) {
-                    territory.getPlayers().forEach(player -> {
-                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), finalCommand.replaceAll("\\[player]", player.getName()));
-                    });
-                } else if (reward.getRewardModel().getTargetName().equalsIgnoreCase("team")) {
-                    teamMemberOnTerritory.forEach((nwTeam, integer) -> {
-                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptTeamMessage(nwTeam, finalCommand));
-                    });
-                } else {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
-                }
-            }
-        });
     }
 
     private Map<NwTeam, Integer> getNwTeamPlayerOnTerritory() {
@@ -284,5 +267,10 @@ public class ObjectiveControl extends Objective {
         return "\n   > Health: " + getCurrentHealth() + " / " + getMaxHealth() +
                 "\n   > Attacker ratio: " + getMinAttackerRatio() +
                 "\n   > Need neutralize: " + isNeedNeutralize();
+    }
+
+    @Override
+    public void handleRewards(ArrayList<NwTeam> participatingTeamList) {
+        super.handleRewards(participatingTeamList);
     }
 }

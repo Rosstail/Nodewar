@@ -163,4 +163,8 @@ public class PlayerDataManager {
             StorageManager.getManager().updatePlayerModel(model, true);
         });
     }
+
+    public static PlayerData getPlayerDataFromMap(Player player) {
+        return getPlayerDataMap().get(player.getName());
+    }
 }

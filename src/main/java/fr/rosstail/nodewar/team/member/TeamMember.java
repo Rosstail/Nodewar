@@ -1,5 +1,7 @@
-package fr.rosstail.nodewar.team;
+package fr.rosstail.nodewar.team.member;
 
+import fr.rosstail.nodewar.team.NwTeam;
+import fr.rosstail.nodewar.team.rank.TeamRank;
 import org.bukkit.entity.Player;
 
 public class TeamMember {

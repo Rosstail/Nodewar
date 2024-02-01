@@ -4,6 +4,8 @@ import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.team.*;
+import fr.rosstail.nodewar.team.rank.TeamRank;
+import fr.rosstail.nodewar.team.relation.TeamRelation;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -79,6 +81,7 @@ public class TeamRelationCommand extends TeamSubCommand {
 
             RelationType defaultRelation = ConfigData.getConfigData().team.defaultRelation;
 
+            /*
             if (playerNwTeam.getRelationMap().containsKey(targetTeamName)) {
                 if (!relationType.equals(defaultRelation)) {
                     TeamRelation playerTeamRelation = playerNwTeam.getRelationMap().get(targetTeamName);
@@ -101,6 +104,7 @@ public class TeamRelationCommand extends TeamSubCommand {
                     sender.sendMessage("This is a default implicit relation. Use -e or --explicit to make this explicit");
                 }
             }
+             */
         }
     }
 

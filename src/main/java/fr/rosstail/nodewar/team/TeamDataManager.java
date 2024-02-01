@@ -5,6 +5,10 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
+import fr.rosstail.nodewar.team.member.TeamMemberModel;
+import fr.rosstail.nodewar.team.relation.TeamRelation;
+import fr.rosstail.nodewar.team.relation.TeamRelationManager;
+import fr.rosstail.nodewar.team.relation.TeamRelationModel;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -47,18 +51,32 @@ public class TeamDataManager {
                     StorageManager.getManager().selectTeamRelationModelByTeamUuid(s);
             teamRelationModelMap.forEach((s1, teamRelationModel) -> {
                 team.getModel().getTeamRelationModelMap().put(teamRelationModel.getSecondTeamId(), teamRelationModel);
-                team.getRelationMap().put(s1,
-                        new TeamRelation(TeamDataManager.getTeamDataManager().getStringTeamMap().get(s1), RelationType.values()[teamRelationModel.getRelation()], teamRelationModel));
             });
         });
+    }
+
+    public Map<String, TeamRelation> getTeamsRelations(NwTeam team) {
+        return TeamRelationManager.getTeamRelationManager().getTeamRelationMap(team);
     }
 
     public void addNewTeam(NwTeam nwTeam) {
         getStringTeamMap().put(nwTeam.getModel().getName(), nwTeam);
     }
 
-    public void removeDeletedTeam(String teamName) {
+    public void deleteTeam(String teamName) {
+        NwTeam team = getStringTeamMap().get(teamName);
         getStringTeamMap().remove(teamName);
+
+        PlayerDataManager.getPlayerDataMap().values().stream().filter(playerData ->
+                (playerData.getTeam() == team)).forEach(this::deleteTeamMember);
+
+        // TeamRelationManager;
+        StorageManager.getManager().deleteTeamModel(team.getModel().getId());
+    }
+
+    public void deleteTeamMember(PlayerData playerData) {
+        StorageManager.getManager().deleteTeamMemberModel(playerData.getId());
+        playerData.setTeam(null);
     }
 
     public Map<String, NwTeam> getStringTeamMap() {
@@ -79,8 +97,12 @@ public class TeamDataManager {
             if (nwTeams.size() > 1) {
                 AdaptMessage.print("The player with data id " + playerData.getId() +
                         " is in multiple teams. using the first one only", AdaptMessage.prints.WARNING);
+            } else {
+                AdaptMessage.print("The player " + player.getName() + " has a team !", AdaptMessage.prints.OUT);
             }
             return nwTeams.get(0);
+        } else {
+            AdaptMessage.print("PLayer " + player.getName() + " is in no team", AdaptMessage.prints.WARNING);
         }
 
         return null;

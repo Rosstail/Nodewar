@@ -2,11 +2,9 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
-import fr.rosstail.nodewar.player.PlayerDataManager;
-import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
-import fr.rosstail.nodewar.team.TeamRank;
+import fr.rosstail.nodewar.team.rank.TeamRank;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -48,13 +46,9 @@ public class TeamDisbandCommand extends TeamSubCommand {
             boolean disband = false;
             NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
             if (playerNwTeam != null) {
-                if (playerNwTeam.getMemberMap().get(PlayerDataManager.getPlayerDataMap().get(player.getName()).getId()).getRank() == TeamRank.OWNER) {
+                if (playerNwTeam.getMemberMap().get(player).getRank() == TeamRank.OWNER) {
                     disband = true;
-                    StorageManager.getManager().deleteTeamModel(playerNwTeam.getModel().getId());
-                    PlayerDataManager.getPlayerDataMap().values().stream().filter(playerData ->
-                            (playerData.getTeam() == playerNwTeam)).forEach(playerData -> {
-                        playerData.setTeam(null);
-                    });
+                    TeamDataManager.getTeamDataManager().deleteTeam(playerNwTeam.getModel().getName());
                 } else {
                     sender.sendMessage("you do not have enough rank on your team");
                 }

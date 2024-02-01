@@ -35,7 +35,7 @@ outpost: # basic configurations
           - "2"
           - "3"
         commands:
-          - "give [player] golden_nugget 2"
+          - "give [player] goldnugget 2"
       winner-team-outpost-reward:
         target: "team"
         team-minimum-score: 500

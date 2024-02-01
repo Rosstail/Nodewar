@@ -1,5 +1,8 @@
 package fr.rosstail.nodewar.team;
 
+import fr.rosstail.nodewar.team.member.TeamMemberModel;
+import fr.rosstail.nodewar.team.relation.TeamRelationModel;
+
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;

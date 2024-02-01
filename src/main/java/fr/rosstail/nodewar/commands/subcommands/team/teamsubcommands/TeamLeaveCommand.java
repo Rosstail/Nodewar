@@ -6,6 +6,8 @@ import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.*;
+import fr.rosstail.nodewar.team.member.TeamMember;
+import fr.rosstail.nodewar.team.rank.TeamRank;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -62,7 +64,7 @@ public class TeamLeaveCommand extends TeamSubCommand {
         }
 
         sender.sendMessage("TODO leaving " + nwTeam.getModel().getName() + " team.");
-        teamMember = nwTeam.getMemberMap().get(playerData.getId());
+        teamMember = nwTeam.getMemberMap().get(senderPlayer);
 
         if (teamMember.getRank() == TeamRank.OWNER) {
             sender.sendMessage("You cannot leave the team while you are his owner");
@@ -70,8 +72,9 @@ public class TeamLeaveCommand extends TeamSubCommand {
         }
 
         StorageManager.getManager().deleteTeamMemberModel(teamMember.getModel().getId());
-        nwTeam.getMemberMap().put(senderPlayer, teamMember);
+        nwTeam.getMemberMap().remove(senderPlayer);
         playerData.removeTeam();
+        sender.sendMessage("You successfully left " + nwTeam.getModel().getDisplay() + " team");
     }
 
     @Override

@@ -1,4 +1,4 @@
-package fr.rosstail.nodewar.team;
+package fr.rosstail.nodewar.team.relation;
 
 public class TeamRelationModel {
     private int id;

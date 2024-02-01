@@ -7,8 +7,8 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
-import fr.rosstail.nodewar.team.TeamMember;
-import fr.rosstail.nodewar.team.TeamMemberModel;
+import fr.rosstail.nodewar.team.member.TeamMember;
+import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

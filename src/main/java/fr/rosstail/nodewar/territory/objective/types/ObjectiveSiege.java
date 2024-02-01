@@ -88,8 +88,8 @@ public class ObjectiveSiege extends Objective {
             if (defenderTeam != null) {
                 if (defenderTeam == attackerTeam) {
                     relation = RelationType.TEAM;
-                } else if (attackerTeam.getRelationMap().containsKey(defenderTeam.getModel().getName())) {
-                    relation = attackerTeam.getRelationMap().get(defenderTeam.getModel().getName()).getRelationType();
+                } else if (attackerTeam.getRelations().containsKey(defenderTeam.getModel().getName())) {
+                    relation = attackerTeam.getRelations().get(defenderTeam.getModel().getName()).getRelationType();
                 }
             }
 
@@ -182,26 +182,28 @@ public class ObjectiveSiege extends Objective {
         currentHealth = maxHealth;
         territory.getCurrentBattle().setWinnerTeam(winnerTeam);
         territory.getCurrentBattle().setBattleStatus(BattleStatus.ENDING);
-        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
-        Bukkit.getPluginManager().callEvent(event);
-        AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
 
-        getStringRewardMap().forEach((s, reward) -> {
-            for (String command : reward.getRewardModel().getCommandList()) {
-                String finalCommand = adaptMessage.adaptTerritoryMessage(territory, command);
-                if (reward.getRewardModel().getTargetName().equalsIgnoreCase("player")) {
-                    territory.getPlayers().forEach(player -> {
-                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), finalCommand.replaceAll("\\[player_name]", player.getName()));
-                    });
-                } else if (reward.getRewardModel().getTargetName().equalsIgnoreCase("team") && winnerTeam != null) {
-                    teamScoreMap.forEach((nwTeam, integer) -> {
-                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptTeamMessage(nwTeam, finalCommand));
-                    });
-                } else {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
+
+        ArrayList<NwTeam> orderedParticipatingTeamList = new ArrayList<>();
+        teamScoreMap.forEach((team, integer) -> {
+            int index = 0;
+            if (!orderedParticipatingTeamList.isEmpty()) {
+                for (NwTeam orderedTeam : orderedParticipatingTeamList) {
+                    if (teamScoreMap.get(orderedTeam) > teamScoreMap.get(team)) {
+                        break;
+                    }
+                    index++;
                 }
             }
+            orderedParticipatingTeamList.add(index, team);
         });
+        if (winnerTeam == null) {
+            orderedParticipatingTeamList.add(0, null);
+        }
+        handleRewards(orderedParticipatingTeamList);
+
+        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
+        Bukkit.getPluginManager().callEvent(event);
     }
 
     @Override
@@ -258,6 +260,11 @@ public class ObjectiveSiege extends Objective {
     }
 
     @Override
+    public void handleRewards(ArrayList<NwTeam> participatingTeamList) {
+        super.handleRewards(participatingTeamList);
+    }
+
+    @Override
     public String print() {
         StringBuilder builder = new StringBuilder("\n   > Health: " + currentHealth + " / " + maxHealth);
 
@@ -272,7 +279,7 @@ public class ObjectiveSiege extends Objective {
         }
 
         if (!getStringRewardMap().isEmpty()) {
-            builder.append("\n > yaaay Rewards: ");
+            builder.append("\n > Rewards: ");
 
             getStringRewardMap().forEach((s, reward) -> {
                 builder.append("\n   * " + s + ":");

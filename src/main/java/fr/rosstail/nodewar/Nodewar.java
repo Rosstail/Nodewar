@@ -13,6 +13,8 @@ import fr.rosstail.nodewar.events.MinecraftEventHandler;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.team.TeamDataManager;
+import fr.rosstail.nodewar.team.relation.TeamRelation;
+import fr.rosstail.nodewar.team.relation.TeamRelationManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
@@ -81,6 +83,7 @@ public class Nodewar extends JavaPlugin implements Listener {
 
         AdaptMessage.initAdaptMessage(this);
         TeamDataManager.init(this);
+        TeamRelationManager.init(this);
         TerritoryManager.init(this);
 
         loadCustomConfig();
@@ -125,11 +128,16 @@ public class Nodewar extends JavaPlugin implements Listener {
         territoryManager.loadTerritoryConfigs("plugins/" + getName() + "/conquest/territories");
 
         TeamDataManager.getTeamDataManager().loadTeams();
+        TeamDataManager.getTeamDataManager().getStringTeamMap().forEach((s, team) -> {
+            System.out.println("- team " + s);
+        });
+        TeamRelationManager.getTeamRelationManager().loadRelations();
         territoryManager.setupTerritoriesOwner();
         territoryManager.setupTerritoriesObjective();
-        AdaptMessage.print("=============", AdaptMessage.prints.OUT);
-        territoryManager.getTerritoryMap().forEach((s, territory) -> AdaptMessage.getAdaptMessage().printTerritory(territory));
-        AdaptMessage.print("=====END=====", AdaptMessage.prints.OUT);
+
+        // AdaptMessage.print("=============", AdaptMessage.prints.OUT);
+        // territoryManager.getTerritoryMap().forEach((s, territory) -> AdaptMessage.getAdaptMessage().printTerritory(territory));
+        // AdaptMessage.print("=====END=====", AdaptMessage.prints.OUT);
 
         PointInPolygon.main(null);
     }

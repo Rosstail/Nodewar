@@ -7,7 +7,7 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
-import fr.rosstail.nodewar.team.TeamRank;
+import fr.rosstail.nodewar.team.rank.TeamRank;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

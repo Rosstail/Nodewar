@@ -50,6 +50,11 @@ public class NodewarEventHandler implements Listener {
                 + " has been neutralized by " + team.getModel().getName());
 
         territory.setOwnerTeam(null);
+
+        territory.getProtectedRegionList().forEach(protectedRegion -> {
+            protectedRegion.getMembers().removeAll();
+        });
+
         territory.updateAllBossBar();
     }
 
@@ -59,6 +64,13 @@ public class NodewarEventHandler implements Listener {
         NwTeam team = event.getNwTeam();
         Bukkit.getServer().broadcastMessage(territory.getModel().getName()
                 + " has been captured by " + team.getModel().getName());
+
+        territory.getProtectedRegionList().forEach(protectedRegion -> {
+            if (territory.getOwnerTeam() != null) {
+                protectedRegion.getMembers().removeGroup(territory.getOwnerTeam().getModel().getName());
+            }
+            protectedRegion.getMembers().addGroup(team.getModel().getName());
+        });
 
         territory.setOwnerTeam(team);
         territory.updateAllBossBar();

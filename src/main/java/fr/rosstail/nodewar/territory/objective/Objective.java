@@ -6,6 +6,8 @@ import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
 import org.bukkit.Bukkit;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,5 +58,11 @@ public abstract class Objective {
     public String print() {
         // no objective
         return "objective placeholder";
+    }
+
+    public void handleRewards(ArrayList<NwTeam> participatingTeamList) {
+        getStringRewardMap().forEach((s, reward) -> {
+            reward.handleReward(territory, this, participatingTeamList);
+        });
     }
 }

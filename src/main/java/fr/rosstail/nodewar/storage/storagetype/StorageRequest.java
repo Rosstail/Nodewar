@@ -1,11 +1,12 @@
 package fr.rosstail.nodewar.storage.storagetype;
 
 import fr.rosstail.nodewar.player.PlayerModel;
-import fr.rosstail.nodewar.team.TeamMemberModel;
+import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
-import fr.rosstail.nodewar.team.TeamRelationModel;
+import fr.rosstail.nodewar.team.relation.TeamRelationModel;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,13 @@ public interface StorageRequest {
      */
     boolean insertTeamMemberModel(TeamMemberModel model);
 
+    /**
+     * CREATE
+     * inert team relation model into storage
+     * @param model the model to insert
+     * @return if the result is successful
+     */
+    boolean insertTeamRelationModel(TeamRelationModel model);
     /**
      * CREATE
      * inert territory model into storage
@@ -82,6 +90,13 @@ public interface StorageRequest {
      * @return the team member model
      */
     Map<Integer, TeamMemberModel> selectTeamMemberModelByTeamUuid(String teamUuid);
+
+    /**
+     * Get all team models from the database
+     * @return
+     */
+    ArrayList<TeamRelationModel> selectAllTeamRelationModel();
+
     /**
      * READ
      * get all member team model from storage

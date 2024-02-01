@@ -12,7 +12,7 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
-import fr.rosstail.nodewar.team.TeamRelation;
+import fr.rosstail.nodewar.team.relation.TeamRelation;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.battle.Battle;
@@ -175,8 +175,8 @@ public class Territory {
             if (playerTeam != null) {
                 if (territoryUsedTeam == playerTeam) {
                     type = RelationType.values()[1];
-                } else if (playerTeam.getRelationMap().containsKey(ownerTeamName)) {
-                    TeamRelation relation = playerTeam.getRelationMap().get(ownerTeamName);
+                } else if (playerTeam.getRelations().containsKey(ownerTeamName)) {
+                    TeamRelation relation = playerTeam.getRelations().get(ownerTeamName);
                     type = relation.getRelationType();
                 }
             }
