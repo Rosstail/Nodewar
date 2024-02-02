@@ -26,7 +26,6 @@ public class AttackRequirements {
         AttackRequirementsModel clonedParentModel = parentModel.clone();
         this.attackRequirementsModel = new AttackRequirementsModel(clonedChildModel, clonedParentModel);
     }
-
     public Map<String, TerritoryType> getLatticeNetwork() {
         Map<String, TerritoryType> latticeNetwork = new HashMap<>();
         List<String> latticeNetworkStringList = attackRequirementsModel.getLatticeNetworkStringList();
@@ -75,6 +74,22 @@ public class AttackRequirements {
         return territoryListMap;
     }
 
+    public boolean isConnectedToNode(ArrayList<Territory> ignoredTerritories, Territory territory, NwTeam team) {
+        if (latticeNetworkList.isEmpty()) {
+            return true;
+        }
+        
+        ignoredTerritories.add(territory);
+        for (Territory subTerritory : territory.getTerritoriesCanAttack()) {
+            NwTeam ownerTeam = subTerritory.getOwnerTeam();
+            if (!ignoredTerritories.contains(subTerritory) && ownerTeam != null && ownerTeam.equals(team)) {
+                ignoredTerritories.add(subTerritory);
+                return isConnectedToNode(ignoredTerritories, subTerritory, team);
+            }
+        }
+        return false;
+    }
+
     public boolean checkAttackRequirement(NwTeam team) {
         int territoryTypeCount;
         int territoryCount;
@@ -82,9 +97,11 @@ public class AttackRequirements {
             return true; // defender can protect
         }
 
+
         for (Map.Entry<String, TerritoryType> entry : getLatticeNetwork().entrySet()) {
             String s = entry.getKey();
             TerritoryType territoryType = entry.getValue();
+            ArrayList<Territory> latticeCompleteList = new ArrayList<>();
 
             if (TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().noneMatch(territory1 ->
                     territory1.getTerritoryType() == territoryType &&
@@ -93,6 +110,13 @@ public class AttackRequirements {
             )) {
                 return false;
             }
+
+            TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory1 ->
+                    territory1.getTerritoryType() == territoryType &&
+                            territory1.getWorld().getName().equalsIgnoreCase(territoryType.getWorldName()) &&
+                            territory1.getOwnerTeam() == team).forEach(territory1 -> {
+
+            });
         }
 
         for (Map.Entry<String, Map<TerritoryType, Integer>> entry : getTerritoryTypeAmountMap().entrySet()) {
@@ -141,5 +165,9 @@ public class AttackRequirements {
 
     public AttackRequirementsModel getAttackRequirementsModel() {
         return attackRequirementsModel;
+    }
+
+    public Territory getTerritory() {
+        return territory;
     }
 }
