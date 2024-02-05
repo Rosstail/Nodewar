@@ -134,10 +134,11 @@ public class Nodewar extends JavaPlugin implements Listener {
         TeamRelationManager.getTeamRelationManager().loadRelations();
         territoryManager.setupTerritoriesOwner();
         territoryManager.setupTerritoriesObjective();
+        territoryManager.setupTerritoriesAttackRequirements();
 
-        // AdaptMessage.print("=============", AdaptMessage.prints.OUT);
-        // territoryManager.getTerritoryMap().forEach((s, territory) -> AdaptMessage.getAdaptMessage().printTerritory(territory));
-        // AdaptMessage.print("=====END=====", AdaptMessage.prints.OUT);
+        AdaptMessage.print("=============", AdaptMessage.prints.OUT);
+        territoryManager.getTerritoryMap().forEach((s, territory) -> AdaptMessage.getAdaptMessage().printTerritory(territory));
+        AdaptMessage.print("=====END=====", AdaptMessage.prints.OUT);
 
         PointInPolygon.main(null);
     }

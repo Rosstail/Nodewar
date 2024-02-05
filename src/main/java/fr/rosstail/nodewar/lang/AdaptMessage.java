@@ -130,7 +130,7 @@ public class AdaptMessage {
         message = message.replaceAll("\\[territory_world]", territory.getModel().getWorldName());
         message = message.replaceAll("\\[territory_prefix]", territory.getModel().getPrefix());
         message = message.replaceAll("\\[territory_suffix]", territory.getModel().getSuffix());
-        message = message.replaceAll("\\[territory_team_name]", territory.getOwnerTeam().getModel().getName());
+        message = message.replaceAll("\\[territory_team_name]", territory.getOwnerTeam() != null ? territory.getOwnerTeam().getModel().getName() : "None");
         message = message.replaceAll("\\[territory_objective_name]", territory.getModel().getObjectiveTypeName());
 
         return message;
@@ -343,35 +343,16 @@ public class AdaptMessage {
         message = message + objectiveRequirementsMessage;
 
 
-        StringBuilder attackRequirementsMessage = new StringBuilder("\n * Attack requirements:" +
-                "\n   > lattice types:");
-        for (Map.Entry<String, TerritoryType> entry : attackRequirements.getLatticeNetwork().entrySet()) {
-            String s = entry.getKey();
-            TerritoryType territoryType1 = entry.getValue();
-            attackRequirementsMessage.append("\n     - ").append(territoryType1.getName());
-        }
+        StringBuilder attackRequirementsMessage = new StringBuilder("\n");
 
-        attackRequirementsMessage.append("\n   > types amounts:");
-        for (Map.Entry<String, Map<TerritoryType, Integer>> e : attackRequirements.getTerritoryTypeAmountMap().entrySet()) {
-            String s1 = e.getKey();
-            Map<TerritoryType, Integer> territoryTypeIntegerMap = e.getValue();
-            attackRequirementsMessage.append("\n    * ").append(s1).append(":");
-            for (Map.Entry<TerritoryType, Integer> entry : territoryTypeIntegerMap.entrySet()) {
-                TerritoryType territoryType1 = entry.getKey();
-                Integer integer = entry.getValue();
-                attackRequirementsMessage.append("\n      - ").append(territoryType1.getName()).append(":").append(integer);
-            }
-        }
-
-        attackRequirementsMessage.append("\n   > required territories:");
-        for (Map.Entry<String, List<Territory>> entry : attackRequirements.getTerritoryListMap().entrySet()) {
-            String s = entry.getKey();
-            List<Territory> requiredTerritoryList = entry.getValue();
-            attackRequirementsMessage.append("\n    * ").append(s).append(":");
-
-            for (Territory requiredterritory : requiredTerritoryList) {
-                attackRequirementsMessage.append("\n      - ").append(requiredterritory.getModel().getName());
-            }
+        attackRequirementsMessage.append("  * Attack requirements:");
+        if (!attackRequirements.getPreviousTerritoryList().isEmpty()) {
+            attackRequirementsMessage.append("\n   > previous territories :");
+            attackRequirements.getPreviousTerritoryList().forEach(requiredTerritory -> {
+                attackRequirementsMessage.append("\n    * ").append(requiredTerritory.getModel().getName());
+            });
+        } else {
+            attackRequirementsMessage.append(" None");
         }
 
         message = message + attackRequirementsMessage + "\n------------";

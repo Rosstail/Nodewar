@@ -3,164 +3,49 @@ package fr.rosstail.nodewar.territory.attackrequirements;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
-import fr.rosstail.nodewar.territory.type.TerritoryType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AttackRequirements {
 
-    private final List<TerritoryType> latticeNetworkList = new ArrayList<>();
-    private final Map<String, Map<Territory, Integer>> territoryTypeAmountMap = new HashMap<>();
-    private final Map<String, List<Territory>> territoryListMap = new HashMap<>();
-
     protected Territory territory;
     private final AttackRequirementsModel attackRequirementsModel;
+
+    private final List<Territory> previousTerritoryList = new ArrayList<>();
 
     public AttackRequirements(Territory territory, AttackRequirementsModel childModel, AttackRequirementsModel parentModel) {
         this.territory = territory;
         AttackRequirementsModel clonedChildModel = childModel.clone();
         AttackRequirementsModel clonedParentModel = parentModel.clone();
         this.attackRequirementsModel = new AttackRequirementsModel(clonedChildModel, clonedParentModel);
-    }
-    public Map<String, TerritoryType> getLatticeNetwork() {
-        Map<String, TerritoryType> latticeNetwork = new HashMap<>();
-        List<String> latticeNetworkStringList = attackRequirementsModel.getLatticeNetworkStringList();
-        Map<String, TerritoryType> territoryTypeMap = TerritoryManager.getTerritoryManager().getTerritoryTypeMap();
-        latticeNetworkStringList.forEach(s -> {
-            TerritoryType territoryType = territoryTypeMap.get(s);
-            if (territoryType != null) {
-                latticeNetwork.put(s, territoryType);
-            }
-        });
-        return latticeNetwork;
-    }
+        TerritoryManager territoryManager = TerritoryManager.getTerritoryManager();
 
-    public Map<String, Map<TerritoryType, Integer>> getTerritoryTypeAmountMap() {
-        Map<String, Map<TerritoryType, Integer>> territoryTypeAmountMap = new HashMap<>();
-        Map<String, Map<String, Integer>> stringAmountStringMap = attackRequirementsModel.getTerritoryTypeNameAmountMap();
-        Map<String, TerritoryType> territoryTypeMap = TerritoryManager.getTerritoryManager().getTerritoryTypeMap();
-
-        stringAmountStringMap.forEach((s, stringIntegerMap) -> {
-            Map<TerritoryType, Integer> territoryIntegerMap = new HashMap<>();
-            stringIntegerMap.forEach((s1, integer) -> {
-                TerritoryType territoryType = territoryTypeMap.get(s1);
-                if (territoryType != null) {
-                    territoryIntegerMap.put(territoryType, integer);
-                }
+        if (this.attackRequirementsModel.getPreviousTerritoryNameList() != null) {
+            this.attackRequirementsModel.getPreviousTerritoryNameList().forEach(s -> {
+                Optional<Territory> first = territoryManager.getTerritoryMap().values().stream().filter(territory1 -> (
+                        territory1.getModel().getName().equalsIgnoreCase(s) &&
+                                territory1.getWorld().equals(territory.getWorld())
+                )).findFirst();
+                first.ifPresent(previousTerritoryList::add);
             });
-            territoryTypeAmountMap.put(s, territoryIntegerMap);
-        });
-        return territoryTypeAmountMap;
+        }
     }
 
-    public Map<String, List<Territory>> getTerritoryListMap() {
-        Map<String, List<Territory>> territoryListMap = new HashMap<>();
-        Map<String, List<String>> territoryStringListMap = attackRequirementsModel.getTerritoryNameListMap();
-        Map<String, Territory> territoryMap = TerritoryManager.getTerritoryManager().getTerritoryMap();
-        territoryStringListMap.forEach((s, strings) -> {
-            List<Territory> territoryList = new ArrayList<>();
-            strings.forEach(s1 -> {
-                Territory territory = territoryMap.get(s1);
-                if (territory != null) {
-                    territoryList.add(territory);
-                }
-            });
-            territoryListMap.put(s, territoryList);
-        });
-        return territoryListMap;
-    }
-
-    public boolean isConnectedToNode(ArrayList<Territory> ignoredTerritories, Territory territory, NwTeam team) {
-        if (latticeNetworkList.isEmpty()) {
+    public boolean checkAttackRequirements(NwTeam nwTeam) {
+        if (previousTerritoryList.isEmpty()) { // starting point and wrongly made previous territories
             return true;
         }
-        
-        ignoredTerritories.add(territory);
-        for (Territory subTerritory : territory.getTerritoriesCanAttack()) {
-            NwTeam ownerTeam = subTerritory.getOwnerTeam();
-            if (!ignoredTerritories.contains(subTerritory) && ownerTeam != null && ownerTeam.equals(team)) {
-                ignoredTerritories.add(subTerritory);
-                return isConnectedToNode(ignoredTerritories, subTerritory, team);
+
+        for (Territory territory1 : previousTerritoryList) { // reccursive. if at least one path leads to a starting point, return true.
+            if (territory1.getOwnerTeam() == nwTeam && territory1.getAttackRequirements().checkAttackRequirements(nwTeam)) {
+                return true;
             }
         }
+
         return false;
-    }
-
-    public boolean checkAttackRequirement(NwTeam team) {
-        int territoryTypeCount;
-        int territoryCount;
-        if (territory.getOwnerTeam() == team) {
-            return true; // defender can protect
-        }
-
-
-        for (Map.Entry<String, TerritoryType> entry : getLatticeNetwork().entrySet()) {
-            String s = entry.getKey();
-            TerritoryType territoryType = entry.getValue();
-            ArrayList<Territory> latticeCompleteList = new ArrayList<>();
-
-            if (TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().noneMatch(territory1 ->
-                    territory1.getTerritoryType() == territoryType &&
-                            territory1.getWorld().getName().equalsIgnoreCase(territoryType.getWorldName()) &&
-                            territory1.getOwnerTeam() == team
-            )) {
-                return false;
-            }
-
-            TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory1 ->
-                    territory1.getTerritoryType() == territoryType &&
-                            territory1.getWorld().getName().equalsIgnoreCase(territoryType.getWorldName()) &&
-                            territory1.getOwnerTeam() == team).forEach(territory1 -> {
-
-            });
-        }
-
-        for (Map.Entry<String, Map<TerritoryType, Integer>> entry : getTerritoryTypeAmountMap().entrySet()) {
-            String s = entry.getKey();
-            Map<TerritoryType, Integer> territoryTypeIntegerMap = entry.getValue();
-            territoryTypeCount = 0;
-
-            for (Map.Entry<TerritoryType, Integer> e : territoryTypeIntegerMap.entrySet()) {
-                TerritoryType territoryType = e.getKey();
-                Integer integer = e.getValue();
-                if (TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory1 ->
-                        territory1.getTerritoryType() == territoryType &&
-                                territory1.getWorld().getName().equalsIgnoreCase(territoryType.getWorldName()) &&
-                                territory1.getOwnerTeam() == team
-                ).count() < integer) {
-                    return false;
-                }
-                territoryTypeCount++;
-            }
-
-            if (territoryTypeCount == territoryTypeIntegerMap.size()) {
-                break;
-            }
-
-        }
-
-        for (Map.Entry<String, List<Territory>> entry : getTerritoryListMap().entrySet()) {
-            String s = entry.getKey();
-            territoryCount = 0;
-            List<Territory> territories = entry.getValue();
-
-            for (Territory territory1 : territories) {
-                if (territory1.getOwnerTeam() != team) {
-                    return false;
-                }
-                territoryCount++;
-            }
-
-            if (territoryCount == territories.size()) {
-                break;
-            }
-        }
-
-        return true;
     }
 
     public AttackRequirementsModel getAttackRequirementsModel() {
@@ -169,5 +54,9 @@ public class AttackRequirements {
 
     public Territory getTerritory() {
         return territory;
+    }
+
+    public List<Territory> getPreviousTerritoryList() {
+        return previousTerritoryList;
     }
 }

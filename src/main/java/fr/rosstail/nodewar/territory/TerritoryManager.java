@@ -112,6 +112,12 @@ public class TerritoryManager {
         });
     }
 
+    public void setupTerritoriesAttackRequirements() {
+        getTerritoryMap().forEach((s, territory) -> {
+            territory.setupAttackRequirements();
+        });
+    }
+
     public static TerritoryManager getTerritoryManager() {
         return territoryManager;
     }

@@ -95,7 +95,7 @@ public class ObjectiveControl extends Objective {
     public void applyProgress() {
         teamMemberOnTerritory.clear();
         getNwTeamPlayerOnTerritory().forEach((nwTeam, integer) -> {
-            if (territory.getAttackRequirements().checkAttackRequirement(nwTeam)) {
+            if (territory.getAttackRequirements().checkAttackRequirements(nwTeam)) {
                 teamMemberOnTerritory.put(nwTeam, integer);
             }
         });

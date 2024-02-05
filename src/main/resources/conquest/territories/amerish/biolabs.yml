@@ -22,16 +22,10 @@ saurva-biolab:
         damage-per-second: 1
         regen-per-second: 1
   attack-requirements:
-    territory-types-amount:
-      first:
-        warpgate: 12345
-    required-territories:
-      first:
-        - saurva-overflow-depot
-      second:
-        - saurva-data-storage
-      third:
-        - saurva-south-fortress
+    previous-territories:
+      - saurva-overflow-depot
+      - saurva-data-storage
+      - saurva-south-fortress
 
 saurva-biolab-control-a:
   display: Saurva - A

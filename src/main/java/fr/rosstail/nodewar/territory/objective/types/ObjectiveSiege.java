@@ -94,9 +94,9 @@ public class ObjectiveSiege extends Objective {
             }
 
             if (defenderTeam == null || relation == RelationType.ENEMY || relation == RelationType.TEAM) {
-                Integer force = entry.getValue();
+                int force = entry.getValue();
                 if (attackerTeam != territory.getOwnerTeam()) {
-                    if (force >= greatestAttackerScore) {
+                    if (territory.getAttackRequirements().checkAttackRequirements(attackerTeam) && force >= greatestAttackerScore) {
                         if (force > greatestAttackerScore) {
                             greatestAttackerScore = force;
                             greatestAttacker.clear();
@@ -211,13 +211,13 @@ public class ObjectiveSiege extends Objective {
         Battle currentBattle = territory.getCurrentBattle();
         NwTeam currentAdvantage = currentBattle.getAdvantagedTeam();
         updateTeamScorePerSecond();
-        NwTeam newAdvantage = checkAdvantage(); //Also apply damage/regen
+        NwTeam newAdvantagedTeam = checkAdvantage(); //Also apply damage/regen
 
-        if (currentAdvantage != newAdvantage) {
-            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantage, null);
+        if (currentAdvantage != newAdvantagedTeam) {
+            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantagedTeam, null);
             Bukkit.getPluginManager().callEvent(advantageChangeEvent);
 
-            currentBattle.setAdvantageTeam(newAdvantage);
+            currentBattle.setAdvantageTeam(newAdvantagedTeam);
         }
 
         NwTeam winnerTeam = checkWinner();

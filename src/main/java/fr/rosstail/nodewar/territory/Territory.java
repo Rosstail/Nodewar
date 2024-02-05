@@ -51,7 +51,7 @@ public class Territory {
 
     private final TerritoryBossBar territoryBossBar;
 
-    private final AttackRequirements attackRequirements;
+    private AttackRequirements attackRequirements;
 
     private final List<Player> players = new ArrayList<>();
 
@@ -122,6 +122,8 @@ public class Territory {
 
         ConfigurationSection attackRequirementSection = section.getConfigurationSection("attack-requirements");
         AttackRequirementsModel sectionAttackRequirementsModel = new AttackRequirementsModel(attackRequirementSection);
+        territoryModel.setAttackRequirementsModel(sectionAttackRequirementsModel);
+
         attackRequirements = new AttackRequirements(this, sectionAttackRequirementsModel, territoryType.getAttackRequirementsModel());
 
         world = Bukkit.getWorld(territoryModel.getWorldName());
@@ -285,5 +287,9 @@ public class Territory {
                 }
             });
         }
+    }
+
+    public void setupAttackRequirements() {
+        this.attackRequirements = new AttackRequirements(this, territoryModel.getAttackRequirementsModel(), territoryType.getAttackRequirementsModel());
     }
 }

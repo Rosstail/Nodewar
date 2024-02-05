@@ -8,13 +8,6 @@ control-point:
     maximum-health: 10
     neutralize: true
   protected: false
-  attack-requirements:
-    lattice-network:
-      types:
-        - warpgate
-    territory-types-amount:
-      first:
-        warpgate: 1
 
 outpost: # basic configurations
   prefix: "-o-" # none
@@ -49,13 +42,6 @@ outpost: # basic configurations
         commands:
           - "broadcast [territory_team_name] is victorious at [territory_name] !"
   protected: false
-  attack-requirements:
-    lattice-network:
-      types:
-        - warpgate
-    territory-types-amount:
-      first:
-        warpgate: 1
   bossbar:
     style: "SEGMENTED_6" # SOLID or SEGMENTED_6/10/12/20
 
@@ -109,13 +95,6 @@ biolab: # basic configurations
   objective:
     type: siege
     maximum-health: 100
-  attack-requirements:
-    lattice-network:
-      types:
-        - warpgate
-    territory-types-amount:
-      first:
-        warpgate: 9
   bossbar:
     style: "SEGMENTED_20"
 
