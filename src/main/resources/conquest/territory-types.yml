@@ -8,6 +8,9 @@ control-point:
     maximum-health: 10
     neutralize: true
   protected: false
+  dynmap:
+    marker:
+      set: cp # 'Nodewar' by default
 
 outpost: # basic configurations
   prefix: "-o-" # none

@@ -16,6 +16,7 @@ import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.relation.TeamRelation;
 import fr.rosstail.nodewar.team.relation.TeamRelationManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
+import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -85,6 +86,7 @@ public class Nodewar extends JavaPlugin implements Listener {
         TeamDataManager.init(this);
         TeamRelationManager.init(this);
         TerritoryManager.init(this);
+        DynmapHandler.init(this);
 
         loadCustomConfig();
 
@@ -141,6 +143,8 @@ public class Nodewar extends JavaPlugin implements Listener {
         AdaptMessage.print("=====END=====", AdaptMessage.prints.OUT);
 
         PointInPolygon.main(null);
+        DynmapHandler dynmapHandler = DynmapHandler.getDynmapHandler();
+        dynmapHandler.enable();
     }
 
     private void initDefaultConfigs() {
@@ -171,6 +175,9 @@ public class Nodewar extends JavaPlugin implements Listener {
     }
 
     public void onDisable() {
+        if (DynmapHandler.getDynmapHandler() != null) {
+            DynmapHandler.getDynmapHandler().disable();
+        }
         minecraftEventHandler.setClosing(true);
         worldguardEventHandler.setClosing(true);
         nodewarEventHandler.setClosing(true);

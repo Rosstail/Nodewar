@@ -17,10 +17,8 @@ import fr.rosstail.nodewar.territory.objective.reward.Reward;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ObjectiveControl extends Objective {
 
@@ -40,10 +38,8 @@ public class ObjectiveControl extends Objective {
         this.objectiveControlModel = new ObjectiveControlModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
 
         clonedParentObjectiveModel.getStringRewardModelMap().forEach((s, rewardModel) -> {
-            System.out.println("aaaaaaaaaaaaa " + s);
             if (clonedChildObjectiveModel.getStringRewardModelMap().containsKey(s)) {
-                getStringRewardMap().put(s, new Reward(clonedChildObjectiveModel.getStringRewardModelMap().get(s),
-                        clonedParentObjectiveModel.getStringRewardModelMap().get(s)));
+                getStringRewardMap().put(s, new Reward(clonedChildObjectiveModel.getStringRewardModelMap().get(s), clonedParentObjectiveModel.getStringRewardModelMap().get(s)));
             }
         });
 
@@ -51,7 +47,9 @@ public class ObjectiveControl extends Objective {
         this.minAttackerRatio = Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr());
         this.needNeutralize = Boolean.parseBoolean(this.objectiveControlModel.getNeedNeutralizeStepStr());
         this.maxHealth = Integer.parseInt(this.objectiveControlModel.getMaxHealthStr());
-        this.currentHealth = maxHealth;
+        if (territory.getOwnerTeam() != null) {
+            this.currentHealth = maxHealth;
+        }
     }
 
     public float getMinAttackerRatio() {
@@ -120,6 +118,10 @@ public class ObjectiveControl extends Objective {
 
         if (currentBattle.isBattleWaiting() && (currentAdvantage == null && newAdvantage != null || currentHealth < maxHealth)) {
             currentBattle.setBattleStatus(BattleStatus.ONGOING);
+        }
+
+        if (currentBattle.isBattleStarted()) {
+            rewardPerSecond();
         }
 
         territory.getRelationBossBarMap().forEach((s, bossBar) -> {
@@ -219,7 +221,7 @@ public class ObjectiveControl extends Objective {
     public void win(NwTeam winnerTeam) {
         Territory territory = super.territory;
         territory.getCurrentBattle().setWinnerTeam(winnerTeam);
-        handleRewards(new ArrayList<>(Collections.singleton(winnerTeam)));
+        handleEndRewards(new ArrayList<>(Collections.singleton(winnerTeam)));
         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
         Bukkit.getPluginManager().callEvent(event);
 
@@ -250,7 +252,6 @@ public class ObjectiveControl extends Objective {
     public void updateHealth() {
         NwTeam defenderTeam = territory.getOwnerTeam();
         NwTeam advantagedTeam = territory.getCurrentBattle().getAdvantagedTeam();
-        RelationType relationType = RelationType.NEUTRAL;
 
         if (advantagedTeam != null) {
             if (defenderTeam == null || advantagedTeam.equals(defenderTeam)) {
@@ -260,17 +261,42 @@ public class ObjectiveControl extends Objective {
                 setCurrentHealth(Math.max(0, --currentHealth));
             }
         }
+
+    }
+
+    private void rewardPerSecond() {
+        List<Player> playersOnTerritory = territory.getPlayers();
+        NwTeam ownerTeam = territory.getOwnerTeam();
+        NwTeam advantageTeam = territory.getCurrentBattle().getAdvantagedTeam();
+
+        if (advantageTeam != ownerTeam && advantageTeam != null) { // Attackers capturing unowned territory
+            List<Player> attackersOnTerritory = playersOnTerritory.stream().filter(player -> PlayerDataManager.getPlayerDataFromMap(player).getTeam().equals(advantageTeam)).collect(Collectors.toList());
+            attackersOnTerritory.forEach(player -> {
+                territory.getCurrentBattle().addPlayerScore(player, 10);
+            });
+            territory.getCurrentBattle().addTeamScore(advantageTeam, 10);
+        } else if (advantageTeam == null && ownerTeam != null && currentHealth < maxHealth) { // defenders blocking
+            List<Player> blockersOnTerritory = playersOnTerritory.stream().filter(player -> PlayerDataManager.getPlayerDataFromMap(player).getTeam().equals(ownerTeam)).collect(Collectors.toList());
+            blockersOnTerritory.forEach(player -> {
+                territory.getCurrentBattle().addPlayerScore(player, 5);
+            });
+            territory.getCurrentBattle().addTeamScore(ownerTeam, 5);
+        } else if (ownerTeam != null && currentHealth < maxHealth) { // Defenders recapturing
+            List<Player> defendersOnTerritory = playersOnTerritory.stream().filter(player -> PlayerDataManager.getPlayerDataFromMap(player).getTeam().equals(ownerTeam)).collect(Collectors.toList());
+            defendersOnTerritory.forEach(player -> {
+                territory.getCurrentBattle().addPlayerScore(player, 10);
+            });
+            territory.getCurrentBattle().addTeamScore(ownerTeam, 10);
+        }
     }
 
     @Override
     public String print() {
-        return "\n   > Health: " + getCurrentHealth() + " / " + getMaxHealth() +
-                "\n   > Attacker ratio: " + getMinAttackerRatio() +
-                "\n   > Need neutralize: " + isNeedNeutralize();
+        return "\n   > Health: " + getCurrentHealth() + " / " + getMaxHealth() + "\n   > Attacker ratio: " + getMinAttackerRatio() + "\n   > Need neutralize: " + isNeedNeutralize();
     }
 
     @Override
-    public void handleRewards(ArrayList<NwTeam> participatingTeamList) {
-        super.handleRewards(participatingTeamList);
+    public void handleEndRewards(ArrayList<NwTeam> participatingTeamList) {
+        super.handleEndRewards(participatingTeamList);
     }
 }

@@ -18,6 +18,7 @@ import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -130,11 +131,21 @@ public class TerritoryManager {
         return territoryTypeMap;
     }
 
+    public List<Territory> getTerritoryListPerWorld(World world) {
+        return getTerritoryMap().values().stream().filter(territory -> (
+                territory.getWorld().equals(world)
+                )).collect(Collectors.toList());
+    }
+
     public TerritoryType getTerritoryTypeFromMap(String type) {
         if (type == null || !territoryTypeMap.containsKey(type)) {
             return defaultTerritoryType;
         }
         return territoryTypeMap.get(type);
+    }
+
+    public List<World> getUsedWorldList() {
+        return getTerritoryMap().values().stream().map(Territory::getWorld).distinct().collect(Collectors.toList());
     }
 
     public void setTerritoryTypeMap(Map<String, TerritoryType> territoryTypeMap) {

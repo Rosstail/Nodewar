@@ -13,12 +13,12 @@ public class ObjectiveControlModel extends ObjectiveModel {
         super(section);
         if (section != null) {
             String attackerRatioStr = section.getString("attacker-ratio");
-            if (attackerRatioStr != null && attackerRatioStr.matches("\\d+")) {
+            if (attackerRatioStr != null && attackerRatioStr.matches("(\\d+)(.)?(\\d+)?")) {
                 this.attackerRatioStr = attackerRatioStr;
             }
 
             String maximumHealthStr = section.getString("maximum-health");
-            if (maximumHealthStr != null && maximumHealthStr.matches("(\\d+)(.)?(\\d+)?")) {
+            if (maximumHealthStr != null && maximumHealthStr.matches("\\d+")) {
                 this.maximumHealthStr = maximumHealthStr;
             }
 

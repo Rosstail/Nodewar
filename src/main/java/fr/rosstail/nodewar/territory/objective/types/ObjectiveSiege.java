@@ -4,7 +4,6 @@ import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.territory.Territory;
@@ -200,7 +199,7 @@ public class ObjectiveSiege extends Objective {
         if (winnerTeam == null) {
             orderedParticipatingTeamList.add(0, null);
         }
-        handleRewards(orderedParticipatingTeamList);
+        handleEndRewards(orderedParticipatingTeamList);
 
         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
         Bukkit.getPluginManager().callEvent(event);
@@ -260,8 +259,8 @@ public class ObjectiveSiege extends Objective {
     }
 
     @Override
-    public void handleRewards(ArrayList<NwTeam> participatingTeamList) {
-        super.handleRewards(participatingTeamList);
+    public void handleEndRewards(ArrayList<NwTeam> participatingTeamList) {
+        super.handleEndRewards(participatingTeamList);
     }
 
     @Override

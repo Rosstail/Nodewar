@@ -24,7 +24,7 @@ public class Battle {
     }
 
     public int getPlayerScore(Player player) {
-        if (playerScoreMap.containsKey(player)) {
+        if (!playerScoreMap.containsKey(player)) {
             return 0;
         }
         return playerScoreMap.get(player);
@@ -32,6 +32,7 @@ public class Battle {
 
     public void addPlayerScore(Player player, int value) {
         playerScoreMap.put(player, getPlayerScore(player) + value);
+        System.out.println(player.getName() + " team won " + value + " score. Total: " + getPlayerScore(player));
     }
 
     public Map<NwTeam, Integer> getTeamScoreMap() {
@@ -39,7 +40,7 @@ public class Battle {
     }
 
     public int getTeamScore(NwTeam nwTeam) {
-        if (teamScoreMap.containsKey(nwTeam)) {
+        if (!teamScoreMap.containsKey(nwTeam)) {
             return 0;
         }
         return teamScoreMap.get(nwTeam);
@@ -47,6 +48,7 @@ public class Battle {
 
     public void addTeamScore(NwTeam nwTeam, int value) {
         teamScoreMap.put(nwTeam, getTeamScore(nwTeam) + value);
+        System.out.println(nwTeam.getModel().getName() + " team won " + value + " score. Total: " + getTeamScore(nwTeam));
     }
 
     public BattleStatus getBattleStatus() {
@@ -62,6 +64,9 @@ public class Battle {
     }
     public boolean isBattleStarted() {
         return this.battleStatus.equals(BattleStatus.ONGOING);
+    }
+    public boolean isBattleEnded() {
+        return this.battleStatus.equals(BattleStatus.ENDED);
     }
 
     public long getBattleStartTime() {

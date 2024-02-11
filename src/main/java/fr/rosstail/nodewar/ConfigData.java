@@ -25,6 +25,8 @@ public class ConfigData {
 
     public final ConfigBossBar bossbar;
 
+    public final ConfigDynmap dynmap;
+
     public class ConfigStorage {
         public final FileConfiguration configFile;
         public final String storageType;
@@ -145,6 +147,33 @@ public class ConfigData {
         }
     }
 
+    public class ConfigDynmap {
+        public FileConfiguration configFile;
+
+        public final String layerName = "Nodewar";
+
+        public final int layerPriority = 20;
+        public final boolean hideByDefault = false;
+        public final boolean use3DRegions = false;
+
+        public final String infoWindow =
+                "<div class=\"infowindow\">" +
+                        "<span style=\"font-size:120%;\">%regionname%</span>" +
+                        "<br /> Team <span style=\"font-weight:bold;\">%groupmembers%</span>" +
+                        "<br /> Flags<br />" +
+                        "<span style=\"font-weight:bold;\">  > %flags%</span>" +
+                        "</div>";
+        public final int minimumZoom = 0;
+        public final int maximumDepth = 16;
+        public final int tickPerUpdate = 20;
+
+        public final int mapUpdateDelay = 5;
+
+        ConfigDynmap(FileConfiguration config) {
+            configFile = config;
+        }
+    }
+
     public final FileConfiguration config;
 
     ConfigData(FileConfiguration config) {
@@ -155,6 +184,7 @@ public class ConfigData {
         this.general = new ConfigGeneral(readConfig(config, "general"));
         this.team = new ConfigTeam(readConfig(config, "team"));
         this.bossbar = new ConfigBossBar(readConfig(config, "bossbar"));
+        this.dynmap = new ConfigDynmap(readConfig(config, "dynmap"));
     }
 
     private FileConfiguration readConfig(FileConfiguration baseConfig, String item) {
