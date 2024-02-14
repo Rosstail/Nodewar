@@ -29,6 +29,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -130,9 +131,6 @@ public class Nodewar extends JavaPlugin implements Listener {
         territoryManager.loadTerritoryConfigs("plugins/" + getName() + "/conquest/territories");
 
         TeamDataManager.getTeamDataManager().loadTeams();
-        TeamDataManager.getTeamDataManager().getStringTeamMap().forEach((s, team) -> {
-            System.out.println("- team " + s);
-        });
         TeamRelationManager.getTeamRelationManager().loadRelations();
         territoryManager.setupTerritoriesOwner();
         territoryManager.setupTerritoriesObjective();
@@ -145,6 +143,7 @@ public class Nodewar extends JavaPlugin implements Listener {
         PointInPolygon.main(null);
         DynmapHandler dynmapHandler = DynmapHandler.getDynmapHandler();
         dynmapHandler.enable();
+        dynmapHandler.addTerritoryListToUpdate(new ArrayList<>(territoryManager.getTerritoryMap().values()));
     }
 
     private void initDefaultConfigs() {

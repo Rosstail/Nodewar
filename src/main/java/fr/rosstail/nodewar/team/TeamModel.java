@@ -11,7 +11,7 @@ public class TeamModel {
     private int id;
     private String name;
     private String display;
-    private String hexColor = "#000000";
+    private String hexColor = "#CACACA";
     private boolean open = false;
     private boolean permanent = false;
     private Timestamp creationDate = new Timestamp(System.currentTimeMillis());

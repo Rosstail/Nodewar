@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.events;
 import fr.rosstail.nodewar.events.territoryevents.*;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
+import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -56,6 +57,7 @@ public class NodewarEventHandler implements Listener {
         });
 
         territory.updateAllBossBar();
+        DynmapHandler.getDynmapHandler().addTerritoryToUpdate(territory);
     }
 
     @EventHandler
@@ -74,6 +76,7 @@ public class NodewarEventHandler implements Listener {
 
         territory.setOwnerTeam(team);
         territory.updateAllBossBar();
+        DynmapHandler.getDynmapHandler().addTerritoryToUpdate(territory);
     }
 
 

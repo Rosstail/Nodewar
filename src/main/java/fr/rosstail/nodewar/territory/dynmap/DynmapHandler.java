@@ -17,7 +17,6 @@ import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -29,10 +28,8 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DynmapHandler {
     private static DynmapHandler dynmapHandler;
@@ -49,6 +46,8 @@ public class DynmapHandler {
     private Map<Territory, AreaStyle> territoryAreaStyleMap;
     boolean stop;
     int maxDepth;
+
+    private final Set<Territory> territorySetToUpdate = new LinkedHashSet<>();
 
     public DynmapHandler(Nodewar plugin) {
         this.plugin = plugin;
@@ -74,7 +73,7 @@ public class DynmapHandler {
 
         AreaStyle(Territory territory) {
             NwTeam team = territory.getOwnerTeam();
-            fillColor = team != null ? "#FF0000" : "#000000";
+            fillColor = team != null ? team.getModel().getHexColor() : "#CACACA";
             /*if (!territory.getTerritoryType().isUnderProtection()) {
                 strokeOpacity = 0.1f;
             } else if (territory) {
@@ -228,6 +227,10 @@ public class DynmapHandler {
                     worldsToDo.add(wrld);
                 }
             }
+
+            Set<Territory> territorySet = new HashSet<>(territorySetToUpdate);
+            territorySetToUpdate.clear();
+
             while (regionsToDo == null) {  // No pending regions for world
                 if (worldsToDo.isEmpty()) { // No more worlds?
                     /* Now, review old map - anything left is gone */
@@ -247,10 +250,14 @@ public class DynmapHandler {
 
                     territoryAreaStyleMap = new HashMap<>();
 
-                    TerritoryManager.getTerritoryManager().getTerritoryListPerWorld(curWorld).forEach((territory) -> {
+                    Set<Territory> territoryToUpdateSet = territorySet.stream().filter(territory -> (territory.getWorld().equals(curWorld))).collect(Collectors.toSet());
+                    territorySet.removeAll(territoryToUpdateSet);
+
+                    territoryToUpdateSet.forEach(territory -> {
                         territoryAreaStyleMap.put(territory, new AreaStyle(territory));
                         regionsToDo.addAll(territory.getProtectedRegionList());
                     });
+
                     worldsToDo.remove(0);
                     wgWorldsToDo.remove(0);
                 }
@@ -383,5 +390,13 @@ public class DynmapHandler {
         }
         resAreas.clear();
         stop = true;
+    }
+
+    public void addTerritoryListToUpdate(List<Territory> territoryList) {
+        territorySetToUpdate.addAll(territoryList);
+    }
+
+    public void addTerritoryToUpdate(Territory territory) {
+        territorySetToUpdate.add(territory);
     }
 }
