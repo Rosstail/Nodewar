@@ -5,5 +5,6 @@ public enum RelationType {
     TEAM,
     ALLY,
     TRUCE,
-    ENEMY
+    ENEMY,
+    CONTROLLED // Used only in colour
 }

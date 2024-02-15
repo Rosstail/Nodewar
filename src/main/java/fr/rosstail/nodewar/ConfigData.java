@@ -3,6 +3,7 @@ package fr.rosstail.nodewar;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.RelationType;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -144,33 +145,51 @@ public class ConfigData {
                     stringBarColorMap.put(relation, BarColor.PINK);
                 }
             }
+            try {
+                stringBarColorMap.put("controlled", BarColor.valueOf(config.getString("bossbar.color.controlled")));
+            } catch (NullPointerException | IllegalArgumentException e) {
+                AdaptMessage.print(
+                        "The color " + (config.getString("bossbar.color.controlled")
+                                + " does not exist for controlled territory. Use PINK color instead")
+                        , AdaptMessage.prints.ERROR);
+                stringBarColorMap.put("controlled", BarColor.PINK);
+            }
         }
     }
 
     public class ConfigDynmap {
         public FileConfiguration configFile;
 
-        public final String layerName = "Nodewar";
+        public final String layerName;
 
         public final int layerPriority = 20;
-        public final boolean hideByDefault = false;
-        public final boolean use3DRegions = false;
+        public final boolean hideByDefault;
+        public final boolean use3DRegions;
 
-        public final String infoWindow =
-                "<div class=\"infowindow\">" +
-                        "<span style=\"font-size:120%;\">%regionname%</span>" +
-                        "<br /> Team <span style=\"font-weight:bold;\">%groupmembers%</span>" +
-                        "<br /> Flags<br />" +
-                        "<span style=\"font-weight:bold;\">  > %flags%</span>" +
-                        "</div>";
+        public final String infoWindow;
         public final int minimumZoom = 0;
         public final int maximumDepth = 16;
-        public final int tickPerUpdate = 20;
+        public final int tickPerUpdate;
 
-        public final int mapUpdateDelay = 1;
+        public final int mapUpdateDelay;
+
+        public final float fillOpacity;
 
         ConfigDynmap(FileConfiguration config) {
             configFile = config;
+            layerName = configFile.getString("dynmap.layer-name", "Nodewar");
+            hideByDefault = configFile.getBoolean("dynmap.hide-by-default", false);
+            use3DRegions = configFile.getBoolean("dynmap.use-3d-region", false);
+            infoWindow = configFile.getString("dynmap-info-window",
+                    "<div class=\"infowindow\">" +
+                            "<span style=\"font-size:120%;\">%regionname%</span>" +
+                            "<br /> Team <span style=\"font-weight:bold;\">%groupmembers%</span>" +
+                            "<br /> Flags<br />" +
+                            "<span style=\"font-weight:bold;\">  > %flags%</span>" +
+                            "</div>");
+            tickPerUpdate = Math.max(1, configFile.getInt("dynmap.tick-per-update", 20));
+            mapUpdateDelay = Math.max(1, configFile.getInt("dynmap.many-update-delay", 1));
+            fillOpacity = Math.max(0f, (float) configFile.getInt("dynmap.fill-opacity", 50) / 100);
         }
     }
 

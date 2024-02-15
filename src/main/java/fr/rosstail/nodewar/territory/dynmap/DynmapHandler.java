@@ -69,7 +69,7 @@ public class DynmapHandler {
         double strokeOpacity = 0.8f;
         int strokeWeight;
         String fillColor;
-        double fillOpacity = 0.55f;
+        double fillOpacity = ConfigData.getConfigData().dynmap.fillOpacity;
         String label;
 
         AreaStyle(Territory territory) {

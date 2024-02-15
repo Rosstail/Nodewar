@@ -27,10 +27,20 @@ team:
 bossbar:
   color:
     neutral: WHITE #RED, YELLOW, BLUE, GREEN, PINK, PURPLE, WHITE
+    controlled: YELLOW
     team: BLUE
     ally: GREEN
     truce: PURPLE
     enemy: RED
+
+dynmap:
+  layer-name: "Nodewar"
+  hide-by-default: false
+  use-3d-region: false
+  dynmap-info-window: false
+  tick-per-update: 20
+  many-update-delay: 1
+  fill-opacity: 50
 
 calendar:
   wednesday-bf:

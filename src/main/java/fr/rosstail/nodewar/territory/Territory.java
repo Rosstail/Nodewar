@@ -180,6 +180,8 @@ public class Territory {
                 } else if (playerTeam.getRelations().containsKey(ownerTeamName)) {
                     TeamRelation relation = playerTeam.getRelations().get(ownerTeamName);
                     type = relation.getRelationType();
+                } else { // controlled point
+                    type = RelationType.CONTROLLED;
                 }
             }
         }
