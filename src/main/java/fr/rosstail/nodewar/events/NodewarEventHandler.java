@@ -57,7 +57,7 @@ public class NodewarEventHandler implements Listener {
         });
 
         territory.updateAllBossBar();
-        DynmapHandler.getDynmapHandler().addTerritoryToUpdate(territory);
+        DynmapHandler.getDynmapHandler().resumeRender();
     }
 
     @EventHandler
@@ -76,7 +76,7 @@ public class NodewarEventHandler implements Listener {
 
         territory.setOwnerTeam(team);
         territory.updateAllBossBar();
-        DynmapHandler.getDynmapHandler().addTerritoryToUpdate(territory);
+        DynmapHandler.getDynmapHandler().resumeRender();
     }
 
 

@@ -28,8 +28,10 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DynmapHandler {
     private static DynmapHandler dynmapHandler;
@@ -44,10 +46,9 @@ public class DynmapHandler {
     boolean use3d;
     String infoWindow;
     private Map<Territory, AreaStyle> territoryAreaStyleMap;
+    boolean pause;
     boolean stop;
     int maxDepth;
-
-    private final Set<Territory> territorySetToUpdate = new LinkedHashSet<>();
 
     public DynmapHandler(Nodewar plugin) {
         this.plugin = plugin;
@@ -218,66 +219,61 @@ public class DynmapHandler {
             if (stop) {
                 return;
             }
-            // If worlds list isn't primed, prime it
-            if (worldsToDo == null) {
-                worldsToDo = new ArrayList<>();
-                wgWorldsToDo = new ArrayList<>();
-                for (org.bukkit.World wrld : worldList) {
-                    wgWorldsToDo.add(WorldGuard.getInstance().getPlatform().getMatcher().getWorldByName(wrld.getName()));
-                    worldsToDo.add(wrld);
-                }
-            }
-
-            Set<Territory> territorySet = new HashSet<>(territorySetToUpdate);
-            territorySetToUpdate.clear();
-
-            while (regionsToDo == null) {  // No pending regions for world
-                if (worldsToDo.isEmpty()) { // No more worlds?
-                    /* Now, review old map - anything left is gone */
-                    for (AreaMarker oldm : resAreas.values()) {
-                        oldm.deleteMarker();
+            if (!pause) {
+                // If worlds list isn't primed, prime it
+                if (worldsToDo == null) {
+                    worldsToDo = new ArrayList<>();
+                    wgWorldsToDo = new ArrayList<>();
+                    for (org.bukkit.World wrld : worldList) {
+                        wgWorldsToDo.add(WorldGuard.getInstance().getPlatform().getMatcher().getWorldByName(wrld.getName()));
+                        worldsToDo.add(wrld);
                     }
-                    /* And replace with new map */
-                    resAreas = newMap;
-                    // Set up for next update (new job)
-                    plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new UpdateJob(), updatePeriod);
-                    return;
-                } else {
-                    curWorld = worldsToDo.get(0);
-                    curWGWorld = wgWorldsToDo.get(0);
-
-                    regionsToDo = new ArrayList<>();
-
-                    territoryAreaStyleMap = new HashMap<>();
-
-                    Set<Territory> territoryToUpdateSet = territorySet.stream().filter(territory -> (territory.getWorld().equals(curWorld))).collect(Collectors.toSet());
-                    territorySet.removeAll(territoryToUpdateSet);
-
-                    territoryToUpdateSet.forEach(territory -> {
-                        territoryAreaStyleMap.put(territory, new AreaStyle(territory));
-                        regionsToDo.addAll(territory.getProtectedRegionList());
-                    });
-
-                    worldsToDo.remove(0);
-                    wgWorldsToDo.remove(0);
                 }
-            }
-            /* Now, process up to limit regions */
-            for (int i = 0; i < updatesPerTick; i++) {
-                if (regionsToDo.isEmpty()) {
-                    regionsToDo = null;
-                    break;
+                while (regionsToDo == null) {  // No pending regions for world
+                    if (worldsToDo.isEmpty()) { // No more worlds?
+                        /* Now, review old map - anything left is gone */
+                        for (AreaMarker oldm : resAreas.values()) {
+                            oldm.deleteMarker();
+                        }
+                        /* And replace with new map */
+                        resAreas = newMap;
+                        // Set up for next update (new job)
+                        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new UpdateJob(), updatePeriod);
+                        return;
+                    } else {
+                        curWorld = worldsToDo.get(0);
+                        curWGWorld = wgWorldsToDo.get(0);
+
+                        regionsToDo = new ArrayList<>();
+
+                        territoryAreaStyleMap = new HashMap<>();
+
+                        TerritoryManager.getTerritoryManager().getTerritoryListPerWorld(curWorld).forEach((territory) -> {
+                            territoryAreaStyleMap.put(territory, new AreaStyle(territory));
+                            regionsToDo.addAll(territory.getProtectedRegionList());
+                        });
+                        worldsToDo.remove(0);
+                        wgWorldsToDo.remove(0);
+                    }
                 }
-                ProtectedRegion pr = regionsToDo.remove(regionsToDo.size() - 1);
-                int depth = 1;
-                ProtectedRegion p = pr;
-                while (p.getParent() != null) {
-                    depth++;
-                    p = p.getParent();
+                /* Now, process up to limit regions */
+                for (int i = 0; i < updatesPerTick; i++) {
+                    if (regionsToDo.isEmpty()) {
+                        regionsToDo = null;
+                        pauseRender();
+                        break;
+                    }
+                    ProtectedRegion pr = regionsToDo.remove(regionsToDo.size() - 1);
+                    int depth = 1;
+                    ProtectedRegion p = pr;
+                    while (p.getParent() != null) {
+                        depth++;
+                        p = p.getParent();
+                    }
+                    if (depth > maxDepth)
+                        continue;
+                    handleRegion(curWGWorld, pr, newMap);
                 }
-                if (depth > maxDepth)
-                    continue;
-                handleRegion(curWGWorld, pr, newMap);
             }
             // Tick next step in the job
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this, 1);
@@ -319,8 +315,10 @@ public class DynmapHandler {
         plugin.getServer().getPluginManager().registerEvents(new OurServerListener(), plugin);
 
         /* If both enabled, activate */
-        if (dynmap.isEnabled() && wgp.isEnabled())
+        if (dynmap.isEnabled() && wgp.isEnabled()) {
+            resumeRender();
             activate();
+        }
         /* Start up metrics */
     }
 
@@ -376,7 +374,6 @@ public class DynmapHandler {
         int per = configDynmap.mapUpdateDelay; //def = 300
         if (per < 1) per = 1; //def = 15
         updatePeriod = per * 20L;
-        stop = false;
 
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new UpdateJob(), 40);   /* First time is 2 seconds */
 
@@ -392,11 +389,14 @@ public class DynmapHandler {
         stop = true;
     }
 
-    public void addTerritoryListToUpdate(List<Territory> territoryList) {
-        territorySetToUpdate.addAll(territoryList);
+    public void setPause(boolean pause) {
+        this.pause = pause;
     }
 
-    public void addTerritoryToUpdate(Territory territory) {
-        territorySetToUpdate.add(territory);
+    public void resumeRender() {
+        setPause(false);
+    }
+    public void pauseRender() {
+        setPause(true);
     }
 }

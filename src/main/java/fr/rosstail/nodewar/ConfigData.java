@@ -167,7 +167,7 @@ public class ConfigData {
         public final int maximumDepth = 16;
         public final int tickPerUpdate = 20;
 
-        public final int mapUpdateDelay = 5;
+        public final int mapUpdateDelay = 1;
 
         ConfigDynmap(FileConfiguration config) {
             configFile = config;

@@ -143,7 +143,7 @@ public class Nodewar extends JavaPlugin implements Listener {
         PointInPolygon.main(null);
         DynmapHandler dynmapHandler = DynmapHandler.getDynmapHandler();
         dynmapHandler.enable();
-        dynmapHandler.addTerritoryListToUpdate(new ArrayList<>(territoryManager.getTerritoryMap().values()));
+        dynmapHandler.resumeRender();
     }
 
     private void initDefaultConfigs() {
