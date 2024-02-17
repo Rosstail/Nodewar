@@ -9,6 +9,7 @@ import fr.rosstail.nodewar.territory.TerritoryModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface StorageRequest {
 
@@ -154,7 +155,7 @@ public interface StorageRequest {
      * @param limit the amount of models to retreive
      * @return the models found
      */
-    List<PlayerModel> selectPlayerModelList(String order, int limit);
+    Set<PlayerModel> selectPlayerModelSet(String order, int limit);
 
     /**
      * DELETE player from the team members table

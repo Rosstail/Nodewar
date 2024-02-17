@@ -97,16 +97,13 @@ public class ConfigData {
         public FileConfiguration configFile;
 
         public final float configVersion;
-        public final int topScoreLimit;
-        public final boolean useWorldGuard;
+        public final String defaultPermissionPlugin;
 
         ConfigGeneral(FileConfiguration config) {
             configFile = config;
 
             configVersion = (float) config.getDouble("general.config-version", 1.0F);
-            topScoreLimit = config.getInt("general.topscore-limit", 10);
-            useWorldGuard = Bukkit.getServer().getPluginManager().isPluginEnabled("WorldGuard") && config.getBoolean("general.use-worldguard", false);
-
+            defaultPermissionPlugin = config.getString("general.permission-plugin", "auto");
         }
     }
 

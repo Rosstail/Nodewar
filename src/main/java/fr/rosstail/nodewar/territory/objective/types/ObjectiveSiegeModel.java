@@ -3,15 +3,12 @@ package fr.rosstail.nodewar.territory.objective.types;
 import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ObjectiveSiegeModel extends ObjectiveModel {
 
     private String maxHealthStr;
-    private List<String> controlPointStringList = new ArrayList<>();
+    private Set<String> controlPointStringSet = new HashSet<>();
     private Map<String, Integer> damagePerSecondControlPointIntMap = new HashMap<>();
     private Map<String, Integer> regenPerSecondControlPointIntMap = new HashMap<>();
 
@@ -29,7 +26,7 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
                 controlConfigSection.getKeys(false).forEach(s -> {
                     ConfigurationSection controlSection = controlConfigSection.getConfigurationSection(s);
 
-                    controlPointStringList.add(s);
+                    controlPointStringSet.add(s);
                     damagePerSecondControlPointIntMap.put(s, controlSection.getInt("damage-per-second", 0));
                     regenPerSecondControlPointIntMap.put(s, controlSection.getInt("regen-per-second", 0));
                 });
@@ -41,17 +38,17 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
         super(childObjectiveModel.clone(), parentObjectiveModel.clone());
 
         this.maxHealthStr = childObjectiveModel.getMaxHealthString() != null ? childObjectiveModel.getMaxHealthString() : parentObjectiveModel.getMaxHealthString();
-        this.controlPointStringList.addAll(parentObjectiveModel.getControlPointStringList());
+        this.controlPointStringSet.addAll(parentObjectiveModel.getControlPointStringSet());
         this.damagePerSecondControlPointIntMap.putAll(parentObjectiveModel.getDamagePerSecondControlPointIntMap());
         this.regenPerSecondControlPointIntMap.putAll(parentObjectiveModel.getRegenPerSecondControlPointIntMap());
 
 
-        childObjectiveModel.controlPointStringList.forEach(s -> {
+        childObjectiveModel.controlPointStringSet.forEach(s -> {
             int childDamagePerSecond = childObjectiveModel.damagePerSecondControlPointIntMap.get(s);
             int childRegenPerSecond = childObjectiveModel.regenPerSecondControlPointIntMap.get(s);
 
             if (childDamagePerSecond != 0 || childRegenPerSecond != 0) {
-                controlPointStringList.add(s);
+                controlPointStringSet.add(s);
                 damagePerSecondControlPointIntMap.put(s, childDamagePerSecond);
                 regenPerSecondControlPointIntMap.put(s, childRegenPerSecond);
             }
@@ -66,12 +63,12 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
         this.maxHealthStr = maxHealthStr;
     }
 
-    public List<String> getControlPointStringList() {
-        return controlPointStringList;
+    public Set<String> getControlPointStringSet() {
+        return controlPointStringSet;
     }
 
-    public void setControlPointStringList(List<String> controlPointStringList) {
-        this.controlPointStringList = controlPointStringList;
+    public void setControlPointStringSet(Set<String> controlPointStringSet) {
+        this.controlPointStringSet = controlPointStringSet;
     }
 
     public Map<String, Integer> getDamagePerSecondControlPointIntMap() {
@@ -97,7 +94,7 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
 
         clone.setMaxHealthStr(getMaxHealthString());
 
-        clone.setControlPointStringList(new ArrayList<>(getControlPointStringList()));
+        clone.setControlPointStringSet(new HashSet<>(getControlPointStringSet()));
         clone.setDamagePerSecondControlPointIntMap(new HashMap<>(getDamagePerSecondControlPointIntMap()));
         clone.setRegenPerSecondControlPointIntMap(new HashMap<>(getRegenPerSecondControlPointIntMap()));
         return clone;

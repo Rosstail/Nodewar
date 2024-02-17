@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.team;
 
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.permissionmannager.PermissionManagerHandler;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
@@ -60,6 +61,7 @@ public class TeamDataManager {
     }
 
     public void addNewTeam(NwTeam nwTeam) {
+        PermissionManagerHandler.createGroup(nwTeam.getModel().getName());
         getStringTeamMap().put(nwTeam.getModel().getName(), nwTeam);
     }
 
@@ -71,6 +73,7 @@ public class TeamDataManager {
                 (playerData.getTeam() == team)).forEach(this::deleteTeamMember);
 
         // TeamRelationManager;
+        PermissionManagerHandler.deleteGroup(teamName);
         StorageManager.getManager().deleteTeamModel(team.getModel().getId());
     }
 

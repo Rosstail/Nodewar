@@ -10,6 +10,7 @@ softdepend:
   - PlaceholderAPI
   - Dynmap
   - DynmapAPI
+  - Luckperms
 main: fr.rosstail.nodewar.Nodewar
 commands:
   nodewar:

@@ -10,10 +10,7 @@ import fr.rosstail.nodewar.territory.TerritoryModel;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SqlStorageRequest implements StorageRequest {
     private final Nodewar plugin = Nodewar.getInstance();
@@ -208,8 +205,8 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     @Override
-    public List<PlayerModel> selectPlayerModelList(String query, int limit) {
-        List<PlayerModel> modelList = new ArrayList<>();
+    public Set<PlayerModel> selectPlayerModelSet(String query, int limit) {
+        Set<PlayerModel> modelSet = new HashSet<>();
         try {
             ResultSet result = executeSQLQuery(connection, query, limit);
             while (result.next()) {
@@ -217,12 +214,12 @@ public class SqlStorageRequest implements StorageRequest {
                 String username = PlayerDataManager.getPlayerNameFromUUID(uuid);
                 PlayerModel model = new PlayerModel(uuid, username);
                 model.setLastUpdate(result.getTimestamp("last_update").getTime());
-                modelList.add(model);
+                modelSet.add(model);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return modelList;
+        return modelSet;
     }
 
     @Override

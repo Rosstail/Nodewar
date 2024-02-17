@@ -69,9 +69,9 @@ public class NodewarEventHandler implements Listener {
 
         territory.getProtectedRegionList().forEach(protectedRegion -> {
             if (territory.getOwnerTeam() != null) {
-                protectedRegion.getMembers().removeGroup(territory.getOwnerTeam().getModel().getName());
+                protectedRegion.getMembers().removeGroup("nw_" + territory.getOwnerTeam().getModel().getName());
             }
-            protectedRegion.getMembers().addGroup(team.getModel().getName());
+            protectedRegion.getMembers().addGroup("nw_" + team.getModel().getName());
         });
 
         territory.setOwnerTeam(team);

@@ -5,6 +5,7 @@ import fr.rosstail.nodewar.apis.PAPIExpansion;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.events.NodewarEventHandler;
 import fr.rosstail.nodewar.events.WorldguardEventHandler;
+import fr.rosstail.nodewar.permissionmannager.PermissionManagerHandler;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
@@ -90,6 +91,11 @@ public class Nodewar extends JavaPlugin implements Listener {
         DynmapHandler.init(this);
 
         loadCustomConfig();
+
+        if (!PermissionManagerHandler.init()) {
+            AdaptMessage.print("No permission plugin available. Disabling", AdaptMessage.prints.ERROR);
+            this.onDisable();
+        }
 
         this.createDataFolder();
         StorageManager storageManager = StorageManager.initStorageManage(this);

@@ -14,10 +14,7 @@ import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
 import org.bukkit.Bukkit;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ObjectiveSiege extends Objective {
@@ -35,7 +32,7 @@ public class ObjectiveSiege extends Objective {
         ObjectiveSiegeModel clonedChildObjectiveModel = childModel.clone();
         ObjectiveSiegeModel clonedParentObjectiveModel = parentModel.clone();
         this.objectiveSiegeModel = new ObjectiveSiegeModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
-        objectiveSiegeModel.getControlPointStringList().forEach(s -> {
+        objectiveSiegeModel.getControlPointStringSet().forEach(s -> {
             controlPointList.addAll(TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(
                     (territory1 -> territory1.getModel().getName().equalsIgnoreCase(s)
                             && territory1.getWorld() == territory.getWorld())
@@ -139,11 +136,11 @@ public class ObjectiveSiege extends Objective {
     public Map<Territory, List<Integer>> getCapturePointsDamageRegenPerSecond() {
         Map<Territory, List<Integer>> values = new HashMap<>();
 
-        List<String> controlPointStringList = objectiveSiegeModel.getControlPointStringList();
+        Set<String> controlPointStringSet = objectiveSiegeModel.getControlPointStringSet();
         Map<String, Integer> controlPointDamageMap = objectiveSiegeModel.getDamagePerSecondControlPointIntMap();
         Map<String, Integer> controlPointRegenMap = objectiveSiegeModel.getRegenPerSecondControlPointIntMap();
 
-        for (String s : controlPointStringList) {
+        for (String s : controlPointStringSet) {
             List<Integer> damageRegenList = new ArrayList<>();
 
             if (TerritoryManager.getTerritoryManager().getTerritoryMap().containsKey(s)) {

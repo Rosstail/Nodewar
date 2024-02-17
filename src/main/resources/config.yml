@@ -13,6 +13,7 @@ general:
   use-action-bar-on-actions: true
   debug-messages: true
   use-calendar: false
+  permission-plugin: auto # luckperms
 
 map:
   update-delay: 5

@@ -1,9 +1,13 @@
 package fr.rosstail.nodewar.team;
 
+import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.permissionmannager.PermissionManagerHandler;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.relation.TeamRelation;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
+import java.security.Permission;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +22,7 @@ public class NwTeam {
 
     public NwTeam(TeamModel teamModel) {
         this.teamModel = teamModel;
+        PermissionManagerHandler.createGroup(teamModel.getName());
     }
 
     public TeamModel getModel() {
