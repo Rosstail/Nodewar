@@ -26,9 +26,9 @@ team:
   default-relation: neutral
 
 bossbar:
-  color:
-    neutral: WHITE #RED, YELLOW, BLUE, GREEN, PINK, PURPLE, WHITE
-    controlled: YELLOW
+  color: # RED, YELLOW, BLUE, GREEN, PINK, PURPLE, WHITE
+    neutral: WHITE # no team
+    controlled: YELLOW # it's like neutral but controlled by a team
     team: BLUE
     ally: GREEN
     truce: PURPLE

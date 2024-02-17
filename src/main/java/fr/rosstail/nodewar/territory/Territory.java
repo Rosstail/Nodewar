@@ -167,7 +167,7 @@ public class Territory {
 
         if (ownerNwTeam != null) {
             territoryUsedTeam = ownerNwTeam;
-        } else if (currentBattle.getAdvantagedTeam() != null){
+        } else if (currentBattle.getAdvantagedTeam() != null) {
             territoryUsedTeam = currentBattle.getAdvantagedTeam();
         }
 
@@ -244,6 +244,18 @@ public class Territory {
         this.ownerNwTeam = ownerNwTeam;
         getModel().setOwnerName(ownerNwTeam != null ? ownerNwTeam.getModel().getName() : null);
         StorageManager.getManager().updateTerritoryModel(getModel(), true);
+        updateTerritoryRegionGroups();
+    }
+
+    public void updateTerritoryRegionGroups() {
+        getProtectedRegionList().forEach(protectedRegion -> {
+            protectedRegion.getMembers().getGroups().stream().filter(s -> (
+                    s.startsWith("nw_")
+            )).forEach(s -> protectedRegion.getMembers().removeGroup(s));
+            if (getOwnerTeam() != null) {
+                protectedRegion.getMembers().addGroup("nw_" + getOwnerTeam().getModel().getName());
+            }
+        });
     }
 
     public Battle getPreviousBattle() {
