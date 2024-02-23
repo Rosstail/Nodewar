@@ -77,11 +77,11 @@ public class TerritoryManager {
 
         File fileConfig = new File("plugins/" + plugin.getName() + "/conquest/territory-types.yml");
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileConfig);
-        AdaptMessage.print("============", AdaptMessage.prints.OUT);
+        //AdaptMessage.print("============", AdaptMessage.prints.OUT);
         yamlConfiguration.getKeys(false).forEach(s -> {
             ConfigurationSection section = yamlConfiguration.getConfigurationSection(s);
             TerritoryType territoryType = new TerritoryType(section);
-            territoryType.printModel();
+            //territoryType.printModel();
             territoryTypeMap.put(territoryType.getName(), territoryType);
         });
     }

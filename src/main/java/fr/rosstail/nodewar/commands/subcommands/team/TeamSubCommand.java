@@ -28,10 +28,5 @@ public abstract class TeamSubCommand extends SubCommand {
     }
 
     @Override
-    public void perform(CommandSender sender, String[] args, String[] arguments) {
-
-    }
-
-    @Override
     public abstract List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments);
 }

@@ -17,7 +17,7 @@ public class TeamCommand extends TeamSubCommand {
     public TeamCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_CREATE_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
         subCommands.add(new TeamCheckCommand());
         subCommands.add(new TeamCreateCommand());
@@ -33,6 +33,7 @@ public class TeamCommand extends TeamSubCommand {
             return;
         }
         if (args.length < 2) {
+            sender.sendMessage("Help of team needed");
             sender.sendMessage(getSubCommandHelp());
             return;
         }

@@ -31,7 +31,9 @@ public class PlayerDataManager {
     }
 
     public static String getPlayerNameFromUUID(String uuid) {
-        String playerName = "UnknownPlayer";
+        if (!Bukkit.getOnlineMode()) {
+            return uuid;
+        }
         try {
             URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -49,7 +51,7 @@ public class PlayerDataManager {
 
                 String response = responseBuilder.toString();
 
-                playerName = extractPlayerNameFromUUID(response);
+                return extractPlayerNameFromUUID(response);
 
             }
 
@@ -57,11 +59,12 @@ public class PlayerDataManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return playerName;
+        return null;
     }
 
     /**
      * Get player name using UUID from Mojang API
+     *
      * @param response
      * @return
      */
@@ -79,10 +82,14 @@ public class PlayerDataManager {
 
     /**
      * Get player name using username from Mojang API
+     *
      * @param username the name of targeted player
      * @return
      */
     public static String getPlayerUUIDFromName(String username) {
+        if (!Bukkit.getOnlineMode()) {
+            return username;
+        }
         try {
             URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + username);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

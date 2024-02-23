@@ -40,7 +40,11 @@ public class Lang {
                 gotMessage = langConfig.getString(stringPath);
                 if (gotMessage != null) {
                     langMessage.setDisplayText(AdaptMessage.getAdaptMessage().adaptMessage(gotMessage));
+                } else {
+                    System.out.println("null " + stringPath + " " + langConfig.getString(stringPath));
                 }
+            } else {
+                System.out.println("lang Config is null");
             }
 
             if (gotMessage == null && !langMessage.isNullable()) {

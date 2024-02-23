@@ -18,11 +18,14 @@ commands:
     line: "&a► &6/[syntax] &8: &r[desc]"
   team:
     desc: "Check, manage or create a team"
+    check:
+      desc: "Check your team's data"
+      result: "Your team is [team] [team_display]"
     create:
       desc: "Create a nodewar team"
       result: "Team created"
   reload:
-    desc: "Reload current karma config."
+    desc: "Reload current Nodewar config."
     result: "[prefix]Reloaded config."
   save:
     desc: "Save instantly all online players data to storage."

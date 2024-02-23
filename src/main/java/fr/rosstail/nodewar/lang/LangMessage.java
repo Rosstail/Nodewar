@@ -29,6 +29,9 @@ public enum LangMessage {
     COMMANDS_EDIT_PLAYER_OUT_OF_BOUNDS("commands.edit.player.out-of-bounds", false),
 
     COMMANDS_TEAM_DESC("commands.team.desc", false),
+
+    COMMANDS_TEAM_CHECK_DESC("commands.team.check.desc", false),
+    COMMANDS_TEAM_CHECK_RESULT("commands.team.check.result", false),
     COMMANDS_TEAM_CREATE_DESC("commands.team.create.desc", false),
     COMMANDS_TEAM_CREATE_RESULT("commands.team.create.result", false),
 

@@ -20,7 +20,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
      */
     @Override
     public boolean canRegister() {
-        return Bukkit.getPluginManager().getPlugin("Karma") != null;
+        return Bukkit.getPluginManager().getPlugin("Nodewar") != null;
     }
 
     /**

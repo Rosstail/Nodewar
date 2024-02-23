@@ -32,12 +32,12 @@ public class HelpCommand extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "karma help";
+        return "nodewar help";
     }
 
     @Override
     public String getPermission() {
-        return "karma.command.help";
+        return "nodewar.command.help";
     }
 
     @Override

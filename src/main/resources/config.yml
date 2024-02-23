@@ -8,12 +8,19 @@ storage:
   save-delay: 300
 
 general:
-  lang: en_EN
   delay-between-database-updates: 300
   use-action-bar-on-actions: true
   debug-messages: true
   use-calendar: false
   permission-plugin: auto # luckperms
+
+locale:
+  lang: en_EN
+  decimal:display: 1
+  title:
+    fade-in: 1
+    stay: 18
+    fade-out: 2
 
 map:
   update-delay: 5
