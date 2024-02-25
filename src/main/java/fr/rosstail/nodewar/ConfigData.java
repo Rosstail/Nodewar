@@ -63,34 +63,20 @@ public class ConfigData {
         public final int titleFadeIn;
         public final int titleStay;
         public final int titleFadeOut;
-        //public final String dateTimeFormat;
-        //public final String countDownFormat;
+        public final String dateTimeFormat;
+        public final String countDownFormat;
 
         ConfigLocale(FileConfiguration config) {
             this.configFile = config;
 
-            lang = config.getString("locale.lang");
+            lang = config.getString("locale.lang", "en_EN");
             decNumber = config.getInt("locale.decimal-display");
             titleFadeIn = config.getInt("locale.title.fade-in");
             titleStay = config.getInt("locale.title.stay");
             titleFadeOut = config.getInt("locale.title.fade-out");
-            //dateTimeFormat = config.getString("locale.datetime-format");
-            //countDownFormat = config.getString("locale.countdown-format");
+            dateTimeFormat = config.getString("locale.datetime-format", "YYYY-MM-dd HH:mm:ss");
+            countDownFormat = config.getString("locale.countdown-format", "{dd} {HH}:{mm}:{ss}");
         }
-
-        /*public String getDateTimeFormat() {
-            if (dateTimeFormat == null) {
-                return "yyyy-MM-dd HH:mm:ss";
-            }
-            return dateTimeFormat;
-        }
-
-        public String getCountdownFormat() {
-            if (countDownFormat == null) {
-                return "{dd} {HH}:{mm}:{ss}";
-            }
-            return countDownFormat;
-        }*/
     }
 
     public class ConfigGeneral {

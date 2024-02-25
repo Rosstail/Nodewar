@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
@@ -14,6 +15,7 @@ import fr.rosstail.nodewar.team.relation.TeamRelation;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -77,24 +79,8 @@ public class TeamCheckCommand extends TeamSubCommand {
 
         NwTeam playerTeam = playerData.getTeam();
         String message = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT);
-        message = message.replaceAll("\\[team]", playerTeam.getModel().getName());
-        message = message.replaceAll("\\[team_display]", playerTeam.getModel().getDisplay());
-        message = message.replaceAll("\\[team_player_rank]", playerTeam.getMemberMap().get(senderPlayer).getRank().toString());
-        message = message.replaceAll("\\[team_member_count]", playerTeam.getMemberMap().size() + " / " + playerTeam.getModel().getTeamMemberModelMap().size());
 
-        /*message.append("\n > Connected:");
-        for (Map.Entry<Player, TeamMember> entry : playerTeam.getMemberMap().entrySet()) {
-            Player player = entry.getKey();
-            TeamMember teamMember = entry.getValue();
-            message.append("\n    - ").append(player.getName());
-        }
-        message.append("\n > Relations:");
-        for (Map.Entry<String, TeamRelation> entry : playerTeam.getRelations().entrySet()) {
-            String s = entry.getKey();
-            TeamRelation teamRelation = entry.getValue();
-            message.append("\n    - ").append(s).append(" ").append(teamRelation.getRelationType().toString());
-        }*/
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message));
+        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTeamMessage(message, playerTeam, senderPlayer));
     }
 
     @Override

@@ -2,15 +2,26 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.rank.TeamRank;
+import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class TeamDisbandCommand extends TeamSubCommand {
+
+    public TeamDisbandCommand() {
+        help = AdaptMessage.getAdaptMessage().adaptMessage(
+                LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_DISBAND_DESC))
+                        .replaceAll("\\[syntax]", getSyntax()));
+    }
     @Override
     public String getName() {
         return "disband";
@@ -60,6 +71,7 @@ public class TeamDisbandCommand extends TeamSubCommand {
                 sender.sendMessage("You are not owner of any team");
             } else {
                 sender.sendMessage("Disbanded team");
+                DynmapHandler.getDynmapHandler().resumeRender();
             }
         }
     }

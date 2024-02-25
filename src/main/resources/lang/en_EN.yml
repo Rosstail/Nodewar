@@ -20,10 +20,38 @@ commands:
     desc: "Check, manage or create a team"
     check:
       desc: "Check your team's data"
-      result: "Your team is [team] [team_display]"
+      result:
+        - "[team_display]&r &8:&r"
+        - "* Color: {[team_color]}[team_color]&r"
+        - "* Your rank &8:&r [team_player_rank]"
+        - "* Members &8:&r [team_online_member]"
+        - "  [team_result_member_line]"
+        - "* Relations &8:&r (default &8:&r [team_relation_default])"
+        - "  [team_result_relation_line]"
+      result-member-line: " - [team_player] &8:&r [team_player_rank]"
+      result-relation-line: " - [team_display] &8:&r [team_relation]"
     create:
       desc: "Create a nodewar team"
       result: "Team created"
+    join:
+      desc: "Join an existing nodewar team"
+      result: "Joined team"
+    color:
+      desc: "Edit your current team color"
+      result: "Team color set to {[team_color]}[team_color]"
+    open:
+      desc: "Make your team joinable by anybody"
+      result-open: "your team is now open"
+      result-close: "your team is now close"
+    invite:
+      desc: "Invite a player into your team"
+      result: "Invintation sent successfully."
+    leave:
+      desc: "Leave your current team"
+      result: "Left team"
+    disband:
+      desc: "Disband your nodewar team"
+      result: "Disbanded team"
   reload:
     desc: "Reload current Nodewar config."
     result: "[prefix]Reloaded config."

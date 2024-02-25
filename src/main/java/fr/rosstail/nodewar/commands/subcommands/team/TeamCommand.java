@@ -24,6 +24,8 @@ public class TeamCommand extends TeamSubCommand {
         subCommands.add(new TeamDisbandCommand());
         subCommands.add(new TeamRelationCommand());
         subCommands.add(new TeamJoinCommand());
+        subCommands.add(new TeamOpenCommand());
+        subCommands.add(new TeamColorCommand());
         subCommands.add(new TeamLeaveCommand());
     }
 

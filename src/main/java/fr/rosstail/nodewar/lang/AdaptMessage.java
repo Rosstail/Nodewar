@@ -6,6 +6,7 @@ import fr.rosstail.nodewar.apis.ExpressionCalculator;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.NwTeam;
+import fr.rosstail.nodewar.team.TeamModel;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
@@ -159,16 +160,7 @@ public class AdaptMessage {
 
         message = ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(null, message));
         if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1].replaceAll("\\)", "")) >= 16) {
-            Matcher hexMatcher = hexPattern.matcher(message);
-            while (hexMatcher.find()) {
-                try {
-                    String matched = hexMatcher.group(0);
-                    String color = hexMatcher.group(1);
-                    message = message.replace(matched, String.valueOf(ChatColor.of(color)));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            message = colorFormat(message);
         }
 
         Matcher matcher = calculatePattern.matcher(message);
@@ -210,6 +202,20 @@ public class AdaptMessage {
             newMessages.add(adaptMessage(adaptPlayerMessage(player, s, PlayerType.PLAYER.getText())));
         });
         return newMessages.toArray(new String[0]);
+    }
+
+    public String colorFormat(String message) {
+        Matcher hexMatcher = hexPattern.matcher(message);
+        while (hexMatcher.find()) {
+            try {
+                String matched = hexMatcher.group(0);
+                String color = hexMatcher.group(1);
+                message = message.replace(matched, String.valueOf(ChatColor.of(color)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return message;
     }
 
     public String decimalFormat(float value, char replacement) {
@@ -351,5 +357,45 @@ public class AdaptMessage {
 
         message = message + attackRequirementsMessage + "\n------------";
         AdaptMessage.print(message, AdaptMessage.prints.OUT);
+    }
+
+    public String adaptTeamMessage(String message, NwTeam nwTeam, Player player) {
+        TeamModel teamModel = nwTeam.getModel();
+
+        if (message.contains("[team_result_member_line]")) {
+            String memberStringLine = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT_MEMBER_LINE);
+            List<String> memberStringList = new ArrayList<>();
+            nwTeam.getMemberMap().forEach((member, teamMember) -> {
+                memberStringList.add(memberStringLine
+                        .replaceAll("\\[team_player]", member.getName())
+                        .replaceAll("\\[team_player_rank]", teamMember.getRank().toString())
+                );
+            });
+            message = message.replaceAll("\\[team_result_member_line]", String.join("\n", memberStringList));
+        }
+
+        if (message.contains("[team_result_relation_line]")) {
+            String relationStringLine = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT_RELATION_LINE);
+            List<String> relationStringList = new ArrayList<>();
+            nwTeam.getRelations().forEach((s, teamRelation) -> {
+                relationStringList.add(relationStringLine
+                        .replaceAll("\\[team]", s)
+                        .replaceAll("\\[team_relation]", teamRelation.toString())
+                );
+            });
+            message = message.replaceAll("\\[team_result_relation_line]", String.join("\n", relationStringList));
+        }
+
+        message = message.replaceAll("\\[team]", teamModel.getName());
+        message = message.replaceAll("\\[team_display]", teamModel.getDisplay());
+        message = message.replaceAll("\\[team_color]", teamModel.getHexColor());
+        message = message.replaceAll("\\[team_online_member]", nwTeam.getMemberMap().size() + " / " + teamModel.getTeamMemberModelMap().size());
+        message = message.replaceAll("\\[team_relation_default]", ConfigData.getConfigData().team.defaultRelation.toString());
+
+        if (player != null) {
+            message = message.replaceAll("\\[team_player_rank]", nwTeam.getMemberMap().get(player).getRank().toString());
+        }
+
+        return adaptMessage(message);
     }
 }

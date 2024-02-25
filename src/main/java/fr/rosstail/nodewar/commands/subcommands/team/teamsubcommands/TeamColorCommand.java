@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
@@ -11,33 +12,38 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.rank.TeamRank;
+import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
-public class TeamOpenCommand extends TeamSubCommand {
+public class TeamColorCommand extends TeamSubCommand {
 
-    public TeamOpenCommand() {
+    private static final Pattern hexPattern = Pattern.compile("#[a-fA-F0-9]{6}");
+
+    public TeamColorCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_OPEN_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_COLOR_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
+
     @Override
     public String getName() {
-        return "open";
+        return "color";
     }
 
     @Override
     public String getDescription() {
-        return "Open your team";
+        return "Change your team color";
     }
 
     @Override
     public String getSyntax() {
-        return "nodewar team open false/true";
+        return "nodewar team color <hexcolor>";
     }
 
     @Override
@@ -47,12 +53,12 @@ public class TeamOpenCommand extends TeamSubCommand {
 
     @Override
     public String getPermission() {
-        return "nodewar.command.team.open";
+        return "nodewar.command.team.color";
     }
 
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
-        boolean value;
+        String value;
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
@@ -75,22 +81,27 @@ public class TeamOpenCommand extends TeamSubCommand {
                 return;
             }
 
-            value = Boolean.parseBoolean(args[2]);
-            playerNwTeam.getModel().setOpen(value);
+            value = args[2];
 
-            sender.sendMessage(playerNwTeam.getModel().isOpen() ?
-                    LangManager.getMessage(LangMessage.COMMANDS_TEAM_OPEN_RESULT)
-                    : LangManager.getMessage(LangMessage.COMMANDS_TEAM_CLOSE_RESULT));
+            if (!hexPattern.matcher(value).find()) {
+                sender.sendMessage("Wrong argument ex: #CD9F16");
+                return;
+            }
+            playerNwTeam.getModel().setHexColor(value);
+
+            sender.sendMessage(
+                    AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_COLOR_RESULT), playerNwTeam, player)
+            );
 
             StorageManager.getManager().updateTeamModel(playerNwTeam.getModel());
+            DynmapHandler.getDynmapHandler().resumeRender();
         }
     }
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
         List<String> list = new ArrayList<>();
-        list.add("false");
-        list.add("true");
+        list.add("#");
         return list;
     }
 }

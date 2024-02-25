@@ -2,12 +2,16 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
+import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -15,6 +19,14 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public class TeamCreateCommand extends TeamSubCommand {
+
+    public TeamCreateCommand() {
+        help = AdaptMessage.getAdaptMessage().adaptMessage(
+                LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_CREATE_DESC))
+                        .replaceAll("\\[syntax]", getSyntax()));
+    }
+
     @Override
     public String getName() {
         return "create";
@@ -95,6 +107,7 @@ public class TeamCreateCommand extends TeamSubCommand {
             } else {
                 sender.sendMessage("Team added unsuccessfully");
             }
+            DynmapHandler.getDynmapHandler().resumeRender();
         } else {
             sender.sendMessage("TeamCreateCommand - Not enough args");
         }

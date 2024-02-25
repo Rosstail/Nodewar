@@ -65,9 +65,9 @@ public class DynmapHandler {
     }
 
     private static class AreaStyle {
-        String strokeColor = "#FFFFFF";
+        String strokeColor = "#000000";
         double strokeOpacity = 0.8f;
-        int strokeWeight;
+        int strokeWeight = 2;
         String fillColor;
         double fillOpacity = ConfigData.getConfigData().dynmap.fillOpacity;
         String label;

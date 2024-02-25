@@ -10,9 +10,11 @@ import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TeamRelation;
 import fr.rosstail.nodewar.team.relation.TeamRelationManager;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
+import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,6 +25,8 @@ public class TeamDataManager {
     private final Nodewar plugin;
 
     private final Map<String, NwTeam> stringTeamMap = new HashMap<>();
+
+    private final HashSet<NwTeamInvite> teamInviteHashSet = new HashSet<>();
 
     private TeamDataManager(Nodewar plugin) {
         this.plugin = plugin;
@@ -109,5 +113,20 @@ public class TeamDataManager {
         }
 
         return null;
+    }
+
+    public HashSet<NwTeamInvite> getTeamInviteHashSet() {
+        return teamInviteHashSet;
+    }
+
+    public boolean invite(Player target, NwTeam nwTeam) {
+        if (teamInviteHashSet.stream().noneMatch(nwTeamInvite1 -> (
+                nwTeamInvite1.getNwTeam() == nwTeam && nwTeamInvite1.getReceiver() == target
+        ))) {
+            NwTeamInvite nwTeamInvite = new NwTeamInvite(nwTeam, target);
+            teamInviteHashSet.add(nwTeamInvite);
+            return true;
+        }
+        return false;
     }
 }

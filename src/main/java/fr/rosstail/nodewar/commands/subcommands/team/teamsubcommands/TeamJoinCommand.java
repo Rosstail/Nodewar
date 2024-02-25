@@ -2,6 +2,9 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
@@ -17,6 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TeamJoinCommand extends TeamSubCommand {
+
+    public TeamJoinCommand() {
+        help = AdaptMessage.getAdaptMessage().adaptMessage(
+                LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_JOIN_DESC))
+                        .replaceAll("\\[syntax]", getSyntax()));
+    }
     @Override
     public String getName() {
         return "join";
