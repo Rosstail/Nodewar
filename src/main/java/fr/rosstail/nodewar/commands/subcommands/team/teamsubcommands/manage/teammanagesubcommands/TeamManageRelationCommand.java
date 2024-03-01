@@ -1,4 +1,4 @@
-package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagecommands;
+package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands;
 
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;

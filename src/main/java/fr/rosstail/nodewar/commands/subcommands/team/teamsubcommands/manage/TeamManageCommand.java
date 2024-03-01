@@ -2,7 +2,7 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.SubCommand;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagecommands.*;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.*;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
