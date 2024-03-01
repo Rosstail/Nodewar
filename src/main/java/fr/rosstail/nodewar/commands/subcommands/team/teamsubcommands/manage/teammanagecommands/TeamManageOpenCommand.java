@@ -1,12 +1,10 @@
-package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
+package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagecommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.TeamManageSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
-import fr.rosstail.nodewar.player.PlayerData;
-import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
@@ -14,15 +12,14 @@ import fr.rosstail.nodewar.team.rank.TeamRank;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class TeamOpenCommand extends TeamSubCommand {
+public class TeamManageOpenCommand extends TeamManageSubCommand {
 
-    public TeamOpenCommand() {
+    public TeamManageOpenCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_OPEN_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_OPEN_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
     @Override
@@ -37,7 +34,7 @@ public class TeamOpenCommand extends TeamSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar team open false/true";
+        return "nodewar team manage open";
     }
 
     @Override
@@ -47,7 +44,7 @@ public class TeamOpenCommand extends TeamSubCommand {
 
     @Override
     public String getPermission() {
-        return "nodewar.command.team.open";
+        return "nodewar.command.team.manage.open";
     }
 
     @Override
@@ -70,27 +67,15 @@ public class TeamOpenCommand extends TeamSubCommand {
                 return;
             }
 
-            if (args.length < 3) {
-                sender.sendMessage("Not enough arguments");
-                return;
-            }
+            playerNwTeam.getModel().setOpen(true);
 
-            value = Boolean.parseBoolean(args[2]);
-            playerNwTeam.getModel().setOpen(value);
-
-            sender.sendMessage(playerNwTeam.getModel().isOpen() ?
-                    LangManager.getMessage(LangMessage.COMMANDS_TEAM_OPEN_RESULT)
-                    : LangManager.getMessage(LangMessage.COMMANDS_TEAM_CLOSE_RESULT));
-
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_OPEN_RESULT));
             StorageManager.getManager().updateTeamModel(playerNwTeam.getModel());
         }
     }
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        List<String> list = new ArrayList<>();
-        list.add("false");
-        list.add("true");
-        return list;
+        return null;
     }
 }

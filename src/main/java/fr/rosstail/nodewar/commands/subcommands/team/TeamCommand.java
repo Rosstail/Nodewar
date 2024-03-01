@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.commands.subcommands.team;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.SubCommand;
 import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.*;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.TeamManageCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -21,11 +22,8 @@ public class TeamCommand extends TeamSubCommand {
                         .replaceAll("\\[syntax]", getSyntax()));
         subCommands.add(new TeamCheckCommand());
         subCommands.add(new TeamCreateCommand());
-        subCommands.add(new TeamDisbandCommand());
-        subCommands.add(new TeamRelationCommand());
+        subCommands.add(new TeamManageCommand());
         subCommands.add(new TeamJoinCommand());
-        subCommands.add(new TeamOpenCommand());
-        subCommands.add(new TeamColorCommand());
         subCommands.add(new TeamLeaveCommand());
     }
 

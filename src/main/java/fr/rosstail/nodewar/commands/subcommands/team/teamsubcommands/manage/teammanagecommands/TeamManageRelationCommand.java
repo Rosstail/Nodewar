@@ -1,8 +1,8 @@
-package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
+package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagecommands;
 
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.TeamManageSubCommand;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.rank.TeamRank;
 import fr.rosstail.nodewar.team.relation.TeamRelation;
@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TeamRelationCommand extends TeamSubCommand {
+public class TeamManageRelationCommand extends TeamManageSubCommand {
 
     @Override
     public String getName() {
@@ -28,7 +28,7 @@ public class TeamRelationCommand extends TeamSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar team relation <teamname> <relation>";
+        return "nodewar team manage relation <teamname> <relation>";
     }
 
     @Override
@@ -38,7 +38,7 @@ public class TeamRelationCommand extends TeamSubCommand {
 
     @Override
     public String getPermission() {
-        return "nodewar.command.team.relation";
+        return "nodewar.command.team.manage.relation";
     }
 
     @Override
@@ -48,17 +48,17 @@ public class TeamRelationCommand extends TeamSubCommand {
         }
         if (sender instanceof Player) {
             RelationType relationType;
-            if (args.length < 4) {
+            if (args.length < 5) {
                 sender.sendMessage("Not enough args RELATION TEAM");
                 return;
             }
             try {
-                 relationType = RelationType.valueOf(args[2]);
+                 relationType = RelationType.valueOf(args[3].toUpperCase());
             } catch (IllegalArgumentException e) {
-                sender.sendMessage("This relation type does not exist");
+                sender.sendMessage("This relation type does not exist" + args[3].toUpperCase());
                 return;
             }
-            String targetTeamName = args[3];
+            String targetTeamName = args[4];
             NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender));
             NwTeam targetNwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
             if (playerNwTeam == null) {
@@ -81,10 +81,10 @@ public class TeamRelationCommand extends TeamSubCommand {
 
             RelationType defaultRelation = ConfigData.getConfigData().team.defaultRelation;
 
-            /*
-            if (playerNwTeam.getRelationMap().containsKey(targetTeamName)) {
+
+            if (playerNwTeam.getRelations().containsKey(targetTeamName)) {
                 if (!relationType.equals(defaultRelation)) {
-                    TeamRelation playerTeamRelation = playerNwTeam.getRelationMap().get(targetTeamName);
+                    TeamRelation playerTeamRelation = playerNwTeam.getRelations().get(targetTeamName);
                     playerTeamRelation.setRelationType(relationType);
                 } else {
                     if (Arrays.stream(arguments).collect(Collectors.toList()).contains("-e")) {
@@ -104,14 +104,13 @@ public class TeamRelationCommand extends TeamSubCommand {
                     sender.sendMessage("This is a default implicit relation. Use -e or --explicit to make this explicit");
                 }
             }
-             */
         }
     }
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
         NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
-        if (args.length <= 3) {
+        if (args.length <= 4) {
             List<String> relations = new ArrayList<>();
 
             for (RelationType value : RelationType.values()) {
@@ -119,7 +118,7 @@ public class TeamRelationCommand extends TeamSubCommand {
             }
 
             return relations;
-        } else if (args.length == 4) {
+        } else if (args.length == 5) {
             List<String> teams = new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().keySet());
             if (playerNwTeam != null) {
                 teams.remove(playerNwTeam.getModel().getName());

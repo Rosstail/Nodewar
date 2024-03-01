@@ -392,7 +392,7 @@ public class AdaptMessage {
         message = message.replaceAll("\\[team_online_member]", nwTeam.getMemberMap().size() + " / " + teamModel.getTeamMemberModelMap().size());
         message = message.replaceAll("\\[team_relation_default]", ConfigData.getConfigData().team.defaultRelation.toString());
 
-        if (player != null) {
+        if (player != null && nwTeam.getMemberMap().containsKey(player)) {
             message = message.replaceAll("\\[team_player_rank]", nwTeam.getMemberMap().get(player).getRank().toString());
         }
 

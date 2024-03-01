@@ -19,12 +19,19 @@ commands:
   team:
     desc: "Check, manage or create a team"
     check:
-      desc: "Check your team's data"
+      desc: "Check team's data"
       result:
         - "[team_display]&r &8:&r"
-        - "* Color: {[team_color]}[team_color]&r"
+        - "* Color &8:&r {[team_color]}[team_color]&r"
         - "* Your rank &8:&r [team_player_rank]"
-        - "* Members &8:&r [team_online_member]"
+        - "* Members &8:&r [team_online_member] - [team_open]"
+        - "  [team_result_member_line]"
+        - "* Relations &8:&r (default &8:&r [team_relation_default])"
+        - "  [team_result_relation_line]"
+      result-other:
+        - "[team_display]&r &8:&r"
+        - "* Color &8:&r {[team_color]}[team_color]&r"
+        - "* Members &8:&r [team_online_member] - [team_open]"
         - "  [team_result_member_line]"
         - "* Relations &8:&r (default &8:&r [team_relation_default])"
         - "  [team_result_relation_line]"
@@ -36,22 +43,27 @@ commands:
     join:
       desc: "Join an existing nodewar team"
       result: "Joined team"
-    color:
-      desc: "Edit your current team color"
-      result: "Team color set to {[team_color]}[team_color]"
-    open:
-      desc: "Make your team joinable by anybody"
-      result-open: "your team is now open"
-      result-close: "your team is now close"
-    invite:
-      desc: "Invite a player into your team"
-      result: "Invintation sent successfully."
+    manage:
+      desc: "Manage your team."
+      color:
+        desc: "Edit your current team color"
+        result: "Team color set to {[team_color]}[team_color]"
+      open:
+        desc: "Make your team joinable by anybody"
+        result: "your team is now open"
+        result-close: "your team is now close"
+      close:
+        desc: "Make your team joinable only on invites"
+        result: "your team is now close"
+      invite:
+        desc: "Invite a player into your team"
+        result: "Invintation sent successfully."
+      disband:
+        desc: "Disband your nodewar team"
+        result: "Disbanded team"
     leave:
       desc: "Leave your current team"
       result: "Left team"
-    disband:
-      desc: "Disband your nodewar team"
-      result: "Disbanded team"
   reload:
     desc: "Reload current Nodewar config."
     result: "[prefix]Reloaded config."
@@ -69,15 +81,9 @@ player:
   online: "&aONLINE"
   offline: "&8OFFLINE"
 
-empire:
-  create: "&7You have create the empire %nodewar_player_empire%&7."
-  player-join: "&7You have joined the %nodewar_player_empire%&r&7."
-  player-set: "&7%player% has join the %nodewar_player_empire% empire."
-  player-leave: "&7You left your empire."
-  player-remove: "&7%player% left his empire."
-  player-already-joined: "&7Already in the %nodewar_player_empire%&r&7."
-  player-without-empire: "&7You are already without empire&r&7."
-  target-without-empire: "&7%player% is already without empire&r&7."
+team:
+  open: "&aOpen"
+  close: "&cClose"
 
 world-set-empire: "&7All territories in %nodewar_world_name% is now owned by %nodewar_territory_empire_owner%"
 world-neutralize: "&7All territories in %nodewar_world_name% have been neutralized"

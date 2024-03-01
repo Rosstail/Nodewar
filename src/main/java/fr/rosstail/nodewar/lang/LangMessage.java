@@ -1,7 +1,5 @@
 package fr.rosstail.nodewar.lang;
 
-import java.util.List;
-
 public enum LangMessage {
     PLUGIN_PREFIX("prefix", true, false),
 
@@ -34,24 +32,26 @@ public enum LangMessage {
 
     COMMANDS_TEAM_CHECK_DESC("commands.team.check.desc", false, false),
     COMMANDS_TEAM_CHECK_RESULT("commands.team.check.result", false, true),
+    COMMANDS_TEAM_CHECK_RESULT_OTHER("commands.team.check.result-other", false, true),
     COMMANDS_TEAM_CHECK_RESULT_MEMBER_LINE("commands.team.check.result-member-line", false, false),
     COMMANDS_TEAM_CHECK_RESULT_RELATION_LINE("commands.team.check.result-relation-line", false, false),
     COMMANDS_TEAM_CREATE_DESC("commands.team.create.desc", false, false),
     COMMANDS_TEAM_CREATE_RESULT("commands.team.create.result", false, false),
-
     COMMANDS_TEAM_JOIN_DESC("commands.team.join.desc", false, false),
     COMMANDS_TEAM_JOIN_RESULT("commands.team.join.result", false, false),
-    COMMANDS_TEAM_COLOR_DESC("commands.team.color.desc", false, false),
-    COMMANDS_TEAM_COLOR_RESULT("commands.team.color.result", false, false),
-    COMMANDS_TEAM_OPEN_DESC("commands.team.open.desc", false, false),
-    COMMANDS_TEAM_OPEN_RESULT("commands.team.open.result-open", false, false),
-    COMMANDS_TEAM_CLOSE_RESULT("commands.team.open.result-close", false, false),
-    COMMANDS_TEAM_INVITE_DESC("commands.team.invite.desc", false, false),
-    COMMANDS_TEAM_INVITE_RESULT("commands.team.open.result", false, false),
     COMMANDS_TEAM_LEAVE_DESC("commands.team.leave.desc", false, false),
     COMMANDS_TEAM_LEAVE_RESULT("commands.team.leave.result", false, false),
-    COMMANDS_TEAM_DISBAND_DESC("commands.team.disband.desc", false, false),
-    COMMANDS_TEAM_DISBAND_RESULT("commands.team.disband.result", false, false),
+    COMMANDS_TEAM_MANAGE_DESC("commands.team.manage.desc", false, false),
+    COMMANDS_TEAM_MANAGE_COLOR_DESC("commands.team.manage.color.desc", false, false),
+    COMMANDS_TEAM_MANAGE_COLOR_RESULT("commands.team.manage.color.result", false, false),
+    COMMANDS_TEAM_MANAGE_OPEN_DESC("commands.team.manage.open.desc", false, false),
+    COMMANDS_TEAM_MANAGE_OPEN_RESULT("commands.team.manage.open.result", false, false),
+    COMMANDS_TEAM_MANAGE_CLOSE_DESC("commands.team.manage.close.desc", false, false),
+    COMMANDS_TEAM_MANAGE_CLOSE_RESULT("commands.team.manage.close.result", false, false),
+    COMMANDS_TEAM_MANAGE_INVITE_DESC("commands.team.manage.invite.desc", false, false),
+    COMMANDS_TEAM_MANAGE_INVITE_RESULT("commands.team.manage.open.result", false, false),
+    COMMANDS_TEAM_MANAGE_DISBAND_DESC("commands.team.manage.disband.desc", false, false),
+    COMMANDS_TEAM_MANAGE_DISBAND_RESULT("commands.team.manage.disband.result", false, false),
 
     TERRITORY_HELP("territory-help", false, false),
     TERRITORY_SET_EMPIRE("territory-set-empire", false, false),

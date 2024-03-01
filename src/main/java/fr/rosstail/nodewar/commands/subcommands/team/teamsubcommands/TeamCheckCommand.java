@@ -9,6 +9,7 @@ import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwTeam;
+import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TeamRelation;
@@ -41,7 +42,7 @@ public class TeamCheckCommand extends TeamSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar team check";
+        return "nodewar team check (teamName)";
     }
 
     @Override
@@ -57,34 +58,42 @@ public class TeamCheckCommand extends TeamSubCommand {
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         Player senderPlayer;
-        String teamName;
-        NwTeam nwTeam;
         PlayerData playerData;
-        TeamMemberModel teamMemberModel;
+        NwTeam team;
+        String message = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT);
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
 
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("Must be sent by player");
-            return;
-        }
-        senderPlayer = ((Player) sender).getPlayer();
-        playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
-
-        if (playerData.getTeam() == null) {
-            sender.sendMessage("You are not on a team");
+        if (args.length < 3 && !(sender instanceof Player)) {
+            sender.sendMessage("Too few args");
             return;
         }
 
-        NwTeam playerTeam = playerData.getTeam();
-        String message = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT);
+        if (args.length >= 3) {
+            team = TeamDataManager.getTeamDataManager().getStringTeamMap().get(args[2]);
+            if (team != null) {
+                message = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT_OTHER);
+                sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTeamMessage(message, team, null));
+            } else {
+                message = "this team does not exist";
+                sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message));
+            }
+        } else {
+            senderPlayer = ((Player) sender).getPlayer();
+            playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
 
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTeamMessage(message, playerTeam, senderPlayer));
+            if (playerData.getTeam() == null) {
+                sender.sendMessage("You are not on a team");
+                return;
+            }
+            team = playerData.getTeam();
+            sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTeamMessage(message, team, senderPlayer));
+        }
     }
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        return null;
+        return new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().keySet());
     }
 }

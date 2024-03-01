@@ -17,7 +17,10 @@ import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TeamJoinCommand extends TeamSubCommand {
 
@@ -27,6 +30,7 @@ public class TeamJoinCommand extends TeamSubCommand {
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_JOIN_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
+
     @Override
     public String getName() {
         return "join";
@@ -96,6 +100,16 @@ public class TeamJoinCommand extends TeamSubCommand {
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        return new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().keySet());
+        Set<String> teamSet = new HashSet<>();
+        TeamDataManager.getTeamDataManager().getStringTeamMap().values().stream().filter(nwTeam -> (nwTeam.getModel().isOpen())).forEach(nwTeam -> {
+            teamSet.add(nwTeam.getModel().getName());
+        });
+
+        TeamDataManager.getTeamDataManager().getTeamInviteHashSet().stream().filter(nwTeamInvite -> (
+                nwTeamInvite.getReceiver() == sender
+        )).forEach(nwTeamInvite -> {
+            teamSet.add(nwTeamInvite.getNwTeam().getModel().getName());
+        });
+        return new ArrayList<>(teamSet);
     }
 }
