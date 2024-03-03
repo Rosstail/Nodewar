@@ -53,18 +53,10 @@ public enum LangMessage {
     COMMANDS_TEAM_MANAGE_DISBAND_DESC("commands.team.manage.disband.desc", false, false),
     COMMANDS_TEAM_MANAGE_DISBAND_RESULT("commands.team.manage.disband.result", false, false),
 
-    TERRITORY_HELP("territory-help", false, false),
-    TERRITORY_SET_EMPIRE("territory-set-empire", false, false),
-    TERRITORY_NEUTRALIZE("territory-neutralize", false, false),
-    TERRITORY_VULNERABLE("territory-vulnerable", false, false),
-    TERRITORY_INVULNERABLE("territory-invulnerable", false, false),
-
-    TITLE_TERRITORY_NEUTRALIZED("territory.titles.neutralized.title", true, false),
-    SUBTITLE_TERRITORY_NEUTRALIZED("territory.titles.neutralized.subtitle", true, false),
-    TITLE_TERRITORY_CONQUERED("territory.titles.conquered.title", true, false),
-    SUBTITLE_TERRITORY_CONQUERED("territory.titles.conquered.subtitle", true, false),
-    TITLE_TERRITORY_DEFENDED("territory.titles.defended.title", true, false),
-    SUBTITLE_TERRITORY_DEFENDED("territory.titles.defended.subtitle", true, false),
+    COMMANDS_TERRITORY_DESC("commands.territory.desc", false, false),
+    COMMANDS_TERRITORY_CHECK_DESC("commands.territory.desc", false, false),
+    COMMANDS_TERRITORY_CHECK_RESULT("commands.territory.check.result", false, true),
+    COMMANDS_TERRITORY_CHECK_RESULT_OTHER("commands.territory.check.result-other", false, true),
 
     COMMANDS_RELOAD_DESC("commands.reload.desc", false, false),
     COMMANDS_RELOAD_RESULT("commands.reload.result", false, false),

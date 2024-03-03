@@ -6,6 +6,7 @@ import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.Team
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.rank.TeamRank;
 import fr.rosstail.nodewar.team.relation.TeamRelation;
+import fr.rosstail.nodewar.team.relation.TeamRelationManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -53,9 +54,13 @@ public class TeamManageRelationCommand extends TeamManageSubCommand {
                 return;
             }
             try {
-                 relationType = RelationType.valueOf(args[3].toUpperCase());
+                relationType = RelationType.valueOf(args[3].toUpperCase());
+                if (!RelationType.getSelectableRelations().contains(relationType)) {
+                    sender.sendMessage("This relation type is not selectable: " + args[3].toUpperCase());
+                    return;
+                }
             } catch (IllegalArgumentException e) {
-                sender.sendMessage("This relation type does not exist" + args[3].toUpperCase());
+                sender.sendMessage("This relation type does not exist: " + args[3].toUpperCase());
                 return;
             }
             String targetTeamName = args[4];
@@ -88,8 +93,7 @@ public class TeamManageRelationCommand extends TeamManageSubCommand {
                     playerTeamRelation.setRelationType(relationType);
                 } else {
                     if (Arrays.stream(arguments).collect(Collectors.toList()).contains("-e")) {
-                        sender.sendMessage("TEST - UPDATE EXPLICITE relation to " + relationType + " with team " + targetTeamName);
-                        //StorageManager.getManager().ins; //
+                        sender.sendMessage("TEST - UPDATE EXPLICIT relation to " + relationType + " with team " + targetTeamName);
                     } else {
                         sender.sendMessage("This is a default implicit relation. Use -e or --explicit to make this explicit");
                         sender.sendMessage("TEST - DELETE relation to " + relationType + " with team " + targetTeamName);
@@ -113,9 +117,9 @@ public class TeamManageRelationCommand extends TeamManageSubCommand {
         if (args.length <= 4) {
             List<String> relations = new ArrayList<>();
 
-            for (RelationType value : RelationType.values()) {
-                relations.add(value.toString().toLowerCase());
-            }
+            RelationType.getSelectableRelations().forEach(relationType -> {
+                relations.add(relationType.toString().toLowerCase());
+            });
 
             return relations;
         } else if (args.length == 5) {

@@ -39,7 +39,7 @@ public class TeamCreateCommand extends TeamSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar team create <name> <display> <hexcolor>";
+        return "nodewar team create <name> <display>";
     }
 
     @Override

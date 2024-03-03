@@ -1,8 +1,9 @@
-package fr.rosstail.nodewar.commands.subcommands.edit;
+package fr.rosstail.nodewar.commands.subcommands.territory;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.SubCommand;
-import fr.rosstail.nodewar.commands.subcommands.edit.territory.EditTerritoryCommand;
+import fr.rosstail.nodewar.commands.subcommands.territory.territorysubcommands.TerritoryCheckCommand;
+import fr.rosstail.nodewar.commands.subcommands.territory.territorysubcommands.TerritoryEditCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -12,14 +13,15 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditCommand extends EditSubCommand {
-    public List<EditSubCommand> subCommands = new ArrayList<>();
-    public EditCommand() {
+public class TerritoryCommand extends TerritorySubCommand {
+    public List<TerritorySubCommand> subCommands = new ArrayList<>();
+    public TerritoryCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_CREATE_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
-        subCommands.add(new EditTerritoryCommand());
+        subCommands.add(new TerritoryCheckCommand());
+        subCommands.add(new TerritoryEditCommand());
     }
 
     @Override
@@ -33,7 +35,7 @@ public class EditCommand extends EditSubCommand {
         }
 
         List<String> subCommandsStringList = new ArrayList<>();
-        for (EditSubCommand subCommand : subCommands) {
+        for (TerritorySubCommand subCommand : subCommands) {
             subCommandsStringList.add(subCommand.getName());
         }
 
@@ -42,7 +44,7 @@ public class EditCommand extends EditSubCommand {
             return;
         }
 
-        for (EditSubCommand subCommand : subCommands) {
+        for (TerritorySubCommand subCommand : subCommands) {
             if (subCommand.getName().equalsIgnoreCase(args[1])) {
                 subCommand.perform(sender, args, arguments);
             }

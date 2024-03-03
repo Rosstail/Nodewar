@@ -3,7 +3,6 @@ package fr.rosstail.nodewar.lang;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.apis.ExpressionCalculator;
-import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamModel;
@@ -11,7 +10,6 @@ import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.objective.Objective;
-import fr.rosstail.nodewar.territory.type.TerritoryType;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
@@ -325,38 +323,20 @@ public class AdaptMessage {
         return totalTimeMs;
     }
 
-    public void printTerritory(Territory territory) {
+    public String adaptTerritoryMessage(String message, Territory territory) {
         TerritoryModel territoryModel = territory.getModel();
         Objective objective = territory.getObjective();
         AttackRequirements attackRequirements = territory.getAttackRequirements();
-        String message = territoryModel.getName() + " : " +
-                "\n * Display: " + territoryModel.getPrefix() + territoryModel.getDisplay() + territoryModel.getSuffix() +
-                "\n * World: " + territoryModel.getWorldName() +
-                "\n * Type: " + territoryModel.getTypeName() +
-                "\n * Protected: " + territoryModel.isUnderProtection();
+        message = message.replaceAll("\\[territory_prefix]", territoryModel.getPrefix());
+        message = message.replaceAll("\\[territory_suffix]", territoryModel.getSuffix());
+        message = message.replaceAll("\\[territory_name]", territoryModel.getName());
+        message = message.replaceAll("\\[territory_display]", territoryModel.getDisplay());
+        message = message.replaceAll("\\[territory_world]", territoryModel.getWorldName());
+        message = message.replaceAll("\\[territory_type]", territoryModel.getTypeName());
+        message = message.replaceAll("\\[territory_protected]", territoryModel.isUnderProtection() ? "protected" : "vulnerable");
+        message = message.replaceAll("\\[territory_owner]", territory.getOwnerTeam() != null ? territory.getOwnerTeam().getModel().getDisplay() : "unoccupied");
 
-        StringBuilder objectiveRequirementsMessage = new StringBuilder("\n * Objective: " +
-                "\n   > Type: " + territoryModel.getObjectiveTypeName());
-
-        objectiveRequirementsMessage.append(objective.print());
-
-        message = message + objectiveRequirementsMessage;
-
-
-        StringBuilder attackRequirementsMessage = new StringBuilder("\n");
-
-        attackRequirementsMessage.append("  * Attack requirements:");
-        if (!attackRequirements.getPreviousTerritoryList().isEmpty()) {
-            attackRequirementsMessage.append("\n   > previous territories :");
-            attackRequirements.getPreviousTerritoryList().forEach(requiredTerritory -> {
-                attackRequirementsMessage.append("\n    * ").append(requiredTerritory.getModel().getName());
-            });
-        } else {
-            attackRequirementsMessage.append(" None");
-        }
-
-        message = message + attackRequirementsMessage + "\n------------";
-        AdaptMessage.print(message, AdaptMessage.prints.OUT);
+        return message;
     }
 
     public String adaptTeamMessage(String message, NwTeam nwTeam, Player player) {
@@ -389,6 +369,7 @@ public class AdaptMessage {
         message = message.replaceAll("\\[team]", teamModel.getName());
         message = message.replaceAll("\\[team_display]", teamModel.getDisplay());
         message = message.replaceAll("\\[team_color]", teamModel.getHexColor());
+        message = message.replaceAll("\\[team_open]", nwTeam.getModel().isOpen() ? "cpen" : "close");
         message = message.replaceAll("\\[team_online_member]", nwTeam.getMemberMap().size() + " / " + teamModel.getTeamMemberModelMap().size());
         message = message.replaceAll("\\[team_relation_default]", ConfigData.getConfigData().team.defaultRelation.toString());
 

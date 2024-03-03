@@ -1,16 +1,16 @@
-package fr.rosstail.nodewar.commands.subcommands.edit.territory;
+package fr.rosstail.nodewar.commands.subcommands.territory.territorysubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.edit.EditSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.territory.TerritorySubCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class EditTerritorySubCommand extends EditSubCommand {
+public class TerritoryEditSubCommand extends TerritorySubCommand {
     @Override
     public String getName() {
-        return "territory";
+        return "edit";
     }
 
     @Override
@@ -20,12 +20,12 @@ public class EditTerritorySubCommand extends EditSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar edit territory <subcommand>";
+        return "nodewar territory edit <subcommand>";
     }
 
     @Override
     public String getPermission() {
-        return "nodewar.command.edit";
+        return "nodewar.command.territory.edit";
     }
 
     @Override

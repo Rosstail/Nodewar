@@ -6,12 +6,13 @@ import fr.rosstail.nodewar.team.relation.TeamRelationModel;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class TeamModel {
     private int id;
     private String name;
     private String display;
-    private String hexColor = "#CACACA";
+    private String hexColor;
     private boolean open = false;
     private boolean permanent = false;
     private Timestamp creationDate = new Timestamp(System.currentTimeMillis());
@@ -24,6 +25,15 @@ public class TeamModel {
     public TeamModel(String name, String display) {
         this.name = name;
         this.display = display;
+        StringBuilder randomColor = new StringBuilder("#");
+
+        for (int i = 0; i < 6; i++) {
+            Random random = new Random();
+
+            randomColor.append(Integer.toHexString(random.nextInt(16)));
+        }
+
+        this.hexColor = randomColor.toString().toUpperCase();
     }
 
     public int getId() {

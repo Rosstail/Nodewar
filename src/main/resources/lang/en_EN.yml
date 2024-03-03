@@ -64,6 +64,20 @@ commands:
     leave:
       desc: "Leave your current team"
       result: "Left team"
+  territory:
+    desc: "Territory commands"
+    check:
+      result:
+        - "[territory_display]&r &8:&r"
+        - "* Type &8:&r [territory_type]&r"
+        - "* Protected &8:&r [territory_protected]&r"
+        - "* Owner &8:&r [territory_owner]&r"
+      result-other:
+        - "[territory_display]&r &8:&r"
+        - "* World &8:&r [territory_world]&r"
+        - "* Type &8:&r [territory_type]&r"
+        - "* Protected &8:&r [territory_protected]&r"
+        - "* Owner &8:&r [territory_owner]&r"
   reload:
     desc: "Reload current Nodewar config."
     result: "[prefix]Reloaded config."

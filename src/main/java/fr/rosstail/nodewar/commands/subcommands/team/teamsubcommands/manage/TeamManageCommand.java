@@ -23,6 +23,7 @@ public class TeamManageCommand extends TeamManageSubCommand {
         subCommands.add(new TeamManageRelationCommand());
         subCommands.add(new TeamManageOpenCommand());
         subCommands.add(new TeamManageCloseCommand());
+        subCommands.add(new TeamManageInviteCommand());
         subCommands.add(new TeamManageColorCommand());
     }
 
