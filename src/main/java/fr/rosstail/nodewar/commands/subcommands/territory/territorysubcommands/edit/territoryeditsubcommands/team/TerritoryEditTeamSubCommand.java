@@ -1,31 +1,26 @@
-package fr.rosstail.nodewar.commands.subcommands.territory.territorysubcommands;
+package fr.rosstail.nodewar.commands.subcommands.territory.territorysubcommands.edit.territoryeditsubcommands.team;
 
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.territory.TerritorySubCommand;
+import fr.rosstail.nodewar.commands.subcommands.territory.territorysubcommands.edit.TerritoryEditSubCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class TerritoryEditSubCommand extends TerritorySubCommand {
+public class TerritoryEditTeamSubCommand extends TerritoryEditSubCommand {
     @Override
     public String getName() {
-        return "edit";
+        return "team";
     }
 
     @Override
     public String getDescription() {
-        return "Edit territory as admin";
+        return "Edit territory owner";
     }
 
     @Override
     public String getSyntax() {
-        return "nodewar territory edit <subcommand>";
-    }
-
-    @Override
-    public String getPermission() {
-        return "nodewar.command.territory.edit";
+        return "nodewar territory edit team <subcommand>";
     }
 
     @Override
@@ -33,8 +28,6 @@ public class TerritoryEditSubCommand extends TerritorySubCommand {
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
-
-
     }
 
     @Override

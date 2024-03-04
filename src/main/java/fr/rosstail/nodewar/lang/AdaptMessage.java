@@ -105,7 +105,7 @@ public class AdaptMessage {
         return adaptMessage(message);
     }
 
-    public String adaptTeamMessage(NwTeam team, String message) {
+    public String adaptTeamMessage(String message, NwTeam team) {
         message = message.replaceAll("\\[team_name]", team.getModel().getName());
         message = message.replaceAll("\\[team_id]", String.valueOf(team.getModel().getId()));
         message = message.replaceAll("\\[team_display]", team.getModel().getDisplay());

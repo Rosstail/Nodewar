@@ -114,7 +114,7 @@ public class Reward {
             } else if (target.equalsIgnoreCase("team")) {
                 participatingTeam.forEach(team -> {
                     if (shallRewardTarget(territory, participatingTeam, team)) {
-                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptTeamMessage(team, finalCommand));
+                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptTeamMessage(finalCommand, team));
                     }
                 });
             } else {

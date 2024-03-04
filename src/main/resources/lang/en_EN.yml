@@ -78,6 +78,16 @@ commands:
         - "* Type &8:&r [territory_type]&r"
         - "* Protected &8:&r [territory_protected]&r"
         - "* Owner &8:&r [territory_owner]&r"
+    edit:
+      desc: "Edit the selected territory"
+      team:
+        desc: "Edit owner team of territory"
+        set:
+          desc: "Set owner team of territory"
+          result: "Territory owner is now [team_display]"
+        reset:
+          desc: "Remove current owner of territory"
+          result: "Territory is now neutral."
   reload:
     desc: "Reload current Nodewar config."
     result: "[prefix]Reloaded config."
