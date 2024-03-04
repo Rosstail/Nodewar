@@ -48,7 +48,8 @@ public class NodewarEventHandler implements Listener {
         Territory territory = event.getTerritory();
         NwTeam team = event.getNwTeam();
         Bukkit.getServer().broadcastMessage(territory.getModel().getName()
-                + " has been neutralized by " + team.getModel().getName());
+                + " has been neutralized"
+                + (team == null ? "." : " by " + team.getModel().getName()));
 
         territory.setOwnerTeam(null);
 

@@ -2,12 +2,15 @@ package fr.rosstail.nodewar.commands.subcommands.territory.territorysubcommands.
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.territory.territorysubcommands.edit.territoryeditsubcommands.team.TerritoryEditTeamSubCommand;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 public class TerritoryEditTeamResetCommand extends TerritoryEditTeamSubCommand {
@@ -48,9 +51,11 @@ public class TerritoryEditTeamResetCommand extends TerritoryEditTeamSubCommand {
             return;
         }
 
-        territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(args[3]);
+        territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(args[2]);
 
-        territory.setOwnerTeam(null);
+        TerritoryOwnerNeutralizeEvent event = new TerritoryOwnerNeutralizeEvent(territory, null, null);
+        Bukkit.getPluginManager().callEvent(event);
+
         message = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory);
 
         sender.sendMessage(message);

@@ -39,7 +39,7 @@ public class TerritoryEditTeamCommand extends TerritoryEditTeamSubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
-        if (args.length < 4) {
+        if (args.length < 5) {
             sender.sendMessage(getSubCommandHelp());
             return;
         }
