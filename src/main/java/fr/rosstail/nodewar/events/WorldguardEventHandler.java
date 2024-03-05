@@ -30,11 +30,12 @@ public class WorldguardEventHandler implements Listener {
                         territory.getWorld() == world && territory.getModel().getRegionStringList().contains(region.getId())
                 )
         ).forEach(territory -> {
+            if (playerData.getProtectedRegionList().stream().noneMatch(territory.getProtectedRegionList()::contains)) {
+                territory.updateRegionList(); // try an update
+            }
             if (playerData.getProtectedRegionList().stream().anyMatch(territory.getProtectedRegionList()::contains)) {
                 TerritoryEnteredPlayerEvent enteredEvent = new TerritoryEnteredPlayerEvent(territory, player, event);
                 Bukkit.getPluginManager().callEvent(enteredEvent);
-            } else {
-                player.sendMessage("Region " + region.getId() + " is not registered yet. Needs a fix sometime");
             }
         });
     }

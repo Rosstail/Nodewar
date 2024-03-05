@@ -80,6 +80,9 @@ commands:
         - "* Owner &8:&r [territory_owner]&r"
     edit:
       desc: "Edit the selected territory"
+      reload-regions:
+        desc: "Reload regions of a territory"
+        result: "Regions of [territory_name] reloaded"
       team:
         desc: "Edit owner team of territory"
         set:

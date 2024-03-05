@@ -126,8 +126,19 @@ public class Territory {
 
         attackRequirements = new AttackRequirements(this, sectionAttackRequirementsModel, territoryType.getAttackRequirementsModel());
 
-        world = Bukkit.getWorld(territoryModel.getWorldName());
+        updateRegionList();
 
+        for (RelationType relation : RelationType.values()) {
+            relationBossBarMap.put(relation, Bukkit.createBossBar(
+                    territoryModel.getDisplay(),
+                    ConfigData.getConfigData().bossbar.stringBarColorMap.get(relation.toString().toLowerCase()),
+                    territoryBossBar.getBarStyle()
+            ));
+        }
+    }
+
+    public void updateRegionList() {
+        world = Bukkit.getWorld(territoryModel.getWorldName());
         if (world != null) {
             final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
             final RegionManager regions = container.get(BukkitAdapter.adapt(world));
@@ -138,16 +149,9 @@ public class Territory {
                     }
                 });
             }
+            updateAllBossBar();
         } else {
             AdaptMessage.print(getModel().getDisplay() + " ", AdaptMessage.prints.WARNING);
-        }
-
-        for (RelationType relation : RelationType.values()) {
-            relationBossBarMap.put(relation, Bukkit.createBossBar(
-                    territoryModel.getDisplay(),
-                    ConfigData.getConfigData().bossbar.stringBarColorMap.get(relation.toString().toLowerCase()),
-                    territoryBossBar.getBarStyle()
-            ));
         }
     }
 

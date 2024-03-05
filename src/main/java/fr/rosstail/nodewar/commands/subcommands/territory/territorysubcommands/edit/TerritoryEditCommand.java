@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.commands.subcommands.territory.territorysubcommands.
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.SubCommand;
 import fr.rosstail.nodewar.commands.subcommands.territory.TerritorySubCommand;
+import fr.rosstail.nodewar.commands.subcommands.territory.territorysubcommands.edit.territoryeditsubcommands.TerritoryEditReloadRegionsCommand;
 import fr.rosstail.nodewar.commands.subcommands.territory.territorysubcommands.edit.territoryeditsubcommands.team.TerritoryEditTeamCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
@@ -23,6 +24,7 @@ public class TerritoryEditCommand extends TerritoryEditSubCommand {
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_EDIT_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
+        subCommands.add(new TerritoryEditReloadRegionsCommand());
         subCommands.add(new TerritoryEditTeamCommand());
     }
 

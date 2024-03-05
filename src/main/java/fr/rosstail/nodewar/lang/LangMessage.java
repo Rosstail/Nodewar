@@ -58,6 +58,8 @@ public enum LangMessage {
     COMMANDS_TERRITORY_CHECK_RESULT("commands.territory.check.result", false, true),
     COMMANDS_TERRITORY_CHECK_RESULT_OTHER("commands.territory.check.result-other", false, true),
     COMMANDS_TERRITORY_EDIT_DESC("commands.territory.edit.desc", false, false),
+    COMMANDS_TERRITORY_EDIT_RELOAD_REGIONS_DESC("commands.territory.edit.reload-regions.desc", false, false),
+    COMMANDS_TERRITORY_EDIT_RELOAD_REGIONS_RESULT("commands.territory.edit.reload-regions.result", false, false),
     COMMANDS_TERRITORY_EDIT_TEAM_DESC("commands.territory.edit.team.desc", false, false),
     COMMANDS_TERRITORY_EDIT_TEAM_SET_DESC("commands.territory.edit.team.set.desc", false, false),
     COMMANDS_TERRITORY_EDIT_TEAM_SET_RESULT("commands.territory.edit.team.set.result", false, false),
