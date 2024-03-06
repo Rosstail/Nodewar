@@ -20,18 +20,7 @@ public class TerritoryEditTeamSubCommand extends TerritoryEditSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar territory edit team <subcommand>";
+        return "nodewar territory edit <territory> team";
     }
 
-    @Override
-    public void perform(CommandSender sender, String[] args, String[] arguments) {
-        if (!CommandManager.canLaunchCommand(sender, this)) {
-            return;
-        }
-    }
-
-    @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        return null;
-    }
 }

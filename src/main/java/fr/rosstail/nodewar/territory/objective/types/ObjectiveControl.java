@@ -15,6 +15,7 @@ import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -92,7 +93,7 @@ public class ObjectiveControl extends Objective {
     @Override
     public void applyProgress() {
         teamMemberOnTerritory.clear();
-        getNwTeamPlayerOnTerritory().forEach((nwTeam, integer) -> {
+        getNwTeamEffectivePlayerOnTerritory().forEach((nwTeam, integer) -> {
             if (territory.getAttackRequirements().checkAttackRequirements(nwTeam)) {
                 teamMemberOnTerritory.put(nwTeam, integer);
             }
@@ -227,13 +228,16 @@ public class ObjectiveControl extends Objective {
 
     }
 
-    private Map<NwTeam, Integer> getNwTeamPlayerOnTerritory() {
+    private Map<NwTeam, Integer> getNwTeamEffectivePlayerOnTerritory() {
         Map<NwTeam, Integer> teamIntegerMap = new HashMap<>();
         if (territory.getOwnerTeam() != null) {
             teamIntegerMap.put(territory.getOwnerTeam(), 0); //guarantee
         }
 
-        for (Player player : territory.getPlayers()) {
+        List<Player> availablePlayerList = territory.getPlayers().stream().filter(player ->
+                (player.getGameMode().equals(GameMode.SURVIVAL) || player.getGameMode().equals(GameMode.ADVENTURE))).collect(Collectors.toList());
+
+        for (Player player : availablePlayerList) {
             PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
             NwTeam playerNwTeam = playerData.getTeam();
 

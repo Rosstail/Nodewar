@@ -28,10 +28,8 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DynmapHandler {
     private static DynmapHandler dynmapHandler;
@@ -189,12 +187,16 @@ public class DynmapHandler {
             m.setRangeY(l1.getY() + 1.0, l0.getY());
         }
         /* Set line and fill properties */
-        for (Territory territory : TerritoryManager.getTerritoryManager().getTerritoryListPerWorld(BukkitAdapter.adapt(world))) {
-            for (ProtectedRegion protectedRegion : territory.getProtectedRegionList()) {
-                if (protectedRegion != null && protectedRegion.equals(region)) {
-                    addStyle(territory, m);
-                }
-            }
+
+        List<Territory> worldTerritoryList = TerritoryManager.getTerritoryManager().getTerritoryListPerWorld(BukkitAdapter.adapt(world));
+
+        List<ProtectedRegion> worldRegions = worldTerritoryList.stream()
+                .flatMap(territory -> territory.getProtectedRegionList().stream())
+                .collect(Collectors.toList());
+
+        if (worldRegions.contains(region)) {
+            Territory territory = worldTerritoryList.stream().filter(territory1 -> (territory1.getProtectedRegionList().contains(region))).findFirst().get();
+            addStyle(territory, m);
         }
 
         /* Build popup */
@@ -248,10 +250,19 @@ public class DynmapHandler {
 
                         territoryAreaStyleMap = new HashMap<>();
 
-                        TerritoryManager.getTerritoryManager().getTerritoryListPerWorld(curWorld).forEach((territory) -> {
+                        List<Territory> worldTerritoryList = TerritoryManager.getTerritoryManager().getTerritoryListPerWorld(curWorld);
+
+
+                        List<ProtectedRegion> worldRegionList = worldTerritoryList.stream()
+                                .flatMap(territory -> territory.getProtectedRegionList().stream())
+                                .sorted(Comparator.comparingInt(protectedRegion -> protectedRegion.getMinimumPoint().getBlockY()))
+                                .collect(Collectors.toList());
+
+                        worldTerritoryList.forEach((territory) -> {
                             territoryAreaStyleMap.put(territory, new AreaStyle(territory));
-                            regionsToDo.addAll(territory.getProtectedRegionList());
                         });
+                        regionsToDo.addAll(worldRegionList);
+
                         worldsToDo.remove(0);
                         wgWorldsToDo.remove(0);
                     }
@@ -396,6 +407,7 @@ public class DynmapHandler {
     public void resumeRender() {
         setPause(false);
     }
+
     public void pauseRender() {
         setPause(true);
     }

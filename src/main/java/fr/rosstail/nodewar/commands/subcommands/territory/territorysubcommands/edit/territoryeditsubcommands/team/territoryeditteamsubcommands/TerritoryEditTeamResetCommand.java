@@ -47,9 +47,6 @@ public class TerritoryEditTeamResetCommand extends TerritoryEditTeamSubCommand {
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         Territory territory;
         String message = LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_EDIT_TEAM_RESET_RESULT);
-        if (!CommandManager.canLaunchCommand(sender, this)) {
-            return;
-        }
 
         territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(args[2]);
 

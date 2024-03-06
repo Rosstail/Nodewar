@@ -9,7 +9,6 @@ import com.sk89q.worldguard.protection.regions.RegionQuery;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.regionevents.RegionEnteredEvent;
 import fr.rosstail.nodewar.events.regionevents.RegionLeftEvent;
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
@@ -77,11 +76,9 @@ public class TerritoryManager {
 
         File fileConfig = new File("plugins/" + plugin.getName() + "/conquest/territory-types.yml");
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileConfig);
-        //AdaptMessage.print("============", AdaptMessage.prints.OUT);
         yamlConfiguration.getKeys(false).forEach(s -> {
             ConfigurationSection section = yamlConfiguration.getConfigurationSection(s);
             TerritoryType territoryType = new TerritoryType(section);
-            //territoryType.printModel();
             territoryTypeMap.put(territoryType.getName(), territoryType);
         });
     }
@@ -172,6 +169,7 @@ public class TerritoryManager {
         RegionQuery query = container.createQuery();
         ApplicableRegionSet set = query.getApplicableRegions(wgLocation);
         List<ProtectedRegion> newProtectedRegionList = new ArrayList<>(set.getRegions());
+
 
         List<ProtectedRegion> leftRegionList = currentProtectedRegionList.stream()
                 .filter(region -> !newProtectedRegionList.contains(region))

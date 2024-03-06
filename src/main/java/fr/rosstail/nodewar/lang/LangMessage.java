@@ -49,7 +49,9 @@ public enum LangMessage {
     COMMANDS_TEAM_MANAGE_CLOSE_DESC("commands.team.manage.close.desc", false, false),
     COMMANDS_TEAM_MANAGE_CLOSE_RESULT("commands.team.manage.close.result", false, false),
     COMMANDS_TEAM_MANAGE_INVITE_DESC("commands.team.manage.invite.desc", false, false),
-    COMMANDS_TEAM_MANAGE_INVITE_RESULT("commands.team.manage.open.result", false, false),
+    COMMANDS_TEAM_MANAGE_INVITE_RESULT("commands.team.manage.invite.result", false, false),
+    COMMANDS_TEAM_MANAGE_KICK_DESC("commands.team.manage.kick.desc", false, false),
+    COMMANDS_TEAM_MANAGE_KICK_RESULT("commands.team.manage.kick.result", false, false),
     COMMANDS_TEAM_MANAGE_DISBAND_DESC("commands.team.manage.disband.desc", false, false),
     COMMANDS_TEAM_MANAGE_DISBAND_RESULT("commands.team.manage.disband.result", false, false),
 

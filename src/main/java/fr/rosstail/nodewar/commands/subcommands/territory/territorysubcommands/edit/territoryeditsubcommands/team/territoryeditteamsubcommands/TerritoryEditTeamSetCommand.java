@@ -53,9 +53,6 @@ public class TerritoryEditTeamSetCommand extends TerritoryEditTeamSubCommand {
         Territory territory;
         NwTeam team;
         String message = LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_EDIT_TEAM_SET_RESULT);
-        if (!CommandManager.canLaunchCommand(sender, this)) {
-            return;
-        }
 
         if (args.length < 6) {
             sender.sendMessage("Too few args");
