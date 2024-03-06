@@ -13,10 +13,7 @@ import fr.rosstail.nodewar.team.relation.TeamRelationModel;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TeamDataManager {
@@ -96,23 +93,12 @@ public class TeamDataManager {
 
     public NwTeam getTeamOfPlayer(Player player) {
         PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
-        List<NwTeam> nwTeams = TeamDataManager.getTeamDataManager().getStringTeamMap().values().stream().filter(team ->
+
+        List<NwTeam> nwTeams = new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().values());
+
+        return nwTeams.stream().filter(team ->
                 team.getModel().getTeamMemberModelMap().containsKey(playerData.getId())
-        ).collect(Collectors.toList());
-
-        if (!nwTeams.isEmpty()) {
-            if (nwTeams.size() > 1) {
-                AdaptMessage.print("The player with data id " + playerData.getId() +
-                        " is in multiple teams. using the first one only", AdaptMessage.prints.WARNING);
-            } else {
-                AdaptMessage.print("The player " + player.getName() + " has a team !", AdaptMessage.prints.OUT);
-            }
-            return nwTeams.get(0);
-        } else {
-            AdaptMessage.print("PLayer " + player.getName() + " is in no team", AdaptMessage.prints.WARNING);
-        }
-
-        return null;
+        ).findFirst().orElse(null);
     }
 
     public HashSet<NwTeamInvite> getTeamInviteHashSet() {

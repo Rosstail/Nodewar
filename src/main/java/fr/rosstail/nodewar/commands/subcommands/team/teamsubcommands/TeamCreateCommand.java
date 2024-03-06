@@ -12,6 +12,7 @@ import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -39,7 +40,7 @@ public class TeamCreateCommand extends TeamSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar team create <name> <display>";
+        return "nodewar team create <display>";
     }
 
     @Override
@@ -61,9 +62,9 @@ public class TeamCreateCommand extends TeamSubCommand {
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
-        if (args.length >= 4) {
-            teamName = args[2];
-            displayName = args[3];
+        if (args.length >= 3) {
+            teamName = ChatColor.stripColor(args[2].toLowerCase());
+            displayName = args[2];
             int ownerId = 0;
 
             if (TeamDataManager.getTeamDataManager().getStringTeamMap().get(teamName) != null) {
@@ -89,9 +90,8 @@ public class TeamCreateCommand extends TeamSubCommand {
             if (insertTeam) {
                 playerNwTeam = new NwTeam(teamModel);
                 TeamDataManager.getTeamDataManager().addNewTeam(playerNwTeam);
-                teamModel.setId(StorageManager.getManager().selectTeamModelByName(teamName).getId());
 
-                sender.sendMessage("Team created successfully");
+                sender.sendMessage("Team created successfully " + teamModel.getId());
 
                 if (senderPlayer != null) {
                     PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
@@ -100,9 +100,14 @@ public class TeamCreateCommand extends TeamSubCommand {
                     TeamMemberModel teamMemberModel =
                             new TeamMemberModel(teamModel.getId(), ownerId, 0, new Timestamp(System.currentTimeMillis()));
                     TeamMember teamMember = new TeamMember(senderPlayer, playerNwTeam, teamMemberModel);
-                    playerNwTeam.getModel().getTeamMemberModelMap().put(teamMemberModel.getId(), teamMemberModel);
-                    playerNwTeam.getMemberMap().put(senderPlayer, teamMember);
-                    StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
+
+                    boolean insertPlayerTeam = StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
+                    if (insertPlayerTeam) {
+                        playerNwTeam.getModel().getTeamMemberModelMap().put(teamMemberModel.getId(), teamMemberModel);
+                        playerNwTeam.getMemberMap().put(senderPlayer, teamMember);
+                    } else {
+                        sender.sendMessage("player added unsuccessfully");
+                    }
                 }
             } else {
                 sender.sendMessage("Team added unsuccessfully");

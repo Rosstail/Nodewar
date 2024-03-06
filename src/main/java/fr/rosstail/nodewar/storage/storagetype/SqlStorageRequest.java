@@ -71,11 +71,11 @@ public class SqlStorageRequest implements StorageRequest {
         String query = "CREATE TABLE IF NOT EXISTS " + teamMemberTableName + " (" +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " player_id INTEGER NOT NULL" +
-                    " REFERENCES " + playerTableName + " (id)" +
-                    " ON DELETE CASCADE," +
+                " REFERENCES " + playerTableName + " (id)" +
+                " ON DELETE CASCADE," +
                 " team_id INTEGER NOT NULL" +
-                    " REFERENCES " + teamTableName + " (id)" +
-                    " ON DELETE CASCADE," +
+                " REFERENCES " + teamTableName + " (id)" +
+                " ON DELETE CASCADE," +
                 " player_rank INTEGER NOT NULL," +
                 " join_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
 
@@ -86,11 +86,11 @@ public class SqlStorageRequest implements StorageRequest {
         String query = "CREATE TABLE IF NOT EXISTS " + teamRelationTableName + " (" +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " first_team_id INTEGER NOT NULL" +
-                    " REFERENCES " + teamTableName + " (id)" +
-                    " ON DELETE CASCADE," +
+                " REFERENCES " + teamTableName + " (id)" +
+                " ON DELETE CASCADE," +
                 " second_team_id INTEGER NOT NULL" +
-                    " REFERENCES " + teamTableName + " (id)" +
-                    " ON DELETE CASCADE," +
+                " REFERENCES " + teamTableName + " (id)" +
+                " ON DELETE CASCADE," +
                 " relation_type INTEGER NOT NULL);";
         executeSQL(query);
     }
@@ -101,8 +101,8 @@ public class SqlStorageRequest implements StorageRequest {
                 " name varchar(40) UNIQUE NOT NULL," +
                 " world varchar(40) NOT NULL," +
                 " owner_team_id INTEGER" +
-                    " REFERENCES " + teamTableName + " (id)" +
-                    " ON DELETE SET NULL," +
+                " REFERENCES " + teamTableName + " (id)" +
+                " ON DELETE SET NULL," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
         executeSQL(query);
     }
@@ -114,7 +114,8 @@ public class SqlStorageRequest implements StorageRequest {
 
         String uuid = model.getUuid();
         try {
-            model.setId(executeSQLUpdate(query, uuid));
+            int id = executeSQLUpdate(query, uuid);
+            model.setId(id);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -132,7 +133,9 @@ public class SqlStorageRequest implements StorageRequest {
         boolean open = model.isOpen();
         boolean permanent = model.isPermanent();
         try {
-            return executeSQLUpdate(query, name, display, hexColor, open, permanent) > 0;
+            int id = executeSQLUpdate(query, name, display, hexColor, open, permanent);
+            model.setId(id);
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -149,7 +152,9 @@ public class SqlStorageRequest implements StorageRequest {
         int memberUuid = model.getPlayerId();
         int memberRank = model.getRank();
         try {
-            return executeSQLUpdate(query, teamId, memberUuid, memberRank) > 0;
+            int id = executeSQLUpdate(query, teamId, memberUuid, memberRank);
+            model.setId(id);
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -320,7 +325,7 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public ArrayList<TeamRelationModel> selectAllTeamRelationModel() {
-        ArrayList<TeamRelationModel> teamRelationModelArrayList= new ArrayList<>();
+        ArrayList<TeamRelationModel> teamRelationModelArrayList = new ArrayList<>();
         String query = "SELECT * FROM " + teamRelationTableName + ";";
         try {
             ResultSet result = executeSQLQuery(connection, query);
@@ -509,16 +514,13 @@ public class SqlStorageRequest implements StorageRequest {
 
             affectedRows = statement.executeUpdate();
 
-            if (affectedRows == 0) {
-                throw new SQLException("Creating user failed, no rows affected.");
-            }
-
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     return generatedKeys.getInt(1);
-                }
-                else {
-                    throw new SQLException("Creating user failed, no ID obtained.");
+                } else {
+                    if (affectedRows == 0) {
+                        throw new SQLException("SQL request failed, no rows affected.");
+                    }
                 }
             }
         } catch (SQLException e) {
