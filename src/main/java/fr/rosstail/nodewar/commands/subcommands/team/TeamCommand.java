@@ -21,6 +21,8 @@ public class TeamCommand extends TeamSubCommand {
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
         subCommands.add(new TeamCheckCommand());
+        subCommands.add(new TeamListCommand());
+        subCommands.add(new TeamInvitesCommand());
         subCommands.add(new TeamCreateCommand());
         subCommands.add(new TeamManageCommand());
         subCommands.add(new TeamJoinCommand());

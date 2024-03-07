@@ -22,7 +22,7 @@ commands:
       desc: "Check team's data"
       result:
         - "[team_display]&r &8:&r"
-        - "* Color &8:&r {[team_color]}[team_color]&r"
+        - "* Color &8:&r {[team_hexcolor]}[team_hexcolor]&r"
         - "* Your rank &8:&r [team_player_rank]"
         - "* Members &8:&r [team_online_member] - [team_open]"
         - "  [team_result_member_line]"
@@ -30,13 +30,21 @@ commands:
         - "  [team_result_relation_line]"
       result-other:
         - "[team_display]&r &8:&r"
-        - "* Color &8:&r {[team_color]}[team_color]&r"
+        - "* Color &8:&r {[team_hexcolor]}[team_hexcolor]&r"
         - "* Members &8:&r [team_online_member] - [team_open]"
         - "  [team_result_member_line]"
         - "* Relations &8:&r (default &8:&r [team_relation_default])"
         - "  [team_result_relation_line]"
       result-member-line: " - [team_player] &8:&r [team_player_rank]"
       result-relation-line: " - [team_display] &8:&r [team_relation]"
+    list:
+      desc: "Check the list of teams"
+      result-header: "&bTeams list &8:"
+      result-line: "&a► {[team_hexcolor]}[team_display]&r"
+    invites:
+      desc: "Check list of teams inviting you."
+      result-header: "&bInvites &8:"
+      result-line: "&a► {[team_hexcolor]}[team_display]&r"
     create:
       desc: "Create a nodewar team"
       result: "Team created"
@@ -47,7 +55,7 @@ commands:
       desc: "Manage your team."
       color:
         desc: "Edit your current team color"
-        result: "Team color set to {[team_color]}[team_color]"
+        result: "Team color set to {[team_hexcolor]}[team_hexcolor]"
       open:
         desc: "Make your team joinable by anybody"
         result: "your team is now open"

@@ -368,7 +368,7 @@ public class AdaptMessage {
 
         message = message.replaceAll("\\[team]", teamModel.getName());
         message = message.replaceAll("\\[team_display]", teamModel.getDisplay());
-        message = message.replaceAll("\\[team_color]", teamModel.getHexColor());
+        message = message.replaceAll("\\[team_hexcolor]", teamModel.getHexColor());
         message = message.replaceAll("\\[team_open]", nwTeam.getModel().isOpen() ? "cpen" : "close");
         message = message.replaceAll("\\[team_online_member]", nwTeam.getMemberMap().size() + " / " + teamModel.getTeamMemberModelMap().size());
         message = message.replaceAll("\\[team_relation_default]", ConfigData.getConfigData().team.defaultRelation.toString());
