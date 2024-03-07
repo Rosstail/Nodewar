@@ -126,6 +126,8 @@ public class TeamManageRelationCommand extends TeamManageSubCommand {
             } else if (newRelationType.getWeight() < currentRelation.getRelationType().getWeight()) {
                 System.out.println("Ask other team to relation.");
             } else {
+                TeamRelationModel teamRelationModelInvite = new TeamRelationModel(senderTeam.getModel().getId(), targetTeam.getModel().getId(), newRelationType.getWeight());
+                TeamRelationManager.getRelationInvitesHashSet().add(teamRelationModelInvite);
                 System.out.println("same relation. No changes.");
             }
         }
