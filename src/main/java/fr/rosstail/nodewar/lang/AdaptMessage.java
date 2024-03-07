@@ -358,9 +358,10 @@ public class AdaptMessage {
             String relationStringLine = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT_RELATION_LINE);
             List<String> relationStringList = new ArrayList<>();
             nwTeam.getRelations().forEach((s, teamRelation) -> {
-                relationStringList.add(relationStringLine
-                        .replaceAll("\\[team]", s)
-                        .replaceAll("\\[team_relation]", teamRelation.toString())
+                relationStringList.add(
+                        adaptTeamMessage(
+                                relationStringLine.replaceAll("\\[team_relation]", teamRelation.getRelationType().name())
+                                , teamRelation.getFirstTeam() == nwTeam ? teamRelation.getSecondTeam() : teamRelation.getFirstTeam())
                 );
             });
             message = message.replaceAll("\\[team_result_relation_line]", String.join("\n", relationStringList));

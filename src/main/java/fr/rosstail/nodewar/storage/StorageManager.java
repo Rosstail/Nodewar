@@ -137,6 +137,19 @@ public class StorageManager {
         }
     }
 
+    public boolean insertTeamRelationModel(TeamRelationModel model) {
+        switch (type) {
+            case "mysql":
+                return mySqlStorageRequest.insertTeamRelationModel(model);
+            case "mariadb":
+                return mariaDBStorageRequest.insertTeamRelationModel(model);
+            case "mongodb":
+                return mongoDBStorageRequest.insertTeamRelationModel(model);
+            default:
+                return liteSqlDBStorageRequest.insertTeamRelationModel(model);
+        }
+    }
+
     /**
      * CREATE
      */
@@ -394,7 +407,7 @@ public class StorageManager {
     /**
      * DELETE
      *
-     * @param playerID team identifier
+     * @param playerID team player identifier
      */
     public void deleteTeamMemberModel(int playerID) {
         switch (type) {
@@ -409,6 +422,28 @@ public class StorageManager {
                 break;
             default:
                 liteSqlDBStorageRequest.deleteTeamMemberModel(playerID);
+                break;
+        }
+    }
+
+    /**
+     * DELETE
+     *
+     * @param relationID team relation identifier
+     */
+    public void deleteTeamRelationModel(int relationID) {
+        switch (type) {
+            case "mysql":
+                mySqlStorageRequest.deleteTeamRelationModel(relationID);
+                break;
+            case "mariadb":
+                mariaDBStorageRequest.deleteTeamRelationModel(relationID);
+                break;
+            case "mongodb":
+                mongoDBStorageRequest.deleteTeamRelationModel(relationID);
+                break;
+            default:
+                liteSqlDBStorageRequest.deleteTeamRelationModel(relationID);
                 break;
         }
     }

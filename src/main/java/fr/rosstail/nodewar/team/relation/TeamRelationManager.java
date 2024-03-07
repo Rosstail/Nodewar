@@ -16,7 +16,7 @@ public class TeamRelationManager {
 
     private static TeamRelationManager teamRelationManager;
     private final Nodewar plugin;
-    private static ArrayList<TeamRelation> relationArrayList = new ArrayList<>();
+    private static final ArrayList<TeamRelation> relationArrayList = new ArrayList<>();
 
     private TeamRelationManager(Nodewar plugin) {
         this.plugin = plugin;
@@ -27,6 +27,7 @@ public class TeamRelationManager {
             teamRelationManager = new TeamRelationManager(plugin);
         }
     }
+
     public void loadRelations() {
         relationArrayList.clear();
         StorageManager.getManager().selectAllTeamRelationModel().forEach(model -> {
@@ -42,13 +43,18 @@ public class TeamRelationManager {
         Map<String, TeamRelation> teamRelationMap = new HashMap<>();
         relationArrayList.stream().filter(teamRelation -> (
                 teamRelation.getModel().getFirstTeamId() == team.getModel().getId()
-                || teamRelation.getModel().getSecondTeamId() == team.getModel().getId()
+                        || teamRelation.getModel().getSecondTeamId() == team.getModel().getId()
         )).forEach(teamRelation -> {
 
-            teamRelationMap.put(
-                    (teamRelation.getFirstTeam() == team ? team : teamRelation.getSecondTeam())
-                            .getModel().getName()
-                    , teamRelation);
+            String otherTeamName;
+
+            if (teamRelation.getFirstTeam().equals(team)) {
+                otherTeamName = teamRelation.getSecondTeam().getModel().getName();
+            } else {
+                otherTeamName = teamRelation.getFirstTeam().getModel().getName();
+            }
+
+            teamRelationMap.put(otherTeamName, teamRelation);
         });
 
         return teamRelationMap;
@@ -69,5 +75,9 @@ public class TeamRelationManager {
 
     public static TeamRelationManager getTeamRelationManager() {
         return teamRelationManager;
+    }
+
+    public static ArrayList<TeamRelation> getRelationArrayList() {
+        return relationArrayList;
     }
 }

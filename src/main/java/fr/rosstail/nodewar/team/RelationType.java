@@ -5,17 +5,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public enum RelationType {
-    NEUTRAL(true),
-    TEAM(true),
-    ALLY(true),
-    TRUCE(true),
-    ENEMY(true),
-    CONTROLLED(false) // Used only in colour
+    ALLY(1, true),
+    TRUCE(2, true),
+    NEUTRAL(3, true),
+    ENEMY(4, true),
+    TEAM(0, false), // Used only for members of team
+    CONTROLLED(0, false) // Used only in colour
     ;
 
+    private final int weight;
     private final boolean selectable;
 
-    RelationType(boolean selectable) {
+    RelationType(int weight, boolean selectable) {
+        this.weight = weight;
         this.selectable = selectable;
     }
 
@@ -25,5 +27,9 @@ public enum RelationType {
 
     public boolean isSelectable() {
         return selectable;
+    }
+
+    public int getWeight() {
+        return weight;
     }
 }

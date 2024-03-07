@@ -149,6 +149,14 @@ public interface StorageRequest {
      */
     void deleteTeamModel(int teamID);
 
+
+    /**
+     * DELETE
+     * destroys team relation model from storage
+     * @param relationID The relation id
+     */
+    void deleteTeamRelationModel(int relationID);
+
     /**
      * SELECT get a list of player models with an order and a limit.
      * @param order ASC or DESC.

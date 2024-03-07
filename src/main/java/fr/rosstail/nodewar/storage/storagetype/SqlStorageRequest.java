@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.storage.storagetype;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
@@ -326,9 +327,10 @@ public class SqlStorageRequest implements StorageRequest {
     @Override
     public ArrayList<TeamRelationModel> selectAllTeamRelationModel() {
         ArrayList<TeamRelationModel> teamRelationModelArrayList = new ArrayList<>();
-        String query = "SELECT * FROM " + teamRelationTableName + ";";
+        String query = "SELECT * FROM " + teamRelationTableName
+                + " WHERE relation_type != ?;";
         try {
-            ResultSet result = executeSQLQuery(connection, query);
+            ResultSet result = executeSQLQuery(connection, query, ConfigData.getConfigData().team.defaultRelation.getWeight());
             while (result.next()) {
                 TeamRelationModel teamRelationModel = new TeamRelationModel(
                         result.getInt("first_team_id"),
@@ -497,12 +499,23 @@ public class SqlStorageRequest implements StorageRequest {
         }
     }
 
+    @Override
+    public void deleteTeamRelationModel(int relationID) {
+        String query = "DELETE FROM " + teamRelationTableName +
+                " WHERE id = ?";
+        try {
+            executeSQLUpdate(query, relationID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Executes an SQL request for INSERT, UPDATE and DELETE
      *
      * @param query  # The query itself
      * @param params #The values to put as WHERE
-     * @return # Returns the number of rows affected
+     * @return # Returns the id of the new line if INSERT
      */
     private int executeSQLUpdate(String query, Object... params) throws SQLException {
         int affectedRows = 0;
