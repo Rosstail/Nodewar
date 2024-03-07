@@ -7,10 +7,7 @@ import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.team.TeamDataManager;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class TeamRelationManager {
 
@@ -33,7 +30,7 @@ public class TeamRelationManager {
         StorageManager.getManager().selectAllTeamRelationModel().forEach(model -> {
             NwTeam first = TeamDataManager.getTeamDataManager().getStringTeamMap().values().stream().filter(team -> (team.getModel().getId() == model.getFirstTeamId())).findFirst().orElse(null);
             NwTeam second = TeamDataManager.getTeamDataManager().getStringTeamMap().values().stream().filter(team -> (team.getModel().getId() == model.getSecondTeamId())).findFirst().orElse(null);
-            RelationType type = RelationType.values()[model.getRelation()];
+            RelationType type = Arrays.stream(RelationType.values()).filter(relationType -> relationType.getWeight() == model.getRelation()).findFirst().get();
             TeamRelation relation = new TeamRelation(first, second, type, model);
             relationArrayList.add(relation);
         });
