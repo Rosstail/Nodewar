@@ -106,6 +106,9 @@ public class TeamDataManager {
     }
 
     public boolean invite(Player target, NwTeam nwTeam) {
+        if (!PlayerDataManager.getPlayerDataMap().get(target.getName()).isTeamOpen()) {
+            return false;
+        }
         if (teamInviteHashSet.stream().noneMatch(nwTeamInvite1 -> (
                 nwTeamInvite1.getNwTeam() == nwTeam && nwTeamInvite1.getReceiver() == target
         ))) {

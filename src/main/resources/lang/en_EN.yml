@@ -45,6 +45,12 @@ commands:
       desc: "Check list of teams inviting you."
       result-header: "&bInvites &8:"
       result-line: "&a► {[team_hexcolor]}[team_display]&r"
+    openinvites:
+      desc: "Receive any team invitation"
+      result: "You are now open to team invites"
+    closeinvites:
+      desc: "Refuse any team invitation"
+      result: "You are now close to team invites"
     create:
       desc: "Create a nodewar team"
       result: "Team created"
@@ -69,6 +75,25 @@ commands:
       kick:
         desc: "Kick a player from your team"
         result: "Player kicked successfully."
+      relation:
+        desc: "Manage relations with other teams"
+        open:
+          desc: "Enable reception of relation invites"
+          result: "Team open to relation invites"
+        close:
+          desc: "Disable reception of relation invites"
+          result: "Team closed to relation invites"
+        edit:
+          desc: "Set relation with selected team"
+          result-invite: "Relation invite sent successfully."
+          result-weight: "Relation set."
+          result-ignore: "Same relation. No change."
+        invites:
+          desc: "Check list of teams relations invites."
+          result-header: "&bInvites &8:"
+          result-line: "&a► [team_line_direction]&r {[team_hexcolor]}[team_display] &8: [team_relation] -> [team_relation_invite]&r"
+          result-line-received: "&e<<<"
+          result-line-sent: "&6>>>"
       disband:
         desc: "Disband your nodewar team"
         result: "Disbanded team"

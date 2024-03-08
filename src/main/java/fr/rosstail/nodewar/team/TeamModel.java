@@ -15,6 +15,7 @@ public class TeamModel {
     private String hexColor;
     private boolean open = false;
     private boolean permanent = false;
+    private boolean openRelation = true;
     private Timestamp creationDate = new Timestamp(System.currentTimeMillis());
     private Timestamp lastUpdate = new Timestamp(System.currentTimeMillis());
 
@@ -98,6 +99,14 @@ public class TeamModel {
 
     public void setLastUpdate(Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    public boolean isOpenRelation() {
+        return openRelation;
+    }
+
+    public void setOpenRelation(boolean openRelation) {
+        this.openRelation = openRelation;
     }
 
     public Map<Integer, TeamMemberModel> getTeamMemberModelMap() {

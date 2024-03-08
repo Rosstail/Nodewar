@@ -29,6 +29,7 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
         String query = "CREATE TABLE IF NOT EXISTS " + getPlayerTableName() + " (" +
                 " id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " uuid varchar(40) UNIQUE NOT NULL," +
+                " is_team_open BOOLEAN NOT NULL DEFAULT TRUE," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
         executeSQL(query);
     }
@@ -41,6 +42,7 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
                 " display VARCHAR(40) UNIQUE," +
                 " hex_color VARCHAR(7)," +
                 " is_open BOOLEAN NOT NULL DEFAULT FALSE," +
+                " is_relation_open BOOLEAN NOT NULL DEFAULT TRUE," +
                 " is_permanent BOOLEAN NOT NULL DEFAULT FALSE," +
                 " creation_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";

@@ -6,8 +6,7 @@ public class PlayerModel {
     private int id;
     private String uuid;
     private String username;
-
-    private String empireName;
+    private boolean teamOpen = true;
 
     private long lastUpdate = 0;
 
@@ -39,6 +38,7 @@ public class PlayerModel {
         this.id = playerModel.getId();
         this.uuid = playerModel.getUuid();
         this.username = playerModel.getUsername();
+        this.teamOpen = playerModel.isTeamOpen();
         this.lastUpdate = playerModel.getLastUpdate();
     }
 
@@ -86,11 +86,11 @@ public class PlayerModel {
         this.lastUpdate = lastUpdate;
     }
 
-    public String getTeamName() {
-        return empireName;
+    public boolean isTeamOpen() {
+        return teamOpen;
     }
 
-    public void setEmpireName(String empireName) {
-        this.empireName = empireName;
+    public void setTeamOpen(boolean teamOpen) {
+        this.teamOpen = teamOpen;
     }
 }

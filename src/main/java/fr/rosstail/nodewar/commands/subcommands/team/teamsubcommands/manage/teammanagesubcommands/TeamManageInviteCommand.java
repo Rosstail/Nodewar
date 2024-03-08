@@ -53,35 +53,40 @@ public class TeamManageInviteCommand extends TeamManageSubCommand {
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
-        if (sender instanceof Player) {
-            Player senderPlayer = ((Player) sender).getPlayer();
-            NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
-            Player targetPlayer;
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("by player only");
+            return;
+        }
 
-            if (args.length < 4) {
-                senderPlayer.sendMessage("not enough args");
-                return;
-            }
-            targetPlayer = Bukkit.getPlayer(args[3]);
+        Player senderPlayer = ((Player) sender).getPlayer();
+        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
+        Player targetPlayer;
 
-            if (targetPlayer == null) {
-                senderPlayer.sendMessage("Player does not exist or is disconnected");
-            }
+        if (args.length < 4) {
+            senderPlayer.sendMessage("not enough args");
+            return;
+        }
+        targetPlayer = Bukkit.getPlayer(args[3]);
 
-            if (playerNwTeam != null) {
-                TeamRank playerTeamRank = playerNwTeam.getMemberMap().get(senderPlayer).getRank();
-                if (playerTeamRank.getWeight() >= TeamRank.LIEUTENANT.getWeight()) {
-                    if (TeamDataManager.getTeamDataManager().invite(targetPlayer, playerNwTeam)) {
-                        senderPlayer.sendMessage("Invitation sent");
-                    } else {
-                        senderPlayer.sendMessage("Your team is already inviting this player");
-                    }
-                } else {
-                    senderPlayer.sendMessage("you do not have enough rank on your team");
-                }
+        if (targetPlayer == null) {
+            senderPlayer.sendMessage("Player does not exist or is disconnected");
+            return;
+        }
+
+        if (playerNwTeam == null) {
+            senderPlayer.sendMessage("Your have no team");
+            return;
+        }
+
+        TeamRank playerTeamRank = playerNwTeam.getMemberMap().get(senderPlayer).getRank();
+        if (playerTeamRank.getWeight() >= TeamRank.LIEUTENANT.getWeight()) {
+            if (TeamDataManager.getTeamDataManager().invite(targetPlayer, playerNwTeam)) {
+                senderPlayer.sendMessage("Invitation sent");
             } else {
-                senderPlayer.sendMessage("Your have no team");
+                senderPlayer.sendMessage("impossible invitation");
             }
+        } else {
+            senderPlayer.sendMessage("you do not have enough rank on your team");
         }
     }
 

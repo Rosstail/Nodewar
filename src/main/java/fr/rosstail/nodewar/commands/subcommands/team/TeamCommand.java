@@ -23,6 +23,8 @@ public class TeamCommand extends TeamSubCommand {
         subCommands.add(new TeamCheckCommand());
         subCommands.add(new TeamListCommand());
         subCommands.add(new TeamInvitesCommand());
+        subCommands.add(new TeamOpenInvitesCommand());
+        subCommands.add(new TeamCloseInvitesCommand());
         subCommands.add(new TeamCreateCommand());
         subCommands.add(new TeamManageCommand());
         subCommands.add(new TeamJoinCommand());

@@ -50,6 +50,7 @@ public class SqlStorageRequest implements StorageRequest {
         String query = "CREATE TABLE IF NOT EXISTS " + playerTableName + " (" +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " uuid varchar(40) UNIQUE NOT NULL," +
+                " is_team_open BOOLEAN NOT NULL DEFAULT TRUE," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
 
         executeSQL(query);
@@ -62,6 +63,7 @@ public class SqlStorageRequest implements StorageRequest {
                 " display VARCHAR(40) UNIQUE," +
                 " hex_color VARCHAR(7)," +
                 " is_open BOOLEAN NOT NULL DEFAULT FALSE," +
+                " is_relation_open BOOLEAN NOT NULL DEFAULT TRUE," +
                 " is_permanent BOOLEAN NOT NULL DEFAULT FALSE," +
                 " creation_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
@@ -126,15 +128,16 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public boolean insertTeamModel(TeamModel model) {
-        String query = "INSERT INTO " + teamTableName + " (name, display, hex_color, is_open, is_permanent)"
+        String query = "INSERT INTO " + teamTableName + " (name, display, hex_color, is_open, is_relation_open, is_permanent)"
                 + " VALUES (?, ?, ?, ?, ?);";
         String name = model.getName();
         String display = model.getDisplay();
         String hexColor = model.getHexColor();
         boolean open = model.isOpen();
+        boolean openRelation = model.isOpenRelation();
         boolean permanent = model.isPermanent();
         try {
-            int id = executeSQLUpdate(query, name, display, hexColor, open, permanent);
+            int id = executeSQLUpdate(query, name, display, hexColor, open, openRelation, permanent);
             model.setId(id);
             return true;
         } catch (SQLException e) {
@@ -200,6 +203,7 @@ public class SqlStorageRequest implements StorageRequest {
             if (result.next()) {
                 PlayerModel model = new PlayerModel(uuid, PlayerDataManager.getPlayerNameFromUUID(uuid));
                 model.setId(result.getInt("id"));
+                model.setTeamOpen(result.getBoolean("is_team_open"));
                 model.setLastUpdate(result.getTimestamp("last_update").getTime());
                 return model;
             }
@@ -219,6 +223,7 @@ public class SqlStorageRequest implements StorageRequest {
                 String uuid = result.getString("uuid");
                 String username = PlayerDataManager.getPlayerNameFromUUID(uuid);
                 PlayerModel model = new PlayerModel(uuid, username);
+                model.setTeamOpen(result.getBoolean("is_team_open"));
                 model.setLastUpdate(result.getTimestamp("last_update").getTime());
                 modelSet.add(model);
             }
@@ -256,6 +261,7 @@ public class SqlStorageRequest implements StorageRequest {
                 teamModel.setHexColor(result.getString("hex_color"));
                 teamModel.setPermanent(result.getBoolean("is_permanent"));
                 teamModel.setOpen(result.getBoolean("is_open"));
+                teamModel.setOpenRelation(result.getBoolean("is_relation_open"));
                 teamModel.setCreationDate(result.getTimestamp("creation_date"));
                 teamModel.setLastUpdate(result.getTimestamp("last_update"));
                 return teamModel;
@@ -408,15 +414,10 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public void updatePlayerModel(PlayerModel model) {
-        String query = "UPDATE " + playerTableName + " SET last_update = CURRENT_TIMESTAMP WHERE uuid = ?";
+        String query = "UPDATE " + playerTableName + " SET last_update = CURRENT_TIMESTAMP, is_team_open = ? WHERE uuid = ?";
         try {
-            boolean success = executeSQLUpdate(query,
-                    model.getUuid())
-                    > 0;
-
-            if (success) {
-                model.setLastUpdate(System.currentTimeMillis());
-            }
+            executeSQLUpdate(query, model.isTeamOpen(), model.getUuid());
+            model.setLastUpdate(System.currentTimeMillis());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -425,7 +426,7 @@ public class SqlStorageRequest implements StorageRequest {
     @Override
     public void updateTeamModel(TeamModel model) {
         String query = "UPDATE " + teamTableName +
-                " SET name = ?, display = ?, hex_color = ?, is_open = ?, is_permanent = ?, last_update = CURRENT_TIMESTAMP" +
+                " SET name = ?, display = ?, hex_color = ?, is_open = ?, is_relation_open = ?, is_permanent = ?, last_update = CURRENT_TIMESTAMP" +
                 " WHERE id = ?";
         try {
             boolean success = executeSQLUpdate(query,
@@ -433,6 +434,7 @@ public class SqlStorageRequest implements StorageRequest {
                     model.getDisplay(),
                     model.getHexColor(),
                     model.isOpen(),
+                    model.isOpenRelation(),
                     model.isPermanent(),
                     model.getId())
                     > 0;

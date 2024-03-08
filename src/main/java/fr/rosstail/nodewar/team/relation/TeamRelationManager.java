@@ -15,7 +15,7 @@ public class TeamRelationManager {
     private final Nodewar plugin;
     private static final ArrayList<TeamRelation> relationArrayList = new ArrayList<>();
 
-    private static final HashSet<TeamRelationModel> relationInvitesHashSet = new HashSet<>();
+    private static final HashSet<NwTeamRelationInvite> relationInvitesHashSet = new HashSet<>();
 
     private TeamRelationManager(Nodewar plugin) {
         this.plugin = plugin;
@@ -80,7 +80,7 @@ public class TeamRelationManager {
         return relationArrayList;
     }
 
-    public static HashSet<TeamRelationModel> getRelationInvitesHashSet() {
+    public static HashSet<NwTeamRelationInvite> getRelationInvitesHashSet() {
         return relationInvitesHashSet;
     }
 }
