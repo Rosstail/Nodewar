@@ -6,6 +6,8 @@ import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.Team
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
+import fr.rosstail.nodewar.player.PlayerData;
+import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.rank.TeamRank;
@@ -61,6 +63,7 @@ public class TeamManageInviteCommand extends TeamManageSubCommand {
         Player senderPlayer = ((Player) sender).getPlayer();
         NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
         Player targetPlayer;
+        PlayerData targetPlayerData;
 
         if (args.length < 4) {
             senderPlayer.sendMessage("not enough args");
@@ -75,6 +78,12 @@ public class TeamManageInviteCommand extends TeamManageSubCommand {
 
         if (playerNwTeam == null) {
             senderPlayer.sendMessage("Your have no team");
+            return;
+        }
+        targetPlayerData = PlayerDataManager.getPlayerDataFromMap(targetPlayer);
+
+        if (targetPlayerData.getTeam() != null) {
+            sender.sendMessage("player already in a team");
             return;
         }
 

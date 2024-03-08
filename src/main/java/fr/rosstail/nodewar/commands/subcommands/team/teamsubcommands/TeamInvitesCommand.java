@@ -67,11 +67,11 @@ public class TeamInvitesCommand extends TeamSubCommand {
 
         player = ((Player) sender).getPlayer();
 
-        Set<NwTeamInvite> test = TeamDataManager.getTeamDataManager().getTeamInviteHashSet().stream().filter(nwTeamInvite -> (
+        Set<NwTeamInvite> playerInvites = TeamDataManager.getTeamDataManager().getTeamInviteHashSet().stream().filter(nwTeamInvite -> (
                 nwTeamInvite.getReceiver().equals(player)
         )).collect(Collectors.toSet());
 
-        test.forEach(nwTeamInvite -> {
+        playerInvites.forEach(nwTeamInvite -> {
             message.append("\n").append(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_RESULT_LINE), nwTeamInvite.getNwTeam()));
         });
         sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message.toString()));
