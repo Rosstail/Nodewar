@@ -42,15 +42,17 @@ commands:
       result-header: "&bTeams list &8:"
       result-line: "&a► {[team_hexcolor]}[team_display]&r"
     invites:
-      desc: "Check list of teams inviting you."
-      result-header: "&bInvites &8:"
-      result-line: "&a► {[team_hexcolor]}[team_display]&r"
-    openinvites:
-      desc: "Receive any team invitation"
-      result: "You are now open to team invites"
-    closeinvites:
-      desc: "Refuse any team invitation"
-      result: "You are now close to team invites"
+      desc: "Manage teams invites."
+      check:
+        desc: "Check which teams want to recruit you."
+        result-header: "&bInvites &8:"
+        result-line: "&a► {[team_hexcolor]}[team_display]&r"
+      open:
+        desc: "Receive any team invitation"
+        result: "You are now open to team invites"
+      close:
+        desc: "Refuse any team invitation"
+        result: "You are now close to team invites"
     create:
       desc: "Create a nodewar team"
       result: "Team created"

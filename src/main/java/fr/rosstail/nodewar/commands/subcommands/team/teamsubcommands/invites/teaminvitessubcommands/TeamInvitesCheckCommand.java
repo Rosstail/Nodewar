@@ -1,45 +1,42 @@
-package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
+package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.invites.teaminvitessubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.invites.TeamInvitesSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
-import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.NwTeamInvite;
 import fr.rosstail.nodewar.team.TeamDataManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class TeamInvitesCommand extends TeamSubCommand {
+public class TeamInvitesCheckCommand extends TeamInvitesSubCommand {
 
-    public TeamInvitesCommand() {
+    public TeamInvitesCheckCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_CHECK_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
 
     }
 
     @Override
     public String getName() {
-        return "invites";
+        return "check";
     }
 
     @Override
     public String getDescription() {
-        return "Desc check nodewar team invites";
+        return "Blocks any team invitation";
     }
 
     @Override
     public String getSyntax() {
-        return "nodewar team invites";
+        return "nodewar team invites check";
     }
 
     @Override
@@ -49,13 +46,13 @@ public class TeamInvitesCommand extends TeamSubCommand {
 
     @Override
     public String getPermission() {
-        return "nodewar.command.team.invites";
+        return "nodewar.command.team.invites.check";
     }
 
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         Player player;
-        StringBuilder message = new StringBuilder(LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_RESULT_HEADER));
+        StringBuilder message = new StringBuilder(LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_CHECK_RESULT_HEADER));
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
@@ -72,7 +69,7 @@ public class TeamInvitesCommand extends TeamSubCommand {
         )).collect(Collectors.toSet());
 
         playerInvites.forEach(nwTeamInvite -> {
-            message.append("\n").append(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_RESULT_LINE), nwTeamInvite.getNwTeam()));
+            message.append("\n").append(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_CHECK_RESULT_LINE), nwTeamInvite.getNwTeam()));
         });
         sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message.toString()));
     }

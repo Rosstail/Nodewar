@@ -1,7 +1,7 @@
-package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
+package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.invites.teaminvitessubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.invites.TeamInvitesSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -13,29 +13,29 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class TeamOpenInvitesCommand extends TeamSubCommand {
+public class TeamInvitesCloseCommand extends TeamInvitesSubCommand {
 
-    public TeamOpenInvitesCommand() {
+    public TeamInvitesCloseCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_OPENINVITES_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_CLOSE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
 
     }
 
     @Override
     public String getName() {
-        return "openinvites";
+        return "close";
     }
 
     @Override
     public String getDescription() {
-        return "Receive any team invitation";
+        return "Blocks any team invitation";
     }
 
     @Override
     public String getSyntax() {
-        return "nodewar team openinvites";
+        return "nodewar team invites close";
     }
 
     @Override
@@ -45,13 +45,13 @@ public class TeamOpenInvitesCommand extends TeamSubCommand {
 
     @Override
     public String getPermission() {
-        return "nodewar.command.team.openinvites";
+        return "nodewar.command.team.invites.close";
     }
 
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         Player player;
-        StringBuilder message = new StringBuilder(LangManager.getMessage(LangMessage.COMMANDS_TEAM_OPENINVITES_RESULT));
+        String message = LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_CLOSE_RESULT);
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
@@ -64,10 +64,10 @@ public class TeamOpenInvitesCommand extends TeamSubCommand {
         player = ((Player) sender).getPlayer();
         PlayerData playerData = PlayerDataManager.getPlayerDataFromMap(player);
 
-        playerData.setTeamOpen(true);
+        playerData.setTeamOpen(false);
         StorageManager.getManager().updatePlayerModel(playerData, true);
 
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message.toString()));
+        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message));
     }
 
     @Override
