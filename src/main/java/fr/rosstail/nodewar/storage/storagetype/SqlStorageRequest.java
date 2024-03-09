@@ -303,10 +303,10 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     @Override
-    public Map<Integer, TeamMemberModel> selectTeamMemberModelByTeamUuid(String teamName) {
-        Map<Integer, TeamMemberModel> memberModelMap = new HashMap<>();
+    public Map<String, TeamMemberModel> selectAllTeamMemberModel(String teamName) {
+        Map<String, TeamMemberModel> memberModelMap = new HashMap<>();
 
-        String query = "SELECT p.uuid, tm.*, tt.id " +
+        String query = "SELECT p.uuid, tm.* " +
                 "FROM " + teamMemberTableName + " AS tm, " + teamTableName + " AS tt, " + playerTableName + " AS p " +
                 "WHERE p.id = tm.player_id " +
                 "AND tt.id = tm.team_id " +
@@ -314,20 +314,46 @@ public class SqlStorageRequest implements StorageRequest {
                 "ORDER BY tm.player_rank DESC";
         try {
             ResultSet result = executeSQLQuery(connection, query, teamName);
+
             while (result.next()) {
                 TeamMemberModel teamMemberModel = new TeamMemberModel(
-                        result.getInt("id"),
+                        result.getInt("team_id"),
                         result.getInt("player_id"),
                         result.getInt("player_rank"),
                         result.getTimestamp("join_time"));
                 teamMemberModel.setId(result.getInt("id"));
-                memberModelMap.put(result.getInt("player_id"), teamMemberModel);
+                memberModelMap.put(PlayerDataManager.getPlayerNameFromUUID(result.getString("uuid")), teamMemberModel);
             }
+
             result.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return memberModelMap;
+    }
+
+    @Override
+    public TeamMemberModel selectTeamMemberModelByUUID(String playerUUID) {
+        String query = "SELECT * FROM " + teamMemberTableName + " AS tmt, " + teamTableName + " AS tt, " + playerTableName + " AS pt " +
+                "WHERE tt.id = tmt.team_id AND tmt.player_id = pt.id AND pt.uuid = ? " +
+                "LIMIT 1";
+        try {
+            ResultSet result = executeSQLQuery(connection, query, playerUUID);
+            if (result.next()) {
+                TeamMemberModel teamMemberModel = new TeamMemberModel(
+                        result.getInt("team_id"),
+                        result.getInt("player_id"),
+                        result.getInt("player_rank"),
+                        result.getTimestamp("join_time")
+                );
+                teamMemberModel.setId(result.getInt("id"));
+                return teamMemberModel;
+            }
+            result.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -429,19 +455,32 @@ public class SqlStorageRequest implements StorageRequest {
                 " SET name = ?, display = ?, hex_color = ?, is_open = ?, is_relation_open = ?, is_permanent = ?, last_update = CURRENT_TIMESTAMP" +
                 " WHERE id = ?";
         try {
-            boolean success = executeSQLUpdate(query,
+            executeSQLUpdate(query,
                     model.getName(),
                     model.getDisplay(),
                     model.getHexColor(),
                     model.isOpen(),
                     model.isOpenRelation(),
                     model.isPermanent(),
-                    model.getId())
-                    > 0;
+                    model.getId());
 
-            if (success) {
-                model.setLastUpdate(new Timestamp(System.currentTimeMillis()));
-            }
+            model.setLastUpdate(new Timestamp(System.currentTimeMillis()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateTeamMemberModel(TeamMemberModel model) {
+        String query = "UPDATE " + teamMemberTableName +
+                " SET player_id = ?, player_team_id = ?, player_rank = ?, JOIN_TIME = ?" +
+                " WHERE id = ?";
+        try {
+            executeSQLUpdate(query,
+                    model.getPlayerId(),
+                    model.getTeamId(),
+                    model.getRank(),
+                    model.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -558,6 +597,7 @@ public class SqlStorageRequest implements StorageRequest {
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
             }
+
             return statement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();

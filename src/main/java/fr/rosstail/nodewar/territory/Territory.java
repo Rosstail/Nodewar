@@ -180,7 +180,7 @@ public class Territory {
             String ownerTeamName = territoryUsedTeam.getModel().getName();
             if (playerTeam != null) {
                 if (territoryUsedTeam == playerTeam) {
-                    type = RelationType.values()[1];
+                    type = RelationType.TEAM;
                 } else if (playerTeam.getRelations().containsKey(ownerTeamName)) {
                     TeamRelation relation = playerTeam.getRelations().get(ownerTeamName);
                     type = relation.getRelationType();

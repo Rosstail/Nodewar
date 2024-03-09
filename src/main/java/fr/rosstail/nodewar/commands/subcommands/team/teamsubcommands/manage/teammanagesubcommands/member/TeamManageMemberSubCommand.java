@@ -1,15 +1,14 @@
-package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.relations;
+package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.member;
 
-import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.TeamManageSubCommand;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public abstract class TeamManageRelationSubCommand extends TeamManageSubCommand {
+public abstract class TeamManageMemberSubCommand extends TeamManageSubCommand {
     @Override
     public String getName() {
-        return "relation";
+        return "member";
     }
 
     @Override
@@ -19,12 +18,12 @@ public abstract class TeamManageRelationSubCommand extends TeamManageSubCommand 
 
     @Override
     public String getSyntax() {
-        return "nodewar team manage relation";
+        return "nodewar team manage member";
     }
 
     @Override
     public String getPermission() {
-        return "nodewar.command.team.manage.relation";
+        return "nodewar.command.team.manage.member";
     }
 
     @Override

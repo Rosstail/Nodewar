@@ -1,7 +1,6 @@
 package fr.rosstail.nodewar.team;
 
 import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.permissionmannager.PermissionManagerHandler;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
@@ -10,11 +9,9 @@ import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TeamRelation;
 import fr.rosstail.nodewar.team.relation.TeamRelationManager;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
-import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TeamDataManager {
 
@@ -43,10 +40,10 @@ public class TeamDataManager {
         });
 
         stringTeamMap.forEach((s, team) -> {
-            Map<Integer, TeamMemberModel> teamMemberModelMap =
-                    StorageManager.getManager().selectTeamMemberModelByTeamUuid(s);
+            Map<String, TeamMemberModel> teamMemberModelMap =
+                    StorageManager.getManager().selectAllTeamMemberModel(s);
             teamMemberModelMap.forEach((s1, teamMemberModel) -> {
-                team.getModel().getTeamMemberModelMap().put(s1, teamMemberModel);
+                team.getModel().getTeamMemberModelMap().put(teamMemberModel.getId(), teamMemberModel);
             });
 
             Map<String, TeamRelationModel> teamRelationModelMap =
@@ -93,11 +90,16 @@ public class TeamDataManager {
 
     public NwTeam getTeamOfPlayer(Player player) {
         PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
-
         List<NwTeam> nwTeams = new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().values());
 
+        nwTeams.forEach(nwTeam -> {
+            nwTeam.getModel().getTeamMemberModelMap().forEach((integer, teamMemberModel) -> {
+            });
+        });
+
         return nwTeams.stream().filter(team ->
-                team.getModel().getTeamMemberModelMap().containsKey(playerData.getId())
+                team.getModel().getTeamMemberModelMap().values().stream().anyMatch(
+                        teamMemberModel -> teamMemberModel.getPlayerId() == playerData.getId())
         ).findFirst().orElse(null);
     }
 

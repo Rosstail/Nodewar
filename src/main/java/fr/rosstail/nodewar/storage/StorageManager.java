@@ -218,16 +218,29 @@ public class StorageManager {
         }
     }
 
-    public Map<Integer, TeamMemberModel> selectTeamMemberModelByTeamUuid(String teamName) {
+    public Map<String, TeamMemberModel> selectAllTeamMemberModel(String teamName) {
         switch (type) {
             case "mysql":
-                return mySqlStorageRequest.selectTeamMemberModelByTeamUuid(teamName);
+                return mySqlStorageRequest.selectAllTeamMemberModel(teamName);
             case "mariadb":
-                return mariaDBStorageRequest.selectTeamMemberModelByTeamUuid(teamName);
+                return mariaDBStorageRequest.selectAllTeamMemberModel(teamName);
             case "mongodb":
-                return mongoDBStorageRequest.selectTeamMemberModelByTeamUuid(teamName);
+                return mongoDBStorageRequest.selectAllTeamMemberModel(teamName);
             default:
-                return liteSqlDBStorageRequest.selectTeamMemberModelByTeamUuid(teamName);
+                return liteSqlDBStorageRequest.selectAllTeamMemberModel(teamName);
+        }
+    }
+
+    public TeamMemberModel selectTeamMemberModelByUUID(String playerUUID) {
+        switch (type) {
+            case "mysql":
+                return mySqlStorageRequest.selectTeamMemberModelByUUID(playerUUID);
+            case "mariadb":
+                return mariaDBStorageRequest.selectTeamMemberModelByUUID(playerUUID);
+            case "mongodb":
+                return mongoDBStorageRequest.selectTeamMemberModelByUUID(playerUUID);
+            default:
+                return liteSqlDBStorageRequest.selectTeamMemberModelByUUID(playerUUID);
         }
     }
 
@@ -334,6 +347,28 @@ public class StorageManager {
                 break;
             default:
                 liteSqlDBStorageRequest.updateTeamModel(model);
+                break;
+        }
+    }
+
+    /**
+     * UPDATE
+     *
+     * @param model
+     */
+    public void updateTeamMemberModel(TeamMemberModel model) {
+        switch (type) {
+            case "mysql":
+                mySqlStorageRequest.updateTeamMemberModel(model);
+                break;
+            case "mariadb":
+                mariaDBStorageRequest.updateTeamMemberModel(model);
+                break;
+            case "mongodb":
+                mongoDBStorageRequest.updateTeamMemberModel(model);
+                break;
+            default:
+                liteSqlDBStorageRequest.updateTeamMemberModel(model);
                 break;
         }
     }

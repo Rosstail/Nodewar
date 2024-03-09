@@ -36,7 +36,9 @@ public class MinecraftEventHandler implements Listener {
         playerData.setTeam(playerNwTeam);
         if (playerNwTeam != null) {
             playerNwTeam.getMemberMap().put(player, new TeamMember(player,
-                    playerNwTeam, playerNwTeam.getModel().getTeamMemberModelMap().get(playerData.getId())));
+                    playerNwTeam, playerNwTeam.getModel().getTeamMemberModelMap().values().stream().filter(
+                            teamMemberModel -> teamMemberModel.getPlayerId() == playerData.getId()).findFirst().get()
+            ));
         }
 
         checkPlayerPosition(player, player.getLocation());

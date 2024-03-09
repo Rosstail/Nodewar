@@ -1,7 +1,8 @@
-package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands;
+package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.member.teammanagermembersubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.TeamManageSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.member.TeamManageMemberSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -11,23 +12,20 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.rank.TeamRank;
-import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class TeamManageKickCommand extends TeamManageSubCommand {
+public class TeamManageMemberKickCommand extends TeamManageMemberSubCommand {
 
-    public TeamManageKickCommand() {
+    public TeamManageMemberKickCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_KICK_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_KICK_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
 
@@ -43,7 +41,7 @@ public class TeamManageKickCommand extends TeamManageSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar team manage kick <player>";
+        return "nodewar team manage member kick <player>";
     }
 
     @Override
@@ -53,7 +51,7 @@ public class TeamManageKickCommand extends TeamManageSubCommand {
 
     @Override
     public String getPermission() {
-        return "nodewar.command.team.manage.kick";
+        return "nodewar.command.team.manage.member.kick";
     }
 
     @Override
@@ -73,17 +71,17 @@ public class TeamManageKickCommand extends TeamManageSubCommand {
                 return;
             }
 
-            if (playerNwTeam.getMemberMap().get(player).getRank() != TeamRank.OWNER) {
+            if (playerNwTeam.getMemberMap().get(player).getRank().getWeight() < TeamRank.LIEUTENANT.getWeight()) {
                 sender.sendMessage("you do not have enough rank on your team");
                 return;
             }
 
-            if (args.length < 4) {
+            if (args.length < 5) {
                 sender.sendMessage("not enough arguments");
                 return;
             }
 
-            targetName = args[3];
+            targetName = args[4];
 
             if (player.getName().equals(targetName)) {
                 sender.sendMessage("you can't kick yourself !");
@@ -108,7 +106,7 @@ public class TeamManageKickCommand extends TeamManageSubCommand {
             }
 
             sender.sendMessage(
-                    AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_KICK_RESULT), playerNwTeam, player)
+                    AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_KICK_RESULT), playerNwTeam, player)
             );
 
             StorageManager.getManager().updateTeamModel(playerNwTeam.getModel());
@@ -118,11 +116,12 @@ public class TeamManageKickCommand extends TeamManageSubCommand {
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
         NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
+        List<String> memberStringList = new ArrayList<>();
+
         if (playerNwTeam != null) {
-            return playerNwTeam.getMemberMap().keySet().stream()
-                    .filter(player -> player != sender)
-                    .map(Player::getName).collect(Collectors.toList());
+            memberStringList.addAll(StorageManager.getManager().selectAllTeamMemberModel(playerNwTeam.getModel().getName()).keySet());
         }
-        return null;
+
+        return memberStringList;
     }
 }

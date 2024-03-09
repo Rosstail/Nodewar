@@ -90,7 +90,15 @@ public interface StorageRequest {
      * @param teamUuid The identifier of the team
      * @return the team member model
      */
-    Map<Integer, TeamMemberModel> selectTeamMemberModelByTeamUuid(String teamUuid);
+    Map<String, TeamMemberModel> selectAllTeamMemberModel(String teamUuid);
+
+    /**
+     * READ
+     * get member team model from storage
+     * @param playerUuid The uuid of player
+     * @return the team member model if exists
+     */
+    TeamMemberModel selectTeamMemberModelByUUID(String playerUuid);
 
     /**
      * Get all team models from the database
@@ -127,6 +135,13 @@ public interface StorageRequest {
      * @param model The model to update
      */
     void updateTeamModel(TeamModel model);
+
+    /**
+     * UPDATE
+     * Edit team member model to storage
+     * @param model The model to update
+     */
+    void updateTeamMemberModel(TeamMemberModel model);
 
     /**
      * UPDATE

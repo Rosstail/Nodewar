@@ -1,11 +1,13 @@
-package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage;
+package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.member;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.SubCommand;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.*;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.member.TeamManageMemberCommand;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.member.teammanagermembersubcommands.TeamManageMemberKickCommand;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.relation.TeamManageRelationCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.TeamManageSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.member.teammanagermembersubcommands.*;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.relation.teammanagerelationsubcommands.TeamManageRelationCloseCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.relation.teammanagerelationsubcommands.TeamManageRelationEditCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.relation.teammanagerelationsubcommands.TeamManageRelationInvitesCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.relation.teammanagerelationsubcommands.TeamManageRelationOpenCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -15,20 +17,32 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TeamManageCommand extends TeamManageSubCommand {
-    public List<TeamManageSubCommand> subCommands = new ArrayList<>();
-    public TeamManageCommand() {
+public class TeamManageMemberCommand extends TeamManageMemberSubCommand {
+    public List<TeamManageMemberSubCommand> subCommands = new ArrayList<>();
+    public TeamManageMemberCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
-        subCommands.add(new TeamManageDisbandCommand());
-        subCommands.add(new TeamManageRelationCommand());
-        subCommands.add(new TeamManageOpenCommand());
-        subCommands.add(new TeamManageCloseCommand());
-        subCommands.add(new TeamManageInviteCommand());
-        subCommands.add(new TeamManageMemberCommand());
-        subCommands.add(new TeamManageColorCommand());
+        subCommands.add(new TeamManageMemberPromoteCommand());
+        subCommands.add(new TeamManageMemberDemoteCommand());
+        subCommands.add(new TeamManageMemberKickCommand());
+        subCommands.add(new TeamManageMemberTransferCommand());
+    }
+
+    @Override
+    public String getDescription() {
+        return "Desc relation nodewar team";
+    }
+
+    @Override
+    public String getSyntax() {
+        return "nodewar team manage relation <subcommand>";
+    }
+
+    @Override
+    public String getHelp() {
+        return super.getHelp();
     }
 
     @Override
@@ -36,8 +50,8 @@ public class TeamManageCommand extends TeamManageSubCommand {
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
-        if (args.length < 3) {
-            sender.sendMessage("Help of team needed");
+        if (args.length < 4) {
+            sender.sendMessage("Help of team relation needed");
             sender.sendMessage(getSubCommandHelp());
             return;
         }
@@ -47,22 +61,21 @@ public class TeamManageCommand extends TeamManageSubCommand {
             subCommandsStringList.add(subCommand.getName());
         }
 
-        if (!subCommandsStringList.contains(args[2])) {
+        if (!subCommandsStringList.contains(args[3])) {
             sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
             return;
         }
 
         for (TeamManageSubCommand subCommand : subCommands) {
-            if (subCommand.getName().equalsIgnoreCase(args[2])) {
+            if (subCommand.getName().equalsIgnoreCase(args[3])) {
                 subCommand.perform(sender, args, arguments);
             }
         }
-
     }
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        if (args.length <= 3) {
+        if (args.length <= 4) {
             List<String> list = new ArrayList<>();
             for (SubCommand subCommand : subCommands) {
                 list.add(subCommand.getName());
@@ -70,13 +83,14 @@ public class TeamManageCommand extends TeamManageSubCommand {
             return list;
         } else {
             for (SubCommand subCommand : subCommands) {
-                if (subCommand.getName().equalsIgnoreCase(args[2])) {
+                if (subCommand.getName().equalsIgnoreCase(args[3])) {
                     return subCommand.getSubCommandsArguments(sender, args, arguments);
                 }
             }
         }
         return null;
     }
+
 
     @Override
     public String getSubCommandHelp() {
@@ -88,5 +102,4 @@ public class TeamManageCommand extends TeamManageSubCommand {
         }
         return subCommandHelp.toString();
     }
-
 }

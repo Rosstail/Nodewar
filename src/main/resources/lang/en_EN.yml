@@ -74,9 +74,19 @@ commands:
       invite:
         desc: "Invite a player into your team"
         result: "Invitation sent successfully."
-      kick:
-        desc: "Kick a player from your team"
-        result: "Player kicked successfully."
+      member:
+        promote:
+          desc: "Promote a team member"
+          result: "Player [player] promoted to [team_member_rank]."
+        demote:
+          desc: "Demote a team member"
+          result: "Player [player] demoted to [team_member_rank]."
+        kick:
+          desc: "Kick a player from your team"
+          result: "Player kicked successfully."
+        transfer:
+          desc: "Transfer ownership of team to player"
+          result: "Ownership transferred successfully."
       relation:
         desc: "Manage relations with other teams"
         open:
