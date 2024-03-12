@@ -8,6 +8,7 @@ import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
+import fr.rosstail.nodewar.team.TeamDataManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -62,6 +63,8 @@ public class AdminTeamCommand extends AdminTeamSubCommand {
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
         if (args.length <= 3) {
+            return new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().keySet());
+        } else if (args.length == 4) {
             List<String> list = new ArrayList<>();
             for (SubCommand subCommand : subCommands) {
                 list.add(subCommand.getName());

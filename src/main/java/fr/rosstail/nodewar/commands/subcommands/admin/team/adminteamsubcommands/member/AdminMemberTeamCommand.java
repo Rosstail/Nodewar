@@ -47,8 +47,8 @@ public class AdminMemberTeamCommand extends AdminTeamMemberSubCommand {
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
-        if (args.length < 4) {
-            sender.sendMessage("Help of team relation needed");
+        if (args.length < 5) {
+            sender.sendMessage("Help of team member needed");
             sender.sendMessage(getSubCommandHelp());
             return;
         }
@@ -58,13 +58,13 @@ public class AdminMemberTeamCommand extends AdminTeamMemberSubCommand {
             subCommandsStringList.add(subCommand.getName());
         }
 
-        if (!subCommandsStringList.contains(args[3])) {
+        if (!subCommandsStringList.contains(args[4])) {
             sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
             return;
         }
 
         for (AdminTeamSubCommand subCommand : subCommands) {
-            if (subCommand.getName().equalsIgnoreCase(args[3])) {
+            if (subCommand.getName().equalsIgnoreCase(args[4])) {
                 subCommand.perform(sender, args, arguments);
             }
         }
@@ -80,7 +80,7 @@ public class AdminMemberTeamCommand extends AdminTeamMemberSubCommand {
             return list;
         } else {
             for (SubCommand subCommand : subCommands) {
-                if (subCommand.getName().equalsIgnoreCase(args[3])) {
+                if (subCommand.getName().equalsIgnoreCase(args[4])) {
                     return subCommand.getSubCommandsArguments(sender, args, arguments);
                 }
             }
