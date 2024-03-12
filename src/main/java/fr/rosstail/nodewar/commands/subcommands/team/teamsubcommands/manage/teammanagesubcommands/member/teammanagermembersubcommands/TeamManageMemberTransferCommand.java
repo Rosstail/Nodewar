@@ -11,6 +11,7 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
+import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.rank.TeamRank;
 import org.bukkit.Bukkit;
@@ -42,7 +43,7 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
 
     @Override
     public String getSyntax() {
-        return "nodewar team manage member transfer <player> <teamname>";
+        return "nodewar team manage member transfer <player> <team>";
     }
 
     @Override
@@ -59,20 +60,25 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         String targetName;
         String teamNameConfirmStr;
+        Player senderPlayer;
         Player targetPlayer;
+        TeamMember senderTeamMember;
+        TeamMemberModel senderTeamMemberModel;
+        TeamMember targetTeamMember;
+        TeamMemberModel targetTeamMemberModel;
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
         if (sender instanceof Player) {
-            Player player = ((Player) sender).getPlayer();
-            NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
+            senderPlayer = ((Player) sender).getPlayer();
+            NwTeam senderNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
 
-            if (playerNwTeam == null) {
+            if (senderNwTeam == null) {
                 sender.sendMessage("Your team is null");
                 return;
             }
 
-            if (!hasSenderTeamRank(((Player) sender).getPlayer(), playerNwTeam, TeamRank.OWNER)) {
+            if (!hasSenderTeamRank(((Player) sender).getPlayer(), senderNwTeam, TeamRank.OWNER)) {
                 return;
             }
 
@@ -83,13 +89,18 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
 
             targetName = args[4];
 
-            if (player.getName().equals(targetName)) {
-                sender.sendMessage("you are already owner of " + playerNwTeam.getModel().getDisplay());
+            if (senderPlayer.getName().equals(targetName)) {
+                sender.sendMessage("you are already owner of " + senderNwTeam.getModel().getDisplay());
                 return;
             }
 
-            if (playerNwTeam.getModel().getTeamMemberModelMap().values().stream()
-                    .noneMatch(teamMemberModel -> teamMemberModel.getUsername().equalsIgnoreCase(targetName))) {
+            targetTeamMemberModel = senderNwTeam.getModel().getTeamMemberModelMap().values().stream()
+                    .filter(teamMemberModel -> teamMemberModel.getUsername().equalsIgnoreCase(targetName)).findFirst().orElse(null);
+
+            senderTeamMember = senderNwTeam.getMemberMap().get(senderPlayer);
+            senderTeamMemberModel = senderTeamMember.getModel();
+
+            if (targetTeamMemberModel == null) {
                 sender.sendMessage("the player is not in your team.");
                 return;
             }
@@ -101,24 +112,29 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
 
             teamNameConfirmStr = args[5];
 
-            if (!playerNwTeam.getModel().getName().equalsIgnoreCase(teamNameConfirmStr)) {
+            if (!senderNwTeam.getModel().getName().equalsIgnoreCase(teamNameConfirmStr)) {
                 sender.sendMessage("Wrong team name");
                 return;
             }
 
+            senderTeamMemberModel.setRank(TeamRank.LIEUTENANT.getWeight());
+            targetTeamMemberModel.setRank(TeamRank.OWNER.getWeight());
+            StorageManager.getManager().updateTeamMemberModel(senderTeamMemberModel);
+            StorageManager.getManager().updateTeamMemberModel(targetTeamMemberModel);
 
-            playerNwTeam.getModel().getTeamMemberModelMap();
-
+            senderNwTeam.getMemberMap().get(senderPlayer).setRank(TeamRank.LIEUTENANT);
             targetPlayer = Bukkit.getPlayer(targetName);
+
             if (targetPlayer != null) {
-                playerNwTeam.getMemberMap().get(targetPlayer).setRank(TeamRank.OWNER);
+                targetTeamMember = senderNwTeam.getMemberMap().get(targetPlayer);
+                targetTeamMember.setRank(TeamRank.OWNER);
             }
 
             sender.sendMessage(
-                    AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_TRANSFER_RESULT), playerNwTeam, player)
+                    AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_TRANSFER_RESULT), senderNwTeam, senderPlayer)
             );
 
-            StorageManager.getManager().updateTeamModel(playerNwTeam.getModel());
+            StorageManager.getManager().updateTeamModel(senderNwTeam.getModel());
         }
     }
 

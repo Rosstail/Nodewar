@@ -1,8 +1,6 @@
-package fr.rosstail.nodewar.commands.subcommands.territory.territorysubcommands.edit.territoryeditsubcommands.team.territoryeditteamsubcommands;
+package fr.rosstail.nodewar.commands.subcommands.admin.territory.adminterritorysubcommands.team.adminterritoryteamsubcommands;
 
-import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.SubCommand;
-import fr.rosstail.nodewar.commands.subcommands.territory.territorysubcommands.edit.territoryeditsubcommands.team.TerritoryEditTeamSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.territory.adminterritorysubcommands.team.AdminTerritoryTeamSubCommand;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
@@ -18,12 +16,12 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TerritoryEditTeamSetCommand extends TerritoryEditTeamSubCommand {
+public class AdminTerritoryTeamSetCommand extends AdminTerritoryTeamSubCommand {
 
-    public TerritoryEditTeamSetCommand() {
+    public AdminTerritoryTeamSetCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_EDIT_TEAM_SET_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TERRITORY_TEAM_SET_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
 
     }
@@ -40,7 +38,7 @@ public class TerritoryEditTeamSetCommand extends TerritoryEditTeamSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar territory edit <territory> team set <team>";
+        return "nodewar admin territory <territory> team set <team>";
     }
 
     @Override
@@ -52,7 +50,7 @@ public class TerritoryEditTeamSetCommand extends TerritoryEditTeamSubCommand {
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         Territory territory;
         NwTeam team;
-        String message = LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_EDIT_TEAM_SET_RESULT);
+        String message = LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TERRITORY_TEAM_SET_RESULT);
 
         if (args.length < 6) {
             sender.sendMessage("Too few args");

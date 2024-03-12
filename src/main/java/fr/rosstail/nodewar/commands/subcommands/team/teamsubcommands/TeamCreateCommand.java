@@ -98,7 +98,7 @@ public class TeamCreateCommand extends TeamSubCommand {
                     playerData.setTeam(playerNwTeam);
 
                     TeamMemberModel teamMemberModel =
-                            new TeamMemberModel(teamModel.getId(), ownerId, 0, new Timestamp(System.currentTimeMillis()), senderPlayer.getName());
+                            new TeamMemberModel(teamModel.getId(), ownerId, 5, new Timestamp(System.currentTimeMillis()), senderPlayer.getName());
                     TeamMember teamMember = new TeamMember(senderPlayer, playerNwTeam, teamMemberModel);
 
                     boolean insertPlayerTeam = StorageManager.getManager().insertTeamMemberModel(teamMemberModel);

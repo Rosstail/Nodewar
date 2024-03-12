@@ -49,28 +49,31 @@ public class TeamManageCloseCommand extends TeamManageSubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
-        boolean value;
+        Player senderPlayer;
+        NwTeam playerNwTeam;
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
-        if (sender instanceof Player) {
-            Player player = ((Player) sender).getPlayer();
-            NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
-
-            if (playerNwTeam == null) {
-                sender.sendMessage("Your team is null");
-                return;
-            }
-
-            if (!hasSenderTeamRank(((Player) sender).getPlayer(), playerNwTeam, TeamRank.OWNER)) {
-                return;
-            }
-
-            playerNwTeam.getModel().setOpen(false);
-
-            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_CLOSE_RESULT));
-            StorageManager.getManager().updateTeamModel(playerNwTeam.getModel());
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("by player only");
+            return;
         }
+        senderPlayer = ((Player) sender).getPlayer();
+        playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
+
+        if (playerNwTeam == null) {
+            sender.sendMessage("your team is null");
+            return;
+        }
+
+        if (!hasSenderTeamRank(((Player) sender).getPlayer(), playerNwTeam, TeamRank.OWNER)) {
+            return;
+        }
+
+        playerNwTeam.getModel().setOpen(false);
+
+        sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_CLOSE_RESULT));
+        StorageManager.getManager().updateTeamModel(playerNwTeam.getModel());
     }
 
     @Override

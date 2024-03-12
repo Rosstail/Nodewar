@@ -1,6 +1,7 @@
-package fr.rosstail.nodewar.commands.subcommands.territory.territorysubcommands;
+package fr.rosstail.nodewar.commands.subcommands.territory.teamsubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
+import fr.rosstail.nodewar.commands.subcommands.admin.territory.AdminTerritorySubCommand;
 import fr.rosstail.nodewar.commands.subcommands.territory.TerritorySubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
@@ -42,11 +43,6 @@ public class TerritoryCheckCommand extends TerritorySubCommand {
     @Override
     public String getHelp() {
         return super.getHelp();
-    }
-
-    @Override
-    public String getPermission() {
-        return "nodewar.command.territory.join";
     }
 
     @Override

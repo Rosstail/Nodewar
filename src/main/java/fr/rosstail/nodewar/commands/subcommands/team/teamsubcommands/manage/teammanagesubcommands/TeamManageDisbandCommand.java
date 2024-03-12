@@ -34,7 +34,7 @@ public class TeamManageDisbandCommand extends TeamManageSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar team manage disband <teamname>";
+        return "nodewar team manage disband <team>";
     }
 
     @Override

@@ -112,21 +112,60 @@ commands:
     leave:
       desc: "Leave your current team"
       result: "Left team"
-  territory:
-    desc: "Territory commands"
-    check:
-      result:
-        - "[territory_display]&r &8:&r"
-        - "* Type &8:&r [territory_type]&r"
-        - "* Protected &8:&r [territory_protected]&r"
-        - "* Owner &8:&r [territory_owner]&r"
-      result-other:
-        - "[territory_display]&r &8:&r"
-        - "* World &8:&r [territory_world]&r"
-        - "* Type &8:&r [territory_type]&r"
-        - "* Protected &8:&r [territory_protected]&r"
-        - "* Owner &8:&r [territory_owner]&r"
-    edit:
+  admin:
+    desc: "Admin commands"
+    team:
+      desc: "Admin team command"
+      color:
+        desc: "Edit your current team color"
+        result: "Team color set to {[team_hexcolor]}[team_hexcolor]"
+      open:
+        desc: "Make your team joinable by anybody"
+        result: "your team is now open"
+        result-close: "your team is now close"
+      close:
+        desc: "Make your team joinable only on invites"
+        result: "your team is now close"
+      invite:
+        desc: "Invite a player into your team"
+        result: "Invitation sent successfully."
+      member:
+        desc: "manage members of a team"
+        promote:
+          desc: "Promote a team member"
+          result: "Player [player] promoted to [team_member_rank]."
+        demote:
+          desc: "Demote a team member"
+          result: "Player [player] demoted to [team_member_rank]."
+        kick:
+          desc: "Kick a player from your team"
+          result: "Player kicked successfully."
+        transfer:
+          desc: "Transfer ownership of team to player"
+          result: "Ownership transferred successfully."
+      relation:
+        desc: "Manage relations with other teams"
+        open:
+          desc: "Enable reception of relation invites"
+          result: "Team open to relation invites"
+        close:
+          desc: "Disable reception of relation invites"
+          result: "Team closed to relation invites"
+        edit:
+          desc: "Set relation with selected team"
+          result-invite: "Relation invite sent successfully."
+          result-weight: "Relation set."
+          result-ignore: "Same relation. No change."
+        invites:
+          desc: "Check list of teams relations invites."
+          result-header: "&bInvites &8:"
+          result-line: "&a► [team_line_direction]&r {[team_hexcolor]}[team_display] &8: [team_relation] -> [team_relation_invite]&r"
+          result-line-received: "&e<<<"
+          result-line-sent: "&6>>>"
+      disband:
+        desc: "Disband your nodewar team"
+        result: "Disbanded team"
+    territory:
       desc: "Edit the selected territory"
       reload-regions:
         desc: "Reload regions of a territory"
@@ -139,15 +178,27 @@ commands:
         reset:
           desc: "Remove current owner of territory"
           result: "Territory is now neutral."
+  territory:
+    desc: "Territory commands"
+    check:
+      desc: "Check status of a territory"
+      result:
+        - "[territory_display]&r &8:&r"
+        - "* Type &8:&r [territory_type]&r"
+        - "* Protected &8:&r [territory_protected]&r"
+        - "* Owner &8:&r [territory_owner]&r"
+      result-other:
+        - "[territory_display]&r &8:&r"
+        - "* World &8:&r [territory_world]&r"
+        - "* Type &8:&r [territory_type]&r"
+        - "* Protected &8:&r [territory_protected]&r"
+        - "* Owner &8:&r [territory_owner]&r"
   reload:
     desc: "Reload current Nodewar config."
     result: "[prefix]Reloaded config."
   save:
     desc: "Save instantly all online players data to storage."
     result: "[prefix]Manually saved data of [amount] players."
-  eval:
-    desc: "Calculate a mathematical expression."
-    result: "[prefix]Expression: [expression] = [result]"
 
 storage:
   type: "[prefix]Use [type] storage type."

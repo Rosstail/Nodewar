@@ -1,29 +1,29 @@
-package fr.rosstail.nodewar.commands.subcommands.territory;
+package fr.rosstail.nodewar.commands.subcommands.admin;
 
 import fr.rosstail.nodewar.commands.SubCommand;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public abstract class TerritorySubCommand extends SubCommand {
+public abstract class AdminSubCommand extends SubCommand {
     @Override
     public String getName() {
-        return "territory";
+        return "admin";
     }
 
     @Override
     public String getDescription() {
-        return "Territory command description";
+        return "Admin command description";
     }
 
     @Override
     public String getSyntax() {
-        return "nodewar territory <subcommand>";
+        return "nodewar admin <subcommand>";
     }
 
     @Override
     public String getPermission() {
-        return "nodewar.command.territory";
+        return "nodewar.command.admin";
     }
 
     @Override

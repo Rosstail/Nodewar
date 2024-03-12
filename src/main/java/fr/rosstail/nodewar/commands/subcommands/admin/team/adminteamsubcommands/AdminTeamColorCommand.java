@@ -1,7 +1,7 @@
-package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands;
+package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.TeamManageSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.team.AdminTeamSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -17,14 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class TeamManageColorCommand extends TeamManageSubCommand {
+public class AdminTeamColorCommand extends AdminTeamSubCommand {
 
     private static final Pattern hexPattern = Pattern.compile("#[a-fA-F0-9]{6}");
 
-    public TeamManageColorCommand() {
+    public AdminTeamColorCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_COLOR_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_COLOR_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
 
@@ -40,7 +40,7 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar team manage color <hexcolor>";
+        return "nodewar admin team <team> color <hexcolor>";
     }
 
     @Override
@@ -49,52 +49,41 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
     }
 
     @Override
-    public String getPermission() {
-        return "nodewar.command.team.manage.color";
-    }
-
-    @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
-        Player player;
-        NwTeam playerNwTeam;
-        String value;
+        String targetTeamName;
+        NwTeam targetTeam;
+        String colorValue;
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
-        if (!(sender instanceof Player)) {
-            return;
-        }
 
-        player = ((Player) sender).getPlayer();
-        playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
-
-        if (playerNwTeam == null) {
-            sender.sendMessage("Your team is null");
-            return;
-        }
-
-        if (!hasSenderTeamRank(((Player) sender).getPlayer(), playerNwTeam, TeamRank.OWNER)) {
-            return;
-        }
-
-        if (args.length < 4) {
+        if (args.length < 5) {
             sender.sendMessage("Not enough arguments");
             return;
         }
 
-        value = args[3];
+        targetTeamName = args[2];
+        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
-        if (!hexPattern.matcher(value).find()) {
+        if (playerNwTeam == null) {
+            sender.sendMessage("team does not exist");
+            return;
+        }
+
+        colorValue = args[4];
+
+        if (!hexPattern.matcher(colorValue).find()) {
             sender.sendMessage("Wrong argument ex: #CD9F16");
             return;
         }
-        playerNwTeam.getModel().setHexColor(value);
-
-        sender.sendMessage(
-                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_COLOR_RESULT), playerNwTeam, player)
-        );
+        playerNwTeam.getModel().setHexColor(colorValue);
 
         StorageManager.getManager().updateTeamModel(playerNwTeam.getModel());
+
+        sender.sendMessage(
+                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_COLOR_RESULT), playerNwTeam, null)
+        );
+
         DynmapHandler.getDynmapHandler().resumeRender();
     }
 

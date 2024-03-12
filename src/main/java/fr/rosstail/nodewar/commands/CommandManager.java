@@ -1,7 +1,9 @@
 package fr.rosstail.nodewar.commands;
 
 import fr.rosstail.nodewar.commands.subcommands.HelpCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.AdminCommand;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.territory.AdminTerritoryCommand;
 import fr.rosstail.nodewar.commands.subcommands.territory.TerritoryCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
@@ -31,6 +33,7 @@ public class CommandManager implements CommandExecutor, TabExecutor {
     private static final Pattern longParamPattern = Pattern.compile("^--[A-Za-z]+");
 
     public CommandManager() {
+        subCommands.add(new AdminCommand());
         subCommands.add(new TeamCommand());
         subCommands.add(new TerritoryCommand());
     }
