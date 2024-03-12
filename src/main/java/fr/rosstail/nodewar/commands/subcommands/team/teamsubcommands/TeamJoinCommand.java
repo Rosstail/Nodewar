@@ -91,7 +91,7 @@ public class TeamJoinCommand extends TeamSubCommand {
         }
 
         sender.sendMessage("TODO joining " + teamName + " team.");
-        teamMemberModel = new TeamMemberModel(nwTeam.getModel().getId(), playerData.getId(), 3, new Timestamp(System.currentTimeMillis()));
+        teamMemberModel = new TeamMemberModel(nwTeam.getModel().getId(), playerData.getId(), 3, new Timestamp(System.currentTimeMillis()), senderPlayer.getName());
         TeamMember teamMember = new TeamMember(senderPlayer, nwTeam, teamMemberModel);
         StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
         nwTeam.getMemberMap().put(senderPlayer, teamMember);

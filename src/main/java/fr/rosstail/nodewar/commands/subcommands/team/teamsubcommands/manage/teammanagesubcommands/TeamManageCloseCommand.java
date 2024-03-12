@@ -62,8 +62,7 @@ public class TeamManageCloseCommand extends TeamManageSubCommand {
                 return;
             }
 
-            if (playerNwTeam.getMemberMap().get(player).getRank() != TeamRank.OWNER) {
-                sender.sendMessage("you do not have enough rank on your team");
+            if (!hasSenderTeamRank(((Player) sender).getPlayer(), playerNwTeam, TeamRank.OWNER)) {
                 return;
             }
 

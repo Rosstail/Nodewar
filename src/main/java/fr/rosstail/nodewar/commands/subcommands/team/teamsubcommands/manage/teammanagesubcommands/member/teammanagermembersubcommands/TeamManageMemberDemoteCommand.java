@@ -59,9 +59,9 @@ public class TeamManageMemberDemoteCommand extends TeamManageMemberSubCommand {
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         String targetName;
         Player targetPlayer;
-        TeamMember targetTeamMember = null;
-        TeamMemberModel targetTeamMemberModel;
-        String targetUUID;
+        TeamMember targetTeamMember;
+        TeamMemberModel targetTeamMemberModel = null;
+        int newRank;
 
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
@@ -77,8 +77,7 @@ public class TeamManageMemberDemoteCommand extends TeamManageMemberSubCommand {
 
             TeamRank playerRank = playerNwTeam.getMemberMap().get(player).getRank();
 
-            if (playerRank.getWeight() < TeamRank.LIEUTENANT.getWeight()) {
-                sender.sendMessage("you do not have enough rank on your team");
+            if (!hasSenderTeamRank(((Player) sender).getPlayer(), playerNwTeam, TeamRank.LIEUTENANT)) {
                 return;
             }
 
@@ -94,36 +93,27 @@ public class TeamManageMemberDemoteCommand extends TeamManageMemberSubCommand {
                 return;
             }
 
-            targetPlayer = Bukkit.getPlayer(targetName);
+            targetTeamMemberModel = playerNwTeam.getModel().getTeamMemberModelMap().values().stream()
+                    .filter(teamMemberModel -> teamMemberModel.getUsername().equalsIgnoreCase(targetName)).findFirst().orElse(null);
 
-            if (targetPlayer != null) {
-                targetTeamMember = playerNwTeam.getMemberMap().get(targetPlayer);
-                if (targetTeamMember == null) {
-                    sender.sendMessage("This player is not in your team");
-                    return;
-                }
-                targetTeamMemberModel = targetTeamMember.getModel();
-            } else {
-                targetUUID = PlayerDataManager.getPlayerUUIDFromName(targetName);
-                targetTeamMemberModel = StorageManager.getManager().selectTeamMemberModelByUUID(targetUUID);
-
-                if (targetTeamMemberModel == null) {
-                    sender.sendMessage("This player is not in your team");
-                    return;
-                }
-            }
-
-            if (targetTeamMemberModel.getRank() >= playerRank.getWeight() || targetTeamMemberModel.getRank() == 1) {
-                sender.sendMessage("You cannot demote this player anymore.");
+            if (targetTeamMemberModel == null) {
+                sender.sendMessage("the player is not in your team.");
                 return;
             }
 
-            targetTeamMemberModel.setRank(targetTeamMemberModel.getRank() - 1);
+            newRank = targetTeamMemberModel.getRank() - 1;
+            if (targetTeamMemberModel.getRank() >= playerRank.getWeight() || newRank == 0) {
+                sender.sendMessage("You cannot demote this player.");
+                return;
+            }
+
+            targetTeamMemberModel.setRank(newRank);
             StorageManager.getManager().updateTeamMemberModel(targetTeamMemberModel);
 
-            if (targetTeamMember != null) {
-                TeamMember finalTargetTeamMember = targetTeamMember;
-                targetTeamMember.setRank(Arrays.stream(TeamRank.values()).filter(teamRank -> teamRank.getWeight() == finalTargetTeamMember.getRank().getWeight() + 1).findFirst().get());
+            targetPlayer = Bukkit.getPlayer(targetName);
+            if (targetPlayer != null) {
+                targetTeamMember = playerNwTeam.getMemberMap().get(targetPlayer);
+                targetTeamMember.setRank(Arrays.stream(TeamRank.values()).filter(teamRank -> teamRank.getWeight() == newRank).findFirst().get());
             }
 
             sender.sendMessage(
@@ -136,12 +126,10 @@ public class TeamManageMemberDemoteCommand extends TeamManageMemberSubCommand {
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
         NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
-        List<String> memberStringList = new ArrayList<>();
-
         if (playerNwTeam != null) {
-            memberStringList.addAll(StorageManager.getManager().selectAllTeamMemberModel(playerNwTeam.getModel().getName()).keySet());
+            return playerNwTeam.getModel().getTeamMemberModelMap().values().stream().map(TeamMemberModel::getUsername).collect(Collectors.toList());
         }
 
-        return memberStringList;
+        return new ArrayList<>();
     }
 }

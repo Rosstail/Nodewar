@@ -67,8 +67,7 @@ public class TeamManageRelationCloseCommand extends TeamManageRelationSubCommand
             sender.sendMessage("You are part of no team");
             return;
         }
-        if (playerNwTeam.getMemberMap().get(((Player) sender)).getRank().getWeight() < TeamRank.LIEUTENANT.getWeight()) {
-            sender.sendMessage("You are not high enough rank of the team");
+        if (!hasSenderTeamRank(((Player) sender).getPlayer(), playerNwTeam, TeamRank.LIEUTENANT)) {
             return;
         }
 

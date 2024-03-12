@@ -27,7 +27,6 @@ public class TeamCheckCommand extends TeamSubCommand {
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
-
     }
 
     @Override

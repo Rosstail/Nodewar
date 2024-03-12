@@ -34,7 +34,7 @@ public class TeamManageDisbandCommand extends TeamManageSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar team manage disband";
+        return "nodewar team manage disband <teamname>";
     }
 
     @Override
@@ -54,25 +54,34 @@ public class TeamManageDisbandCommand extends TeamManageSubCommand {
         }
         if (sender instanceof Player) {
             Player player = ((Player) sender).getPlayer();
-            boolean disband = false;
             NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
-            if (playerNwTeam != null) {
-                if (playerNwTeam.getMemberMap().get(player).getRank() == TeamRank.OWNER) {
-                    disband = true;
-                    TeamDataManager.getTeamDataManager().deleteTeam(playerNwTeam.getModel().getName());
-                } else {
-                    sender.sendMessage("you do not have enough rank on your team");
-                }
-            } else {
-                sender.sendMessage("Your team is null");
+            String teamNameConfirmStr;
+
+            if (playerNwTeam == null) {
+                sender.sendMessage("your team is null");
+                return;
             }
 
-            if (!disband) {
-                sender.sendMessage("You are not owner of any team");
-            } else {
-                sender.sendMessage("Disbanded team");
-                DynmapHandler.getDynmapHandler().resumeRender();
+            if (!hasSenderTeamRank(((Player) sender).getPlayer(), playerNwTeam, TeamRank.OWNER)) {
+                return;
             }
+
+            if (args.length < 4) {
+                sender.sendMessage("Add the team name to the command to confirm");
+                return;
+            }
+
+            teamNameConfirmStr = args[3];
+
+            if (!playerNwTeam.getModel().getName().equalsIgnoreCase(teamNameConfirmStr)) {
+                sender.sendMessage("Wrong team name");
+                return;
+            }
+
+            TeamDataManager.getTeamDataManager().deleteTeam(playerNwTeam.getModel().getName());
+
+            sender.sendMessage("Disbanded team");
+            DynmapHandler.getDynmapHandler().resumeRender();
         }
     }
 

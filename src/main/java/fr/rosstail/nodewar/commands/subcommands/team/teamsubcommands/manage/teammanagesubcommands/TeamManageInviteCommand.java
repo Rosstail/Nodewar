@@ -25,6 +25,7 @@ public class TeamManageInviteCommand extends TeamManageSubCommand {
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
+
     @Override
     public String getName() {
         return "invite";
@@ -65,6 +66,16 @@ public class TeamManageInviteCommand extends TeamManageSubCommand {
         Player targetPlayer;
         PlayerData targetPlayerData;
 
+
+        if (playerNwTeam == null) {
+            senderPlayer.sendMessage("Your have no team");
+            return;
+        }
+
+        if (!hasSenderTeamRank(((Player) sender).getPlayer(), playerNwTeam, TeamRank.LIEUTENANT)) {
+            return;
+        }
+
         if (args.length < 4) {
             senderPlayer.sendMessage("not enough args");
             return;
@@ -76,10 +87,6 @@ public class TeamManageInviteCommand extends TeamManageSubCommand {
             return;
         }
 
-        if (playerNwTeam == null) {
-            senderPlayer.sendMessage("Your have no team");
-            return;
-        }
         targetPlayerData = PlayerDataManager.getPlayerDataFromMap(targetPlayer);
 
         if (targetPlayerData.getTeam() != null) {
@@ -87,15 +94,11 @@ public class TeamManageInviteCommand extends TeamManageSubCommand {
             return;
         }
 
-        TeamRank playerTeamRank = playerNwTeam.getMemberMap().get(senderPlayer).getRank();
-        if (playerTeamRank.getWeight() >= TeamRank.LIEUTENANT.getWeight()) {
-            if (TeamDataManager.getTeamDataManager().invite(targetPlayer, playerNwTeam)) {
-                senderPlayer.sendMessage("Invitation sent");
-            } else {
-                senderPlayer.sendMessage("impossible invitation");
-            }
+
+        if (TeamDataManager.getTeamDataManager().invite(targetPlayer, playerNwTeam)) {
+            senderPlayer.sendMessage("Invitation sent");
         } else {
-            senderPlayer.sendMessage("you do not have enough rank on your team");
+            senderPlayer.sendMessage("impossible invitation");
         }
     }
 

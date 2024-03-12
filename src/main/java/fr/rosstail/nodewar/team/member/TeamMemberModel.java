@@ -8,12 +8,14 @@ public class TeamMemberModel {
     private int playerId;
     private int rank; //0 OWNER, 1 Lieutenant, 2 Member, 3 Recruit
     private Timestamp joinDate;
+    private String username;
 
-    public TeamMemberModel(int teamId, int playerId, int rank, Timestamp joinDate) {
+    public TeamMemberModel(int teamId, int playerId, int rank, Timestamp joinDate, String username) {
         this.teamId = teamId;
         this.playerId = playerId;
         this.rank = rank;
         this.joinDate = joinDate;
+        this.username = username;
     }
 
     public int getId() {
@@ -38,6 +40,14 @@ public class TeamMemberModel {
 
     public void setPlayerId(int playerId) {
         this.playerId = playerId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public int getRank() {

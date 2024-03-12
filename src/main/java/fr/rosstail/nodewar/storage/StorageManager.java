@@ -244,6 +244,24 @@ public class StorageManager {
         }
     }
 
+    /**
+     *
+     * @param userName
+     * @return
+     */
+    public TeamMemberModel selectTeamMemberModelByUsername(String userName) {
+        switch (type) {
+            case "mysql":
+                return mySqlStorageRequest.selectTeamMemberModelByUsername(userName);
+            case "mariadb":
+                return mariaDBStorageRequest.selectTeamMemberModelByUsername(userName);
+            case "mongodb":
+                return mongoDBStorageRequest.selectTeamMemberModelByUsername(userName);
+            default:
+                return liteSqlDBStorageRequest.selectTeamMemberModelByUsername(userName);
+        }
+    }
+
 
     /**
      * SELECT ALL TEAM RELATION MODEL

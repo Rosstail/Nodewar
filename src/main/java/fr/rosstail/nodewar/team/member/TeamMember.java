@@ -4,6 +4,8 @@ import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.rank.TeamRank;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+
 public class TeamMember {
 
     private final Player player;
@@ -14,7 +16,7 @@ public class TeamMember {
     public TeamMember(final Player player, final NwTeam nwTeam, TeamMemberModel model) {
         this.player = player;
         this.nwTeam = nwTeam;
-        this.rank = TeamRank.values()[model.getRank()];
+        this.rank = Arrays.stream(TeamRank.values()).filter(teamRank -> teamRank.getWeight() == model.getRank()).findFirst().get();
         this.model = model;
     }
 

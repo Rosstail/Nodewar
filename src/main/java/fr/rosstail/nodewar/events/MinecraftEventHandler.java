@@ -7,6 +7,7 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.member.TeamMember;
+import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -35,10 +36,10 @@ public class MinecraftEventHandler implements Listener {
         NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
         playerData.setTeam(playerNwTeam);
         if (playerNwTeam != null) {
-            playerNwTeam.getMemberMap().put(player, new TeamMember(player,
-                    playerNwTeam, playerNwTeam.getModel().getTeamMemberModelMap().values().stream().filter(
-                            teamMemberModel -> teamMemberModel.getPlayerId() == playerData.getId()).findFirst().get()
-            ));
+            TeamMemberModel teamMemberModel = playerNwTeam.getModel().getTeamMemberModelMap().values().stream().filter(
+                    model -> model.getPlayerId() == playerData.getId()).findFirst().get();
+            teamMemberModel.setUsername(player.getName());
+            playerNwTeam.getMemberMap().put(player, new TeamMember(player, playerNwTeam, teamMemberModel));
         }
 
         checkPlayerPosition(player, player.getLocation());
@@ -53,7 +54,7 @@ public class MinecraftEventHandler implements Listener {
         checkPlayerPosition(player, player.getLocation());
         TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory ->
                 territory.getPlayers().contains(player)).forEach(territory -> {
-                    territory.getPlayers().remove(player);
+            territory.getPlayers().remove(player);
         });
         if (playerNwTeam != null) {
             playerNwTeam.getMemberMap().remove(player);

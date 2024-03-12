@@ -74,8 +74,7 @@ public class TeamManageRelationInvitesCommand extends TeamManageRelationSubComma
             sender.sendMessage("you are part of no team");
             return;
         }
-        if (playerNwTeam.getMemberMap().get(player).getRank().getWeight() < TeamRank.CAPTAIN.getWeight()) {
-            sender.sendMessage("you are not the high ranked enough");
+        if (!hasSenderTeamRank(((Player) sender).getPlayer(), playerNwTeam, TeamRank.CAPTAIN)) {
             return;
         }
 

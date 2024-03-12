@@ -11,6 +11,7 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
+import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.rank.TeamRank;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -71,8 +72,7 @@ public class TeamManageMemberKickCommand extends TeamManageMemberSubCommand {
                 return;
             }
 
-            if (playerNwTeam.getMemberMap().get(player).getRank().getWeight() < TeamRank.LIEUTENANT.getWeight()) {
-                sender.sendMessage("you do not have enough rank on your team");
+            if (!hasSenderTeamRank(((Player) sender).getPlayer(), playerNwTeam, TeamRank.LIEUTENANT)) {
                 return;
             }
 
@@ -88,15 +88,13 @@ public class TeamManageMemberKickCommand extends TeamManageMemberSubCommand {
                 return;
             }
 
-            if (!playerNwTeam.getMemberMap().keySet().stream()
-                    .filter(target -> target != sender)
-                    .map(Player::getName).collect(Collectors.toList()).contains(targetName)) {
+            if (playerNwTeam.getModel().getTeamMemberModelMap().values().stream()
+                    .noneMatch(teamMemberModel -> teamMemberModel.getUsername().equalsIgnoreCase(targetName))) {
                 sender.sendMessage("the player is not in your team.");
                 return;
             }
 
             StorageManager.getManager().deleteTeamMemberModel(playerNwTeam.getModel().getId());
-
 
             targetPlayer = Bukkit.getPlayer(targetName);
             if (targetPlayer != null) {
@@ -116,12 +114,10 @@ public class TeamManageMemberKickCommand extends TeamManageMemberSubCommand {
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
         NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
-        List<String> memberStringList = new ArrayList<>();
-
         if (playerNwTeam != null) {
-            memberStringList.addAll(StorageManager.getManager().selectAllTeamMemberModel(playerNwTeam.getModel().getName()).keySet());
+            return playerNwTeam.getModel().getTeamMemberModelMap().values().stream().map(TeamMemberModel::getUsername).collect(Collectors.toList());
         }
 
-        return memberStringList;
+        return new ArrayList<>();
     }
 }

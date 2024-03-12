@@ -95,8 +95,7 @@ public class TeamManageRelationEditCommand extends TeamManageRelationSubCommand 
             sender.sendMessage("You are part of no team");
             return;
         }
-        if (playerNwTeam.getMemberMap().get(((Player) sender)).getRank() != TeamRank.OWNER) {
-            sender.sendMessage("You are not the owner of the team");
+        if (!hasSenderTeamRank(((Player) sender).getPlayer(), playerNwTeam, TeamRank.OWNER)) {
             return;
         }
         if (targetNwTeam == null) {

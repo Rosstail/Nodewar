@@ -50,6 +50,7 @@ public class SqlStorageRequest implements StorageRequest {
         String query = "CREATE TABLE IF NOT EXISTS " + playerTableName + " (" +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " uuid varchar(40) UNIQUE NOT NULL," +
+                " username varchar(40) UNIQUE NOT NULL," +
                 " is_team_open BOOLEAN NOT NULL DEFAULT TRUE," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
 
@@ -201,7 +202,7 @@ public class SqlStorageRequest implements StorageRequest {
         try {
             ResultSet result = executeSQLQuery(connection, query, uuid);
             if (result.next()) {
-                PlayerModel model = new PlayerModel(uuid, PlayerDataManager.getPlayerNameFromUUID(uuid));
+                PlayerModel model = new PlayerModel(uuid, result.getString("username"));
                 model.setId(result.getInt("id"));
                 model.setTeamOpen(result.getBoolean("is_team_open"));
                 model.setLastUpdate(result.getTimestamp("last_update").getTime());
@@ -320,7 +321,8 @@ public class SqlStorageRequest implements StorageRequest {
                         result.getInt("team_id"),
                         result.getInt("player_id"),
                         result.getInt("player_rank"),
-                        result.getTimestamp("join_time"));
+                        result.getTimestamp("join_time"),
+                        result.getString("username"));
                 teamMemberModel.setId(result.getInt("id"));
                 memberModelMap.put(PlayerDataManager.getPlayerNameFromUUID(result.getString("uuid")), teamMemberModel);
             }
@@ -344,7 +346,33 @@ public class SqlStorageRequest implements StorageRequest {
                         result.getInt("team_id"),
                         result.getInt("player_id"),
                         result.getInt("player_rank"),
-                        result.getTimestamp("join_time")
+                        result.getTimestamp("join_time"),
+                        result.getString("username")
+                );
+                teamMemberModel.setId(result.getInt("id"));
+                return teamMemberModel;
+            }
+            result.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public TeamMemberModel selectTeamMemberModelByUsername(String userName) {
+        String query = "SELECT * FROM " + teamMemberTableName + " AS tmt, " + teamTableName + " AS tt, " + playerTableName + " AS pt " +
+                "WHERE tt.id = tmt.team_id AND tmt.player_id = pt.id AND pt.username = ? " +
+                "LIMIT 1";
+        try {
+            ResultSet result = executeSQLQuery(connection, query, userName);
+            if (result.next()) {
+                TeamMemberModel teamMemberModel = new TeamMemberModel(
+                        result.getInt("team_id"),
+                        result.getInt("player_id"),
+                        result.getInt("player_rank"),
+                        result.getTimestamp("join_time"),
+                        userName
                 );
                 teamMemberModel.setId(result.getInt("id"));
                 return teamMemberModel;
@@ -440,9 +468,9 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public void updatePlayerModel(PlayerModel model) {
-        String query = "UPDATE " + playerTableName + " SET last_update = CURRENT_TIMESTAMP, is_team_open = ? WHERE uuid = ?";
+        String query = "UPDATE " + playerTableName + " SET username = ?, last_update = CURRENT_TIMESTAMP, is_team_open = ? WHERE uuid = ?";
         try {
-            executeSQLUpdate(query, model.isTeamOpen(), model.getUuid());
+            executeSQLUpdate(query, model.getUsername(), model.isTeamOpen(), model.getUuid());
             model.setLastUpdate(System.currentTimeMillis());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -523,7 +551,7 @@ public class SqlStorageRequest implements StorageRequest {
         String query = "DELETE FROM " + teamTableName +
                 " WHERE id = ?";
         try {
-            boolean success = executeSQLUpdate(query, teamID) > 0;
+            executeSQLUpdate(query, teamID);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -534,7 +562,7 @@ public class SqlStorageRequest implements StorageRequest {
         String query = "DELETE FROM " + teamMemberTableName +
                 " WHERE id = ?";
         try {
-            boolean success = executeSQLUpdate(query, playerId) > 0;
+            executeSQLUpdate(query, playerId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -566,7 +594,12 @@ public class SqlStorageRequest implements StorageRequest {
                 statement.setObject(i + 1, params[i]);
             }
 
-            affectedRows = statement.executeUpdate();
+            affectedRows = statement.getUpdateCount();
+
+            // If the update count is -1, consider it as success
+            if (affectedRows == -1) {
+                affectedRows = 1;
+            }
 
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
