@@ -35,7 +35,7 @@ commands:
         - "[team_result_member_line]"
         - "* Relations &8:&r (default &8:&r [team_relation_default])"
         - "[team_result_relation_line]"
-      result-member-line: "   - [team_player] &8:&r [team_player_rank]"
+      result-member-line: "   - [team_player_connected][team_player] &8:&r [team_player_rank]"
       result-relation-line: "   - [team_display] &8:&r [team_relation]"
     list:
       desc: "Check the list of teams"

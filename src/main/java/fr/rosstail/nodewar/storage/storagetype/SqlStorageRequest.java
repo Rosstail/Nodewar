@@ -307,7 +307,7 @@ public class SqlStorageRequest implements StorageRequest {
     public Map<String, TeamMemberModel> selectAllTeamMemberModel(String teamName) {
         Map<String, TeamMemberModel> memberModelMap = new HashMap<>();
 
-        String query = "SELECT p.uuid, tm.* " +
+        String query = "SELECT p.uuid, p.username, tm.* " +
                 "FROM " + teamMemberTableName + " AS tm, " + teamTableName + " AS tt, " + playerTableName + " AS p " +
                 "WHERE p.id = tm.player_id " +
                 "AND tt.id = tm.team_id " +
@@ -324,7 +324,7 @@ public class SqlStorageRequest implements StorageRequest {
                         result.getTimestamp("join_time"),
                         result.getString("username"));
                 teamMemberModel.setId(result.getInt("id"));
-                memberModelMap.put(PlayerDataManager.getPlayerNameFromUUID(result.getString("uuid")), teamMemberModel);
+                memberModelMap.put(result.getString("username"), teamMemberModel);
             }
 
             result.close();

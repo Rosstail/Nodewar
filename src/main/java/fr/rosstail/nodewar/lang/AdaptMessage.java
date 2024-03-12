@@ -6,6 +6,7 @@ import fr.rosstail.nodewar.apis.ExpressionCalculator;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamModel;
+import fr.rosstail.nodewar.team.rank.TeamRank;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
@@ -219,7 +220,7 @@ public class AdaptMessage {
     public String decimalFormat(float value, char replacement) {
         ConfigData configData = ConfigData.getConfigData();
         int decimal = configData.locale.decNumber;
-        return String.format("%." +  decimal + "f", value).replaceAll(",", String.valueOf(replacement));
+        return String.format("%." + decimal + "f", value).replaceAll(",", String.valueOf(replacement));
     }
 
     /**
@@ -345,10 +346,12 @@ public class AdaptMessage {
         if (message.contains("[team_result_member_line]")) {
             String memberStringLine = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT_MEMBER_LINE);
             List<String> memberStringList = new ArrayList<>();
-            nwTeam.getMemberMap().forEach((member, teamMember) -> {
+            nwTeam.getModel().getTeamMemberModelMap().forEach((index, teamMember) -> {
                 memberStringList.add(memberStringLine
-                        .replaceAll("\\[team_player]", member.getName())
-                        .replaceAll("\\[team_player_rank]", teamMember.getRank().toString())
+                        .replaceAll("\\[team_player_connected]", Bukkit.getPlayer(teamMember.getUsername()) != null ? "&a+" : "&c-")
+                        .replaceAll("\\[team_player]", teamMember.getUsername())
+                        .replaceAll("\\[team_player_rank]", Arrays.stream(TeamRank.values()).filter(teamRank ->
+                                (teamRank.getWeight() == teamMember.getRank())).findFirst().get().name())
                 );
             });
             message = message.replaceAll("\\[team_result_member_line]", String.join("\n", memberStringList));
