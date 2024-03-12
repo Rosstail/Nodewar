@@ -13,9 +13,9 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminMemberTeamCommand extends AdminTeamMemberSubCommand {
+public class AdminTeamMemberCommand extends AdminTeamMemberSubCommand {
     public List<AdminTeamMemberSubCommand> subCommands = new ArrayList<>();
-    public AdminMemberTeamCommand() {
+    public AdminTeamMemberCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_MEMBER_DESC))
@@ -72,7 +72,7 @@ public class AdminMemberTeamCommand extends AdminTeamMemberSubCommand {
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        if (args.length <= 4) {
+        if (args.length <= 5) {
             List<String> list = new ArrayList<>();
             for (SubCommand subCommand : subCommands) {
                 list.add(subCommand.getName());
@@ -80,7 +80,7 @@ public class AdminMemberTeamCommand extends AdminTeamMemberSubCommand {
             return list;
         } else {
             for (SubCommand subCommand : subCommands) {
-                if (subCommand.getName().equalsIgnoreCase(args[4])) {
+                if (subCommand.getName().equalsIgnoreCase(args[5])) {
                     return subCommand.getSubCommandsArguments(sender, args, arguments);
                 }
             }

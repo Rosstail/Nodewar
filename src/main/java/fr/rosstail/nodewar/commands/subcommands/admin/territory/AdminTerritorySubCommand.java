@@ -21,12 +21,7 @@ public class AdminTerritorySubCommand extends AdminSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar admin territory <subcommand>";
-    }
-
-    @Override
-    public String getPermission() {
-        return "nodewar.command.admin.territory";
+        return "nodewar admin territory <territory> <subcommand>";
     }
 
     @Override
