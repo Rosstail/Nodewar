@@ -24,19 +24,19 @@ commands:
         - "[team_display]&r &8:&r"
         - "* Color &8:&r {[team_hexcolor]}[team_hexcolor]&r"
         - "* Your rank &8:&r [team_player_rank]"
-        - "* Members &8:&r [team_online_member] - [team_open]"
+        - "* Members &8:&r [team_online_member] - [team_open]&r"
         - "[team_result_member_line]"
         - "* Relations &8:&r (default &8:&r [team_relation_default])"
         - "[team_result_relation_line]"
       result-other:
         - "[team_display]&r &8:&r"
         - "* Color &8:&r {[team_hexcolor]}[team_hexcolor]&r"
-        - "* Members &8:&r [team_online_member] - [team_open]"
+        - "* Members &8:&r [team_online_member] - [team_open]&r"
         - "[team_result_member_line]"
         - "* Relations &8:&r (default &8:&r [team_relation_default])"
         - "[team_result_relation_line]"
       result-member-line: "   - [team_player_connected][team_player] &8:&r [team_player_rank]"
-      result-relation-line: "   - [team_display] &8:&r [team_relation]"
+      result-relation-line: "   - [team_display] &8:&r [team_relation]&r"
     list:
       desc: "Check the list of teams"
       result-header: "&bTeams list &8:"
@@ -220,6 +220,13 @@ player:
 team:
   open: "&aOpen"
   close: "&cClose"
+  relations:
+    neutral: "&fNeutral"
+    controlled: "&5Controlled"
+    team: "&9Team"
+    ally: "&aAlly"
+    truce: "&5Truce"
+    enemy: "&cEnemy"
 
 world-set-empire: "&7All territories in %nodewar_world_name% is now owned by %nodewar_territory_empire_owner%"
 world-neutralize: "&7All territories in %nodewar_world_name% have been neutralized"

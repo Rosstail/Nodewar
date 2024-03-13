@@ -80,7 +80,7 @@ public class AdminTeamRelationCommand extends AdminTeamRelationSubCommand {
             return list;
         } else {
             for (SubCommand subCommand : subCommands) {
-                if (subCommand.getName().equalsIgnoreCase(args[5])) {
+                if (subCommand.getName().equalsIgnoreCase(args[4])) {
                     return subCommand.getSubCommandsArguments(sender, args, arguments);
                 }
             }

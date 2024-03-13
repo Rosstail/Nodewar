@@ -116,7 +116,9 @@ public class AdminTeamRelationSetCommand extends AdminTeamRelationSubCommand {
                 baseTeam.getRelations().remove(targetTeam.getModel().getName());
                 targetTeam.getRelations().remove(baseTeam.getModel().getName());
 
-                createNewRelation(baseTeam, targetTeam, newRelationType);
+                if (newRelationType.getWeight() != defaultRelationWeight) {
+                    createNewRelation(baseTeam, targetTeam, newRelationType);
+                }
                 System.out.println("set immediate relation");
             } else {
                 System.out.println("same relation. No changes.");
@@ -134,8 +136,14 @@ public class AdminTeamRelationSetCommand extends AdminTeamRelationSubCommand {
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
-        if (args.length <= 5) {
+        NwTeam nwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(args[2]);
+        if (args.length <= 6) {
+            List<String> teams = new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().keySet());
+            if (nwTeam != null) {
+                teams.remove(nwTeam.getModel().getName());
+            }
+            return teams;
+        } else if (args.length == 7) {
             List<String> relations = new ArrayList<>();
 
             RelationType.getSelectableRelations().forEach(relationType -> {
@@ -143,12 +151,6 @@ public class AdminTeamRelationSetCommand extends AdminTeamRelationSubCommand {
             });
 
             return relations;
-        } else if (args.length == 6) {
-            List<String> teams = new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().keySet());
-            if (playerNwTeam != null) {
-                teams.remove(playerNwTeam.getModel().getName());
-            }
-            return teams;
         }
         return null;
     }

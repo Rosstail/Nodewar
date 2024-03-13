@@ -363,7 +363,7 @@ public class AdaptMessage {
             nwTeam.getRelations().forEach((s, teamRelation) -> {
                 relationStringList.add(
                         adaptTeamMessage(
-                                relationStringLine.replaceAll("\\[team_relation]", teamRelation.getRelationType().name())
+                                relationStringLine.replaceAll("\\[team_relation]", teamRelation.getRelationType().getDisplay())
                                 , teamRelation.getFirstTeam() == nwTeam ? teamRelation.getSecondTeam() : teamRelation.getFirstTeam())
                 );
             });
@@ -373,7 +373,7 @@ public class AdaptMessage {
         message = message.replaceAll("\\[team]", teamModel.getName());
         message = message.replaceAll("\\[team_display]", teamModel.getDisplay());
         message = message.replaceAll("\\[team_hexcolor]", teamModel.getHexColor());
-        message = message.replaceAll("\\[team_open]", nwTeam.getModel().isOpen() ? "cpen" : "close");
+        message = message.replaceAll("\\[team_open]", LangManager.getMessage(nwTeam.getModel().isOpen() ? LangMessage.TEAM_OPEN : LangMessage.TEAM_CLOSE));
         message = message.replaceAll("\\[team_online_member]", nwTeam.getMemberMap().size() + " / " + teamModel.getTeamMemberModelMap().size());
         message = message.replaceAll("\\[team_relation_default]", ConfigData.getConfigData().team.defaultRelation.toString());
 

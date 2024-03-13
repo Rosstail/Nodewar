@@ -132,6 +132,15 @@ public enum LangMessage {
     FORMAT_DATETIME("format.datetime", false, false),
     FORMAT_DATETIME_NEVER("format.datetime-never", false, false),
     FORMAT_COUNTDOWN("format.countdown", false, false),
+
+    TEAM_OPEN("team.open", false, false),
+    TEAM_CLOSE("team.close", false, false),
+    TEAM_RELATION_NEUTRAL("team.relations.neutral", false, false),
+    TEAM_RELATION_CONTROLLED("team.relations.controlled", false, false),
+    TEAM_RELATION_TEAM("team.relations.team", false, false),
+    TEAM_RELATION_ALLY("team.relations.ally", false, false),
+    TEAM_RELATION_TRUCE("team.relations.truce", false, false),
+    TEAM_RELATION_ENEMY("team.relations.enemy", false, false),
     ;
 
     private final String text;
