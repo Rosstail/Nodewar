@@ -58,7 +58,7 @@ public class AdminTeamCommand extends AdminTeamSubCommand {
             return;
         }
 
-        if (!subCommandsStringList.contains(args[3])) {
+        if (!subCommandsStringList.contains(subCommandArg)) {
             sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
             return;
         }

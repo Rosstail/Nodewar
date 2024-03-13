@@ -7,6 +7,8 @@ import fr.rosstail.nodewar.commands.subcommands.admin.territory.adminterritorysu
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
+import fr.rosstail.nodewar.team.TeamDataManager;
+import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -26,26 +28,37 @@ public class AdminTerritoryCommand extends AdminTerritorySubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
+        String territoryName;
+        String subCommandArg;
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
-        if (args.length < 3) {
+        if (args.length < 4) {
             sender.sendMessage(getSubCommandHelp());
             return;
         }
+
+
+        territoryName = args[2];
+        subCommandArg = args[3];
 
         List<String> subCommandsStringList = new ArrayList<>();
         for (AdminTerritorySubCommand subCommand : subCommands) {
             subCommandsStringList.add(subCommand.getName());
         }
 
-        if (!subCommandsStringList.contains(args[2])) {
+        if (!TerritoryManager.getTerritoryManager().getTerritoryMap().containsKey(territoryName)) {
+            sender.sendMessage("this territory does not exists: " + territoryName);
+            return;
+        }
+
+        if (!subCommandsStringList.contains(subCommandArg)) {
             sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
             return;
         }
 
         for (AdminTerritorySubCommand subCommand : subCommands) {
-            if (subCommand.getName().equalsIgnoreCase(args[2])) {
+            if (subCommand.getName().equalsIgnoreCase(subCommandArg)) {
                 subCommand.perform(sender, args, arguments);
             }
         }
@@ -55,6 +68,8 @@ public class AdminTerritoryCommand extends AdminTerritorySubCommand {
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
         if (args.length <= 3) {
+            return new ArrayList<>(TerritoryManager.getTerritoryManager().getTerritoryMap().keySet());
+        } else if (args.length == 4) {
             List<String> list = new ArrayList<>();
             for (SubCommand subCommand : subCommands) {
                 list.add(subCommand.getName());
@@ -62,7 +77,7 @@ public class AdminTerritoryCommand extends AdminTerritorySubCommand {
             return list;
         } else {
             for (SubCommand subCommand : subCommands) {
-                if (subCommand.getName().equalsIgnoreCase(args[1])) {
+                if (subCommand.getName().equalsIgnoreCase(args[3])) {
                     return subCommand.getSubCommandsArguments(sender, args, arguments);
                 }
             }

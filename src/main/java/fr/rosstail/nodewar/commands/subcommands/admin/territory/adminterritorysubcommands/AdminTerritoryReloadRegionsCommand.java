@@ -30,7 +30,7 @@ public class AdminTerritoryReloadRegionsCommand extends AdminTerritorySubCommand
 
     @Override
     public String getSyntax() {
-        return "nodewar admin territory edit <territory> reloadregions";
+        return "nodewar admin territory <territory> reloadregions";
     }
 
     @Override
