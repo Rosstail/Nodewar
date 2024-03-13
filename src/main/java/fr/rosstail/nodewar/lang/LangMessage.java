@@ -14,20 +14,7 @@ public enum LangMessage {
     COMMANDS_HELP_HEADER("commands.help.header", false, false),
 
     COMMANDS_HELP_LINE("commands.help.line", false, false),
-
-    COMMANDS_CHECK_DESC("commands.check.desc", false, false),
-    COMMANDS_CHECK_SELF_DESC("commands.check.self.desc", false, false),
-    COMMANDS_CHECK_SELF_RESULT("commands.check.self.result", false, false),
-    COMMANDS_CHECK_OTHER_DESC("commands.check.other.desc", false, false),
-    COMMANDS_CHECK_OTHER_RESULT("commands.check.other.result", false, false),
-
-    COMMANDS_EDIT_DESC("commands.edit.desc", false, false),
-
-    COMMANDS_EDIT_PLAYER_DESC("commands.edit.player.desc", false, false),
     COMMANDS_EDIT_PLAYER_DISCONNECTED("commands.edit.player.disconnected-player", false, false),
-    COMMANDS_EDIT_PLAYER_NO_DATA("commands.edit.player.player-no-data", false, false),
-    COMMANDS_EDIT_PLAYER_OUT_OF_BOUNDS("commands.edit.player.out-of-bounds", false, false),
-
     COMMANDS_TEAM_DESC("commands.team.desc", false, false),
 
     COMMANDS_TEAM_CHECK_DESC("commands.team.check.desc", false, false),
@@ -61,6 +48,7 @@ public enum LangMessage {
     COMMANDS_TEAM_MANAGE_CLOSE_RESULT("commands.team.manage.close.result", false, false),
     COMMANDS_TEAM_MANAGE_INVITE_DESC("commands.team.manage.invite.desc", false, false),
     COMMANDS_TEAM_MANAGE_INVITE_RESULT("commands.team.manage.invite.result", false, false),
+    COMMANDS_TEAM_MANAGE_MEMBER_DESC("commands.team.manage.member.desc", false, false),
     COMMANDS_TEAM_MANAGE_MEMBER_KICK_DESC("commands.team.manage.member.kick.desc", false, false),
     COMMANDS_TEAM_MANAGE_MEMBER_KICK_RESULT("commands.team.manage.member.kick.result", false, false),
     COMMANDS_TEAM_MANAGE_MEMBER_PROMOTE_DESC("commands.team.manage.member.promote.desc", false, false),
@@ -100,8 +88,10 @@ public enum LangMessage {
     COMMANDS_ADMIN_TEAM_INVITE_DESC("commands.admin.team.invite.desc", false, false),
     COMMANDS_ADMIN_TEAM_INVITE_RESULT("commands.admin.team.invite.result", false, false),
     COMMANDS_ADMIN_TEAM_MEMBER_DESC("commands.admin.team.member.desc", false, false),
-    COMMANDS_ADMIN_TEAM_MEMBER_KICK_DESC("commands.admin.team.member.kick.desc", false, false),
-    COMMANDS_ADMIN_TEAM_MEMBER_KICK_RESULT("commands.admin.team.member.kick.result", false, false),
+    COMMANDS_ADMIN_TEAM_MEMBER_ADD_DESC("commands.admin.team.member.add.desc", false, false),
+    COMMANDS_ADMIN_TEAM_MEMBER_ADD_RESULT("commands.admin.team.member.add.result", false, false),
+    COMMANDS_ADMIN_TEAM_MEMBER_REMOVE_DESC("commands.admin.team.member.remove.desc", false, false),
+    COMMANDS_ADMIN_TEAM_MEMBER_REMOVE_RESULT("commands.admin.team.member.remove.result", false, false),
     COMMANDS_ADMIN_TEAM_MEMBER_PROMOTE_DESC("commands.admin.team.member.promote.desc", false, false),
     COMMANDS_ADMIN_TEAM_MEMBER_PROMOTE_RESULT("commands.admin.team.member.promote.result", false, false),
     COMMANDS_ADMIN_TEAM_MEMBER_DEMOTE_DESC("commands.admin.team.member.demote.desc", false, false),
@@ -122,6 +112,8 @@ public enum LangMessage {
     COMMANDS_ADMIN_TEAM_RELATION_EDIT_RESULT_INVITE("commands.admin.team.relation.edit.result-invite", false, false),
     COMMANDS_ADMIN_TEAM_RELATION_EDIT_RESULT_WEIGHT("commands.admin.team.relation.edit.result-weight", false, false),
     COMMANDS_ADMIN_TEAM_RELATION_EDIT_RESULT_IGNORE("commands.admin.team.relation.edit.result-ignore", false, false),
+    COMMANDS_ADMIN_TEAM_RELATION_SET_DESC("commands.admin.team.relation.set.desc", false, false),
+    COMMANDS_ADMIN_TEAM_RELATION_SET_RESULT("commands.admin.team.relation.set.result", false, false),
     COMMANDS_ADMIN_TEAM_DISBAND_DESC("commands.admin.team.disband.desc", false, false),
     COMMANDS_ADMIN_TEAM_DISBAND_RESULT("commands.admin.team.disband.result", false, false),
     COMMANDS_ADMIN_TERRITORY_DESC("commands.admin.territory.desc", false, false),
@@ -132,15 +124,6 @@ public enum LangMessage {
     COMMANDS_ADMIN_TERRITORY_TEAM_SET_RESULT("commands.admin.territory.team.set.result", false, false),
     COMMANDS_ADMIN_TERRITORY_TEAM_RESET_DESC("commands.admin.territory.team.reset.desc", false, false),
     COMMANDS_TERRITORY_TEAM_RESET_RESULT("commands.admin.territory.team.reset.result", false, false),
-
-    COMMANDS_RELOAD_DESC("commands.reload.desc", false, false),
-    COMMANDS_RELOAD_RESULT("commands.reload.result", false, false),
-
-    COMMANDS_SAVE_DESC("commands.save.desc", false, false),
-    COMMANDS_SAVE_RESULT("commands.save.result", false, false),
-
-    COMMANDS_EVAL_DESC("commands.eval.desc", false, false),
-    COMMANDS_EVAL_RESULT("commands.eval.result", false, false),
 
     PLAYER_ONLINE("player.online", false, false),
     PLAYER_OFFLINE("player.offline", false, false),

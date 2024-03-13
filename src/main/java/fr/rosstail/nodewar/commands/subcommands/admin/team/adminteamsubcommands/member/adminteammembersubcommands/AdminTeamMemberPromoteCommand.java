@@ -103,7 +103,7 @@ public class AdminTeamMemberPromoteCommand extends AdminTeamMemberSubCommand {
         }
 
         sender.sendMessage(
-                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_MEMBER_DEMOTE_RESULT), targetTeam, targetPlayer)
+                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_MEMBER_PROMOTE_RESULT), targetTeam, targetPlayer)
         );
     }
 

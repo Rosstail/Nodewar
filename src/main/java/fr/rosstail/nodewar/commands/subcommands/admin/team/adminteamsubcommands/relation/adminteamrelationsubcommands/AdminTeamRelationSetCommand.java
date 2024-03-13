@@ -25,7 +25,7 @@ public class AdminTeamRelationSetCommand extends AdminTeamRelationSubCommand {
     public AdminTeamRelationSetCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_RELATION_EDIT_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_RELATION_SET_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
 

@@ -22,7 +22,7 @@ public class TeamManageMemberCommand extends TeamManageMemberSubCommand {
     public TeamManageMemberCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
         subCommands.add(new TeamManageMemberPromoteCommand());
         subCommands.add(new TeamManageMemberDemoteCommand());

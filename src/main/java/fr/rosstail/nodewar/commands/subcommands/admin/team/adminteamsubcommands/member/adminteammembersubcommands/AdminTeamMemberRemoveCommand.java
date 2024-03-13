@@ -24,7 +24,7 @@ public class AdminTeamMemberRemoveCommand extends AdminTeamMemberSubCommand {
     public AdminTeamMemberRemoveCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_MEMBER_KICK_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_MEMBER_REMOVE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
 
@@ -90,7 +90,7 @@ public class AdminTeamMemberRemoveCommand extends AdminTeamMemberSubCommand {
             targetData.removeTeam();
         }
         sender.sendMessage(
-                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_MEMBER_KICK_RESULT), targetTeam, targetPlayer)
+                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_MEMBER_REMOVE_RESULT), targetTeam, targetPlayer)
         );
 
         StorageManager.getManager().updateTeamModel(targetTeam.getModel());

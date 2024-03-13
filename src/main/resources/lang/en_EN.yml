@@ -75,6 +75,7 @@ commands:
         desc: "Invite a player into your team"
         result: "Invitation sent successfully."
       member:
+        desc: "Manage players from your team"
         promote:
           desc: "Promote a team member"
           result: "Player [player] promoted to [team_member_rank]."
@@ -117,20 +118,26 @@ commands:
     team:
       desc: "Admin team command"
       color:
-        desc: "Edit your current team color"
+        desc: "Edit selected team current team color"
         result: "Team color set to {[team_hexcolor]}[team_hexcolor]"
       open:
-        desc: "Make your team joinable by anybody"
-        result: "your team is now open"
-        result-close: "your team is now close"
+        desc: "Make selected team joinable by anybody"
+        result: "Selected team is now open"
+        result-close: "Selected team is now close"
       close:
-        desc: "Make your team joinable only on invites"
-        result: "your team is now close"
+        desc: "Make selected team joinable only on invites"
+        result: "Selected team is now close"
       invite:
-        desc: "Invite a player into your team"
+        desc: "Invite a player into selected team"
         result: "Invitation sent successfully."
       member:
         desc: "manage members of a team"
+        add:
+          desc: "Add a player to team"
+          result: "Player [player] added to [team]."
+        remove:
+          desc: "Remove a player from team"
+          result: "Player [player] removed from [team]."
         promote:
           desc: "Promote a team member"
           result: "Player [player] promoted to [team_member_rank]."
@@ -138,7 +145,7 @@ commands:
           desc: "Demote a team member"
           result: "Player [player] demoted to [team_member_rank]."
         kick:
-          desc: "Kick a player from your team"
+          desc: "Kick a player from selected team"
           result: "Player kicked successfully."
         transfer:
           desc: "Transfer ownership of team to player"
@@ -156,6 +163,9 @@ commands:
           result-invite: "Relation invite sent successfully."
           result-weight: "Relation set."
           result-ignore: "Same relation. No change."
+        set:
+          desc: "Set immediate relation between selected teams"
+          result: "Relation set."
         invites:
           desc: "Check list of teams relations invites."
           result-header: "&bInvites &8:"
@@ -163,7 +173,7 @@ commands:
           result-line-received: "&e<<<"
           result-line-sent: "&6>>>"
       disband:
-        desc: "Disband your nodewar team"
+        desc: "Disband selected nodewar team"
         result: "Disbanded team"
     territory:
       desc: "Edit the selected territory"

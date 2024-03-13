@@ -20,7 +20,7 @@ public class AdminTerritoryCommand extends AdminTerritorySubCommand {
     public AdminTerritoryCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TERRITORY_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
         subCommands.add(new AdminTerritoryReloadRegionsCommand());
         subCommands.add(new AdminTerritoryTeamCommand());

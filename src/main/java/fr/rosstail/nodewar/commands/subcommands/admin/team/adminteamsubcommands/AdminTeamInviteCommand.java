@@ -87,7 +87,7 @@ public class AdminTeamInviteCommand extends AdminTeamSubCommand {
 
 
         if (TeamDataManager.getTeamDataManager().invite(targetPlayer, targetTeam)) {
-            sender.sendMessage("Invitation sent");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_INVITE_RESULT));
         } else {
             sender.sendMessage("impossible invitation");
         }
