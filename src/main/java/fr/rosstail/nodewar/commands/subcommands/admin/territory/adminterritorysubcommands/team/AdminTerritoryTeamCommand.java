@@ -26,18 +26,13 @@ public class AdminTerritoryTeamCommand extends AdminTerritoryTeamSubCommand {
     }
 
     @Override
-    public String getSyntax() {
-        return "nodewar admin territory <territory> team";
-    }
-
-    @Override
     public String getHelp() {
         return super.getHelp();
     }
 
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
-        if (args.length < 6) {
+        if (args.length < 5) {
             sender.sendMessage(getSubCommandHelp());
             return;
         }
@@ -53,7 +48,7 @@ public class AdminTerritoryTeamCommand extends AdminTerritoryTeamSubCommand {
         }
 
         for (AdminTerritorySubCommand subCommand : subCommands) {
-            if (subCommand.getName().equalsIgnoreCase(args[5])) {
+            if (subCommand.getName().equalsIgnoreCase(args[4])) {
                 subCommand.perform(sender, args, arguments);
             }
         }
@@ -61,7 +56,7 @@ public class AdminTerritoryTeamCommand extends AdminTerritoryTeamSubCommand {
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        if (args.length <= 6) {
+        if (args.length <= 5) {
             List<String> list = new ArrayList<>();
             for (SubCommand subCommand : subCommands) {
                 list.add(subCommand.getName());
