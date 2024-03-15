@@ -59,6 +59,7 @@ public class TeamCreateCommand extends TeamSubCommand {
         String displayName;
         Player senderPlayer = null;
         NwTeam playerNwTeam;
+        TeamDataManager teamDataManager = TeamDataManager.getTeamDataManager();
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
@@ -67,17 +68,17 @@ public class TeamCreateCommand extends TeamSubCommand {
             displayName = args[2];
             int ownerId = 0;
 
-            if (TeamDataManager.getTeamDataManager().getStringTeamMap().get(teamName) != null) {
+            if (teamDataManager.getStringTeamMap().get(teamName) != null) {
                 sender.sendMessage("TeamCreateCommand - This team already exist in storage");
                 return;
             }
-            TeamModel teamModel = new TeamModel(teamName, displayName);
+            TeamModel teamModel = new TeamModel(teamName, displayName, teamDataManager.generateRandomColor());
             if (sender instanceof Player) {
                 senderPlayer = (Player) sender;
                 PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
                 ownerId = playerData.getId();
 
-                playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
+                playerNwTeam = teamDataManager.getTeamOfPlayer(senderPlayer);
                 if (playerNwTeam != null) {
                     sender.sendMessage("You are already on a team");
                     return;
@@ -89,7 +90,7 @@ public class TeamCreateCommand extends TeamSubCommand {
             boolean insertTeam = StorageManager.getManager().insertTeamModel(teamModel);
             if (insertTeam) {
                 playerNwTeam = new NwTeam(teamModel);
-                TeamDataManager.getTeamDataManager().addNewTeam(playerNwTeam);
+                teamDataManager.addNewTeam(playerNwTeam);
 
                 sender.sendMessage("Team created successfully " + teamModel.getId());
 

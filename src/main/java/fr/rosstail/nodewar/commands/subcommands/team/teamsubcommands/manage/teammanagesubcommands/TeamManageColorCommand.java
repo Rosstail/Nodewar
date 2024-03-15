@@ -10,10 +10,13 @@ import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.rank.TeamRank;
 import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -57,7 +60,7 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         Player player;
         NwTeam playerNwTeam;
-        String value;
+        String colorValue;
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
@@ -82,13 +85,27 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
             return;
         }
 
-        value = args[3];
+        colorValue = args[3].toUpperCase();
 
-        if (!hexPattern.matcher(value).find()) {
-            sender.sendMessage("Wrong argument ex: #CD9F16");
-            return;
+
+        if (colorValue.startsWith("#")) {
+            if (hexPattern.matcher(colorValue).find()) {
+                if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1]) < 16) {
+                    sender.sendMessage("you cannot use HEX values on 1.13 and lower.");
+                    return;
+                }
+            } else {
+                sender.sendMessage("the hex color must be in this format: '#RRGGBB'. Ex: '#CA734F'");
+            }
+        } else {
+            try {
+                ChatColor.valueOf(colorValue);
+            } catch (IllegalArgumentException e) {
+                sender.sendMessage("this color does not exist.");
+                return;
+            }
         }
-        playerNwTeam.getModel().setHexColor(value);
+        playerNwTeam.getModel().setTeamColor(colorValue);
 
         sender.sendMessage(
                 AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_COLOR_RESULT), playerNwTeam, player)
@@ -101,7 +118,12 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
         List<String> list = new ArrayList<>();
-        list.add("#");
+        if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1]) >= 16) {
+            list.add("#");
+        }
+        Arrays.stream(ChatColor.values()).filter(ChatColor::isColor).forEach(chatColor -> {
+            list.add(chatColor.name());
+        });
         return list;
     }
 }

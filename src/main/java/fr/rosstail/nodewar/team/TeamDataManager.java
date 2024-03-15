@@ -9,9 +9,13 @@ import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TeamRelation;
 import fr.rosstail.nodewar.team.relation.TeamRelationManager;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TeamDataManager {
 
@@ -119,5 +123,25 @@ public class TeamDataManager {
             return true;
         }
         return false;
+    }
+
+    public String generateRandomColor() {
+        StringBuilder randomHexColor;
+        List<ChatColor> colorList = Arrays.stream(ChatColor.values()).filter(ChatColor::isColor).collect(Collectors.toList());
+
+        if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1]) < 16) {
+
+            return colorList.get((int) (Math.random() * colorList.size())).name();
+        } else {
+            randomHexColor = new StringBuilder("#");
+
+            for (int i = 0; i < 6; i++) {
+                Random random = new Random();
+
+                randomHexColor.append(Integer.toHexString(random.nextInt(16)));
+            }
+
+        }
+        return randomHexColor.toString().toUpperCase();
     }
 }

@@ -31,6 +31,7 @@ public class AdaptMessage {
     private static AdaptMessage adaptMessage;
     private final Nodewar plugin;
     private static final Pattern hexPattern = Pattern.compile("\\{(#[a-fA-F0-9]{6})}");
+    private static final Pattern colorPattern = Pattern.compile("\\{([A-Za-z_]+)}");
     private static final Pattern calculatePattern = Pattern.compile("\\[eval(\\w+)?_([^%\\s]*)]");
 
     public enum prints {
@@ -110,7 +111,7 @@ public class AdaptMessage {
         message = message.replaceAll("\\[team_name]", team.getModel().getName());
         message = message.replaceAll("\\[team_id]", String.valueOf(team.getModel().getId()));
         message = message.replaceAll("\\[team_display]", team.getModel().getDisplay());
-        message = message.replaceAll("\\[team_hexcolor]", team.getModel().getHexColor());
+        message = message.replaceAll("\\[team_color]", team.getModel().getTeamColor());
         message = message.replaceAll("\\[team_open]", String.valueOf(team.getModel().isOpen()));
         message = message.replaceAll("\\[team_permanent]", String.valueOf(team.getModel().isPermanent()));
         message = message.replaceAll("\\[team_creation_date]", String.valueOf(team.getModel().getCreationDate()));
@@ -159,8 +160,9 @@ public class AdaptMessage {
 
         message = ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(null, message));
         if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1].replaceAll("\\)", "")) >= 16) {
-            message = colorFormat(message);
+            message = colorFormat(hexPattern, message);
         }
+        message = colorFormat(colorPattern, message);
 
         Matcher matcher = calculatePattern.matcher(message);
 
@@ -203,17 +205,18 @@ public class AdaptMessage {
         return newMessages.toArray(new String[0]);
     }
 
-    public String colorFormat(String message) {
-        Matcher hexMatcher = hexPattern.matcher(message);
-        while (hexMatcher.find()) {
+    public String colorFormat(Pattern pattern, String message) {
+        Matcher matcher = pattern.matcher(message);
+        while (matcher.find()) {
             try {
-                String matched = hexMatcher.group(0);
-                String color = hexMatcher.group(1);
+                String matched = matcher.group(0);
+                String color = matcher.group(1);
                 message = message.replace(matched, String.valueOf(ChatColor.of(color)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
         return message;
     }
 
@@ -372,7 +375,7 @@ public class AdaptMessage {
 
         message = message.replaceAll("\\[team]", teamModel.getName());
         message = message.replaceAll("\\[team_display]", teamModel.getDisplay());
-        message = message.replaceAll("\\[team_hexcolor]", teamModel.getHexColor());
+        message = message.replaceAll("\\[team_color]", teamModel.getTeamColor());
         message = message.replaceAll("\\[team_open]", LangManager.getMessage(nwTeam.getModel().isOpen() ? LangMessage.TEAM_OPEN : LangMessage.TEAM_CLOSE));
         message = message.replaceAll("\\[team_online_member]", nwTeam.getMemberMap().size() + " / " + teamModel.getTeamMemberModelMap().size());
         message = message.replaceAll("\\[team_relation_default]", ConfigData.getConfigData().team.defaultRelation.toString());
@@ -382,5 +385,45 @@ public class AdaptMessage {
         }
 
         return adaptMessage(message);
+    }
+
+
+    public String getChatColoHexValue(String teamColor) {
+        switch (teamColor) {
+            case "BLACK":
+                return "#000000";
+            case "DARK_BLUE":
+                return "#0000AA";
+            case "DARK_GREEN":
+                return "#00AA00";
+            case "DARK_AQUA":
+                return "#00AAAA";
+            case "DARK_RED":
+                return "#AA0000";
+            case "DARK_PURPLE":
+                return "#AA00AA";
+            case "GOLD":
+                return "#FFAA00";
+            case "GRAY":
+                return "#AAAAAA";
+            case "DARK_GRAY":
+                return "#555555";
+            case "BLUE":
+                return "#5555FF";
+            case "GREEN":
+                return "#55FF55";
+            case "AQUA":
+                return "#55FFFF";
+            case "RED":
+                return "#FF5555";
+            case "LIGHT_PURPLE":
+                return "#FF55FF";
+            case "YELLOW":
+                return "#FFFF55";
+            case "WHITE":
+                return "#FFFFFF";
+            default:
+                return teamColor;
+        }
     }
 }

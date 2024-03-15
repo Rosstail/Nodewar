@@ -8,12 +8,14 @@ import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
-import fr.rosstail.nodewar.team.rank.TeamRank;
 import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -63,25 +65,40 @@ public class AdminTeamColorCommand extends AdminTeamSubCommand {
         }
 
         targetTeamName = args[2];
-        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
+        targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
-        if (playerNwTeam == null) {
+        if (targetTeam == null) {
             sender.sendMessage("team does not exist");
             return;
         }
 
-        colorValue = args[4];
+        colorValue = args[4].toUpperCase();
 
-        if (!hexPattern.matcher(colorValue).find()) {
-            sender.sendMessage("Wrong argument ex: #CD9F16");
-            return;
+        if (colorValue.startsWith("#")) {
+            if (hexPattern.matcher(colorValue).find()) {
+                if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1]) < 16) {
+                    sender.sendMessage("you cannot use HEX values on 1.13 and lower.");
+                    return;
+                }
+            } else {
+                sender.sendMessage("the hex color must be in this format: '#RRGGBB'. Ex: '#CA734F'");
+                return;
+            }
+        } else {
+            try {
+                ChatColor.valueOf(colorValue);
+            } catch (IllegalArgumentException e) {
+                sender.sendMessage("this color does not exist.");
+                return;
+            }
         }
-        playerNwTeam.getModel().setHexColor(colorValue);
 
-        StorageManager.getManager().updateTeamModel(playerNwTeam.getModel());
+        targetTeam.getModel().setTeamColor(colorValue);
+
+        StorageManager.getManager().updateTeamModel(targetTeam.getModel());
 
         sender.sendMessage(
-                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_COLOR_RESULT), playerNwTeam, null)
+                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_COLOR_RESULT), targetTeam, null)
         );
 
         DynmapHandler.getDynmapHandler().resumeRender();
@@ -90,7 +107,12 @@ public class AdminTeamColorCommand extends AdminTeamSubCommand {
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
         List<String> list = new ArrayList<>();
-        list.add("#");
+        if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1]) >= 16) {
+            list.add("#");
+        }
+        Arrays.stream(ChatColor.values()).filter(ChatColor::isColor).forEach(chatColor -> {
+            list.add(chatColor.name());
+        });
         return list;
     }
 }

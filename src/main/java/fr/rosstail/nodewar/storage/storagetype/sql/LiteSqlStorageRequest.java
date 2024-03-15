@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.storage.storagetype.sql;
 
 import fr.rosstail.nodewar.storage.storagetype.SqlStorageRequest;
+import org.bukkit.Color;
 
 public class LiteSqlStorageRequest extends SqlStorageRequest {
 
@@ -40,7 +41,7 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
                 " id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " name VARCHAR(40) UNIQUE," +
                 " display VARCHAR(40) UNIQUE," +
-                " hex_color VARCHAR(7)," +
+                " color VARCHAR(20) NOT NULL DEFAULT" + Color.FUCHSIA + "," +
                 " is_open BOOLEAN NOT NULL DEFAULT FALSE," +
                 " is_relation_open BOOLEAN NOT NULL DEFAULT TRUE," +
                 " is_permanent BOOLEAN NOT NULL DEFAULT FALSE," +

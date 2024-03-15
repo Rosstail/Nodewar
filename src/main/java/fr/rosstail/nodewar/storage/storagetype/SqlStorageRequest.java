@@ -9,6 +9,8 @@ import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
 
 import java.sql.*;
 import java.util.*;
@@ -62,7 +64,7 @@ public class SqlStorageRequest implements StorageRequest {
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " name VARCHAR(40) UNIQUE," +
                 " display VARCHAR(40) UNIQUE," +
-                " hex_color VARCHAR(7)," +
+                " color VARCHAR(20) NOT NULL DEFAULT" + Color.FUCHSIA + "," +
                 " is_open BOOLEAN NOT NULL DEFAULT FALSE," +
                 " is_relation_open BOOLEAN NOT NULL DEFAULT TRUE," +
                 " is_permanent BOOLEAN NOT NULL DEFAULT FALSE," +
@@ -129,16 +131,16 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public boolean insertTeamModel(TeamModel model) {
-        String query = "INSERT INTO " + teamTableName + " (name, display, hex_color, is_open, is_relation_open, is_permanent)"
+        String query = "INSERT INTO " + teamTableName + " (name, display, color, is_open, is_relation_open, is_permanent)"
                 + " VALUES (?, ?, ?, ?, ?);";
         String name = model.getName();
         String display = model.getDisplay();
-        String hexColor = model.getHexColor();
+        String teamColor = model.getTeamColor();
         boolean open = model.isOpen();
         boolean openRelation = model.isOpenRelation();
         boolean permanent = model.isPermanent();
         try {
-            int id = executeSQLUpdate(query, name, display, hexColor, open, openRelation, permanent);
+            int id = executeSQLUpdate(query, name, display, teamColor, open, openRelation, permanent);
             model.setId(id);
             return true;
         } catch (SQLException e) {
@@ -257,9 +259,8 @@ public class SqlStorageRequest implements StorageRequest {
         try {
             ResultSet result = executeSQLQuery(connection, query, ownerUuid);
             if (result.next()) {
-                TeamModel teamModel = new TeamModel(result.getString("name"), result.getString("display"));
+                TeamModel teamModel = new TeamModel(result.getString("name"), result.getString("display"), result.getString("color"));
                 teamModel.setId(result.getInt("id"));
-                teamModel.setHexColor(result.getString("hex_color"));
                 teamModel.setPermanent(result.getBoolean("is_permanent"));
                 teamModel.setOpen(result.getBoolean("is_open"));
                 teamModel.setOpenRelation(result.getBoolean("is_relation_open"));
@@ -293,9 +294,8 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     private TeamModel getTeamModelFromResult(ResultSet result, String name) throws SQLException {
-        TeamModel teamModel = new TeamModel(name, result.getString("display"));
+        TeamModel teamModel = new TeamModel(name, result.getString("display"), result.getString("color"));
         teamModel.setId(result.getInt("id"));
-        teamModel.setHexColor(result.getString("hex_color"));
         teamModel.setPermanent(result.getBoolean("is_permanent"));
         teamModel.setOpen(result.getBoolean("is_open"));
         teamModel.setCreationDate(result.getTimestamp("creation_date"));
@@ -480,13 +480,13 @@ public class SqlStorageRequest implements StorageRequest {
     @Override
     public void updateTeamModel(TeamModel model) {
         String query = "UPDATE " + teamTableName +
-                " SET name = ?, display = ?, hex_color = ?, is_open = ?, is_relation_open = ?, is_permanent = ?, last_update = CURRENT_TIMESTAMP" +
+                " SET name = ?, display = ?, color = ?, is_open = ?, is_relation_open = ?, is_permanent = ?, last_update = CURRENT_TIMESTAMP" +
                 " WHERE id = ?";
         try {
             executeSQLUpdate(query,
                     model.getName(),
                     model.getDisplay(),
-                    model.getHexColor(),
+                    model.getTeamColor(),
                     model.isOpen(),
                     model.isOpenRelation(),
                     model.isPermanent(),
@@ -594,12 +594,16 @@ public class SqlStorageRequest implements StorageRequest {
                 statement.setObject(i + 1, params[i]);
             }
 
+            statement.executeUpdate();
             affectedRows = statement.getUpdateCount();
 
             // If the update count is -1, consider it as success
             if (affectedRows == -1) {
                 affectedRows = 1;
             }
+
+            System.out.println("Affected lines " + affectedRows);
+            System.out.println(statement);
 
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {

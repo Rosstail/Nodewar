@@ -72,7 +72,12 @@ public class DynmapHandler {
 
         AreaStyle(Territory territory) {
             NwTeam team = territory.getOwnerTeam();
-            fillColor = team != null ? team.getModel().getHexColor() : "#CACACA";
+            String teamColor = team != null ? team.getModel().getTeamColor() : "#CACACA";
+            if (teamColor.startsWith("#")) {
+                fillColor = teamColor;
+            } else {
+                fillColor = AdaptMessage.getAdaptMessage().getChatColoHexValue(teamColor);
+            }
             /*if (!territory.getTerritoryType().isUnderProtection()) {
                 strokeOpacity = 0.1f;
             } else if (territory) {

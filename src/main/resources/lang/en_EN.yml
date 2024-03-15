@@ -22,7 +22,7 @@ commands:
       desc: "Check team's data"
       result:
         - "[team_display]&r &8:&r"
-        - "* Color &8:&r {[team_hexcolor]}[team_hexcolor]&r"
+        - "* Color &8:&r {[team_color]}[team_color]&r"
         - "* Your rank &8:&r [team_player_rank]"
         - "* Members &8:&r [team_online_member] - [team_open]&r"
         - "[team_result_member_line]"
@@ -30,7 +30,7 @@ commands:
         - "[team_result_relation_line]"
       result-other:
         - "[team_display]&r &8:&r"
-        - "* Color &8:&r {[team_hexcolor]}[team_hexcolor]&r"
+        - "* Color &8:&r {[team_color]}[team_color]&r"
         - "* Members &8:&r [team_online_member] - [team_open]&r"
         - "[team_result_member_line]"
         - "* Relations &8:&r (default &8:&r [team_relation_default])"
@@ -40,13 +40,13 @@ commands:
     list:
       desc: "Check the list of teams"
       result-header: "&bTeams list &8:"
-      result-line: "&a► {[team_hexcolor]}[team_display]&r"
+      result-line: "&a► {[team_color]}[team_display]&r"
     invites:
       desc: "Manage teams invites."
       check:
         desc: "Check which teams want to recruit you."
         result-header: "&bInvites &8:"
-        result-line: "&a► {[team_hexcolor]}[team_display]&r"
+        result-line: "&a► {[team_color]}[team_display]&r"
       open:
         desc: "Receive any team invitation"
         result: "You are now open to team invites"
@@ -63,7 +63,7 @@ commands:
       desc: "Manage your team."
       color:
         desc: "Edit your current team color"
-        result: "Team color set to {[team_hexcolor]}[team_hexcolor]"
+        result: "Team color set to {[team_color]}[team_color]"
       open:
         desc: "Make your team joinable by anybody"
         result: "your team is now open"
@@ -104,7 +104,7 @@ commands:
         invites:
           desc: "Check list of teams relations invites."
           result-header: "&bInvites &8:"
-          result-line: "&a► [team_line_direction]&r {[team_hexcolor]}[team_display] &8: [team_relation] -> [team_relation_invite]&r"
+          result-line: "&a► [team_line_direction]&r {[team_color]}[team_display] &8: [team_relation] -> [team_relation_invite]&r"
           result-line-received: "&e<<<"
           result-line-sent: "&6>>>"
       disband:
@@ -119,7 +119,7 @@ commands:
       desc: "Admin team command"
       color:
         desc: "Edit selected team current team color"
-        result: "Team color set to {[team_hexcolor]}[team_hexcolor]"
+        result: "Team color set to {[team_color]}[team_color]"
       open:
         desc: "Make selected team joinable by anybody"
         result: "Selected team is now open"
@@ -169,7 +169,7 @@ commands:
         invites:
           desc: "Check list of teams relations invites."
           result-header: "&bInvites &8:"
-          result-line: "&a► [team_line_direction]&r {[team_hexcolor]}[team_display] &8: [team_relation] -> [team_relation_invite]&r"
+          result-line: "&a► [team_line_direction]&r {[team_color]}[team_display] &8: [team_relation] -> [team_relation_invite]&r"
           result-line-received: "&e<<<"
           result-line-sent: "&6>>>"
       disband:

@@ -2,17 +2,19 @@ package fr.rosstail.nodewar.team;
 
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TeamModel {
     private int id;
     private String name;
     private String display;
-    private String hexColor;
+    private String teamColor;
     private boolean open = false;
     private boolean permanent = false;
     private boolean openRelation = true;
@@ -23,18 +25,10 @@ public class TeamModel {
     private final Map<Integer, TeamRelationModel> teamRelationModelMap = new HashMap<>();
 
 
-    public TeamModel(String name, String display) {
+    public TeamModel(String name, String display, String teamColor) {
         this.name = name;
         this.display = display;
-        StringBuilder randomColor = new StringBuilder("#");
-
-        for (int i = 0; i < 6; i++) {
-            Random random = new Random();
-
-            randomColor.append(Integer.toHexString(random.nextInt(16)));
-        }
-
-        this.hexColor = randomColor.toString().toUpperCase();
+        this.teamColor = teamColor;
     }
 
     public int getId() {
@@ -61,12 +55,12 @@ public class TeamModel {
         this.display = display;
     }
 
-    public String getHexColor() {
-        return hexColor;
+    public String getTeamColor() {
+        return teamColor;
     }
 
-    public void setHexColor(String hexColor) {
-        this.hexColor = hexColor;
+    public void setTeamColor(String teamColor) {
+        this.teamColor = teamColor;
     }
 
     public Timestamp getCreationDate() {

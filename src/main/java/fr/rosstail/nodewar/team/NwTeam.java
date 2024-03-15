@@ -4,6 +4,8 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.permissionmannager.PermissionManagerHandler;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.relation.TeamRelation;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
 
@@ -15,10 +17,6 @@ public class NwTeam {
 
     private final TeamModel teamModel;
     private final Map<Player, TeamMember> memberMap = new HashMap<>();
-
-    public NwTeam(String name, String display) {
-        teamModel = new TeamModel(name, display);
-    }
 
     public NwTeam(TeamModel teamModel) {
         this.teamModel = teamModel;
