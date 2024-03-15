@@ -33,7 +33,6 @@ public class Lang {
             AdaptMessage.print("Locale lang/" + langId + ".yml does not exists. use en_EN.yml from resources.", AdaptMessage.prints.WARNING);
         }
 
-
         for (LangMessage langMessage : LangMessage.values()) {
             String stringPath = langMessage.getText();
             String gotMessage = null;

@@ -32,7 +32,7 @@ public class TeamRelationManager {
         StorageManager.getManager().selectAllTeamRelationModel().forEach(model -> {
             NwTeam first = TeamDataManager.getTeamDataManager().getStringTeamMap().values().stream().filter(team -> (team.getModel().getId() == model.getFirstTeamId())).findFirst().orElse(null);
             NwTeam second = TeamDataManager.getTeamDataManager().getStringTeamMap().values().stream().filter(team -> (team.getModel().getId() == model.getSecondTeamId())).findFirst().orElse(null);
-            RelationType type = Arrays.stream(RelationType.values()).filter(relationType -> relationType.getWeight() == model.getRelation()).findFirst().get();
+            RelationType type = Arrays.stream(RelationType.values()).filter(relationType -> relationType.getWeight() == model.getRelationTypeID()).findFirst().get();
             TeamRelation relation = new TeamRelation(first, second, type, model);
             relationArrayList.add(relation);
         });

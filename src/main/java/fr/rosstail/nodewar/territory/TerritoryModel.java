@@ -9,6 +9,8 @@ import java.util.List;
 public class TerritoryModel {
     private String typeName;
     private String worldName;
+
+    private long id;
     private String name;
     private String display;
     private String prefix;
@@ -28,6 +30,14 @@ public class TerritoryModel {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

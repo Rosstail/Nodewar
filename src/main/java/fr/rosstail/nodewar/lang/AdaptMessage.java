@@ -207,13 +207,15 @@ public class AdaptMessage {
 
     public String colorFormat(Pattern pattern, String message) {
         Matcher matcher = pattern.matcher(message);
+        String matched;
+        String color;
         while (matcher.find()) {
             try {
-                String matched = matcher.group(0);
-                String color = matcher.group(1);
+                matched = matcher.group(0);
+                color = matcher.group(1);
                 message = message.replace(matched, String.valueOf(ChatColor.of(color)));
             } catch (Exception e) {
-                e.printStackTrace();
+                // e.printStackTrace(); // Not great but conflicts with hour display
             }
         }
 

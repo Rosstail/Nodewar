@@ -24,7 +24,6 @@ public class FileResourcesUtils {
     public static void generateYamlFile(String folder, Nodewar plugin) throws IOException {
         boolean doGenerate = false;
         String pluginFolderPath = (plugin.getDataFolder() + "/" + folder).replaceAll(" ", "%20");
-        AdaptMessage.print(pluginFolderPath, AdaptMessage.prints.WARNING);
 
         // Sample 3 - read all files from a resources folder (JAR version)
         try {

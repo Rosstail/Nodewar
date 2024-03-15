@@ -4,12 +4,12 @@ public class TeamRelationModel {
     private int id;
     private int firstTeamId;
     private int secondTeamId;
-    private int relation;
+    private int relationTypeID;
 
-    public TeamRelationModel(int firstTeamId, int secondTeamId, int relation) {
+    public TeamRelationModel(int firstTeamId, int secondTeamId, int relationTypeID) {
         this.firstTeamId = firstTeamId;
         this.secondTeamId = secondTeamId;
-        this.relation = relation;
+        this.relationTypeID = relationTypeID;
     }
 
     public int getId() {
@@ -36,11 +36,11 @@ public class TeamRelationModel {
         this.secondTeamId = secondTeamId;
     }
 
-    public int getRelation() {
-        return relation;
+    public int getRelationTypeID() {
+        return relationTypeID;
     }
 
-    public void setRelation(int relation) {
-        this.relation = relation;
+    public void setRelationTypeID(int relationTypeID) {
+        this.relationTypeID = relationTypeID;
     }
 }

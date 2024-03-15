@@ -64,7 +64,7 @@ public class SqlStorageRequest implements StorageRequest {
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " name VARCHAR(40) UNIQUE," +
                 " display VARCHAR(40) UNIQUE," +
-                " color VARCHAR(20) NOT NULL DEFAULT" + Color.FUCHSIA + "," +
+                " color VARCHAR(20) NOT NULL DEFAULT '" + ChatColor.WHITE.name() + "'," +
                 " is_open BOOLEAN NOT NULL DEFAULT FALSE," +
                 " is_relation_open BOOLEAN NOT NULL DEFAULT TRUE," +
                 " is_permanent BOOLEAN NOT NULL DEFAULT FALSE," +
@@ -175,9 +175,11 @@ public class SqlStorageRequest implements StorageRequest {
                 + " VALUES (?, ?, ?);";
         long firstTeamId = model.getFirstTeamId();
         long secondTeamId = model.getSecondTeamId();
-        int relationId = model.getRelation();
+        int relationTypeID = model.getRelationTypeID();
         try {
-            return executeSQLUpdate(query, firstTeamId, secondTeamId, relationId) > 0;
+            int id = executeSQLUpdate(query, firstTeamId, secondTeamId, relationTypeID);
+            model.setId(id);
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -191,7 +193,9 @@ public class SqlStorageRequest implements StorageRequest {
         String territoryName = model.getName();
         String worldName = model.getWorldName();
         try {
-            return executeSQLUpdate(query, territoryName, worldName) > 0;
+            int id = executeSQLUpdate(query, territoryName, worldName);
+            model.setId(id);
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -602,15 +606,12 @@ public class SqlStorageRequest implements StorageRequest {
                 affectedRows = 1;
             }
 
-            System.out.println("Affected lines " + affectedRows);
-            System.out.println(statement);
-
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     return generatedKeys.getInt(1);
                 } else {
                     if (affectedRows == 0) {
-                        throw new SQLException("SQL request failed, no rows affected.");
+                        throw new SQLException("SQL request failed, no rows affected: " + statement);
                     }
                 }
             }
