@@ -23,6 +23,7 @@ public class AdminTeamCreateCommand extends AdminTeamSubCommand {
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_CREATE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
+
     @Override
     public String getName() {
         return "create";
@@ -76,7 +77,10 @@ public class AdminTeamCreateCommand extends AdminTeamSubCommand {
         team = new NwTeam(teamModel);
         teamDataManager.addNewTeam(team);
 
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_CREATE_RESULT), team));
+        sender.sendMessage(
+                AdaptMessage.getAdaptMessage().adaptMessage(
+                        AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_CREATE_RESULT), team))
+        );
     }
 
     @Override

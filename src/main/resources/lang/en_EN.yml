@@ -119,7 +119,7 @@ commands:
       desc: "Admin team command"
       create:
         desc: "Create a new team"
-        result: "Succesfully created {[team_color]}[team]."
+        result: "Succesfully created {[team_color]}[team_display]."
       edit:
         desc: "Edit selected team"
         color:
