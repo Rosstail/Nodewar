@@ -1,7 +1,8 @@
-package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands;
+package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.admin.team.AdminTeamSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.AdminTeamEditSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -13,12 +14,12 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class AdminTeamCloseCommand extends AdminTeamSubCommand {
+public class AdminTeamEditCloseCommand extends AdminTeamEditSubCommand {
 
-    public AdminTeamCloseCommand() {
+    public AdminTeamEditCloseCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_CLOSE_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_CLOSE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
     @Override
@@ -33,7 +34,7 @@ public class AdminTeamCloseCommand extends AdminTeamSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar admin team <team> close";
+        return "nodewar admin team edit <team> close";
     }
 
     @Override
@@ -43,7 +44,7 @@ public class AdminTeamCloseCommand extends AdminTeamSubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
-        String targetTeamName = args[2];
+        String targetTeamName = args[3];
         NwTeam targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
         if (!CommandManager.canLaunchCommand(sender, this)) {
@@ -57,7 +58,7 @@ public class AdminTeamCloseCommand extends AdminTeamSubCommand {
 
         targetTeam.getModel().setOpen(false);
 
-        sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_CLOSE_RESULT));
+        sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_CLOSE_RESULT));
         StorageManager.getManager().updateTeamModel(targetTeam.getModel());
     }
 

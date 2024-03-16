@@ -1,7 +1,7 @@
-package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.member.adminteammembersubcommands;
+package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit.member.adminteameditmembersubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.member.AdminTeamMemberSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit.member.AdminTeamEditMemberSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -19,12 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AdminTeamMemberTransferCommand extends AdminTeamMemberSubCommand {
+public class AdminTeamEditMemberTransferCommand extends AdminTeamEditMemberSubCommand {
 
-    public AdminTeamMemberTransferCommand() {
+    public AdminTeamEditMemberTransferCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_MEMBER_TRANSFER_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_TRANSFER_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
 
@@ -40,7 +40,7 @@ public class AdminTeamMemberTransferCommand extends AdminTeamMemberSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar admin team <team> member transfer <player> <team>";
+        return "nodewar admin team edit <team> member transfer <player> <team>";
     }
 
     @Override
@@ -65,13 +65,13 @@ public class AdminTeamMemberTransferCommand extends AdminTeamMemberSubCommand {
             return;
         }
 
-        if (args.length < 6) {
+        if (args.length < 7) {
             sender.sendMessage("not enough arguments");
             return;
         }
 
-        targetTeamName = args[2];
-        targetPlayerName = args[5];
+        targetTeamName = args[3];
+        targetPlayerName = args[6];
 
         if (targetTeamName == null) {
             sender.sendMessage("team does not exist");
@@ -98,12 +98,12 @@ public class AdminTeamMemberTransferCommand extends AdminTeamMemberSubCommand {
             return;
         }
 
-        if (args.length < 7) {
+        if (args.length < 8) {
             sender.sendMessage("add the team name to the command to confirm");
             return;
         }
 
-        teamNameConfirmStr = args[6];
+        teamNameConfirmStr = args[7];
 
         if (!targetTeam.getModel().getName().equalsIgnoreCase(teamNameConfirmStr)) {
             sender.sendMessage("wrong team name");
@@ -129,13 +129,13 @@ public class AdminTeamMemberTransferCommand extends AdminTeamMemberSubCommand {
         }
 
         sender.sendMessage(
-                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_MEMBER_TRANSFER_RESULT), targetTeam, null)
+                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_TRANSFER_RESULT), targetTeam, null)
         );
     }
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        NwTeam targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(args[2]);
+        NwTeam targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(args[3]);
         if (targetTeam != null) {
             return targetTeam.getModel().getTeamMemberModelMap().values().stream().map(TeamMemberModel::getUsername).collect(Collectors.toList());
         }

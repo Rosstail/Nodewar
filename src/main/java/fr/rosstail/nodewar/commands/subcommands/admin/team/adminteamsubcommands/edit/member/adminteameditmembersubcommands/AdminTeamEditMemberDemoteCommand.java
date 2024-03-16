@@ -1,7 +1,7 @@
-package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.member.adminteammembersubcommands;
+package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit.member.adminteameditmembersubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.member.AdminTeamMemberSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit.member.AdminTeamEditMemberSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -20,28 +20,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AdminTeamMemberPromoteCommand extends AdminTeamMemberSubCommand {
+public class AdminTeamEditMemberDemoteCommand extends AdminTeamEditMemberSubCommand {
 
-    public AdminTeamMemberPromoteCommand() {
+    public AdminTeamEditMemberDemoteCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_MEMBER_PROMOTE_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_DEMOTE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
 
     @Override
     public String getName() {
-        return "promote";
+        return "demote";
     }
 
     @Override
     public String getDescription() {
-        return "Promote a member of the team";
+        return "Demote a member from his team rank";
     }
 
     @Override
     public String getSyntax() {
-        return "nodewar admin team <team> member promote <player>";
+        return "nodewar admin team edit <team> member demote <player>";
     }
 
     @Override
@@ -63,7 +63,7 @@ public class AdminTeamMemberPromoteCommand extends AdminTeamMemberSubCommand {
             return;
         }
 
-        targetTeamName = args[2];
+        targetTeamName = args[3];
         targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
         if (targetTeam == null) {
@@ -71,25 +71,24 @@ public class AdminTeamMemberPromoteCommand extends AdminTeamMemberSubCommand {
             return;
         }
 
-        if (args.length < 6) {
+        if (args.length < 7) {
             sender.sendMessage("not enough arguments");
             return;
         }
 
-        targetPlayerName = args[5];
+        targetPlayerName = args[6];
 
         targetTeamMemberModel = targetTeam.getModel().getTeamMemberModelMap().values().stream()
                 .filter(teamMemberModel -> teamMemberModel.getUsername().equalsIgnoreCase(targetPlayerName)).findFirst().orElse(null);
 
         if (targetTeamMemberModel == null) {
-            sender.sendMessage("the player is not in the team.");
+            sender.sendMessage("the player is not in your team.");
             return;
         }
 
-        newRank = targetTeamMemberModel.getRank() + 1;
-        if (newRank == 5 && targetTeam.getModel().getTeamMemberModelMap().values().stream()
-                .anyMatch(teamMemberModel -> teamMemberModel.getRank() == TeamRank.OWNER.getWeight())) {
-            sender.sendMessage("You cannot promote this player.");
+        newRank = targetTeamMemberModel.getRank() - 1;
+        if (newRank == 0) {
+            sender.sendMessage("You cannot demote this player.");
             return;
         }
 
@@ -103,13 +102,13 @@ public class AdminTeamMemberPromoteCommand extends AdminTeamMemberSubCommand {
         }
 
         sender.sendMessage(
-                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_MEMBER_PROMOTE_RESULT), targetTeam, targetPlayer)
+                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_DEMOTE_RESULT), targetTeam, targetPlayer)
         );
     }
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        NwTeam nwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(args[2]);
+        NwTeam nwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(args[3]);
         if (nwTeam != null) {
             return nwTeam.getModel().getTeamMemberModelMap().values().stream().map(TeamMemberModel::getUsername).collect(Collectors.toList());
         }

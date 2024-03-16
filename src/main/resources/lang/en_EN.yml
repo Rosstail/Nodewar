@@ -117,64 +117,69 @@ commands:
     desc: "Admin commands"
     team:
       desc: "Admin team command"
-      color:
-        desc: "Edit selected team current team color"
-        result: "Team color set to {[team_color]}[team_color]"
-      open:
-        desc: "Make selected team joinable by anybody"
-        result: "Selected team is now open"
-        result-close: "Selected team is now close"
-      close:
-        desc: "Make selected team joinable only on invites"
-        result: "Selected team is now close"
-      invite:
-        desc: "Invite a player into selected team"
-        result: "Invitation sent successfully."
-      member:
-        desc: "manage members of a team"
-        add:
-          desc: "Add a player to team"
-          result: "Player [player] added to [team]."
-        remove:
-          desc: "Remove a player from team"
-          result: "Player [player] removed from [team]."
-        promote:
-          desc: "Promote a team member"
-          result: "Player [player] promoted to [team_member_rank]."
-        demote:
-          desc: "Demote a team member"
-          result: "Player [player] demoted to [team_member_rank]."
-        kick:
-          desc: "Kick a player from selected team"
-          result: "Player kicked successfully."
-        transfer:
-          desc: "Transfer ownership of team to player"
-          result: "Ownership transferred successfully."
-      relation:
-        desc: "Manage relations with other teams"
+      create:
+        desc: "Create a new team"
+        result: "Succesfully created {[team_color]}[team]."
+      edit:
+        desc: "Edit selected team"
+        color:
+          desc: "Edit selected team current team color"
+          result: "Team color set to {[team_color]}[team_color]"
         open:
-          desc: "Enable reception of relation invites"
-          result: "Team open to relation invites"
+          desc: "Make selected team joinable by anybody"
+          result: "Selected team is now open"
+          result-close: "Selected team is now close"
         close:
-          desc: "Disable reception of relation invites"
-          result: "Team closed to relation invites"
-        edit:
-          desc: "Set relation with selected team"
-          result-invite: "Relation invite sent successfully."
-          result-weight: "Relation set."
-          result-ignore: "Same relation. No change."
-        set:
-          desc: "Set immediate relation between selected teams"
-          result: "Relation set."
-        invites:
-          desc: "Check list of teams relations invites."
-          result-header: "&bInvites &8:"
-          result-line: "&a► [team_line_direction]&r {[team_color]}[team_display] &8: [team_relation] -> [team_relation_invite]&r"
-          result-line-received: "&e<<<"
-          result-line-sent: "&6>>>"
-      disband:
-        desc: "Disband selected nodewar team"
-        result: "Disbanded team"
+          desc: "Make selected team joinable only on invites"
+          result: "Selected team is now close"
+        invite:
+          desc: "Invite a player into selected team"
+          result: "Invitation sent successfully."
+        member:
+          desc: "manage members of a team"
+          add:
+            desc: "Add a player to team"
+            result: "Player [player] added to [team]."
+          remove:
+            desc: "Remove a player from team"
+            result: "Player [player] removed from [team]."
+          promote:
+            desc: "Promote a team member"
+            result: "Player [player] promoted to [team_member_rank]."
+          demote:
+            desc: "Demote a team member"
+            result: "Player [player] demoted to [team_member_rank]."
+          kick:
+            desc: "Kick a player from selected team"
+            result: "Player kicked successfully."
+          transfer:
+            desc: "Transfer ownership of team to player"
+            result: "Ownership transferred successfully."
+        relation:
+          desc: "Manage relations with other teams"
+          open:
+            desc: "Enable reception of relation invites"
+            result: "Team open to relation invites"
+          close:
+            desc: "Disable reception of relation invites"
+            result: "Team closed to relation invites"
+          edit:
+            desc: "Set relation with selected team"
+            result-invite: "Relation invite sent successfully."
+            result-weight: "Relation set."
+            result-ignore: "Same relation. No change."
+          set:
+            desc: "Set immediate relation between selected teams"
+            result: "Relation set."
+          invites:
+            desc: "Check list of teams relations invites."
+            result-header: "&bInvites &8:"
+            result-line: "&a► [team_line_direction]&r {[team_color]}[team_display] &8: [team_relation] -> [team_relation_invite]&r"
+            result-line-received: "&e<<<"
+            result-line-sent: "&6>>>"
+        disband:
+          desc: "Disband selected nodewar team"
+          result: "Disbanded team"
     territory:
       desc: "Edit the selected territory"
       reload-regions:

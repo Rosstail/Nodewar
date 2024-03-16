@@ -1,7 +1,8 @@
-package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands;
+package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.admin.team.AdminTeamSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.AdminTeamEditSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -19,14 +20,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class AdminTeamColorCommand extends AdminTeamSubCommand {
+public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
 
     private static final Pattern hexPattern = Pattern.compile("#[a-fA-F0-9]{6}");
 
-    public AdminTeamColorCommand() {
+    public AdminTeamEditColorCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_COLOR_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_COLOR_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
 
@@ -42,7 +43,7 @@ public class AdminTeamColorCommand extends AdminTeamSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar admin team <team> color <hexcolor>";
+        return "nodewar admin team edit <team> color <hexcolor>";
     }
 
     @Override
@@ -59,12 +60,12 @@ public class AdminTeamColorCommand extends AdminTeamSubCommand {
             return;
         }
 
-        if (args.length < 5) {
+        if (args.length < 6) {
             sender.sendMessage("Not enough arguments");
             return;
         }
 
-        targetTeamName = args[2];
+        targetTeamName = args[3];
         targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
         if (targetTeam == null) {
@@ -72,7 +73,7 @@ public class AdminTeamColorCommand extends AdminTeamSubCommand {
             return;
         }
 
-        colorValue = args[4].toUpperCase();
+        colorValue = args[5].toUpperCase();
 
         if (colorValue.startsWith("#")) {
             if (hexPattern.matcher(colorValue).find()) {
@@ -98,7 +99,7 @@ public class AdminTeamColorCommand extends AdminTeamSubCommand {
         StorageManager.getManager().updateTeamModel(targetTeam.getModel());
 
         sender.sendMessage(
-                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_COLOR_RESULT), targetTeam, null)
+                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_COLOR_RESULT), targetTeam, null)
         );
 
         DynmapHandler.getDynmapHandler().resumeRender();

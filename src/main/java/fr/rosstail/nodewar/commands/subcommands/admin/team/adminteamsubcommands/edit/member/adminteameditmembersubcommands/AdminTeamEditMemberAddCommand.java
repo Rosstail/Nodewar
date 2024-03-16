@@ -1,7 +1,7 @@
-package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.member.adminteammembersubcommands;
+package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit.member.adminteameditmembersubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.member.AdminTeamMemberSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit.member.AdminTeamEditMemberSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -18,16 +18,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class AdminTeamMemberAddCommand extends AdminTeamMemberSubCommand {
+public class AdminTeamEditMemberAddCommand extends AdminTeamEditMemberSubCommand {
 
-    public AdminTeamMemberAddCommand() {
+    public AdminTeamEditMemberAddCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_MEMBER_ADD_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_ADD_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
 
@@ -43,7 +41,7 @@ public class AdminTeamMemberAddCommand extends AdminTeamMemberSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar admin team <team> member add <player>";
+        return "nodewar admin team edit <team> member add <player>";
     }
 
     @Override
@@ -64,12 +62,12 @@ public class AdminTeamMemberAddCommand extends AdminTeamMemberSubCommand {
             return;
         }
 
-        if (args.length < 6) {
+        if (args.length < 7) {
             sender.sendMessage("not enough arguments");
             return;
         }
 
-        targetTeamName = args[2];
+        targetTeamName = args[3];
         targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
         if (targetTeam == null) {
@@ -77,7 +75,7 @@ public class AdminTeamMemberAddCommand extends AdminTeamMemberSubCommand {
             return;
         }
 
-        targetPlayerName = args[5];
+        targetPlayerName = args[6];
 
         if (targetTeam.getModel().getTeamMemberModelMap().values().stream()
                 .anyMatch(teamMemberModel -> teamMemberModel.getUsername().equalsIgnoreCase(targetTeamName))) {
@@ -109,7 +107,7 @@ public class AdminTeamMemberAddCommand extends AdminTeamMemberSubCommand {
             targetData.removeTeam();
         }
         sender.sendMessage(
-                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_MEMBER_ADD_RESULT), targetTeam, targetPlayer)
+                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_ADD_RESULT), targetTeam, targetPlayer)
         );
 
         StorageManager.getManager().updateTeamModel(targetTeam.getModel());

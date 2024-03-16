@@ -132,7 +132,7 @@ public class SqlStorageRequest implements StorageRequest {
     @Override
     public boolean insertTeamModel(TeamModel model) {
         String query = "INSERT INTO " + teamTableName + " (name, display, color, is_open, is_relation_open, is_permanent)"
-                + " VALUES (?, ?, ?, ?, ?);";
+                + " VALUES (?, ?, ?, ?, ?, ?);";
         String name = model.getName();
         String display = model.getDisplay();
         String teamColor = model.getTeamColor();

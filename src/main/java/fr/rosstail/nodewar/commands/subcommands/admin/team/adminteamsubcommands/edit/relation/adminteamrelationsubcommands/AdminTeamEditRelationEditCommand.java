@@ -1,8 +1,8 @@
-package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.relation.adminteamrelationsubcommands;
+package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit.relation.adminteamrelationsubcommands;
 
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.relation.AdminTeamRelationSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit.relation.AdminTeamEditRelationSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -10,7 +10,6 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.team.TeamDataManager;
-import fr.rosstail.nodewar.team.rank.TeamRank;
 import fr.rosstail.nodewar.team.relation.NwTeamRelationInvite;
 import fr.rosstail.nodewar.team.relation.TeamRelation;
 import fr.rosstail.nodewar.team.relation.TeamRelationManager;
@@ -21,12 +20,12 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminTeamRelationEditCommand extends AdminTeamRelationSubCommand {
+public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCommand {
 
-    public AdminTeamRelationEditCommand() {
+    public AdminTeamEditRelationEditCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_RELATION_EDIT_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_EDIT_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
 
@@ -42,7 +41,7 @@ public class AdminTeamRelationEditCommand extends AdminTeamRelationSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar admin team <team> relation edit <team2> <relation>";
+        return "nodewar admin team edit <team> relation edit <team2> <relation>";
     }
 
     @Override
@@ -62,13 +61,13 @@ public class AdminTeamRelationEditCommand extends AdminTeamRelationSubCommand {
         }
 
         RelationType relationType;
-        if (args.length < 7) {
+        if (args.length < 8) {
             sender.sendMessage("not enough args: <team2> <relation>");
             return;
         }
 
-        baseTeamName = args[2];
-        targetTeamName = args[5];
+        baseTeamName = args[4];
+        targetTeamName = args[7];
         baseTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(baseTeamName);
         targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
@@ -83,13 +82,13 @@ public class AdminTeamRelationEditCommand extends AdminTeamRelationSubCommand {
         }
 
         try {
-            relationType = RelationType.valueOf(args[6].toUpperCase());
+            relationType = RelationType.valueOf(args[8].toUpperCase());
             if (!RelationType.getSelectableRelations().contains(relationType)) {
-                sender.sendMessage("this relation type is not selectable: " + args[6].toUpperCase());
+                sender.sendMessage("this relation type is not selectable: " + args[8].toUpperCase());
                 return;
             }
         } catch (IllegalArgumentException e) {
-            sender.sendMessage("this relation type does not exist: " + args[6].toUpperCase());
+            sender.sendMessage("this relation type does not exist: " + args[8].toUpperCase());
             return;
         }
 
@@ -161,13 +160,13 @@ public class AdminTeamRelationEditCommand extends AdminTeamRelationSubCommand {
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
         NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
-        if (args.length <= 6) {
+        if (args.length <= 8) {
             List<String> teams = new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().keySet());
             if (playerNwTeam != null) {
                 teams.remove(playerNwTeam.getModel().getName());
             }
             return teams;
-        } else if (args.length == 7) {
+        } else if (args.length == 9) {
             List<String> relations = new ArrayList<>();
 
             RelationType.getSelectableRelations().forEach(relationType -> {

@@ -1,24 +1,25 @@
-package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.relation;
+package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit.member;
 
 import fr.rosstail.nodewar.commands.subcommands.admin.team.AdminTeamSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.AdminTeamEditSubCommand;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public abstract class AdminTeamRelationSubCommand extends AdminTeamSubCommand {
+public abstract class AdminTeamEditMemberSubCommand extends AdminTeamEditSubCommand {
     @Override
     public String getName() {
-        return "relation";
+        return "member";
     }
 
     @Override
     public String getDescription() {
-        return "Team admin command description";
+        return "Team admin edit command description";
     }
 
     @Override
     public String getSyntax() {
-        return "nodewar admin team relation";
+        return "nodewar admin team edit <team> member";
     }
 
     @Override

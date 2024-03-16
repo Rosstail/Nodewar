@@ -57,66 +57,58 @@ public class TeamCreateCommand extends TeamSubCommand {
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         String teamName;
         String displayName;
-        Player senderPlayer = null;
+        Player senderPlayer;
+        TeamModel teamModel;
         NwTeam playerNwTeam;
+        TeamMember teamMember;
+        int ownerId;
+        PlayerData playerData;
         TeamDataManager teamDataManager = TeamDataManager.getTeamDataManager();
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
-        if (args.length >= 3) {
-            teamName = ChatColor.stripColor(args[2].toLowerCase());
-            displayName = args[2];
-            int ownerId = 0;
 
-            if (teamDataManager.getStringTeamMap().get(teamName) != null) {
-                sender.sendMessage("TeamCreateCommand - This team already exist in storage");
-                return;
-            }
-            TeamModel teamModel = new TeamModel(teamName, displayName, teamDataManager.generateRandomColor());
-            if (sender instanceof Player) {
-                senderPlayer = (Player) sender;
-                PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
-                ownerId = playerData.getId();
-
-                playerNwTeam = teamDataManager.getTeamOfPlayer(senderPlayer);
-                if (playerNwTeam != null) {
-                    sender.sendMessage("You are already on a team");
-                    return;
-                }
-            } else {
-                teamModel.setPermanent(true);
-            }
-
-            boolean insertTeam = StorageManager.getManager().insertTeamModel(teamModel);
-            if (insertTeam) {
-                playerNwTeam = new NwTeam(teamModel);
-                teamDataManager.addNewTeam(playerNwTeam);
-
-                sender.sendMessage("Team created successfully " + teamModel.getId());
-
-                if (senderPlayer != null) {
-                    PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
-                    playerData.setTeam(playerNwTeam);
-
-                    TeamMemberModel teamMemberModel =
-                            new TeamMemberModel(teamModel.getId(), ownerId, 5, new Timestamp(System.currentTimeMillis()), senderPlayer.getName());
-                    TeamMember teamMember = new TeamMember(senderPlayer, playerNwTeam, teamMemberModel);
-
-                    boolean insertPlayerTeam = StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
-                    if (insertPlayerTeam) {
-                        playerNwTeam.getModel().getTeamMemberModelMap().put(teamMemberModel.getId(), teamMemberModel);
-                        playerNwTeam.getMemberMap().put(senderPlayer, teamMember);
-                    } else {
-                        sender.sendMessage("player added unsuccessfully");
-                    }
-                }
-            } else {
-                sender.sendMessage("Team added unsuccessfully");
-            }
-            DynmapHandler.getDynmapHandler().resumeRender();
-        } else {
-            sender.sendMessage("TeamCreateCommand - Not enough args");
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("by player only");
+            return;
         }
+
+        if (args.length < 3) {
+            sender.sendMessage("too few args");
+            return;
+        }
+        senderPlayer = (Player) sender;
+        playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
+        teamName = ChatColor.stripColor(args[2].toLowerCase());
+        displayName = args[2];
+        ownerId = playerData.getId();
+
+        if (teamDataManager.getTeamOfPlayer(senderPlayer) != null) {
+            sender.sendMessage("You are already on a team");
+            return;
+        }
+
+        if (teamDataManager.getStringTeamMap().get(teamName) != null) {
+            sender.sendMessage("TeamCreateCommand - This team already exists");
+            return;
+        }
+
+        teamModel = new TeamModel(teamName, displayName, teamDataManager.generateRandomColor());
+        StorageManager.getManager().insertTeamModel(teamModel);
+
+        TeamMemberModel teamMemberModel =
+                new TeamMemberModel(teamModel.getId(), ownerId, 5, new Timestamp(System.currentTimeMillis()), senderPlayer.getName());
+        StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
+
+        playerNwTeam = new NwTeam(teamModel);
+        teamMember = new TeamMember(senderPlayer, playerNwTeam, teamMemberModel);
+
+        teamDataManager.addNewTeam(playerNwTeam);
+        playerData.setTeam(playerNwTeam);
+        playerNwTeam.getModel().getTeamMemberModelMap().put(teamMemberModel.getId(), teamMemberModel);
+        playerNwTeam.getMemberMap().put(senderPlayer, teamMember);
+
+        DynmapHandler.getDynmapHandler().resumeRender();
     }
 
     @Override

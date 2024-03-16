@@ -14,12 +14,12 @@ public abstract class AdminTeamSubCommand extends AdminSubCommand {
 
     @Override
     public String getDescription() {
-        return "Admin team manage command";
+        return "Admin team command";
     }
 
     @Override
     public String getSyntax() {
-        return "nodewar admin team <team> <subcommand>";
+        return "nodewar admin team <subcommand>";
     }
 
     @Override

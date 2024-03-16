@@ -1,7 +1,8 @@
-package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands;
+package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.admin.team.AdminTeamSubCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.AdminTeamEditSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -9,19 +10,18 @@ import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
-import fr.rosstail.nodewar.team.rank.TeamRank;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class AdminTeamInviteCommand extends AdminTeamSubCommand {
+public class AdminTeamEditInviteCommand extends AdminTeamEditSubCommand {
 
-    public AdminTeamInviteCommand() {
+    public AdminTeamEditInviteCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_INVITE_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_INVITE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
 
@@ -37,7 +37,7 @@ public class AdminTeamInviteCommand extends AdminTeamSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar admin team <team> invite <player>";
+        return "nodewar admin team edit <team> invite <player>";
     }
 
     @Override
@@ -57,13 +57,13 @@ public class AdminTeamInviteCommand extends AdminTeamSubCommand {
         Player targetPlayer;
         PlayerData targetPlayerData;
 
-        if (args.length < 4) {
+        if (args.length < 5) {
             sender.sendMessage("not enough args");
             return;
         }
 
-        targetTeamName = args[2];
-        targetPlayerName = args[4];
+        targetTeamName = args[3];
+        targetPlayerName = args[5];
         targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
         if (targetTeam == null) {
@@ -87,7 +87,7 @@ public class AdminTeamInviteCommand extends AdminTeamSubCommand {
 
 
         if (TeamDataManager.getTeamDataManager().invite(targetPlayer, targetTeam)) {
-            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_INVITE_RESULT));
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_INVITE_RESULT));
         } else {
             sender.sendMessage("impossible invitation");
         }
