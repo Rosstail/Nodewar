@@ -47,7 +47,6 @@ public class AdminTeamEditMemberCommand extends AdminTeamEditMemberSubCommand {
             return;
         }
         if (args.length < 6) {
-            sender.sendMessage("Help of team member needed");
             sender.sendMessage(getSubCommandHelp());
             return;
         }

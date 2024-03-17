@@ -61,7 +61,7 @@ public class AdminTeamEditMemberRemoveCommand extends AdminTeamEditMemberSubComm
         }
 
         if (args.length < 7) {
-            sender.sendMessage("not enough arguments");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
 
@@ -69,7 +69,7 @@ public class AdminTeamEditMemberRemoveCommand extends AdminTeamEditMemberSubComm
         targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
         if (targetTeam == null) {
-            sender.sendMessage("Your team is null");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
             return;
         }
 

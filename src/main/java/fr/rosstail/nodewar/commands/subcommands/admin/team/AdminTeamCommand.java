@@ -32,7 +32,6 @@ public class AdminTeamCommand extends AdminTeamSubCommand {
             return;
         }
         if (args.length < 3) {
-            sender.sendMessage("Help of team needed");
             sender.sendMessage(getSubCommandHelp());
             return;
         }

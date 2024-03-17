@@ -48,7 +48,6 @@ public class AdminTeamEditRelationCommand extends AdminTeamEditRelationSubComman
             return;
         }
         if (args.length < 6) {
-            sender.sendMessage("Help of team relation needed");
             sender.sendMessage(getSubCommandHelp());
             return;
         }

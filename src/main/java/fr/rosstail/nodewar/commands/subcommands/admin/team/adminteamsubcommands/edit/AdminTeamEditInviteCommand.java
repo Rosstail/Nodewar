@@ -58,7 +58,7 @@ public class AdminTeamEditInviteCommand extends AdminTeamEditSubCommand {
         PlayerData targetPlayerData;
 
         if (args.length < 5) {
-            sender.sendMessage("not enough args");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
 
@@ -67,14 +67,14 @@ public class AdminTeamEditInviteCommand extends AdminTeamEditSubCommand {
         targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
         if (targetTeam == null) {
-            sender.sendMessage("this team does not exist");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
             return;
         }
 
         targetPlayer = Bukkit.getPlayer(targetPlayerName);
 
         if (targetPlayer == null) {
-            sender.sendMessage("player does not exist or is disconnected");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_DOES_NOT_EXIST));
             return;
         }
 

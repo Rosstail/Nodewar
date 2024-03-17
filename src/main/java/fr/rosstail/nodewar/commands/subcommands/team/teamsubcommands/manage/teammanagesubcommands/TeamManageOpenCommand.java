@@ -58,7 +58,7 @@ public class TeamManageOpenCommand extends TeamManageSubCommand {
             NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
 
             if (playerNwTeam == null) {
-                sender.sendMessage("Your team is null");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));
                 return;
             }
 

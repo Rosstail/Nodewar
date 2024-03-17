@@ -64,14 +64,14 @@ public class TeamManageRelationInvitesCommand extends TeamManageRelationSubComma
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("player only");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_BY_PLAYER_ONLY));
             return;
         }
         player = ((Player) sender).getPlayer();
         playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender));
 
         if (playerNwTeam == null) {
-            sender.sendMessage("you are part of no team");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));
             return;
         }
         if (!hasSenderTeamRank(((Player) sender).getPlayer(), playerNwTeam, TeamRank.CAPTAIN)) {

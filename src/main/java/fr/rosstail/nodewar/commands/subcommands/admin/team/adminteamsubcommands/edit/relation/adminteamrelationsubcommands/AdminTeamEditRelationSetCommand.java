@@ -61,7 +61,7 @@ public class AdminTeamEditRelationSetCommand extends AdminTeamEditRelationSubCom
 
         RelationType relationType;
         if (args.length < 8) {
-            sender.sendMessage("not enough args: <team2> <relation>");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
 

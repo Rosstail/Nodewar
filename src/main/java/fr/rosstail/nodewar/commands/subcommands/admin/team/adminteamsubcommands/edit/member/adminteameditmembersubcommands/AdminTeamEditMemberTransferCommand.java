@@ -66,7 +66,7 @@ public class AdminTeamEditMemberTransferCommand extends AdminTeamEditMemberSubCo
         }
 
         if (args.length < 7) {
-            sender.sendMessage("not enough arguments");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
 
@@ -74,7 +74,7 @@ public class AdminTeamEditMemberTransferCommand extends AdminTeamEditMemberSubCo
         targetPlayerName = args[6];
 
         if (targetTeamName == null) {
-            sender.sendMessage("team does not exist");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
             return;
         }
 
@@ -106,7 +106,7 @@ public class AdminTeamEditMemberTransferCommand extends AdminTeamEditMemberSubCo
         teamNameConfirmStr = args[7];
 
         if (!targetTeam.getModel().getName().equalsIgnoreCase(teamNameConfirmStr)) {
-            sender.sendMessage("wrong team name");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE));
             return;
         }
 

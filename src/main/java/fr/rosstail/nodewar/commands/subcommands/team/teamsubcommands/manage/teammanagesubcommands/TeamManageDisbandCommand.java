@@ -58,7 +58,7 @@ public class TeamManageDisbandCommand extends TeamManageSubCommand {
             String teamNameConfirmStr;
 
             if (playerNwTeam == null) {
-                sender.sendMessage("your team is null");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));
                 return;
             }
 

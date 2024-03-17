@@ -69,12 +69,12 @@ public class TeamCreateCommand extends TeamSubCommand {
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("by player only");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_BY_PLAYER_ONLY));
             return;
         }
 
         if (args.length < 3) {
-            sender.sendMessage("too few args");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
         senderPlayer = (Player) sender;

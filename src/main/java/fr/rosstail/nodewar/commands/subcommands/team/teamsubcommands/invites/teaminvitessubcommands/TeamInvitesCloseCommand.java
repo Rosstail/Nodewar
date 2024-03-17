@@ -57,7 +57,7 @@ public class TeamInvitesCloseCommand extends TeamInvitesSubCommand {
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("by player only");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_BY_PLAYER_ONLY));
             return;
         }
 

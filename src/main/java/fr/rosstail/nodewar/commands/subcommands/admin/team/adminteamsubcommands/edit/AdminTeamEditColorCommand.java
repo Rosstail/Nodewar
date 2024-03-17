@@ -61,7 +61,7 @@ public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
         }
 
         if (args.length < 6) {
-            sender.sendMessage("Not enough arguments");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
 
@@ -69,7 +69,7 @@ public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
         targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
         if (targetTeam == null) {
-            sender.sendMessage("team does not exist");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
             return;
         }
 

@@ -66,13 +66,13 @@ public class TeamManageRelationEditCommand extends TeamManageRelationSubCommand 
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("player only");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_BY_PLAYER_ONLY));
             return;
         }
 
         RelationType relationType;
         if (args.length < 6) {
-            sender.sendMessage("not enough args: <relation> <team>");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
 
@@ -92,7 +92,7 @@ public class TeamManageRelationEditCommand extends TeamManageRelationSubCommand 
         targetNwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
         if (playerNwTeam == null) {
-            sender.sendMessage("You are part of no team");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));
             return;
         }
         if (!hasSenderTeamRank(((Player) sender).getPlayer(), playerNwTeam, TeamRank.OWNER)) {

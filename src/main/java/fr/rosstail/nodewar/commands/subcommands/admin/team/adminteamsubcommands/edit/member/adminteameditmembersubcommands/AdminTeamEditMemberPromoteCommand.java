@@ -67,12 +67,12 @@ public class AdminTeamEditMemberPromoteCommand extends AdminTeamEditMemberSubCom
         targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
         if (targetTeam == null) {
-            sender.sendMessage("The team does not exist");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
             return;
         }
 
         if (args.length < 7) {
-            sender.sendMessage("not enough arguments");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
 

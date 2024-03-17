@@ -33,7 +33,6 @@ public class AdminCommand extends AdminSubCommand {
             return;
         }
         if (args.length < 2) {
-            sender.sendMessage("Help of admin needed");
             sender.sendMessage(getSubCommandHelp());
             return;
         }

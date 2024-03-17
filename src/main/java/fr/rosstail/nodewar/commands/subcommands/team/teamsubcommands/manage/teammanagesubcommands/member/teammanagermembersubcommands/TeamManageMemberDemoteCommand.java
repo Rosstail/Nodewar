@@ -71,7 +71,7 @@ public class TeamManageMemberDemoteCommand extends TeamManageMemberSubCommand {
             NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
 
             if (playerNwTeam == null) {
-                sender.sendMessage("Your team is null");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));
                 return;
             }
 
@@ -82,7 +82,7 @@ public class TeamManageMemberDemoteCommand extends TeamManageMemberSubCommand {
             }
 
             if (args.length < 5) {
-                sender.sendMessage("not enough arguments");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
                 return;
             }
 

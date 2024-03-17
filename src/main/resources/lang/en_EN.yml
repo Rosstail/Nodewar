@@ -11,6 +11,7 @@ commands:
   insert-player-name: "[prefix]Insert player target name."
   wrong-command: "[prefix]Wrong command."
   wrong-value: "[prefix]Wrong value."
+  too-few-arguments: "Too few arguments"
   player-does-not-exist: "[prefix][player] does not exist."
   player-no-data: "[prefix]No nodewar data for [player]."
   help:
@@ -18,6 +19,9 @@ commands:
     line: "&a► &6/[syntax] &8: &r[desc]"
   team:
     desc: "Check, manage or create a team"
+    already-exist: "Team already exist"
+    does-not-exist: "Team does not exist"
+    part-of-no-team: "You are part of no team"
     check:
       desc: "Check team's data"
       result:

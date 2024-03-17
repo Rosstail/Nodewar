@@ -55,14 +55,14 @@ public class TeamManageCloseCommand extends TeamManageSubCommand {
             return;
         }
         if (!(sender instanceof Player)) {
-            sender.sendMessage("by player only");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_BY_PLAYER_ONLY));
             return;
         }
         senderPlayer = ((Player) sender).getPlayer();
         playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
 
         if (playerNwTeam == null) {
-            sender.sendMessage("your team is null");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));
             return;
         }
 

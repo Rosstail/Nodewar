@@ -62,7 +62,7 @@ public class AdminTeamEditRelationInvitesCommand extends AdminTeamEditRelationSu
         baseTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(baseTeamName);
 
         if (baseTeam == null) {
-            sender.sendMessage("this team does not exist");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
             return;
         }
 

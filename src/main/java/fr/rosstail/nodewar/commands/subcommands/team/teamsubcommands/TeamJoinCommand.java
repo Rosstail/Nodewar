@@ -78,7 +78,7 @@ public class TeamJoinCommand extends TeamSubCommand {
             sender.sendMessage("You are already on a team");
             return;
         } else if (args.length < 3) {
-            sender.sendMessage("TeamCreateCommand - Not enough args");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_BY_PLAYER_ONLY));
             return;
         }
 

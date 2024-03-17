@@ -55,7 +55,7 @@ public class TerritoryCheckCommand extends TerritorySubCommand {
         }
 
         if (args.length < 3 && !(sender instanceof Player)) {
-            sender.sendMessage("Too few args");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
 

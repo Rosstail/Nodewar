@@ -73,7 +73,6 @@ public class TeamLeaveCommand extends TeamSubCommand {
             return;
         }
 
-        sender.sendMessage("TODO leaving " + nwTeam.getModel().getName() + " team.");
         teamMember = nwTeam.getMemberMap().get(senderPlayer);
 
         if (teamMember.getRank() == TeamRank.OWNER) {

@@ -57,7 +57,7 @@ public class TeamManageInviteCommand extends TeamManageSubCommand {
             return;
         }
         if (!(sender instanceof Player)) {
-            sender.sendMessage("by player only");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_BY_PLAYER_ONLY));
             return;
         }
 
@@ -77,7 +77,7 @@ public class TeamManageInviteCommand extends TeamManageSubCommand {
         }
 
         if (args.length < 4) {
-            senderPlayer.sendMessage("not enough args");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
         targetPlayer = Bukkit.getPlayer(args[3]);

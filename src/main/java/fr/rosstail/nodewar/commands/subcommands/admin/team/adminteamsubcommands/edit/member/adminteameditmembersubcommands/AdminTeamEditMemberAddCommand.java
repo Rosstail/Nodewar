@@ -63,7 +63,7 @@ public class AdminTeamEditMemberAddCommand extends AdminTeamEditMemberSubCommand
         }
 
         if (args.length < 7) {
-            sender.sendMessage("not enough arguments");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
 
@@ -71,7 +71,7 @@ public class AdminTeamEditMemberAddCommand extends AdminTeamEditMemberSubCommand
         targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
         if (targetTeam == null) {
-            sender.sendMessage("Your team is null");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
             return;
         }
 
@@ -89,7 +89,7 @@ public class AdminTeamEditMemberAddCommand extends AdminTeamEditMemberSubCommand
         } else {
             PlayerModel playerModel = StorageManager.getManager().selectPlayerModel(PlayerDataManager.getPlayerUUIDFromName(targetPlayerName));
             if (playerModel == null) {
-                sender.sendMessage("this player does not exist");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_DOES_NOT_EXIST));
                 return;
             }
             playerDataId = playerModel.getId();

@@ -74,7 +74,7 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
             NwTeam senderNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
 
             if (senderNwTeam == null) {
-                sender.sendMessage("Your team is null");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));
                 return;
             }
 
@@ -83,7 +83,7 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
             }
 
             if (args.length < 5) {
-                sender.sendMessage("not enough arguments");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
                 return;
             }
 

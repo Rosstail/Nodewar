@@ -61,7 +61,7 @@ public class AdminTeamEditDisbandCommand extends AdminTeamEditSubCommand {
 
 
         if (targetTeam == null) {
-            sender.sendMessage("team does not exist");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
             return;
         }
 

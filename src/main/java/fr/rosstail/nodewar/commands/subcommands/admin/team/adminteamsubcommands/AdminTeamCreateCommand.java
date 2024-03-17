@@ -57,7 +57,7 @@ public class AdminTeamCreateCommand extends AdminTeamSubCommand {
         }
 
         if (args.length < 4) {
-            sender.sendMessage("too few args");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
 
@@ -65,7 +65,7 @@ public class AdminTeamCreateCommand extends AdminTeamSubCommand {
         displayTeamName = args[3];
 
         if (TeamDataManager.getTeamDataManager().getStringTeamMap().containsKey(teamName)) {
-            sender.sendMessage("this team already exist");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_ALREADY_EXIST));
             return;
         }
 

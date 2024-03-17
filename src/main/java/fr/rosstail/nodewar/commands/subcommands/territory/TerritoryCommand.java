@@ -28,7 +28,6 @@ public class TerritoryCommand extends TerritorySubCommand {
             return;
         }
         if (args.length < 2) {
-            sender.sendMessage("Help of territory needed");
             sender.sendMessage(getSubCommandHelp());
             return;
         }

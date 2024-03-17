@@ -53,7 +53,7 @@ public class AdminTerritoryTeamSetCommand extends AdminTerritoryTeamSubCommand {
         String message = LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TERRITORY_TEAM_SET_RESULT);
 
         if (args.length < 6) {
-            sender.sendMessage("Too few args");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
 

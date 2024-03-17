@@ -72,7 +72,7 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
         playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
 
         if (playerNwTeam == null) {
-            sender.sendMessage("Your team is null");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));
             return;
         }
 
@@ -81,7 +81,7 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
         }
 
         if (args.length < 4) {
-            sender.sendMessage("Not enough arguments");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
 
@@ -100,8 +100,7 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
         } else {
             try {
                 ChatColor.valueOf(colorValue);
-            } catch (IllegalArgumentException e) {
-                sender.sendMessage("this color does not exist.");
+            } catch (IllegalArgumentException e) {sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE));
                 return;
             }
         }

@@ -45,13 +45,12 @@ public class TeamInvitesCommand extends TeamInvitesSubCommand {
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("by player only");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_BY_PLAYER_ONLY));
             return;
         }
 
 
         if (args.length < 3) {
-            sender.sendMessage("Help of team needed");
             sender.sendMessage(getSubCommandHelp());
             return;
         }

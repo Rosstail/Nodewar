@@ -53,7 +53,7 @@ public class AdminTeamEditRelationOpenCommand extends AdminTeamEditRelationSubCo
         nwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(args[3]);
 
         if (nwTeam == null) {
-            sender.sendMessage("this team does not exist");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
             return;
         }
 

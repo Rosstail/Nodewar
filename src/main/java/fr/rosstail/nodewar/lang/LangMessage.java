@@ -6,6 +6,7 @@ public enum LangMessage {
     COMMANDS_BY_PLAYER_ONLY("commands.by-player-only", false, false),
     COMMANDS_PERMISSION_DENIED("commands.permission-denied", false, false),
     COMMANDS_INSERT_PLAYER_NAME("commands.insert-player-name", false, false),
+    COMMANDS_TOO_FEW_ARGUMENTS("commands.too-few-arguments", false, false),
     COMMANDS_WRONG_VALUE("commands.wrong-value", false, false),
     COMMANDS_WRONG_COMMAND("commands.wrong-command", false, false),
     COMMANDS_PLAYER_DOES_NOT_EXIST("commands.player-does-not-exist", false, false),
@@ -16,7 +17,9 @@ public enum LangMessage {
     COMMANDS_HELP_LINE("commands.help.line", false, false),
     COMMANDS_EDIT_PLAYER_DISCONNECTED("commands.edit.player.disconnected-player", false, false),
     COMMANDS_TEAM_DESC("commands.team.desc", false, false),
-
+    COMMANDS_TEAM_ALREADY_EXIST("commands.team.already-exist", false, false),
+    COMMANDS_TEAM_DOES_NOT_EXIST("commands.team.does-not-exist", false, false),
+    COMMANDS_TEAM_PART_OF_NO_TEAM("commands.team.part-of-no-team", false, false),
     COMMANDS_TEAM_CHECK_DESC("commands.team.check.desc", false, false),
     COMMANDS_TEAM_CHECK_RESULT("commands.team.check.result", false, true),
     COMMANDS_TEAM_CHECK_RESULT_OTHER("commands.team.check.result-other", false, true),

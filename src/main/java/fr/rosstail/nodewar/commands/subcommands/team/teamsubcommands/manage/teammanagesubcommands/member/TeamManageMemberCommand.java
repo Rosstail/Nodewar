@@ -51,7 +51,6 @@ public class TeamManageMemberCommand extends TeamManageMemberSubCommand {
             return;
         }
         if (args.length < 4) {
-            sender.sendMessage("Help of team relation needed");
             sender.sendMessage(getSubCommandHelp());
             return;
         }

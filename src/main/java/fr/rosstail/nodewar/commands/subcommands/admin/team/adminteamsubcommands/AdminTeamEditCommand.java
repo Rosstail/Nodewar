@@ -54,14 +54,13 @@ public class AdminTeamEditCommand extends AdminTeamEditSubCommand {
             return;
         }
         if (args.length < 5) {
-            sender.sendMessage("Help of team manage needed");
             sender.sendMessage(getSubCommandHelp());
             return;
         }
 
         teamName = args[3];
         if (!TeamDataManager.getTeamDataManager().getStringTeamMap().containsKey(teamName)) {
-            sender.sendMessage("this team does not exists: " + teamName);
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
             return;
         }
 
