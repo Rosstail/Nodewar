@@ -159,14 +159,14 @@ public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCo
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
-        if (args.length <= 8) {
+        NwTeam nwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(args[3]);
+        if (args.length <= 7) {
             List<String> teams = new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().keySet());
-            if (playerNwTeam != null) {
-                teams.remove(playerNwTeam.getModel().getName());
+            if (nwTeam != null) {
+                teams.remove(nwTeam.getModel().getName());
             }
             return teams;
-        } else if (args.length == 9) {
+        } else if (args.length == 8) {
             List<String> relations = new ArrayList<>();
 
             RelationType.getSelectableRelations().forEach(relationType -> {

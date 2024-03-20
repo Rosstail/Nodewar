@@ -135,7 +135,7 @@ public class AdminTeamEditRelationSetCommand extends AdminTeamEditRelationSubCom
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        NwTeam nwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(args[2]);
+        NwTeam nwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(args[3]);
         if (args.length <= 7) {
             List<String> teams = new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().keySet());
             if (nwTeam != null) {

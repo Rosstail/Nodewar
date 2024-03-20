@@ -79,7 +79,7 @@ public class AdminTeamEditRelationCommand extends AdminTeamEditRelationSubComman
             return list;
         } else {
             for (SubCommand subCommand : subCommands) {
-                if (subCommand.getName().equalsIgnoreCase(args[4])) {
+                if (subCommand.getName().equalsIgnoreCase(args[5])) {
                     return subCommand.getSubCommandsArguments(sender, args, arguments);
                 }
             }
