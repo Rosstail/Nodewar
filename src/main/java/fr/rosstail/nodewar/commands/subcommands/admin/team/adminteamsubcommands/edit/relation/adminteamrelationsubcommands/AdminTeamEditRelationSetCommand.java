@@ -96,18 +96,18 @@ public class AdminTeamEditRelationSetCommand extends AdminTeamEditRelationSubCom
             return;
         }
 
-        handleRelationChange(baseTeam, targetTeam, relationType, baseTeam.getRelations().get(targetTeam.getModel().getName()));
+        handleRelationChange(sender, baseTeam, targetTeam, relationType, baseTeam.getRelations().get(targetTeam.getModel().getName()));
     }
 
-    private void handleRelationChange(NwTeam baseTeam, NwTeam targetTeam, RelationType newRelationType, TeamRelation currentRelation) {
+    private void handleRelationChange(CommandSender sender, NwTeam baseTeam, NwTeam targetTeam, RelationType newRelationType, TeamRelation currentRelation) {
         int defaultRelationWeight = ConfigData.getConfigData().team.defaultRelation.getWeight();
 
         if (currentRelation == null) { // implicit default relation
             if (newRelationType.getWeight() != defaultRelationWeight) {
                 createNewRelation(baseTeam, targetTeam, newRelationType);
-                System.out.println("set immediate relation");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_EFFECTIVE));
             } else {
-                System.out.println("same relation. No changes.");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_UNCHANGED));
             }
         } else { // explicit relation
             if (newRelationType.getWeight() != currentRelation.getRelationType().getWeight()) {
@@ -118,9 +118,9 @@ public class AdminTeamEditRelationSetCommand extends AdminTeamEditRelationSubCom
                 if (newRelationType.getWeight() != defaultRelationWeight) {
                     createNewRelation(baseTeam, targetTeam, newRelationType);
                 }
-                System.out.println("set immediate relation");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_EFFECTIVE));
             } else {
-                System.out.println("same relation. No changes.");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_UNCHANGED));
             }
         }
     }

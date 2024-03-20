@@ -97,21 +97,21 @@ public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCo
             return;
         }
 
-        handleRelationChange(baseTeam, targetTeam, relationType, baseTeam.getRelations().get(targetTeam.getModel().getName()));
+        handleRelationChange(sender, baseTeam, targetTeam, relationType, baseTeam.getRelations().get(targetTeam.getModel().getName()));
     }
 
-    private void handleRelationChange(NwTeam baseTeam, NwTeam targetTeam, RelationType newRelationType, TeamRelation currentRelation) {
+    private void handleRelationChange(CommandSender sender, NwTeam baseTeam, NwTeam targetTeam, RelationType newRelationType, TeamRelation currentRelation) {
         int defaultRelationWeight = ConfigData.getConfigData().team.defaultRelation.getWeight();
         NwTeamRelationInvite teamRelationInvite = TeamRelationManager.getRelationInvitesHashSet().stream().filter(nwTeamRelationInvite -> nwTeamRelationInvite.getTargetTeam() == targetTeam).findFirst().orElse(null);
 
         if (currentRelation == null) { // implicit default relation
             if (newRelationType.getWeight() > defaultRelationWeight) {
                 createNewRelation(baseTeam, targetTeam, newRelationType);
-                System.out.println("set immediate relation");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_EFFECTIVE));
             } else if (newRelationType.getWeight() < defaultRelationWeight) {
-                inviteOrAccept(baseTeam, targetTeam, newRelationType, teamRelationInvite);
+                inviteOrAccept(sender, baseTeam, targetTeam, newRelationType, teamRelationInvite);
             } else {
-                System.out.println("same relation. No changes.");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_UNCHANGED));
             }
         } else { // explicit relation
             if (newRelationType.getWeight() != currentRelation.getRelationType().getWeight()) {
@@ -121,17 +121,17 @@ public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCo
                     targetTeam.getRelations().remove(baseTeam.getModel().getName());
 
                     createNewRelation(baseTeam, targetTeam, newRelationType);
-                    System.out.println("set immediate relation");
+                    sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_EFFECTIVE));
                 } else {
-                    inviteOrAccept(baseTeam, targetTeam, newRelationType, teamRelationInvite);
+                    inviteOrAccept(sender, baseTeam, targetTeam, newRelationType, teamRelationInvite);
                 }
             } else {
-                System.out.println("same relation. No changes.");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_UNCHANGED));
             }
         }
     }
 
-    private void inviteOrAccept(NwTeam senderTeam, NwTeam targetTeam, RelationType newRelationType, NwTeamRelationInvite teamRelationInvite) {
+    private void inviteOrAccept(CommandSender sender, NwTeam senderTeam, NwTeam targetTeam, RelationType newRelationType, NwTeamRelationInvite teamRelationInvite) {
         if (teamRelationInvite != null) {
             if (senderTeam == teamRelationInvite.getTargetTeam()) {
                 createNewRelation(teamRelationInvite.getSenderTeam(), teamRelationInvite.getTargetTeam(), teamRelationInvite.getRelationType());
@@ -140,12 +140,12 @@ public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCo
             }
         } else {
             if (!targetTeam.getModel().isOpenRelation()) {
-                System.out.println("team is closed to relation invites");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_BLOCKED));
                 return;
             }
             teamRelationInvite = new NwTeamRelationInvite(senderTeam, targetTeam, newRelationType);
             TeamRelationManager.getRelationInvitesHashSet().add(teamRelationInvite);
-            System.out.println("Ask other team to relation.");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_SENT));
         }
     }
 

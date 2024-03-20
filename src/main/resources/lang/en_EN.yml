@@ -77,7 +77,10 @@ commands:
         result: "your team is now close"
       invite:
         desc: "Invite a player into your team"
-        result: "Invitation sent successfully."
+        result-effective: "Relation effective."
+        result-instant: "You declared being [team_relation] with [team]."
+        result-unchanged: "Same relation as before. No invite sent."
+        result-blocked: "This team cannot receive team invitations."
       member:
         desc: "Manage players from your team"
         promote:

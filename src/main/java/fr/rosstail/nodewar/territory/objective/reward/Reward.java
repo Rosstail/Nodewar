@@ -129,31 +129,24 @@ public class Reward {
         String teamRole = getRewardModel().getTeamRole();
         RelationType relation = TeamRelationManager.getTeamRelationManager().getRelationBetweenTeams(team, territory.getOwnerTeam());
 
-        System.out.println(rewardModel.getName() + " - " + team.getModel().getName());
-
         if (isShouldTeamWin() && team != participatingTeams.get(0)) {
-            System.out.println("Pas la première équipe");
             return false;
         }
         if (!teamPositions.isEmpty() && !teamPositions.contains(teamIndex + 1)) {
-            System.out.println("Pas le bon emplacement pour l'équipe " + (teamIndex + 1));
             return false;
         }
 
         if (teamRole != null) {
             if (teamRole.equalsIgnoreCase("attacker")) {
                 if (territory.getOwnerTeam() != null && !relation.equals(RelationType.ENEMY)) {
-                    System.out.println("Pas ennemi");
                     return false;
                 }
             } else if (teamRole.equalsIgnoreCase("defender")) {
                 if (!(relation.equals(RelationType.TEAM) || relation.equals(RelationType.ALLY))) {
-                    System.out.println("Pas allié");
                     return false;
                 }
             }
         }
-        System.out.println("Noiiiice.");
         return true;
     }
 }
