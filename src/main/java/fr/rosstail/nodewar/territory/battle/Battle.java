@@ -65,8 +65,8 @@ public class Battle {
     public boolean isBattleStarted() {
         return this.battleStatus.equals(BattleStatus.ONGOING);
     }
-    public boolean isBattleEnded() {
-        return this.battleStatus.equals(BattleStatus.ENDED);
+    public boolean isBattleOnEnd() {
+        return this.battleStatus.equals(BattleStatus.ENDING) || this.battleStatus.equals(BattleStatus.ENDED);
     }
 
     public long getBattleStartTime() {

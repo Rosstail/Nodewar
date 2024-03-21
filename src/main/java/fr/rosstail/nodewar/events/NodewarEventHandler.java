@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.events;
 import fr.rosstail.nodewar.events.territoryevents.*;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
+import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

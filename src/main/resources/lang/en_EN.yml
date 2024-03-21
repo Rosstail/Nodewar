@@ -200,6 +200,12 @@ commands:
         reset:
           desc: "Remove current owner of territory"
           result: "Territory is now neutral."
+      vulnerable:
+        desc: "Makes the territory vulnerable to player attacks"
+        result: "[territory_name] is now vulnerable"
+      protect:
+        desc: "Makes the territory immune to player attacks"
+        result: "[territory_name] is now immune"
   territory:
     desc: "Territory commands"
     check:

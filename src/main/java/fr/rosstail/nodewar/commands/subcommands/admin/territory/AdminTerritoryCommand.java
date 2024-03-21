@@ -2,7 +2,9 @@ package fr.rosstail.nodewar.commands.subcommands.admin.territory;
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.SubCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.territory.adminterritorysubcommands.AdminTerritoryProtectCommand;
 import fr.rosstail.nodewar.commands.subcommands.admin.territory.adminterritorysubcommands.AdminTerritoryReloadRegionsCommand;
+import fr.rosstail.nodewar.commands.subcommands.admin.territory.adminterritorysubcommands.AdminTerritoryVulnerableCommand;
 import fr.rosstail.nodewar.commands.subcommands.admin.territory.adminterritorysubcommands.team.AdminTerritoryTeamCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
@@ -24,6 +26,8 @@ public class AdminTerritoryCommand extends AdminTerritorySubCommand {
                         .replaceAll("\\[syntax]", getSyntax()));
         subCommands.add(new AdminTerritoryReloadRegionsCommand());
         subCommands.add(new AdminTerritoryTeamCommand());
+        subCommands.add(new AdminTerritoryProtectCommand());
+        subCommands.add(new AdminTerritoryVulnerableCommand());
     }
 
     @Override

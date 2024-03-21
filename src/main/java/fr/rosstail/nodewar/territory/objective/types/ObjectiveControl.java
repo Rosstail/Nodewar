@@ -273,6 +273,9 @@ public class ObjectiveControl extends Objective {
         NwTeam ownerTeam = territory.getOwnerTeam();
         NwTeam advantageTeam = territory.getCurrentBattle().getAdvantagedTeam();
 
+        if (territory.getCurrentBattle().isBattleOnEnd()) {
+            return;
+        }
         if (advantageTeam != ownerTeam && advantageTeam != null) { // Attackers capturing unowned territory
             List<Player> attackersOnTerritory = playersOnTerritory.stream().filter(player -> PlayerDataManager.getPlayerDataFromMap(player).getTeam().equals(advantageTeam)).collect(Collectors.toList());
             attackersOnTerritory.forEach(player -> {
