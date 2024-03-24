@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class ObjectiveControl extends Objective {
 
-    private boolean neutralPeriod;
+    private final boolean neutralPeriod;
     private float minAttackerRatio;
     private boolean needNeutralize;
     private int maxHealth;
@@ -114,9 +114,7 @@ public class ObjectiveControl extends Objective {
         }
         updateHealth();
 
-        if (currentBattle.isBattleWaiting() && (currentAdvantage == null && newAdvantage != null || currentHealth < maxHealth)) {
-            currentBattle.setBattleStatus(BattleStatus.ONGOING);
-        }
+        determineStart(currentBattle, currentAdvantage, newAdvantage);
 
         if (currentBattle.isBattleStarted()) {
             currentBattle.handleContribution();
@@ -184,6 +182,34 @@ public class ObjectiveControl extends Objective {
         }
     }
 
+    private void determineStart(BattleControl battleControl, NwTeam currentAdvantage, NwTeam newAdvantage) {
+        NwTeam owner = territory.getOwnerTeam();
+
+        if (!battleControl.isBattleWaiting()) {
+            return;
+        }
+
+        if (newAdvantage == null) {
+            if (currentHealth == 0) {
+                return;
+            }
+        }
+
+        if (newAdvantage == owner) {
+            if (currentHealth == maxHealth) {
+                return;
+            }
+        }
+
+        if (currentAdvantage == null || currentAdvantage == owner) {
+            if (currentHealth == maxHealth) {
+                return;
+            }
+        }
+
+        battleControl.setBattleStatus(BattleStatus.ONGOING);
+    }
+
     @Override
     public NwTeam checkNeutralization() {
         if (!neutralPeriod) {
@@ -219,13 +245,16 @@ public class ObjectiveControl extends Objective {
 
     public void win(NwTeam winnerTeam) {
         Territory territory = super.territory;
-        territory.getCurrentBattle().setWinnerTeam(winnerTeam);
-        territory.getCurrentBattle().setBattleStatus(BattleStatus.ENDING);
+        BattleControl currentBattleControl = (BattleControl) territory.getCurrentBattle();
+        currentBattleControl.setWinnerTeam(winnerTeam);
+        currentBattleControl.setBattleStatus(BattleStatus.ENDING);
+        currentBattleControl.setBattleEndTime(System.currentTimeMillis());
+
 
         handleEndRewards(new ArrayList<>(Collections.singleton(winnerTeam)));
         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
         Bukkit.getPluginManager().callEvent(event);
-
+        territory.setupBattle();
     }
 
     public void updateHealth() {

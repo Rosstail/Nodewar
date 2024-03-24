@@ -16,6 +16,7 @@ import fr.rosstail.nodewar.team.relation.TeamRelation;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.battle.Battle;
+import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.battle.types.BattleControl;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBar;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
@@ -274,6 +275,9 @@ public class Territory {
         this.currentBattle = currentBattle;
     }
 
+    public void setPreviousBattle(Battle previousBattle) {
+        this.previousBattle = previousBattle;
+    }
 
     public void setupObjective() {
         if (territoryModel.getObjectiveTypeName() != null) {
@@ -309,6 +313,10 @@ public class Territory {
     }
 
     public void setupBattle() {
+        if (currentBattle != null) {
+            currentBattle.setBattleStatus(BattleStatus.ENDED);
+            setPreviousBattle(currentBattle);
+        }
         if (territoryModel.getObjectiveTypeName() != null) {
             switch (territoryModel.getObjectiveTypeName()) {
                 case "control":

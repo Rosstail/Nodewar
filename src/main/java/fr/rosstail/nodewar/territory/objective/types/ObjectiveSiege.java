@@ -178,6 +178,7 @@ public class ObjectiveSiege extends Objective {
         currentHealth = maxHealth;
         territory.getCurrentBattle().setWinnerTeam(winnerTeam);
         territory.getCurrentBattle().setBattleStatus(BattleStatus.ENDING);
+        territory.getCurrentBattle().setBattleEndTime(System.currentTimeMillis());
 
 
         ArrayList<NwTeam> orderedParticipatingTeamList = new ArrayList<>();
@@ -200,6 +201,7 @@ public class ObjectiveSiege extends Objective {
 
         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
         Bukkit.getPluginManager().callEvent(event);
+        territory.setupBattle();
     }
 
     @Override

@@ -39,16 +39,14 @@ public class BattleControl extends Battle {
         if (!isBattleStarted()) {
             return;
         }
+        if (isBattleOnEnd()) {
+            return;
+        }
         int currentHealth = objectiveControl.getCurrentHealth();
         int maxHealth = objectiveControl.getMaxHealth();
         NwTeam ownerTeam = territory.getOwnerTeam();
         NwTeam advantageTeam = getAdvantagedTeam();
         int ownerTeamEffective = ownerTeam != null ? territory.getNwTeamEffectivePlayerAmountOnTerritory().get(ownerTeam).size() : 0;
-        int advantageTeamEffectivePlayer = advantageTeam != null ? territory.getNwTeamEffectivePlayerAmountOnTerritory().get(advantageTeam).size() : 0;
-
-        if (isBattleOnEnd()) {
-            return;
-        }
 
         territory.getNwTeamEffectivePlayerAmountOnTerritory().forEach((nwTeam, memberList) -> {
             if (advantageTeam != ownerTeam && advantageTeam != null) { // Attackers capturing unowned territory
