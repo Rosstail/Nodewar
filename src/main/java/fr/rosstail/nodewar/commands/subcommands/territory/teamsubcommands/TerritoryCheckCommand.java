@@ -77,7 +77,7 @@ public class TerritoryCheckCommand extends TerritorySubCommand {
                 return;
             } else if (territoryList.size() > 1) {
                 String territoryNames = territoryList.stream().map(territory1 -> territory1.getModel().getName()).collect(Collectors.joining(", "));
-                sender.sendMessage("You stands on multiple territory. Please select one of them: " + territoryNames);
+                sender.sendMessage("You stand on multiple territories. Please select one of them: " + territoryNames);
                 return;
             }
 

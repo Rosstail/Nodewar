@@ -1,12 +1,15 @@
 package fr.rosstail.nodewar.territory.battle;
 
 import fr.rosstail.nodewar.team.NwTeam;
+import fr.rosstail.nodewar.territory.Territory;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Battle {
+
+    protected final Territory territory;
     BattleStatus battleStatus = BattleStatus.WAITING;
     Map<Player, Integer> playerScoreMap = new HashMap<>();
     Map<NwTeam, Integer> teamScoreMap = new HashMap<>();
@@ -17,7 +20,9 @@ public class Battle {
     NwTeam advantageTeam;
     NwTeam winnerTeam;
 
-
+    public Battle(Territory territory) {
+        this.territory = territory;
+    }
 
     public Map<Player, Integer> getPlayerScoreMap() {
         return playerScoreMap;
@@ -32,7 +37,9 @@ public class Battle {
 
     public void addPlayerScore(Player player, int value) {
         playerScoreMap.put(player, getPlayerScore(player) + value);
-        System.out.println(player.getName() + " team won " + value + " score. Total: " + getPlayerScore(player));
+        if (value > 0) {
+            System.out.println(player.getName() + " player won " + value + " score. Total: " + getPlayerScore(player));
+        }
     }
 
     public Map<NwTeam, Integer> getTeamScoreMap() {
@@ -48,7 +55,9 @@ public class Battle {
 
     public void addTeamScore(NwTeam nwTeam, int value) {
         teamScoreMap.put(nwTeam, getTeamScore(nwTeam) + value);
-        System.out.println(nwTeam.getModel().getName() + " team won " + value + " score. Total: " + getTeamScore(nwTeam));
+        if (value > 0) {
+            System.out.println(nwTeam.getModel().getName() + " team won " + value + " score. Total: " + getTeamScore(nwTeam));
+        }
     }
 
     public BattleStatus getBattleStatus() {

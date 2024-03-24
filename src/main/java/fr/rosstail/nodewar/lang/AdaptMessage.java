@@ -10,6 +10,7 @@ import fr.rosstail.nodewar.team.rank.TeamRank;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
+import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
@@ -332,6 +333,7 @@ public class AdaptMessage {
     public String adaptTerritoryMessage(String message, Territory territory) {
         TerritoryModel territoryModel = territory.getModel();
         Objective objective = territory.getObjective();
+        Battle battle = territory.getCurrentBattle();
         AttackRequirements attackRequirements = territory.getAttackRequirements();
         message = message.replaceAll("\\[territory_prefix]", territoryModel.getPrefix());
         message = message.replaceAll("\\[territory_suffix]", territoryModel.getSuffix());
@@ -341,6 +343,13 @@ public class AdaptMessage {
         message = message.replaceAll("\\[territory_type]", territoryModel.getTypeName());
         message = message.replaceAll("\\[territory_protected]", territoryModel.isUnderProtection() ? "protected" : "vulnerable");
         message = message.replaceAll("\\[territory_owner]", territory.getOwnerTeam() != null ? territory.getOwnerTeam().getModel().getDisplay() : "unoccupied");
+
+        if (battle != null) {
+            message = message.replaceAll("\\[territory_battle_status]", battle.getBattleStatus().toString());
+            message = message.replaceAll("\\[territory_battle_advantage]", battle.getAdvantagedTeam() != null ? battle.getAdvantagedTeam().getModel().getName() : "None");
+            message = message.replaceAll("\\[territory_battle_winner]", battle.getWinnerTeam() != null ? battle.getWinnerTeam().getModel().getName() : "None");
+        }
+
 
         return message;
     }

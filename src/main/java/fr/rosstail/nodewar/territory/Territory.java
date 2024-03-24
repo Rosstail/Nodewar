@@ -16,21 +16,21 @@ import fr.rosstail.nodewar.team.relation.TeamRelation;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.battle.Battle;
+import fr.rosstail.nodewar.territory.battle.types.BattleControl;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBar;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.types.*;
 import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Territory {
 
@@ -47,7 +47,7 @@ public class Territory {
     private Objective objective;
 
     private Battle previousBattle;
-    private Battle currentBattle = new Battle();
+    private Battle currentBattle;
 
     private final TerritoryBossBar territoryBossBar;
 
@@ -274,6 +274,7 @@ public class Territory {
         this.currentBattle = currentBattle;
     }
 
+
     public void setupObjective() {
         if (territoryModel.getObjectiveTypeName() != null) {
             switch (territoryModel.getObjectiveTypeName()) {
@@ -307,7 +308,47 @@ public class Territory {
         }
     }
 
+    public void setupBattle() {
+        if (territoryModel.getObjectiveTypeName() != null) {
+            switch (territoryModel.getObjectiveTypeName()) {
+                case "control":
+                    setCurrentBattle(new BattleControl(this));
+                    break;
+                default:
+                    setCurrentBattle(new Battle(this));
+            }
+        } else {
+            setCurrentBattle(new Battle(this));
+        }
+    }
+
     public void setupAttackRequirements() {
         this.attackRequirements = new AttackRequirements(this, territoryModel.getAttackRequirementsModel(), territoryType.getAttackRequirementsModel());
+    }
+
+
+    public Map<NwTeam, List<Player>> getNwTeamEffectivePlayerAmountOnTerritory() {
+        Map<NwTeam, List<Player>> teamPlayerMap = new HashMap<>();
+        if (getOwnerTeam() != null) {
+            teamPlayerMap.put(getOwnerTeam(), new ArrayList<>()); //guarantee
+        }
+
+        List<Player> availablePlayerList = getPlayers().stream().filter(player ->
+                (player.getGameMode().equals(GameMode.SURVIVAL) || player.getGameMode().equals(GameMode.ADVENTURE))).collect(Collectors.toList());
+
+        for (Player player : availablePlayerList) {
+            PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
+            NwTeam playerNwTeam = playerData.getTeam();
+
+            if (playerNwTeam != null) {
+                if (!teamPlayerMap.containsKey(playerNwTeam)) {
+                    teamPlayerMap.put(playerNwTeam, new ArrayList<>(Collections.singleton(player)));
+                } else {
+                    teamPlayerMap.get(playerNwTeam).add(player);
+                }
+            }
+        }
+
+        return teamPlayerMap;
     }
 }

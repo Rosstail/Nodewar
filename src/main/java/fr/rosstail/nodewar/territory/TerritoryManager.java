@@ -110,6 +110,12 @@ public class TerritoryManager {
         });
     }
 
+    public void setupTerritoriesBattle() {
+        getTerritoryMap().forEach((s, territory) -> {
+            territory.setupBattle();
+        });
+    }
+
     public void setupTerritoriesAttackRequirements() {
         getTerritoryMap().forEach((s, territory) -> {
             territory.setupAttackRequirements();
