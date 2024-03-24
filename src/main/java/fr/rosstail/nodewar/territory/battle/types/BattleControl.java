@@ -36,6 +36,9 @@ public class BattleControl extends Battle {
 
 
     public void handleContribution() {
+        if (!isBattleStarted()) {
+            return;
+        }
         int currentHealth = objectiveControl.getCurrentHealth();
         int maxHealth = objectiveControl.getMaxHealth();
         NwTeam ownerTeam = territory.getOwnerTeam();
