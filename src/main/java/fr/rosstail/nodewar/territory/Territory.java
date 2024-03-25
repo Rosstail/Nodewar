@@ -339,10 +339,10 @@ public class Territory {
     }
 
 
-    public Map<NwTeam, List<Player>> getNwTeamEffectivePlayerAmountOnTerritory() {
-        Map<NwTeam, List<Player>> teamPlayerMap = new HashMap<>();
+    public Map<NwTeam, Set<Player>> getNwTeamEffectivePlayerAmountOnTerritory() {
+        Map<NwTeam, Set<Player>> teamPlayerMap = new HashMap<>();
         if (getOwnerTeam() != null) {
-            teamPlayerMap.put(getOwnerTeam(), new ArrayList<>()); //guarantee
+            teamPlayerMap.put(getOwnerTeam(), new HashSet<>()); //guarantee
         }
 
         List<Player> availablePlayerList = getPlayers().stream().filter(player ->
@@ -354,7 +354,7 @@ public class Territory {
 
             if (playerNwTeam != null) {
                 if (!teamPlayerMap.containsKey(playerNwTeam)) {
-                    teamPlayerMap.put(playerNwTeam, new ArrayList<>(Collections.singleton(player)));
+                    teamPlayerMap.put(playerNwTeam, new HashSet<>(Collections.singleton(player)));
                 } else {
                     teamPlayerMap.get(playerNwTeam).add(player);
                 }

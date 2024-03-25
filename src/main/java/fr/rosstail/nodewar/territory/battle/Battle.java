@@ -44,9 +44,6 @@ public class Battle {
 
     public void addPlayerScore(Player player, int value) {
         playerScoreMap.put(player, getPlayerScore(player) + value);
-        if (value > 0) {
-            System.out.println(player.getName() + " player won " + value + " score. Total: " + getPlayerScore(player));
-        }
     }
 
     public Map<NwTeam, Integer> getTeamScoreMap() {
@@ -62,9 +59,6 @@ public class Battle {
 
     public void addTeamScore(NwTeam nwTeam, int value) {
         teamScoreMap.put(nwTeam, getTeamScore(nwTeam) + value);
-        if (value > 0) {
-            System.out.println(nwTeam.getModel().getName() + " team won " + value + " score. Total: " + getTeamScore(nwTeam));
-        }
     }
 
     public BattleStatus getBattleStatus() {

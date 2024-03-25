@@ -153,7 +153,9 @@ public class ObjectiveSiege extends Objective {
         return null;
     }
 
+    @Override
     public void win(NwTeam winnerTeam) {
+        super.win(winnerTeam);
         Territory territory = super.territory;
         currentHealth = maxHealth;
         BattleSiege currentBattleSiege = (BattleSiege) territory.getCurrentBattle();

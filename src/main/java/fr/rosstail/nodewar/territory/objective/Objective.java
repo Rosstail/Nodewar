@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.territory.objective;
 
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
@@ -53,6 +54,10 @@ public abstract class Objective {
 
     public void stopObjective() {
         Bukkit.getScheduler().cancelTask(scheduler);
+    }
+
+    public void win(NwTeam winnerTeam) {
+        AdaptMessage.print(winnerTeam.getModel().getName() + " won at " + territory.getModel().getDisplay() + "!", AdaptMessage.prints.OUT);
     }
 
     public String print() {

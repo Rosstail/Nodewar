@@ -5,7 +5,6 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
-import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.territory.Territory;
@@ -14,10 +13,8 @@ import fr.rosstail.nodewar.territory.battle.types.BattleControl;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ObjectiveControl extends Objective {
 
@@ -243,6 +240,7 @@ public class ObjectiveControl extends Objective {
         Bukkit.getPluginManager().callEvent(event);
     }
 
+    @Override
     public void win(NwTeam winnerTeam) {
         Territory territory = super.territory;
         BattleControl currentBattleControl = (BattleControl) territory.getCurrentBattle();

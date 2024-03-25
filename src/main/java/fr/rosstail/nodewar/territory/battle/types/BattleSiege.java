@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class BattleSiege extends Battle {
 
@@ -37,6 +38,22 @@ public class BattleSiege extends Battle {
         NwTeam ownerTeam = territory.getOwnerTeam();
         NwTeam advantageTeam = getAdvantagedTeam();
         objectiveSiege.getCapturePointsDamageRegenPerSecond().forEach((capturePoint, integers) -> {
+            NwTeam pointOwner = capturePoint.getOwnerTeam();
+            if (pointOwner != null) {
+                int score = 5;
+                Set<Player> players = territory.getNwTeamEffectivePlayerAmountOnTerritory().get(pointOwner);
+                if (pointOwner == ownerTeam) {
+                    score *= integers.get(1);
+                } else {
+                    score *= integers.get(0);
+                }
+                addTeamScore(capturePoint.getOwnerTeam(), score);
+                if (players != null) {
+                    for (Player player : players) {
+                        addPlayerScore(player, score);
+                    }
+                }
+            }
         });
 
 
