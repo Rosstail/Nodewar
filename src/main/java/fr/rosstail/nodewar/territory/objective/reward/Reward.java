@@ -105,11 +105,11 @@ public class Reward {
             String finalCommand = adaptMessage.adaptTerritoryMessage(territory, command);
             if (target.equalsIgnoreCase("player")) {
                 battle.getPlayerScoreMap().forEach((player, score) -> {
-                    rewardPlayer(player, teamPositionMap , territory, finalCommand);
+                    rewardPlayer(player, battle, teamPositionMap , territory, finalCommand);
                 });
             } else if (target.equalsIgnoreCase("team")) {
                 battle.getTeamScoreMap().forEach((team, score) -> {
-                    rewardTeam(team, teamPositionMap, territory, finalCommand);
+                    rewardTeam(team, battle, teamPositionMap, territory, finalCommand);
                 });
             } else {
                 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
@@ -117,33 +117,36 @@ public class Reward {
         }
     }
 
-    private void rewardPlayer(Player player, Map<NwTeam, Integer> teamPositionMap, Territory territory, String command) {
+    private void rewardPlayer(Player player, Battle battle, Map<NwTeam, Integer> teamPositionMap, Territory territory, String command) {
         AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
         PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
         NwTeam playerTeam = playerData.getTeam();
 
-        if (playerTeam != null && shallRewardPlayer(territory, teamPositionMap, player, playerTeam)) {
+        if (playerTeam != null && shallRewardPlayer(territory, battle, teamPositionMap, player, playerTeam)) {
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptMessage(command.replaceAll("\\[player]", player.getName())));
         }
     }
 
-    private void rewardTeam(NwTeam team, Map<NwTeam, Integer> teamPositionMap, Territory territory, String command) {
+    private void rewardTeam(NwTeam team, Battle battle, Map<NwTeam, Integer> teamPositionMap, Territory territory, String command) {
         AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
-        if (shallRewardTeam(territory, teamPositionMap, team)) {
+        if (shallRewardTeam(territory, battle, teamPositionMap, team)) {
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptTeamMessage(command, team));
         }
     }
 
-    private boolean shallRewardPlayer(Territory territory, Map<NwTeam, Integer> teamPositionMap, Player player, NwTeam team) {
-        int teamPosition = teamPositionMap.get(team);
-        if (!shallRewardTeam(territory, teamPositionMap, team)) {
+    private boolean shallRewardPlayer(Territory territory, Battle battle, Map<NwTeam, Integer> teamPositionMap, Player player, NwTeam team) {
+        if (hasPlayerMinimumScore && playerMinimumScore > battle.getPlayerScore(player)) {
+            return false;
+        }
+
+        if (!shallRewardTeam(territory, battle, teamPositionMap, team)) {
             return false;
         }
 
         return true;
     }
 
-    private boolean shallRewardTeam(Territory territory,  Map<NwTeam, Integer> teamPositionMap, NwTeam team) {
+    private boolean shallRewardTeam(Territory territory, Battle battle, Map<NwTeam, Integer> teamPositionMap, NwTeam team) {
         int teamPosition = teamPositionMap.get(team);
         String teamRole = getRewardModel().getTeamRole();
         RelationType relation = TeamRelationManager.getTeamRelationManager().getRelationBetweenTeams(team, territory.getOwnerTeam());
@@ -154,6 +157,10 @@ public class Reward {
         }
 
         if (!teamPositions.isEmpty() && !teamPositions.contains(teamPosition)) {
+            return false;
+        }
+
+        if (hasTeamMinimumScore && teamMinimumScore > battle.getTeamScore(team)) {
             return false;
         }
 

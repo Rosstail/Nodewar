@@ -42,7 +42,6 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
         this.damagePerSecondControlPointIntMap.putAll(parentObjectiveModel.getDamagePerSecondControlPointIntMap());
         this.regenPerSecondControlPointIntMap.putAll(parentObjectiveModel.getRegenPerSecondControlPointIntMap());
 
-
         childObjectiveModel.controlPointStringSet.forEach(s -> {
             int childDamagePerSecond = childObjectiveModel.damagePerSecondControlPointIntMap.get(s);
             int childRegenPerSecond = childObjectiveModel.regenPerSecondControlPointIntMap.get(s);
