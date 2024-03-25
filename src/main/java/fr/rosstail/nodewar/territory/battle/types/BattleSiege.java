@@ -43,6 +43,7 @@ public class BattleSiege extends Battle {
     }
 
     public void updateTeamContributionPerSecond(List<Territory> controlPointList) {
+        teamImpactPerSecond.clear();
         if (territory.getOwnerTeam() != null) {
             teamImpactPerSecond.put(territory.getOwnerTeam(), 0);
         }
@@ -50,7 +51,6 @@ public class BattleSiege extends Battle {
             NwTeam controlTeam = controlPointTerritory.getOwnerTeam();
             if (controlTeam != null) {
                 String controlPointName = controlPointTerritory.getModel().getName();
-                String controlTeamName = controlTeam.getModel().getName();
                 int scorePerSecond = 0;
 
                 if (teamImpactPerSecond.get(controlTeam) != null) {
