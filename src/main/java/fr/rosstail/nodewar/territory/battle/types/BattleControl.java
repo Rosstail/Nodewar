@@ -35,6 +35,7 @@ public class BattleControl extends Battle {
     }
 
 
+    @Override
     public void handleContribution() {
         if (!isBattleStarted()) {
             return;
@@ -112,6 +113,7 @@ public class BattleControl extends Battle {
         });
     }
 
+    @Override
     public void handleScore() {
         // 5 score per second for attackers
         playerAttackTimeMap.forEach((player, integer) -> {

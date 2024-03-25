@@ -7,13 +7,14 @@ import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.team.relation.TeamRelationManager;
 import fr.rosstail.nodewar.territory.Territory;
-import fr.rosstail.nodewar.territory.TerritoryManager;
+import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Reward {
     private RewardModel rewardModel;
@@ -97,25 +98,18 @@ public class Reward {
         this.shouldTeamWin = shouldTeamWin;
     }
 
-    public void handleReward(Territory territory, Objective objective, ArrayList<NwTeam> participatingTeam) {
+    public void handleReward(Territory territory, Objective objective, Battle battle, Map<NwTeam, Integer> teamPositionMap) {
         AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
         for (String command : getRewardModel().getCommandList()) {
             String target = getRewardModel().getTargetName();
             String finalCommand = adaptMessage.adaptTerritoryMessage(territory, command);
             if (target.equalsIgnoreCase("player")) {
-                territory.getPlayers().forEach(player -> {
-                    PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
-                    NwTeam playerTeam = playerData.getTeam();
-
-                    if (playerTeam != null && shallRewardTarget(territory, participatingTeam, playerTeam)) {
-                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), finalCommand.replaceAll("\\[player]", player.getName()));
-                    }
+                battle.getPlayerScoreMap().forEach((player, score) -> {
+                    rewardPlayer(player, teamPositionMap , territory, finalCommand);
                 });
             } else if (target.equalsIgnoreCase("team")) {
-                participatingTeam.forEach(team -> {
-                    if (shallRewardTarget(territory, participatingTeam, team)) {
-                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptTeamMessage(finalCommand, team));
-                    }
+                battle.getTeamScoreMap().forEach((team, score) -> {
+                    rewardTeam(team, teamPositionMap, territory, finalCommand);
                 });
             } else {
                 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
@@ -123,16 +117,43 @@ public class Reward {
         }
     }
 
-    private boolean shallRewardTarget(Territory territory, List<NwTeam> participatingTeams, NwTeam team) {
-        int teamIndex = participatingTeams.indexOf(team);
-        List<Integer> teamPositions = getRewardModel().getTeamPositions();
-        String teamRole = getRewardModel().getTeamRole();
-        RelationType relation = TeamRelationManager.getTeamRelationManager().getRelationBetweenTeams(team, territory.getOwnerTeam());
+    private void rewardPlayer(Player player, Map<NwTeam, Integer> teamPositionMap, Territory territory, String command) {
+        AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
+        PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
+        NwTeam playerTeam = playerData.getTeam();
 
-        if (isShouldTeamWin() && team != participatingTeams.get(0)) {
+        if (playerTeam != null && shallRewardPlayer(territory, teamPositionMap, player, playerTeam)) {
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptMessage(command.replaceAll("\\[player]", player.getName())));
+        }
+    }
+
+    private void rewardTeam(NwTeam team, Map<NwTeam, Integer> teamPositionMap, Territory territory, String command) {
+        AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
+        if (shallRewardTeam(territory, teamPositionMap, team)) {
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptTeamMessage(command, team));
+        }
+    }
+
+    private boolean shallRewardPlayer(Territory territory, Map<NwTeam, Integer> teamPositionMap, Player player, NwTeam team) {
+        int teamPosition = teamPositionMap.get(team);
+        if (!shallRewardTeam(territory, teamPositionMap, team)) {
             return false;
         }
-        if (!teamPositions.isEmpty() && !teamPositions.contains(teamIndex + 1)) {
+
+        return true;
+    }
+
+    private boolean shallRewardTeam(Territory territory,  Map<NwTeam, Integer> teamPositionMap, NwTeam team) {
+        int teamPosition = teamPositionMap.get(team);
+        String teamRole = getRewardModel().getTeamRole();
+        RelationType relation = TeamRelationManager.getTeamRelationManager().getRelationBetweenTeams(team, territory.getOwnerTeam());
+        List<Integer> teamPositions = getRewardModel().getTeamPositions();
+
+        if (isShouldTeamWin() && teamPosition != 1) {
+            return false;
+        }
+
+        if (!teamPositions.isEmpty() && !teamPositions.contains(teamPosition)) {
             return false;
         }
 

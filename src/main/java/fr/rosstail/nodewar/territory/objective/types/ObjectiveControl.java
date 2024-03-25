@@ -251,7 +251,10 @@ public class ObjectiveControl extends Objective {
         currentBattleControl.setBattleEndTime(System.currentTimeMillis());
 
 
-        handleEndRewards(new ArrayList<>(Collections.singleton(winnerTeam)));
+        Map<NwTeam, Integer> teamPositionMap = new HashMap<>();
+        teamPositionMap.put(winnerTeam, 1);
+        handleEndRewards(currentBattleControl, teamPositionMap);
+
         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
         Bukkit.getPluginManager().callEvent(event);
         territory.setupBattle();
@@ -275,10 +278,5 @@ public class ObjectiveControl extends Objective {
     @Override
     public String print() {
         return "\n   > Health: " + getCurrentHealth() + " / " + getMaxHealth() + "\n   > Attacker ratio: " + getMinAttackerRatio() + "\n   > Need neutralize: " + isNeedNeutralize();
-    }
-
-    @Override
-    public void handleEndRewards(ArrayList<NwTeam> participatingTeamList) {
-        super.handleEndRewards(participatingTeamList);
     }
 }

@@ -10,6 +10,8 @@ import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.battle.BattleStatus;
+import fr.rosstail.nodewar.territory.battle.types.BattleControl;
+import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
 import org.bukkit.Bukkit;
@@ -23,7 +25,6 @@ public class ObjectiveSiege extends Objective {
     private int currentHealth;
 
     private final List<Territory> controlPointList = new ArrayList<>();
-    Map<NwTeam, Integer> teamScoreMap = new HashMap<>();
 
     private final ObjectiveSiegeModel objectiveSiegeModel;
 
@@ -49,35 +50,14 @@ public class ObjectiveSiege extends Objective {
         this.currentHealth = this.maxHealth;
     }
 
-    public void updateTeamScorePerSecond() {
-        teamScoreMap.clear();
-        if (territory.getOwnerTeam() != null) {
-            teamScoreMap.put(territory.getOwnerTeam(), 0);
-        }
-        controlPointList.forEach(controlPointTerritory -> {
-            NwTeam controlTeam = controlPointTerritory.getOwnerTeam();
-            if (controlTeam != null) {
-                String controlPointName = controlPointTerritory.getModel().getName();
-                String controlTeamName = controlTeam.getModel().getName();
-                int scorePerSecond = 0;
-
-                if (teamScoreMap.get(controlTeam) != null) {
-                    scorePerSecond = teamScoreMap.get(controlTeam);
-                }
-
-                scorePerSecond += objectiveSiegeModel.getRegenPerSecondControlPointIntMap().get(controlPointName);
-                teamScoreMap.put(controlTeam, scorePerSecond);
-            }
-        });
-    }
-
     public NwTeam checkAdvantage() {
         NwTeam defenderTeam = territory.getOwnerTeam();
         int greatestAttackerScore = 0;
         int defenderScore = 0;
         final ArrayList<NwTeam> greatestAttacker = new ArrayList<>();
+        Map<NwTeam, Integer> teamImpactPerSecond = ((BattleSiege) territory.getCurrentBattle()).getTeamImpactPerSecond();
 
-        for (Map.Entry<NwTeam, Integer> entry : teamScoreMap.entrySet()) {
+        for (Map.Entry<NwTeam, Integer> entry : teamImpactPerSecond.entrySet()) {
             NwTeam attackerTeam = entry.getKey();
             RelationType relation = ConfigData.getConfigData().team.defaultRelation;
 
@@ -176,28 +156,28 @@ public class ObjectiveSiege extends Objective {
     public void win(NwTeam winnerTeam) {
         Territory territory = super.territory;
         currentHealth = maxHealth;
-        territory.getCurrentBattle().setWinnerTeam(winnerTeam);
-        territory.getCurrentBattle().setBattleStatus(BattleStatus.ENDING);
-        territory.getCurrentBattle().setBattleEndTime(System.currentTimeMillis());
+        BattleSiege currentBattleSiege = (BattleSiege) territory.getCurrentBattle();
+        currentBattleSiege.setWinnerTeam(winnerTeam);
+        currentBattleSiege.setBattleStatus(BattleStatus.ENDING);
+        currentBattleSiege.setBattleEndTime(System.currentTimeMillis());
 
-
-        ArrayList<NwTeam> orderedParticipatingTeamList = new ArrayList<>();
-        teamScoreMap.forEach((team, integer) -> {
-            int index = 0;
-            if (!orderedParticipatingTeamList.isEmpty()) {
-                for (NwTeam orderedTeam : orderedParticipatingTeamList) {
-                    if (teamScoreMap.get(orderedTeam) > teamScoreMap.get(team)) {
-                        break;
-                    }
-                    index++;
-                }
-            }
-            orderedParticipatingTeamList.add(index, team);
-        });
-        if (winnerTeam == null) {
-            orderedParticipatingTeamList.add(0, null);
+        Map<NwTeam, Integer> teamPositionMap = new HashMap<>();
+        if (winnerTeam != null) {
+            teamPositionMap.put(winnerTeam, 1);
         }
-        handleEndRewards(orderedParticipatingTeamList);
+        int position = 2;
+        TreeMap<NwTeam, Integer> sortedTeamMap = new TreeMap<>(Comparator.comparing(currentBattleSiege.getTeamScoreMap()::get).reversed());
+        sortedTeamMap.putAll(currentBattleSiege.getTeamScoreMap());
+
+        for (Map.Entry<NwTeam, Integer> entry : sortedTeamMap.entrySet()) {
+            NwTeam team = entry.getKey();
+            if (team != winnerTeam) {
+                teamPositionMap.put(team, position);
+                position++;
+            }
+        }
+
+        handleEndRewards(currentBattleSiege, teamPositionMap);
 
         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
         Bukkit.getPluginManager().callEvent(event);
@@ -206,16 +186,16 @@ public class ObjectiveSiege extends Objective {
 
     @Override
     public void applyProgress() {
-        Battle currentBattle = territory.getCurrentBattle();
+        BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
         NwTeam currentAdvantage = currentBattle.getAdvantagedTeam();
-        updateTeamScorePerSecond();
-        NwTeam newAdvantagedTeam = checkAdvantage(); //Also apply damage/regen
+        NwTeam newAdvantage = checkAdvantage(); //Also apply damage/regen
+        currentBattle.updateTeamContributionPerSecond(controlPointList);
 
-        if (currentAdvantage != newAdvantagedTeam) {
-            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantagedTeam, null);
+        if (currentAdvantage != newAdvantage) {
+            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantage, null);
             Bukkit.getPluginManager().callEvent(advantageChangeEvent);
 
-            currentBattle.setAdvantageTeam(newAdvantagedTeam);
+            currentBattle.setAdvantageTeam(newAdvantage);
         }
 
         NwTeam winnerTeam = checkWinner();
@@ -227,9 +207,45 @@ public class ObjectiveSiege extends Objective {
             currentBattle.setBattleStatus(BattleStatus.ONGOING);
         }
 
+
+        determineStart(currentBattle, currentAdvantage, newAdvantage);
+
+        if (currentBattle.isBattleStarted()) {
+            currentBattle.handleContribution();
+            currentBattle.handleScore();
+        }
+
         territory.getRelationBossBarMap().forEach((s, bossBar) -> {
             bossBar.setProgress((float) currentHealth / maxHealth);
         });
+    }
+
+    private void determineStart(BattleSiege battleControl, NwTeam currentAdvantage, NwTeam newAdvantage) {
+        NwTeam owner = territory.getOwnerTeam();
+
+        if (!battleControl.isBattleWaiting()) {
+            return;
+        }
+
+        if (newAdvantage == null) {
+            if (currentHealth == 0) {
+                return;
+            }
+        }
+
+        if (newAdvantage == owner) {
+            if (currentHealth == maxHealth) {
+                return;
+            }
+        }
+
+        if (currentAdvantage == null || currentAdvantage == owner) {
+            if (currentHealth == maxHealth) {
+                return;
+            }
+        }
+
+        battleControl.setBattleStatus(BattleStatus.ONGOING);
     }
 
     @Override
@@ -255,11 +271,6 @@ public class ObjectiveSiege extends Objective {
 
     public ObjectiveSiegeModel getObjectiveSiegeModel() {
         return objectiveSiegeModel;
-    }
-
-    @Override
-    public void handleEndRewards(ArrayList<NwTeam> participatingTeamList) {
-        super.handleEndRewards(participatingTeamList);
     }
 
     @Override

@@ -18,6 +18,7 @@ import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.battle.types.BattleControl;
+import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBar;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
 import fr.rosstail.nodewar.territory.objective.Objective;
@@ -321,6 +322,9 @@ public class Territory {
             switch (territoryModel.getObjectiveTypeName()) {
                 case "control":
                     setCurrentBattle(new BattleControl(this));
+                    break;
+                case "siege":
+                    setCurrentBattle(new BattleSiege(this));
                     break;
                 default:
                     setCurrentBattle(new Battle(this));

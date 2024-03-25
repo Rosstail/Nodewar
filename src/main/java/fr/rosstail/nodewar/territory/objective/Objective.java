@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.territory.objective;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
+import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
 import org.bukkit.Bukkit;
 
@@ -59,9 +60,9 @@ public abstract class Objective {
         return "objective placeholder";
     }
 
-    public void handleEndRewards(ArrayList<NwTeam> participatingTeamList) {
+    public void handleEndRewards(Battle battle, Map<NwTeam, Integer> teamPositionMap) {
         getStringRewardMap().forEach((s, reward) -> {
-            reward.handleReward(territory, this, participatingTeamList);
+            reward.handleReward(territory, this, battle, teamPositionMap);
         });
     }
 }

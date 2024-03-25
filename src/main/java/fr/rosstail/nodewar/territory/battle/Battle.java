@@ -28,6 +28,13 @@ public class Battle {
         return playerScoreMap;
     }
 
+    public void handleContribution() {
+
+    };
+    public void handleScore() {
+
+    };
+
     public int getPlayerScore(Player player) {
         if (!playerScoreMap.containsKey(player)) {
             return 0;
