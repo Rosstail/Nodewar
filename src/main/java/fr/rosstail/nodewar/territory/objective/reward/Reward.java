@@ -135,11 +135,11 @@ public class Reward {
     }
 
     private boolean shallRewardPlayer(Territory territory, Battle battle, Map<NwTeam, Integer> teamPositionMap, Player player, NwTeam team) {
-        if (hasPlayerMinimumScore && playerMinimumScore > battle.getPlayerScore(player)) {
+        if (!shallRewardTeam(territory, battle, teamPositionMap, team)) {
             return false;
         }
 
-        if (!shallRewardTeam(territory, battle, teamPositionMap, team)) {
+        if (hasPlayerMinimumScore && playerMinimumScore > battle.getPlayerScore(player)) {
             return false;
         }
 
