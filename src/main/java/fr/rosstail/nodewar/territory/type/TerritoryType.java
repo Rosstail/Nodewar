@@ -62,8 +62,8 @@ public class TerritoryType {
                     setObjectiveModel(objectiveControlModel);
                     break;
                 case "koth":
-                    //ObjectiveKingOfTheHillModel objectiveKingOfTheHillModel = new ObjectiveKingOfTheHill();
-                    //setObjectiveModel(objectiveKingOfTheHillModel);
+                    ObjectiveKothModel objectiveKothModel = new ObjectiveKothModel(objectiveSection);
+                    setObjectiveModel(objectiveKothModel);
                     break;
             }
         } else {

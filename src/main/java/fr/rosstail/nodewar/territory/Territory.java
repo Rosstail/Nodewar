@@ -18,6 +18,7 @@ import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.battle.types.BattleControl;
+import fr.rosstail.nodewar.territory.battle.types.BattleKoth;
 import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBar;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
@@ -290,7 +291,7 @@ public class Territory {
                     setObjective(new ObjectiveControl(this, new ObjectiveControlModel(objectiveSection), (ObjectiveControlModel) territoryType.getObjectiveModel()));
                     break;
                 case "koth":
-                    setObjective(new ObjectiveKoth(this));
+                    setObjective(new ObjectiveKoth(this, new ObjectiveKothModel(objectiveSection), (ObjectiveKothModel) territoryType.getObjectiveModel()));
                     break;
             }
         } else {
@@ -325,6 +326,9 @@ public class Territory {
                     break;
                 case "siege":
                     setCurrentBattle(new BattleSiege(this));
+                    break;
+                case "koth":
+                    setCurrentBattle(new BattleKoth(this));
                     break;
                 default:
                     setCurrentBattle(new Battle(this));
