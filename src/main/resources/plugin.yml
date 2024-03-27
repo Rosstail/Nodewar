@@ -22,33 +22,13 @@ commands:
 permissions:
   nodewar:
     default: true
-  nodewar.*:
-    default: op
-    children:
-      nodewar.command.*: true
-  nodewar.command.*:
-    default: op
-    children:
-      nodewar.command: true
-      nodewar.command.admin: true
-      nodewar.command.team.*: true
-      nodewar.command.territory.*: true
+
   nodewar.command:
     default: true
 
   nodewar.commmand.admin:
     default: op
 
-  nodewar.command.team.*:
-    default: op
-    children:
-      nodewar.command.team: true
-      nodewar.command.team.check: true
-      nodewar.command.team.create: true
-      nodewar.command.team.join: true
-      nodewar.command.team.leave: true
-      nodewar.command.team.invites.*: true
-      nodewar.command.team.manage.*: true
   nodewar.command.team:
     default: true
   nodewar.command.team.check:
@@ -61,14 +41,17 @@ permissions:
     default: true
   nodewar.command.team.list:
     default: true
-
-  nodewar.command.team.invites.*:
+  nodewar.command.team.*:
     default: op
     children:
-      nodewar.command.team.invites: true
-      nodewar.command.team.invites.check: true
-      nodewar.command.team.invites.close: true
-      nodewar.command.team.invites.open: true
+      nodewar.command.team: true
+      nodewar.command.team.check: true
+      nodewar.command.team.create: true
+      nodewar.command.team.join: true
+      nodewar.command.team.leave: true
+      nodewar.command.team.invites.*: true
+      nodewar.command.team.manage.*: true
+
   nodewar.command.team.invites:
     default: true
   nodewar.command.team.invites.check:
@@ -77,18 +60,14 @@ permissions:
     default: true
   nodewar.command.team.invites.open:
     default: true
-
-  nodewar.command.team.manage.*:
+  nodewar.command.team.invites.*:
     default: op
     children:
-      nodewar.command.team.manage: true
-      nodewar.command.team.manage.close: true
-      nodewar.command.team.manage.color: true
-      nodewar.command.team.manage.disband: true
-      nodewar.command.team.manage.invite: true
-      nodewar.command.team.manage.open: true
-      nodewar.command.team.manage.member.*: true
-      nodewar.command.team.manage.relation.*: true
+      nodewar.command.team.invites: true
+      nodewar.command.team.invites.check: true
+      nodewar.command.team.invites.close: true
+      nodewar.command.team.invites.open: true
+
   nodewar.command.team.manage:
     default: true
   nodewar.command.team.manage.close:
@@ -101,15 +80,18 @@ permissions:
     default: true
   nodewar.command.team.manage.open:
     default: true
-
-  nodewar.command.team.manage.member.*:
+  nodewar.command.team.manage.*:
     default: op
     children:
-      nodewar.command.team.manage.member: true
-      nodewar.command.team.manage.member.demote: true
-      nodewar.command.team.manage.member.kick: true
-      nodewar.command.team.manage.member.promote: true
-      nodewar.command.team.manage.member.transfer: true
+      nodewar.command.team.manage: true
+      nodewar.command.team.manage.close: true
+      nodewar.command.team.manage.color: true
+      nodewar.command.team.manage.disband: true
+      nodewar.command.team.manage.invite: true
+      nodewar.command.team.manage.open: true
+      nodewar.command.team.manage.member.*: true
+      nodewar.command.team.manage.relation.*: true
+
   nodewar.command.team.manage.member:
     default: true
   nodewar.command.team.manage.member.demote:
@@ -120,15 +102,15 @@ permissions:
     default: true
   nodewar.command.team.manage.member.transfer:
     default: true
-
-  nodewar.command.team.manage.relation.*:
+  nodewar.command.team.manage.member.*:
     default: op
     children:
-      nodewar.command.team.manage.relation: true
-      nodewar.command.team.manage.relation.close: true
-      nodewar.command.team.manage.relation.edit: true
-      nodewar.command.team.manage.relation.invites: true
-      nodewar.command.team.manage.relation.open: true
+      nodewar.command.team.manage.member: true
+      nodewar.command.team.manage.member.demote: true
+      nodewar.command.team.manage.member.kick: true
+      nodewar.command.team.manage.member.promote: true
+      nodewar.command.team.manage.member.transfer: true
+
   nodewar.command.team.manage.relation:
     default: true
   nodewar.command.team.manage.relation.close:
@@ -139,13 +121,34 @@ permissions:
     default: true
   nodewar.command.team.manage.relation.open:
     default: true
+  nodewar.command.team.manage.relation.*:
+    default: op
+    children:
+      nodewar.command.team.manage.relation: true
+      nodewar.command.team.manage.relation.close: true
+      nodewar.command.team.manage.relation.edit: true
+      nodewar.command.team.manage.relation.invites: true
+      nodewar.command.team.manage.relation.open: true
 
+  nodewar.command.territory:
+    default: true
+  nodewar.command.territory.check:
+    default: true
   nodewar.command.territory.*:
     default: op
     children:
       nodewar.command.territory: true
       nodewar.command.territory.check: true
-  nodewar.command.territory:
-    default: true
-  nodewar.command.territory.check:
-    default: true
+
+  nodewar.command.*:
+    default: op
+    children:
+      nodewar.command: true
+      nodewar.command.admin: true
+      nodewar.command.team.*: true
+      nodewar.command.territory.*: true
+
+  nodewar.*:
+    default: op
+    children:
+      nodewar.command.*: true
