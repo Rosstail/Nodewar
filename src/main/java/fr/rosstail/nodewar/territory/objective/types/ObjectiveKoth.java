@@ -1,14 +1,19 @@
 package fr.rosstail.nodewar.territory.objective.types;
 
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
+import fr.rosstail.nodewar.territory.battle.BattleStatus;
+import fr.rosstail.nodewar.territory.battle.types.BattleKoth;
+import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
 import org.bukkit.Bukkit;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ObjectiveKoth extends Objective {
     private int timeToReach;
@@ -32,10 +37,14 @@ public class ObjectiveKoth extends Objective {
     }
 
     public Map<Territory, List<Integer>> getCapturePointsValuePerSecond() {
+        System.out.println("SuuS");
         Map<Territory, List<Integer>> values = new HashMap<>();
 
         Set<String> controlPointStringSet = objectiveKothModel.getControlPointStringSet();
         Map<String, Integer> controlPointValueMap = objectiveKothModel.getPointsPerSecondControlPointIntMap();
+        controlPointValueMap.forEach((s, integer) -> {
+            System.out.println(s + " " + integer);
+        });
 
         for (String s : controlPointStringSet) {
             List<Integer> controlpointValueList = new ArrayList<>();
@@ -64,7 +73,51 @@ public class ObjectiveKoth extends Objective {
 
     @Override
     public void applyProgress() {
+        BattleKoth currentBattle = (BattleKoth) territory.getCurrentBattle();
+        NwTeam currentAdvantage = currentBattle.getAdvantagedTeam();
+        NwTeam newAdvantage = checkAdvantage(currentBattle); //also apply scores
 
+        if (currentAdvantage != newAdvantage) {
+            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantage, null);
+            Bukkit.getPluginManager().callEvent(advantageChangeEvent);
+
+            currentBattle.setAdvantageTeam(newAdvantage);
+        }
+
+        NwTeam winnerTeam = checkWinner();
+        if (currentBattle.isBattleStarted() && winnerTeam != null) {
+            win(winnerTeam);
+        }
+
+        if (currentBattle.isBattleWaiting() && !currentBattle.getTeamHoldPointMap().isEmpty()) {
+            currentBattle.setBattleStatus(BattleStatus.ONGOING);
+        }
+
+        determineStart(currentBattle, currentAdvantage, newAdvantage);
+
+        if (currentBattle.isBattleStarted()) {
+            currentBattle.handleContribution();
+            currentBattle.handleScore();
+        }
+
+        updateBossBar(currentBattle);
+    }
+
+    private NwTeam checkAdvantage(BattleKoth currentBattle) {
+        List<Map.Entry<NwTeam, Integer>> thresholdTeamList = currentBattle.getTeamHoldPointMap().entrySet().stream().filter(nwTeamIntegerEntry -> nwTeamIntegerEntry.getValue() >= timeToReach).collect(Collectors.toList());
+        return null;
+    }
+
+    private void determineStart(BattleKoth battleKoth, NwTeam currentAdvantage, NwTeam newAdvantage) {
+        if (!battleKoth.isBattleWaiting()) {
+            return;
+        }
+
+        if (battleKoth.getTeamHoldPointMap().isEmpty()) {
+            return;
+        }
+
+        battleKoth.setBattleStatus(BattleStatus.ONGOING);
     }
 
     @Override
@@ -78,5 +131,18 @@ public class ObjectiveKoth extends Objective {
 
     public List<Territory> getControlPointList() {
         return controlPointList;
+    }
+
+    private void updateBossBar(BattleKoth currentBattle) {
+        float progress = timeToReach;
+        if (currentBattle.isBattleStarted() && !currentBattle.getTeamHoldPointMap().isEmpty()) {
+            int max = Collections.max(currentBattle.getTeamHoldPointMap().values());
+            progress = ((float) max / timeToReach);
+        }
+
+        float finalProgress = progress / timeToReach;
+        territory.getRelationBossBarMap().forEach((s, bossBar) -> {
+            bossBar.setProgress(Math.min(1F, finalProgress));
+        });
     }
 }

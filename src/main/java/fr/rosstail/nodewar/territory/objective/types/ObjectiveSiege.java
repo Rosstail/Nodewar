@@ -275,6 +275,8 @@ public class ObjectiveSiege extends Objective {
         return objectiveSiegeModel;
     }
 
+
+
     @Override
     public String print() {
         StringBuilder builder = new StringBuilder("\n   > Health: " + currentHealth + " / " + maxHealth);

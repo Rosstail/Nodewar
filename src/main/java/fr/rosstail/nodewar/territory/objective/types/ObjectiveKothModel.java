@@ -28,6 +28,7 @@ public class ObjectiveKothModel extends ObjectiveModel {
                     ConfigurationSection controlSection = controlConfigSection.getConfigurationSection(s);
 
                     controlPointStringSet.add(s);
+
                     pointsPerSecondControlPointIntMap.put(s, controlSection.getInt("points-per-second", 0));
                 });
             }
@@ -36,7 +37,6 @@ public class ObjectiveKothModel extends ObjectiveModel {
 
     public ObjectiveKothModel(ObjectiveKothModel childObjectiveModel, ObjectiveKothModel parentObjectiveModel) {
         super(childObjectiveModel.clone(), parentObjectiveModel.clone());
-
         this.timeToReachStr = childObjectiveModel.getTimeToReachStr() != null ? childObjectiveModel.getTimeToReachStr() : parentObjectiveModel.getTimeToReachStr();
 
         childObjectiveModel.controlPointStringSet.forEach(s -> {

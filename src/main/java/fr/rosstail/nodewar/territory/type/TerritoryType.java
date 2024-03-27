@@ -58,11 +58,25 @@ public class TerritoryType {
                     setObjectiveModel(objectiveSiegeModel);
                     break;
                 case "control":
-                    ObjectiveControlModel objectiveControlModel = new ObjectiveControlModel(objectiveSection);
+                    ObjectiveControlModel objectiveControlModel;
+                    if (parentType != null) {
+                        objectiveControlModel = new ObjectiveControlModel(
+                                new ObjectiveControlModel(objectiveSection),
+                                (ObjectiveControlModel) parentType.getObjectiveModel());
+                    } else {
+                        objectiveControlModel = new ObjectiveControlModel(objectiveSection).clone();
+                    }
                     setObjectiveModel(objectiveControlModel);
                     break;
                 case "koth":
-                    ObjectiveKothModel objectiveKothModel = new ObjectiveKothModel(objectiveSection);
+                    ObjectiveKothModel objectiveKothModel;
+                    if (parentType != null) {
+                        objectiveKothModel = new ObjectiveKothModel(
+                                new ObjectiveKothModel(objectiveSection),
+                                (ObjectiveKothModel) parentType.getObjectiveModel());
+                    } else {
+                        objectiveKothModel = new ObjectiveKothModel(objectiveSection).clone();
+                    }
                     setObjectiveModel(objectiveKothModel);
                     break;
             }

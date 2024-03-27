@@ -13,8 +13,8 @@ import java.util.Set;
 public class BattleKoth extends Battle {
 
     private final ObjectiveKoth objectiveKoth;
-    Map<NwTeam, Integer> teamPointMap = new HashMap<>();  // reward per second
-    Map<Player, Integer> playerPointMap = new HashMap<>();  // reward per second
+    Map<NwTeam, Integer> teamHoldPointMap = new HashMap<>();  // reward per second
+    Map<Player, Integer> playerHoldPointMap = new HashMap<>();  // reward per second
 
     public BattleKoth(Territory territory) {
         super(territory);
@@ -33,7 +33,6 @@ public class BattleKoth extends Battle {
         int timeToReach = objectiveKoth.getTimeToReach();
         NwTeam ownerTeam = territory.getOwnerTeam();
         NwTeam advantageTeam = getAdvantagedTeam();
-
 
         objectiveKoth.getCapturePointsValuePerSecond().forEach((controlPoint, integers) -> {
             NwTeam pointOwner = controlPoint.getOwnerTeam();
@@ -76,25 +75,25 @@ public class BattleKoth extends Battle {
     @Override
     public void handleScore() {
         // 5 score per second for attackers
-        playerPointMap.forEach((player, integer) -> {
+        playerHoldPointMap.forEach((player, integer) -> {
             addPlayerScore(player, 5 * integer);
-            playerPointMap.put(player, 0);
+            playerHoldPointMap.put(player, 0);
         });
-        teamPointMap.forEach((nwTeam, integer) -> {
+        teamHoldPointMap.forEach((nwTeam, integer) -> {
             addTeamScore(nwTeam, 5 * integer);
-            teamPointMap.put(nwTeam, 0);
+            teamHoldPointMap.put(nwTeam, 0);
         });
     }
 
 
 
 
-    public Map<NwTeam, Integer> getTeamPointMap() {
-        return teamPointMap;
+    public Map<NwTeam, Integer> getTeamHoldPointMap() {
+        return teamHoldPointMap;
     }
 
-    public Map<Player, Integer> getPlayerPointMap() {
-        return playerPointMap;
+    public Map<Player, Integer> getPlayerHoldPointMap() {
+        return playerHoldPointMap;
     }
 }
 
