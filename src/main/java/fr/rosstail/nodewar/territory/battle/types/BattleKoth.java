@@ -14,7 +14,8 @@ public class BattleKoth extends Battle {
 
     private final ObjectiveKoth objectiveKoth;
     Map<NwTeam, Integer> teamHoldPointMap = new HashMap<>();  // reward per second
-    Map<Player, Integer> playerHoldPointMap = new HashMap<>();  // reward per second
+    Map<NwTeam, Integer> teamHoldContribMap = new HashMap<>();  // reward per second
+    Map<Player, Integer> playerHoldContribMap = new HashMap<>();  // reward per second
 
     public BattleKoth(Territory territory) {
         super(territory);
@@ -30,43 +31,27 @@ public class BattleKoth extends Battle {
         if (isBattleOnEnd()) {
             return;
         }
-        int timeToReach = objectiveKoth.getTimeToReach();
-        NwTeam ownerTeam = territory.getOwnerTeam();
-        NwTeam advantageTeam = getAdvantagedTeam();
 
-        objectiveKoth.getCapturePointsValuePerSecond().forEach((controlPoint, integers) -> {
+        objectiveKoth.getCapturePointsValuePerSecond().forEach((controlPoint, pointInt) -> {
             NwTeam pointOwner = controlPoint.getOwnerTeam();
             if (pointOwner != null) {
-                int score = 5;
-                Set<Player> players = controlPoint.getNwTeamEffectivePlayerAmountOnTerritory().get(pointOwner);
-                if (pointOwner == ownerTeam) {
-                    score *= integers.get(1);
+                if (!teamHoldPointMap.containsKey(pointOwner)) {
+                    teamHoldPointMap.put(pointOwner, pointInt);
+                    teamHoldContribMap.put(pointOwner, pointInt);
                 } else {
-                    score *= integers.get(0);
+                    teamHoldPointMap.put(pointOwner, teamHoldPointMap.get(pointOwner) + pointInt);
+                    teamHoldContribMap.put(pointOwner, teamHoldContribMap.get(pointOwner) + pointInt);
                 }
-                addTeamScore(pointOwner, score);
-                if (players != null) {
-                    for (Player player : players) {
-                        addPlayerScore(player, score);
-                    }
-                }
-            }
-        });
-        objectiveKoth.getCapturePointsValuePerSecond().forEach((capturePoint, integers) -> {
-            NwTeam pointOwner = capturePoint.getOwnerTeam();
-            if (pointOwner != null) {
-                int score = 5;
-                Set<Player> players = territory.getNwTeamEffectivePlayerAmountOnTerritory().get(pointOwner);
-                if (pointOwner == ownerTeam) {
-                    score *= integers.get(1);
-                } else {
-                    score *= integers.get(0);
-                }
-                addTeamScore(capturePoint.getOwnerTeam(), score);
-                if (players != null) {
-                    for (Player player : players) {
-                        addPlayerScore(player, score);
-                    }
+                Set<Player> teamEffectivePlayerOnTerritory = territory.getNwTeamEffectivePlayerAmountOnTerritory().get(pointOwner);
+
+                if (teamEffectivePlayerOnTerritory != null) {
+                    teamEffectivePlayerOnTerritory.forEach(player -> {
+                        if (!playerHoldContribMap.containsKey(player)) {
+                            playerHoldContribMap.put(player, pointInt);
+                        } else {
+                            playerHoldContribMap.put(player, playerHoldContribMap.get(player) + pointInt);
+                        }
+                    });
                 }
             }
         });
@@ -75,25 +60,26 @@ public class BattleKoth extends Battle {
     @Override
     public void handleScore() {
         // 5 score per second for attackers
-        playerHoldPointMap.forEach((player, integer) -> {
+        playerHoldContribMap.forEach((player, integer) -> {
             addPlayerScore(player, 5 * integer);
-            playerHoldPointMap.put(player, 0);
+            playerHoldContribMap.put(player, 0);
         });
-        teamHoldPointMap.forEach((nwTeam, integer) -> {
+        teamHoldContribMap.forEach((nwTeam, integer) -> {
             addTeamScore(nwTeam, 5 * integer);
-            teamHoldPointMap.put(nwTeam, 0);
+            teamHoldContribMap.put(nwTeam, 0);
         });
     }
-
-
-
 
     public Map<NwTeam, Integer> getTeamHoldPointMap() {
         return teamHoldPointMap;
     }
 
-    public Map<Player, Integer> getPlayerHoldPointMap() {
-        return playerHoldPointMap;
+    public Map<NwTeam, Integer> getTeamHoldContribMap() {
+        return teamHoldContribMap;
+    }
+
+    public Map<Player, Integer> getPlayerHoldContribMap() {
+        return playerHoldContribMap;
     }
 }
 

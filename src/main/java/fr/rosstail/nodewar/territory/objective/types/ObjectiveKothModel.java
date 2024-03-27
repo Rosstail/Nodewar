@@ -37,6 +37,8 @@ public class ObjectiveKothModel extends ObjectiveModel {
 
     public ObjectiveKothModel(ObjectiveKothModel childObjectiveModel, ObjectiveKothModel parentObjectiveModel) {
         super(childObjectiveModel.clone(), parentObjectiveModel.clone());
+
+        this.controlPointStringSet.addAll(parentObjectiveModel.getControlPointStringSet());
         this.timeToReachStr = childObjectiveModel.getTimeToReachStr() != null ? childObjectiveModel.getTimeToReachStr() : parentObjectiveModel.getTimeToReachStr();
 
         childObjectiveModel.controlPointStringSet.forEach(s -> {

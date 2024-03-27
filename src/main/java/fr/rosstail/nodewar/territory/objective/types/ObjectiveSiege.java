@@ -209,7 +209,6 @@ public class ObjectiveSiege extends Objective {
             currentBattle.setBattleStatus(BattleStatus.ONGOING);
         }
 
-
         determineStart(currentBattle, currentAdvantage, newAdvantage);
 
         if (currentBattle.isBattleStarted()) {

@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.territory.objective.types;
 
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
@@ -11,6 +12,7 @@ import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
 import org.bukkit.Bukkit;
+import scala.Int;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,6 +29,14 @@ public class ObjectiveKoth extends Objective {
         ObjectiveKothModel clonedParentKothModel = parentModel.clone();
         this.objectiveKothModel = new ObjectiveKothModel(clonedChildKothModel, clonedParentKothModel);
 
+
+        this.objectiveKothModel.getControlPointStringSet().forEach(s -> {
+            controlPointList.addAll(TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(
+                    (territory1 -> territory1.getModel().getName().equalsIgnoreCase(s)
+                            && territory1.getWorld() == territory.getWorld())
+            ).collect(Collectors.toList()));
+        });
+
         clonedParentKothModel.getStringRewardModelMap().forEach((s, rewardModel) -> {
             if (clonedChildKothModel.getStringRewardModelMap().containsKey(s)) {
                 getStringRewardMap().put(s, new Reward(clonedChildKothModel.getStringRewardModelMap().get(s), clonedParentKothModel.getStringRewardModelMap().get(s)));
@@ -36,25 +46,17 @@ public class ObjectiveKoth extends Objective {
         this.timeToReach = Integer.parseInt(this.objectiveKothModel.getTimeToReachStr());
     }
 
-    public Map<Territory, List<Integer>> getCapturePointsValuePerSecond() {
-        System.out.println("SuuS");
-        Map<Territory, List<Integer>> values = new HashMap<>();
+    public Map<Territory, Integer> getCapturePointsValuePerSecond() {
+        Map<Territory, Integer> values = new HashMap<>();
 
         Set<String> controlPointStringSet = objectiveKothModel.getControlPointStringSet();
         Map<String, Integer> controlPointValueMap = objectiveKothModel.getPointsPerSecondControlPointIntMap();
-        controlPointValueMap.forEach((s, integer) -> {
-            System.out.println(s + " " + integer);
-        });
 
         for (String s : controlPointStringSet) {
-            List<Integer> controlpointValueList = new ArrayList<>();
-
             if (TerritoryManager.getTerritoryManager().getTerritoryMap().containsKey(s)) {
                 Territory territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(s);
 
-                controlpointValueList.add(controlPointValueMap.get(s));
-
-                values.put(territory, controlpointValueList);
+                values.put(territory, controlPointValueMap.get(s));
             }
         }
 
@@ -68,7 +70,21 @@ public class ObjectiveKoth extends Objective {
 
     @Override
     public NwTeam checkWinner() {
-        return null;
+        BattleKoth currentBattle = (BattleKoth) territory.getCurrentBattle();
+        NwTeam currentAdvantage = currentBattle.getAdvantagedTeam();
+
+        if (currentAdvantage == null) {
+            return null;
+        }
+
+        List<Map.Entry<NwTeam, Integer>> reachTeamList = currentBattle.getTeamHoldPointMap().entrySet().stream().filter(nwTeamIntegerEntry -> (
+                nwTeamIntegerEntry.getValue() >= timeToReach
+                        && nwTeamIntegerEntry.getKey() == currentAdvantage
+        )).collect(Collectors.toList());
+
+        return reachTeamList.stream().filter(nwTeamIntegerEntry -> (
+                nwTeamIntegerEntry.getKey() == currentAdvantage
+        )).findFirst().map(Map.Entry::getKey).orElse(null);
     }
 
     @Override
@@ -89,11 +105,7 @@ public class ObjectiveKoth extends Objective {
             win(winnerTeam);
         }
 
-        if (currentBattle.isBattleWaiting() && !currentBattle.getTeamHoldPointMap().isEmpty()) {
-            currentBattle.setBattleStatus(BattleStatus.ONGOING);
-        }
-
-        determineStart(currentBattle, currentAdvantage, newAdvantage);
+        determineStart(currentBattle);
 
         if (currentBattle.isBattleStarted()) {
             currentBattle.handleContribution();
@@ -104,20 +116,79 @@ public class ObjectiveKoth extends Objective {
     }
 
     private NwTeam checkAdvantage(BattleKoth currentBattle) {
-        List<Map.Entry<NwTeam, Integer>> thresholdTeamList = currentBattle.getTeamHoldPointMap().entrySet().stream().filter(nwTeamIntegerEntry -> nwTeamIntegerEntry.getValue() >= timeToReach).collect(Collectors.toList());
-        return null;
+        int maxHoldTime = currentBattle.getTeamHoldPointMap().values().stream()
+                .max(Integer::compareTo)
+                .orElse(0);
+
+        List<NwTeam> maxHoldTimeTeam = currentBattle.getTeamHoldPointMap().entrySet().stream()
+                .filter(entry -> entry.getValue() == maxHoldTime)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+
+        if (maxHoldTimeTeam.size() == 1) {
+            return maxHoldTimeTeam.get(0);
+        }
+
+        Map<NwTeam, Integer> teamTotalHoldTime = new HashMap<>();
+        for (Map.Entry<Territory, Integer> entry : getCapturePointsValuePerSecond().entrySet()) {
+            Territory territory = entry.getKey();
+            int time = entry.getValue();
+            NwTeam owner = territory.getOwnerTeam();
+            if (owner != null && maxHoldTimeTeam.contains(owner)) {
+                teamTotalHoldTime.put(owner, teamTotalHoldTime.getOrDefault(owner, 0) + time);
+            }
+        }
+
+        return teamTotalHoldTime.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
     }
 
-    private void determineStart(BattleKoth battleKoth, NwTeam currentAdvantage, NwTeam newAdvantage) {
+    private void determineStart(BattleKoth battleKoth) {
         if (!battleKoth.isBattleWaiting()) {
             return;
         }
-
-        if (battleKoth.getTeamHoldPointMap().isEmpty()) {
+        if (controlPointList.stream().noneMatch(capturePoint -> (capturePoint.getOwnerTeam() != null && capturePoint.getOwnerTeam() != territory.getOwnerTeam()))) {
             return;
         }
 
         battleKoth.setBattleStatus(BattleStatus.ONGOING);
+    }
+
+
+    @Override
+    public void win(NwTeam winnerTeam) {
+        super.win(winnerTeam);
+        BattleKoth currentBattleKoth = (BattleKoth) territory.getCurrentBattle();
+        currentBattleKoth.setWinnerTeam(winnerTeam);
+        currentBattleKoth.setBattleStatus(BattleStatus.ENDING);
+        currentBattleKoth.setBattleEndTime(System.currentTimeMillis());
+
+        Map<NwTeam, Integer> teamPositionMap = new HashMap<>();
+        if (winnerTeam != null) {
+            teamPositionMap.put(winnerTeam, 1);
+        }
+
+
+        int position = 2;
+        TreeMap<NwTeam, Integer> sortedTeamMap = new TreeMap<>(Comparator.comparing(currentBattleKoth.getTeamScoreMap()::get).reversed());
+        sortedTeamMap.putAll(currentBattleKoth.getTeamScoreMap());
+
+        for (Map.Entry<NwTeam, Integer> entry : sortedTeamMap.entrySet()) {
+            NwTeam team = entry.getKey();
+            if (team != winnerTeam) {
+                teamPositionMap.put(team, position);
+                position++;
+            }
+        }
+
+        handleEndRewards(currentBattleKoth, teamPositionMap);
+
+        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
+        Bukkit.getPluginManager().callEvent(event);
+        territory.setupBattle();
     }
 
     @Override
@@ -144,5 +215,47 @@ public class ObjectiveKoth extends Objective {
         territory.getRelationBossBarMap().forEach((s, bossBar) -> {
             bossBar.setProgress(Math.min(1F, finalProgress));
         });
+    }
+
+    @Override
+    public String print() {
+        StringBuilder builder = new StringBuilder("Timer: " + timeToReach);
+
+        BattleKoth currentBattle = (BattleKoth) territory.getCurrentBattle();
+
+        currentBattle.getTeamHoldPointMap().forEach((nwTeam, teamHoldTime) -> {
+            builder.append("\n  > " + nwTeam.getModel().getName() + " : " + teamHoldTime + "(" + ((float) (teamHoldTime / timeToReach) * 100) + "%)");
+        });
+
+        Map<Territory, Integer> capturePointsPointsPerSecond = getCapturePointsValuePerSecond();
+        if (!capturePointsPointsPerSecond.isEmpty()) {
+            builder.append("\n > Control points :");
+            capturePointsPointsPerSecond.forEach((territory, pointsInt) -> {
+                builder.append("\n  * ").append(territory.getModel().getName()).append(": ");
+                builder.append("\n    - Points: ").append(pointsInt);
+            });
+        }
+
+        if (!getStringRewardMap().isEmpty()) {
+            builder.append("\n > Rewards: ");
+
+            getStringRewardMap().forEach((s, reward) -> {
+                builder.append("\n   * " + s + ":");
+                builder.append("\n     - target: " + reward.getRewardModel().getTargetName());
+                builder.append("\n     - minimumTeamScore: " + reward.getRewardModel().getMinimumTeamScoreStr());
+                builder.append("\n     - minimumPlayerScore: " + reward.getRewardModel().getMinimumPlayerScoreStr());
+                builder.append("\n     - teamRole: " + reward.getRewardModel().getTeamRole());
+                builder.append("\n     - playerTeamRole: " + reward.getRewardModel().getPlayerTeamRole());
+                builder.append("\n     - shouldTeamWinStr: " + reward.getRewardModel().getShouldTeamWinStr());
+                if (!reward.getRewardModel().getTeamPositions().isEmpty()) {
+                    builder.append("\n     - teamPositions: " + reward.getRewardModel().getTeamPositions());
+                }
+                if (!reward.getRewardModel().getCommandList().isEmpty()) {
+                    builder.append("\n     - commands: " + reward.getRewardModel().getCommandList());
+                }
+            });
+        }
+
+        return builder.toString();
     }
 }
