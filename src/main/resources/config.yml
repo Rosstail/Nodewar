@@ -25,8 +25,8 @@ locale:
 map:
   update-delay: 5
 
-empires:
-  none-display: "&7No Empire"
+teams:
+  none-display: "&7No Team"
 
 team:
   #system: "nodewar"
@@ -44,64 +44,52 @@ bossbar:
 dynmap:
   layer-name: "Nodewar"
   hide-by-default: false
-  use-3d-region: false
+  use-3d-region: false # bugued, keep it false
   dynmap-info-window: false
   tick-per-update: 20
   many-update-delay: 1
-  fill-opacity: 50
+  fill-opacity: 80
 
 calendar:
   wednesday-bf:
     start:
-      day-name: wednesday
-      system-time: "18:00"
+      day: wednesday
+      time: "18:00"
       vulnerable: true
-      empire: neutral
-      worlds:
-        Fodlan:
-          territories:
-            - "garreg-mach"
+      team: neutral
+      territories:
+        - "garreg-mach"
     end:
-      day-name: wednesday
-      system-time: "21:00"
+      day: wednesday
+      time: "21:00"
       vulnerable: false
-      worlds:
-        Fodlan:
-          territories:
-            - "garreg-mach"
+      territories:
+        - "garreg-mach"
   friday-bf:
     start:
-      day-name: friday
-      system-time: "20:00"
+      day: friday
+      time: "20:00"
       vulnerable: true
-      empire: neutral
-      worlds:
-        Fodlan:
-          territories:
-            - "garreg-mach"
+      team: neutral
+      territories:
+        - "garreg-mach"
     end:
-      day-name: friday
-      system-time: "22:00"
+      day: friday
+      time: "22:00"
       vulnerable: false
-      worlds:
-        Fodlan:
-          territories:
-            - "garreg-mach"
+      territories:
+        - "garreg-mach"
   sunday-bf:
     start:
-      day-name: sunday
-      system-time: "16:00"
+      day: sunday
+      time: "16:00"
       vulnerable: true
-      empire: neutral
-      worlds:
-        Fodlan:
-          territories:
-            - "garreg-mach"
+      team: neutral
+      territories:
+        - "garreg-mach"
     end:
-      day-name: sunday
-      system-time: "20:00"
+      day: sunday
+      time: "20:00"
       vulnerable: false
-      worlds:
-        Fodlan:
-          territories:
-            - "garreg-mach"
+      territories:
+        - "garreg-mach"

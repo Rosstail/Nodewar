@@ -66,8 +66,8 @@ public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCo
             return;
         }
 
-        baseTeamName = args[4];
-        targetTeamName = args[7];
+        baseTeamName = args[3];
+        targetTeamName = args[6];
         baseTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(baseTeamName);
         targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
@@ -82,13 +82,13 @@ public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCo
         }
 
         try {
-            relationType = RelationType.valueOf(args[8].toUpperCase());
+            relationType = RelationType.valueOf(args[7].toUpperCase());
             if (!RelationType.getSelectableRelations().contains(relationType)) {
-                sender.sendMessage("this relation type is not selectable: " + args[8].toUpperCase());
+                sender.sendMessage("this relation type is not selectable: " + args[7].toUpperCase());
                 return;
             }
         } catch (IllegalArgumentException e) {
-            sender.sendMessage("this relation type does not exist: " + args[8].toUpperCase());
+            sender.sendMessage("this relation type does not exist: " + args[7].toUpperCase());
             return;
         }
 
