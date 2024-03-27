@@ -32,10 +32,9 @@ public class ObjectiveControl extends Objective {
         ObjectiveControlModel clonedParentObjectiveModel = parentModel.clone();
         this.objectiveControlModel = new ObjectiveControlModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
 
-        clonedParentObjectiveModel.getStringRewardModelMap().forEach((s, rewardModel) -> {
-            if (clonedChildObjectiveModel.getStringRewardModelMap().containsKey(s)) {
-                getStringRewardMap().put(s, new Reward(clonedChildObjectiveModel.getStringRewardModelMap().get(s), clonedParentObjectiveModel.getStringRewardModelMap().get(s)));
-            }
+
+        getObjectiveControlModel().getStringRewardModelMap().forEach((s, rewardModel) -> {
+            getStringRewardMap().put(s, new Reward(rewardModel));
         });
 
         this.neutralPeriod = Boolean.parseBoolean(this.objectiveControlModel.getNeedNeutralizeStepStr());
@@ -276,5 +275,9 @@ public class ObjectiveControl extends Objective {
     @Override
     public String print() {
         return "\n   > Health: " + getCurrentHealth() + " / " + getMaxHealth() + "\n   > Attacker ratio: " + getMinAttackerRatio() + "\n   > Need neutralize: " + isNeedNeutralize();
+    }
+
+    public ObjectiveControlModel getObjectiveControlModel() {
+        return objectiveControlModel;
     }
 }

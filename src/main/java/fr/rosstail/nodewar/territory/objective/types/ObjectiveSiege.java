@@ -33,6 +33,7 @@ public class ObjectiveSiege extends Objective {
         ObjectiveSiegeModel clonedChildObjectiveModel = childModel.clone();
         ObjectiveSiegeModel clonedParentObjectiveModel = parentModel.clone();
         this.objectiveSiegeModel = new ObjectiveSiegeModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
+
         objectiveSiegeModel.getControlPointStringSet().forEach(s -> {
             controlPointList.addAll(TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(
                     (territory1 -> territory1.getModel().getName().equalsIgnoreCase(s)
@@ -41,6 +42,7 @@ public class ObjectiveSiege extends Objective {
         });
 
         getObjectiveSiegeModel().getStringRewardModelMap().forEach((s, rewardModel) -> {
+            System.out.println("siege " + s);
             getStringRewardMap().put(s, new Reward(rewardModel));
         });
 

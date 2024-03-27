@@ -37,10 +37,10 @@ public class ObjectiveKoth extends Objective {
             ).collect(Collectors.toList()));
         });
 
-        clonedParentKothModel.getStringRewardModelMap().forEach((s, rewardModel) -> {
-            if (clonedChildKothModel.getStringRewardModelMap().containsKey(s)) {
-                getStringRewardMap().put(s, new Reward(clonedChildKothModel.getStringRewardModelMap().get(s), clonedParentKothModel.getStringRewardModelMap().get(s)));
-            }
+
+        getObjectiveKothModel().getStringRewardModelMap().forEach((s, rewardModel) -> {
+            System.out.println("koth " + s);
+            getStringRewardMap().put(s, new Reward(rewardModel));
         });
 
         this.timeToReach = Integer.parseInt(this.objectiveKothModel.getTimeToReachStr());
@@ -171,7 +171,6 @@ public class ObjectiveKoth extends Objective {
             teamPositionMap.put(winnerTeam, 1);
         }
 
-
         int position = 2;
         TreeMap<NwTeam, Integer> sortedTeamMap = new TreeMap<>(Comparator.comparing(currentBattleKoth.getTeamScoreMap()::get).reversed());
         sortedTeamMap.putAll(currentBattleKoth.getTeamScoreMap());
@@ -210,8 +209,7 @@ public class ObjectiveKoth extends Objective {
             int max = Collections.max(currentBattle.getTeamHoldPointMap().values());
             progress = ((float) max / timeToReach);
         }
-
-        float finalProgress = progress / timeToReach;
+        float finalProgress = progress;
         territory.getRelationBossBarMap().forEach((s, bossBar) -> {
             bossBar.setProgress(Math.min(1F, finalProgress));
         });
@@ -257,5 +255,9 @@ public class ObjectiveKoth extends Objective {
         }
 
         return builder.toString();
+    }
+
+    public ObjectiveKothModel getObjectiveKothModel() {
+        return objectiveKothModel;
     }
 }

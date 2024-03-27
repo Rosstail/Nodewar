@@ -44,6 +44,7 @@ public class Battle {
 
     public void addPlayerScore(Player player, int value) {
         playerScoreMap.put(player, getPlayerScore(player) + value);
+        System.out.println(player.getName() + " score " + value + ". TOTAL: " + getPlayerScore(player));
     }
 
     public Map<NwTeam, Integer> getTeamScoreMap() {

@@ -59,13 +59,13 @@ public class BattleKoth extends Battle {
 
     @Override
     public void handleScore() {
-        // 5 score per second for attackers
+        // 10 score per second for attackers
         playerHoldContribMap.forEach((player, integer) -> {
-            addPlayerScore(player, 5 * integer);
+            addPlayerScore(player, 10 * integer);
             playerHoldContribMap.put(player, 0);
         });
         teamHoldContribMap.forEach((nwTeam, integer) -> {
-            addTeamScore(nwTeam, 5 * integer);
+            addTeamScore(nwTeam, 10 * integer);
             teamHoldContribMap.put(nwTeam, 0);
         });
     }
