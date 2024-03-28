@@ -398,6 +398,28 @@ public class AdaptMessage {
         return adaptMessage(message);
     }
 
+    public void alertTeam(NwTeam team, String message, Territory territory, boolean inside) {
+        if (team == null) {
+            return;
+        }
+
+        message = AdaptMessage.getAdaptMessage().adaptTeamMessage(message, team);
+        message = adaptTerritoryMessage(message, territory);
+        message = AdaptMessage.getAdaptMessage().adaptMessage(message);
+        String finalMessage = message;
+
+        if (!inside) {
+            team.getMemberMap().forEach((player, teamMember) -> {
+                player.sendMessage(finalMessage);
+            });
+        } else {
+            Set<Player> teamMemberInTerritory = territory.getNwTeamEffectivePlayerAmountOnTerritory().get(team);
+            teamMemberInTerritory.forEach(player -> {
+                player.sendMessage(finalMessage);
+            });
+        }
+    }
+
 
     public String getChatColoHexValue(String teamColor) {
         switch (teamColor) {

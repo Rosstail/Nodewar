@@ -316,7 +316,7 @@ public class Territory {
 
     public void setupBattle() {
         if (currentBattle != null) {
-            currentBattle.setBattleStatus(BattleStatus.ENDED);
+            currentBattle.setBattleEnded();
             setPreviousBattle(currentBattle);
         }
         if (territoryModel.getObjectiveTypeName() != null) {

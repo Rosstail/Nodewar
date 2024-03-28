@@ -4,6 +4,7 @@ import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.territory.Territory;
@@ -162,8 +163,9 @@ public class ObjectiveSiege extends Objective {
         currentHealth = maxHealth;
         BattleSiege currentBattleSiege = (BattleSiege) territory.getCurrentBattle();
         currentBattleSiege.setWinnerTeam(winnerTeam);
-        currentBattleSiege.setBattleStatus(BattleStatus.ENDING);
-        currentBattleSiege.setBattleEndTime(System.currentTimeMillis());
+        currentBattleSiege.setBattleEnding();
+
+        AdaptMessage.getAdaptMessage().alertTeam(winnerTeam, "congratz, your team is victorious at [territory_name]", territory, false);
 
         Map<NwTeam, Integer> teamPositionMap = new HashMap<>();
         if (winnerTeam != null) {
@@ -208,7 +210,7 @@ public class ObjectiveSiege extends Objective {
         }
 
         if (currentBattle.isBattleWaiting() && currentHealth < maxHealth) {
-            currentBattle.setBattleStatus(BattleStatus.ONGOING);
+            currentBattle.setBattleOngoing();
         }
 
         determineStart(currentBattle, currentAdvantage, newAdvantage);
@@ -248,7 +250,9 @@ public class ObjectiveSiege extends Objective {
             }
         }
 
-        battleControl.setBattleStatus(BattleStatus.ONGOING);
+        battleControl.setBattleOngoing();
+
+        AdaptMessage.getAdaptMessage().alertTeam(owner, "a battle started at [territory_name]", territory, false);
     }
 
     @Override

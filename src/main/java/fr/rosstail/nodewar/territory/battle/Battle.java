@@ -80,6 +80,20 @@ public class Battle {
         return this.battleStatus.equals(BattleStatus.ENDING) || this.battleStatus.equals(BattleStatus.ENDED);
     }
 
+    public void setBattleOngoing() {
+        setBattleStatus(BattleStatus.ONGOING);
+        setBattleStartTime(System.currentTimeMillis());
+    }
+
+    public void setBattleEnding() {
+        setBattleStatus(BattleStatus.ENDING);
+        setBattleEndTime(System.currentTimeMillis());
+    }
+
+    public void setBattleEnded() {
+        setBattleStatus(BattleStatus.ENDED);
+    }
+
     public long getBattleStartTime() {
         return battleStartTime;
     }

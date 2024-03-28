@@ -5,6 +5,7 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.territory.Territory;
@@ -203,7 +204,9 @@ public class ObjectiveControl extends Objective {
             }
         }
 
-        battleControl.setBattleStatus(BattleStatus.ONGOING);
+        battleControl.setBattleOngoing();
+
+        AdaptMessage.getAdaptMessage().alertTeam(owner, "a battle started at [territory_name]", territory, false);
     }
 
     @Override
@@ -244,8 +247,9 @@ public class ObjectiveControl extends Objective {
         Territory territory = super.territory;
         BattleControl currentBattleControl = (BattleControl) territory.getCurrentBattle();
         currentBattleControl.setWinnerTeam(winnerTeam);
-        currentBattleControl.setBattleStatus(BattleStatus.ENDING);
-        currentBattleControl.setBattleEndTime(System.currentTimeMillis());
+        AdaptMessage.getAdaptMessage().alertTeam(winnerTeam, "congratz, your team is victorious at [territory_name]", territory, false);
+
+        currentBattleControl.setBattleEnding();
 
 
         Map<NwTeam, Integer> teamPositionMap = new HashMap<>();

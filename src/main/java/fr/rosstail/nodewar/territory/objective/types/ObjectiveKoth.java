@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.territory.objective.types;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
@@ -39,7 +40,6 @@ public class ObjectiveKoth extends Objective {
 
 
         getObjectiveKothModel().getStringRewardModelMap().forEach((s, rewardModel) -> {
-            System.out.println("koth " + s);
             getStringRewardMap().put(s, new Reward(rewardModel));
         });
 
@@ -154,7 +154,9 @@ public class ObjectiveKoth extends Objective {
             return;
         }
 
-        battleKoth.setBattleStatus(BattleStatus.ONGOING);
+        battleKoth.setBattleOngoing();
+
+        AdaptMessage.getAdaptMessage().alertTeam(territory.getOwnerTeam(), "a battle started at at [territory_name]", territory, false);
     }
 
 
@@ -163,8 +165,9 @@ public class ObjectiveKoth extends Objective {
         super.win(winnerTeam);
         BattleKoth currentBattleKoth = (BattleKoth) territory.getCurrentBattle();
         currentBattleKoth.setWinnerTeam(winnerTeam);
-        currentBattleKoth.setBattleStatus(BattleStatus.ENDING);
-        currentBattleKoth.setBattleEndTime(System.currentTimeMillis());
+        currentBattleKoth.setBattleEnding();
+
+        AdaptMessage.getAdaptMessage().alertTeam(winnerTeam, "congratz, your team is victorious at [territory_name]", territory, false);
 
         Map<NwTeam, Integer> teamPositionMap = new HashMap<>();
         if (winnerTeam != null) {

@@ -9,6 +9,7 @@ import com.sk89q.worldguard.protection.regions.RegionQuery;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.regionevents.RegionEnteredEvent;
 import fr.rosstail.nodewar.events.regionevents.RegionLeftEvent;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
