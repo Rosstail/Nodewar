@@ -5,6 +5,8 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.territory.Territory;
@@ -43,7 +45,6 @@ public class ObjectiveSiege extends Objective {
         });
 
         getObjectiveSiegeModel().getStringRewardModelMap().forEach((s, rewardModel) -> {
-            System.out.println("siege " + s);
             getStringRewardMap().put(s, new Reward(rewardModel));
         });
 
@@ -252,7 +253,8 @@ public class ObjectiveSiege extends Objective {
 
         battleControl.setBattleOngoing();
 
-        AdaptMessage.getAdaptMessage().alertTeam(owner, "a battle started at [territory_name]", territory, false);
+        AdaptMessage.getAdaptMessage().alertTeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
+        AdaptMessage.getAdaptMessage().alertTeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
     }
 
     @Override

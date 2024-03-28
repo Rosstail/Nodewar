@@ -19,7 +19,7 @@ public class TerritoryBossBar {
                 this.barStyle = BarStyle.valueOf(this.territoryBossBarModel.getStyle());
             } catch (IllegalArgumentException e) {
                 AdaptMessage.print(
-                        "The style " + this.territoryBossBarModel.getStyle() +
+                        "the style " + this.territoryBossBarModel.getStyle() +
                                 " does not exist. Using SEGMENTED_6 color instead"
                         , AdaptMessage.prints.ERROR);
                 this.barStyle = BarStyle.SEGMENTED_6;

@@ -43,7 +43,7 @@ outpost: # basic configurations
       global-outpost-reward:
         target: "server"
         commands:
-          - "broadcast [territory_team_name] is victorious at [territory_name] !"
+          - "broadcast [territory_owner_display] is victorious at [territory_display] !"
   protected: false
   bossbar:
     style: "SEGMENTED_6" # SOLID or SEGMENTED_6/10/12/20

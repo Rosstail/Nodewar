@@ -37,8 +37,6 @@ public class NodewarEventHandler implements Listener {
     public void OnTerritoryAdvantageChangeEvent(final TerritoryAdvantageChangeEvent event) {
         Territory territory = event.getTerritory();
         NwTeam team = event.getNwTeam();
-        Bukkit.getServer().broadcastMessage(territory.getModel().getName()
-                + " advantage has been set to " + (team != null ? team.getModel().getName() : "none"));
 
         territory.getCurrentBattle().setAdvantageTeam(team);
         territory.updateAllBossBar();
@@ -48,9 +46,6 @@ public class NodewarEventHandler implements Listener {
     public void OnTerritoryOwnerNeutralizeEvent(final TerritoryOwnerNeutralizeEvent event) {
         Territory territory = event.getTerritory();
         NwTeam team = event.getNwTeam();
-        Bukkit.getServer().broadcastMessage(territory.getModel().getName()
-                + " has been neutralized"
-                + (team == null ? "." : " by " + team.getModel().getName()));
 
         territory.setOwnerTeam(null);
 
@@ -66,8 +61,6 @@ public class NodewarEventHandler implements Listener {
     public void OnTerritoryOwnerChangeEvent(final TerritoryOwnerChangeEvent event) {
         Territory territory = event.getTerritory();
         NwTeam team = event.getNwTeam();
-        Bukkit.getServer().broadcastMessage(territory.getModel().getName()
-                + " has been captured by " + team.getModel().getName());
 
         territory.getProtectedRegionList().forEach(protectedRegion -> {
             if (territory.getOwnerTeam() != null) {

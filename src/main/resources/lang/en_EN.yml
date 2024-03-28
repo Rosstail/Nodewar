@@ -5,6 +5,9 @@ format:
   datetime-never: "&7Never"
   countdown: "{dd}d {HH}:{mm}:{ss}" #use dd, d, hh, h, mm, m, ss, s
 
+storage:
+  type: "[prefix]Use [type] storage type."
+
 commands:
   by-player-only: "[Nodewar] This command must be sent by a player."
   permission-denied: "[prefix]You don't have permission for command [command_name] : [command_permission]."
@@ -238,14 +241,12 @@ commands:
     desc: "Save instantly all online players data to storage."
     result: "[prefix]Manually saved data of [amount] players."
 
-storage:
-  type: "[prefix]Use [type] storage type."
-
 player:
   online: "&aONLINE"
   offline: "&8OFFLINE"
 
 team:
+  none-display: "&lAlone"
   open: "&aOpen"
   close: "&cClose"
   relations:
@@ -256,31 +257,29 @@ team:
     truce: "&5Truce"
     enemy: "&cEnemy"
 
-world-set-empire: "&7All territories in %nodewar_world_name% is now owned by %nodewar_territory_empire_owner%"
-world-neutralize: "&7All territories in %nodewar_world_name% have been neutralized"
-world-vulnerable: "&7All territories in %nodewar_world_name% are now vulnerable"
-world-invulnerable: "&7All territories in %nodewar_world_name% are now invulnerable"
-territory-set-empire: "%nodewar_territory_display% &r&7is now owned by %nodewar_territory_empire_owner%"
-territory-neutralize: "%nodewar_territory_display% &r&7has been neutralized"
-territory-vulnerable: "%nodewar_territory_display% &r&7is now vulnerable"
-territory-invulnerable: "%nodewar_territory_display% &r&7is now invulnerable"
-
 territory:
+  battle:
+    status:
+      waiting: "&5Waiting"
+      ongoing: "&eOngoing"
+      ending: "&7Ending"
+      ended: "&8Ended"
+    alert:
+      global:
+        defend:
+          start: "&4[territory_display] is under attack !" # server-wide
+          advantage: "&aYour team is repelling the enemies in [territory_display]" # territory-wide
+          disadvantage: "&cYour team is losing ground in [territory_display]." # territory-wide
+          victory: "&bYour team has defended [territory_display] successfully !" # server-wide
+          defeat: "&4You lose the [territory_display] territory..." # server-wide
+        attack:
+          start: "&eYour team engage a fight in [territory_display] !" # server-wide
+          advantage: "&aYour team is capturing [territory_display]" # territory-wide
+          disadvantage: "&cYou team is getting repelled at [territory_display]" # territory-wide
+          victory: "&bYour team has conquered [territory_display] !" # server-wide
+          defeat: "&4Your team has been repelled at [territory_display]..." # server-wide
   bossbar:
-    neutral: "Territory %nodewar_territory_display% &7- &c%nodewar_territory_resistance%&7/&c%nodewar_territory_max_resistance%"
-    under-capture: "Territory %nodewar_territory_display% &7- &ccapturing &7- &c%nodewar_territory_resistance%&7/&c%nodewar_territory_max_resistance%"
-    struggle: "Territory %nodewar_territory_display% &7- &estruggling &7- &c%nodewar_territory_resistance%&7/&c%nodewar_territory_max_resistance%"
-    on-defense: "Territory %nodewar_territory_display% &7- &cdefending &7- &c%nodewar_territory_resistance%&7/&c%nodewar_territory_max_resistance%"
-  titles:
-    neutralized:
-      title: "Territory %nodewar_territory_display% neutralized"
-      subtitle: "By %nodewar_territory_empire_advantage%"
-    conquered:
-      title: "Territory %nodewar_territory_display% conquered"
-      subtitle: "By %nodewar_territory_empire_advantage%"
-    defended:
-      title: "Territory %nodewar_territory_display% defended"
-      subtitle: "By %nodewar_territory_empire_advantage%"
-
-location-does-not-exist: "&7This location does not exist."
-world-not-used: "&7This world is not used."
+    global:
+      wild: "[territory_display] - [territory_battle_status]"
+      occupied: "[territory_display] - {[territory_owner_color]}[territory_owner_display] - [territory_battle_status]"
+      battle: "[territory_display] - {[territory_owner_color]}[territory_owner_display]&r {[territory_battle_advantage_color]}[territory_battle_direction]&r {[territory_battle_advantage_color]}[territory_battle_advantage_display]"

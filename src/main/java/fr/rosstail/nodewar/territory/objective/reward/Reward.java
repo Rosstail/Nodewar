@@ -102,7 +102,7 @@ public class Reward {
         AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
         for (String command : getRewardModel().getCommandList()) {
             String target = getRewardModel().getTargetName();
-            String finalCommand = adaptMessage.adaptTerritoryMessage(territory, command);
+            String finalCommand = adaptMessage.adaptTerritoryMessage(command, territory);
             if (target.equalsIgnoreCase("player")) {
                 battle.getPlayerScoreMap().forEach((player, score) -> {
                     rewardPlayer(player, battle, teamPositionMap , territory, finalCommand);

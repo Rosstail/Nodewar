@@ -57,7 +57,6 @@ public abstract class Objective {
     }
 
     public void win(NwTeam winnerTeam) {
-        AdaptMessage.print(winnerTeam.getModel().getName() + " won at " + territory.getModel().getDisplay() + "!", AdaptMessage.prints.OUT);
     }
 
     public String print() {

@@ -6,6 +6,8 @@ import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.territory.Territory;
@@ -95,11 +97,12 @@ public class ObjectiveControl extends Objective {
         BattleControl currentBattle = (BattleControl) territory.getCurrentBattle();
         NwTeam currentAdvantage = currentBattle.getAdvantagedTeam();
         NwTeam newAdvantage = checkAdvantage();
+
         if (currentAdvantage != newAdvantage) {
+            currentBattle.setAdvantageTeam(newAdvantage);
             TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantage, null);
             Bukkit.getPluginManager().callEvent(advantageChangeEvent);
 
-            currentBattle.setAdvantageTeam(newAdvantage);
         }
 
         NwTeam neutralizer = checkNeutralization();
@@ -206,7 +209,8 @@ public class ObjectiveControl extends Objective {
 
         battleControl.setBattleOngoing();
 
-        AdaptMessage.getAdaptMessage().alertTeam(owner, "a battle started at [territory_name]", territory, false);
+        AdaptMessage.getAdaptMessage().alertTeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
+        AdaptMessage.getAdaptMessage().alertTeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
     }
 
     @Override
@@ -247,6 +251,7 @@ public class ObjectiveControl extends Objective {
         Territory territory = super.territory;
         BattleControl currentBattleControl = (BattleControl) territory.getCurrentBattle();
         currentBattleControl.setWinnerTeam(winnerTeam);
+
         AdaptMessage.getAdaptMessage().alertTeam(winnerTeam, "congratz, your team is victorious at [territory_name]", territory, false);
 
         currentBattleControl.setBattleEnding();

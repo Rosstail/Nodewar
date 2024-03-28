@@ -139,14 +139,15 @@ public enum LangMessage {
     COMMANDS_ADMIN_TERRITORY_TEAM_RESET_DESC("commands.admin.territory.team.reset.desc", false, false),
     COMMANDS_TERRITORY_TEAM_RESET_RESULT("commands.admin.territory.team.reset.result", false, false),
 
-    PLAYER_ONLINE("player.online", false, false),
-    PLAYER_OFFLINE("player.offline", false, false),
-
     STORAGE_TYPE("storage.type", false, false),
     FORMAT_DATETIME("format.datetime", false, false),
     FORMAT_DATETIME_NEVER("format.datetime-never", false, false),
     FORMAT_COUNTDOWN("format.countdown", false, false),
 
+    PLAYER_ONLINE("player.online", false, false),
+    PLAYER_OFFLINE("player.offline", false, false),
+
+    TEAM_NONE_DISPLAY("team.none-display", false, false),
     TEAM_OPEN("team.open", false, false),
     TEAM_CLOSE("team.close", false, false),
     TEAM_RELATION_NEUTRAL("team.relations.neutral", false, false),
@@ -155,6 +156,27 @@ public enum LangMessage {
     TEAM_RELATION_ALLY("team.relations.ally", false, false),
     TEAM_RELATION_TRUCE("team.relations.truce", false, false),
     TEAM_RELATION_ENEMY("team.relations.enemy", false, false),
+
+
+    TERRITORY_BATTLE_STATUS_WAITING("territory.battle.status.waiting", false, false),
+    TERRITORY_BATTLE_STATUS_ONGOING("territory.battle.status.ongoing", false, false),
+    TERRITORY_BATTLE_STATUS_ENDING("territory.battle.status.ending", false, false),
+    TERRITORY_BATTLE_STATUS_ENDED("territory.battle.status.ended", false, false),
+    TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START("territory.battle.alert.global.defend.start", false, false),
+    TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE("territory.battle.alert.global.defend.advantage", false, false),
+    TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE("territory.battle.alert.global.defend.disadvantage", false, false),
+    TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_VICTORY("territory.battle.alert.global.defend.victory", false, false),
+    TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DEFEAT("territory.battle.alert.global.defend.defeat", false, false),
+    TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START("territory.battle.alert.global.attack.start", false, false),
+    TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE("territory.battle.alert.global.attack.advantage", false, false),
+    TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE("territory.battle.alert.global.attack.disadvantage", false, false),
+    TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_VICTORY("territory.battle.alert.global.attack.victory", false, false),
+    TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT("territory.battle.alert.global.attack.defeat", false, false),
+    TERRITORY_BOSSBAR_GLOBAL_WILD("territory.bossbar.global.wild", false, false),
+    TERRITORY_BOSSBAR_GLOBAL_OCCUPIED("territory.bossbar.global.occupied", false, false),
+    TERRITORY_BOSSBAR_GLOBAL_BATTLE("territory.bossbar.global.battle", false, false),
+
+
     ;
 
     private final String text;

@@ -109,6 +109,11 @@ public class AdaptMessage {
     }
 
     public String adaptTeamMessage(String message, NwTeam team) {
+        if (team == null) {
+            message = message.replaceAll("\\[team_display]", LangManager.getMessage(LangMessage.TEAM_NONE_DISPLAY));
+            message = message.replaceAll("\\[team_(\\w+)]", "!!!");
+            return message;
+        }
         message = message.replaceAll("\\[team_name]", team.getModel().getName());
         message = message.replaceAll("\\[team_id]", String.valueOf(team.getModel().getId()));
         message = message.replaceAll("\\[team_display]", team.getModel().getDisplay());
@@ -120,14 +125,96 @@ public class AdaptMessage {
         return message;
     }
 
-    public String adaptTerritoryMessage(Territory territory, String message) {
-        message = message.replaceAll("\\[territory_name]", territory.getModel().getName());
-        message = message.replaceAll("\\[territory_display]", territory.getModel().getDisplay());
-        message = message.replaceAll("\\[territory_world]", territory.getModel().getWorldName());
-        message = message.replaceAll("\\[territory_prefix]", territory.getModel().getPrefix());
-        message = message.replaceAll("\\[territory_suffix]", territory.getModel().getSuffix());
-        message = message.replaceAll("\\[territory_team_name]", territory.getOwnerTeam() != null ? territory.getOwnerTeam().getModel().getName() : "None");
+    public String adaptTeamMessage(String message, NwTeam nwTeam, Player player) {
+        TeamModel teamModel = nwTeam.getModel();
+
+        if (message.contains("[team_result_member_line]")) {
+            String memberStringLine = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT_MEMBER_LINE);
+            List<String> memberStringList = new ArrayList<>();
+            nwTeam.getModel().getTeamMemberModelMap().forEach((index, teamMember) -> {
+                memberStringList.add(memberStringLine
+                        .replaceAll("\\[team_player_connected]", Bukkit.getPlayer(teamMember.getUsername()) != null ? "&a+" : "&c-")
+                        .replaceAll("\\[team_player]", teamMember.getUsername())
+                        .replaceAll("\\[team_player_rank]", Arrays.stream(TeamRank.values()).filter(teamRank ->
+                                (teamRank.getWeight() == teamMember.getRank())).findFirst().get().name())
+                );
+            });
+            message = message.replaceAll("\\[team_result_member_line]", String.join("\n", memberStringList));
+        }
+
+        if (message.contains("[team_result_relation_line]")) {
+            String relationStringLine = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT_RELATION_LINE);
+            List<String> relationStringList = new ArrayList<>();
+            nwTeam.getRelations().forEach((s, teamRelation) -> {
+                relationStringList.add(
+                        adaptTeamMessage(
+                                relationStringLine.replaceAll("\\[team_relation]", teamRelation.getRelationType().getDisplay())
+                                , teamRelation.getFirstTeam() == nwTeam ? teamRelation.getSecondTeam() : teamRelation.getFirstTeam())
+                );
+            });
+            message = message.replaceAll("\\[team_result_relation_line]", String.join("\n", relationStringList));
+        }
+
+        message = message.replaceAll("\\[team]", teamModel.getName());
+        message = message.replaceAll("\\[team_display]", teamModel.getDisplay());
+        message = message.replaceAll("\\[team_color]", teamModel.getTeamColor());
+        message = message.replaceAll("\\[team_open]", LangManager.getMessage(nwTeam.getModel().isOpen() ? LangMessage.TEAM_OPEN : LangMessage.TEAM_CLOSE));
+        message = message.replaceAll("\\[team_online_member]", nwTeam.getMemberMap().size() + " / " + teamModel.getTeamMemberModelMap().size());
+        message = message.replaceAll("\\[team_relation_default]", ConfigData.getConfigData().team.defaultRelation.toString());
+
+        if (player != null && nwTeam.getMemberMap().containsKey(player)) {
+            message = message.replaceAll("\\[team_player_rank]", nwTeam.getMemberMap().get(player).getRank().toString());
+        }
+
+        return adaptMessage(message);
+    }
+
+    public String adaptTerritoryMessage(String message, Territory territory) {
+        TerritoryModel territoryModel = territory.getModel();
+        Objective objective = territory.getObjective();
+        Battle battle = territory.getCurrentBattle();
+        AttackRequirements attackRequirements = territory.getAttackRequirements();
+        message = message.replaceAll("\\[territory_prefix]", territoryModel.getPrefix());
+        message = message.replaceAll("\\[territory_suffix]", territoryModel.getSuffix());
+        message = message.replaceAll("\\[territory_name]", territoryModel.getName());
+        message = message.replaceAll("\\[territory_display]", territoryModel.getDisplay());
+        message = message.replaceAll("\\[territory_world]", territoryModel.getWorldName());
+        message = message.replaceAll("\\[territory_type]", territoryModel.getTypeName());
+        message = message.replaceAll("\\[territory_protected]", territoryModel.isUnderProtection() ? "protected" : "vulnerable");
+        message = message.replaceAll("\\[territory_owner", "[team");
+        message = adaptTeamMessage(message, territory.getOwnerTeam());
         message = message.replaceAll("\\[territory_objective_name]", territory.getModel().getObjectiveTypeName());
+
+        if (battle != null) {
+            switch (battle.getBattleStatus()) {
+                case WAITING:
+                    message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_WAITING));
+                    break;
+                case ONGOING:
+                    message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ONGOING));
+                    break;
+                case ENDING:
+                    message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDING));
+                    break;
+                case ENDED:
+                    message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDED));
+                    break;
+            }
+
+            String direction = "<--->";
+
+            if (territory.getOwnerTeam() == null || territory.getCurrentBattle().getAdvantagedTeam() == territory.getOwnerTeam()) {
+                direction = "====>";
+            } else if (territory.getOwnerTeam() != null && territory.getCurrentBattle().getAdvantagedTeam() != null && territory.getCurrentBattle().getAdvantagedTeam() != territory.getOwnerTeam()) {
+                direction = "<====";
+            }
+            message = message.replaceAll("\\[territory_battle_direction]", direction);
+            message = message.replaceAll("\\[territory_battle_advantage", "[team");
+            message = adaptTeamMessage(message, battle.getAdvantagedTeam());
+            message = message.replaceAll("\\[territory_battle_winner", "[team");
+            message = adaptTeamMessage(message, battle.getWinnerTeam());
+        }
+
 
         return message;
     }
@@ -330,75 +417,7 @@ public class AdaptMessage {
         return totalTimeMs;
     }
 
-    public String adaptTerritoryMessage(String message, Territory territory) {
-        TerritoryModel territoryModel = territory.getModel();
-        Objective objective = territory.getObjective();
-        Battle battle = territory.getCurrentBattle();
-        AttackRequirements attackRequirements = territory.getAttackRequirements();
-        message = message.replaceAll("\\[territory_prefix]", territoryModel.getPrefix());
-        message = message.replaceAll("\\[territory_suffix]", territoryModel.getSuffix());
-        message = message.replaceAll("\\[territory_name]", territoryModel.getName());
-        message = message.replaceAll("\\[territory_display]", territoryModel.getDisplay());
-        message = message.replaceAll("\\[territory_world]", territoryModel.getWorldName());
-        message = message.replaceAll("\\[territory_type]", territoryModel.getTypeName());
-        message = message.replaceAll("\\[territory_protected]", territoryModel.isUnderProtection() ? "protected" : "vulnerable");
-        message = message.replaceAll("\\[territory_owner]", territory.getOwnerTeam() != null ? territory.getOwnerTeam().getModel().getDisplay() : "unoccupied");
-
-        if (battle != null) {
-            message = message.replaceAll("\\[territory_battle_status]", battle.getBattleStatus().toString());
-            message = message.replaceAll("\\[territory_battle_advantage]", battle.getAdvantagedTeam() != null ? battle.getAdvantagedTeam().getModel().getName() : "None");
-            message = message.replaceAll("\\[territory_battle_winner]", battle.getWinnerTeam() != null ? battle.getWinnerTeam().getModel().getName() : "None");
-        }
-
-
-        return message;
-    }
-
-    public String adaptTeamMessage(String message, NwTeam nwTeam, Player player) {
-        TeamModel teamModel = nwTeam.getModel();
-
-        if (message.contains("[team_result_member_line]")) {
-            String memberStringLine = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT_MEMBER_LINE);
-            List<String> memberStringList = new ArrayList<>();
-            nwTeam.getModel().getTeamMemberModelMap().forEach((index, teamMember) -> {
-                memberStringList.add(memberStringLine
-                        .replaceAll("\\[team_player_connected]", Bukkit.getPlayer(teamMember.getUsername()) != null ? "&a+" : "&c-")
-                        .replaceAll("\\[team_player]", teamMember.getUsername())
-                        .replaceAll("\\[team_player_rank]", Arrays.stream(TeamRank.values()).filter(teamRank ->
-                                (teamRank.getWeight() == teamMember.getRank())).findFirst().get().name())
-                );
-            });
-            message = message.replaceAll("\\[team_result_member_line]", String.join("\n", memberStringList));
-        }
-
-        if (message.contains("[team_result_relation_line]")) {
-            String relationStringLine = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT_RELATION_LINE);
-            List<String> relationStringList = new ArrayList<>();
-            nwTeam.getRelations().forEach((s, teamRelation) -> {
-                relationStringList.add(
-                        adaptTeamMessage(
-                                relationStringLine.replaceAll("\\[team_relation]", teamRelation.getRelationType().getDisplay())
-                                , teamRelation.getFirstTeam() == nwTeam ? teamRelation.getSecondTeam() : teamRelation.getFirstTeam())
-                );
-            });
-            message = message.replaceAll("\\[team_result_relation_line]", String.join("\n", relationStringList));
-        }
-
-        message = message.replaceAll("\\[team]", teamModel.getName());
-        message = message.replaceAll("\\[team_display]", teamModel.getDisplay());
-        message = message.replaceAll("\\[team_color]", teamModel.getTeamColor());
-        message = message.replaceAll("\\[team_open]", LangManager.getMessage(nwTeam.getModel().isOpen() ? LangMessage.TEAM_OPEN : LangMessage.TEAM_CLOSE));
-        message = message.replaceAll("\\[team_online_member]", nwTeam.getMemberMap().size() + " / " + teamModel.getTeamMemberModelMap().size());
-        message = message.replaceAll("\\[team_relation_default]", ConfigData.getConfigData().team.defaultRelation.toString());
-
-        if (player != null && nwTeam.getMemberMap().containsKey(player)) {
-            message = message.replaceAll("\\[team_player_rank]", nwTeam.getMemberMap().get(player).getRank().toString());
-        }
-
-        return adaptMessage(message);
-    }
-
-    public void alertTeam(NwTeam team, String message, Territory territory, boolean inside) {
+    public void alertTeam(NwTeam team, String message, Territory territory, boolean serverWide) {
         if (team == null) {
             return;
         }
@@ -408,7 +427,7 @@ public class AdaptMessage {
         message = AdaptMessage.getAdaptMessage().adaptMessage(message);
         String finalMessage = message;
 
-        if (!inside) {
+        if (serverWide) {
             team.getMemberMap().forEach((player, teamMember) -> {
                 player.sendMessage(finalMessage);
             });

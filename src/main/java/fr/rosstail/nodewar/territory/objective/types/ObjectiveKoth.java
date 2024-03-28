@@ -4,6 +4,8 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
@@ -156,8 +158,8 @@ public class ObjectiveKoth extends Objective {
 
         battleKoth.setBattleOngoing();
 
-        AdaptMessage.getAdaptMessage().alertTeam(territory.getOwnerTeam(), "a battle started at at [territory_name]", territory, false);
-    }
+        AdaptMessage.getAdaptMessage().alertTeam(territory.getOwnerTeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
+        }
 
 
     @Override

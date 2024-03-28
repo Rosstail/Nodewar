@@ -7,6 +7,8 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
@@ -87,38 +89,6 @@ public class Territory {
         objectiveSection = section.getConfigurationSection("objective");
         territoryModel.setObjectiveTypeName(section.getString("objective.name", territoryType.getObjectiveTypeName()));
 
-
-        /*if (territoryModel.getObjectiveTypeName() != null) {
-            switch (territoryModel.getObjectiveTypeName()) {
-                case "siege":
-                    setObjective(new ObjectiveSiege(this, new ObjectiveSiegeModel(objectiveSection), (ObjectiveSiegeModel) territoryType.getObjectiveModel()));
-                    break;
-                case "control":
-                    setObjective(new ObjectiveControl(this, new ObjectiveControlModel(objectiveSection), (ObjectiveControlModel) territoryType.getObjectiveModel()));
-                    break;
-                case "koth":
-                    setObjective(new ObjectiveKoth(this));
-                    break;
-            }
-        } else {
-            setObjective(new Objective(this) {
-                @Override
-                public NwTeam checkNeutralization() {
-                    return null;
-                }
-
-                @Override
-                public NwTeam checkWinner() {
-                    return null;
-                }
-
-                @Override
-                public void applyProgress() {
-
-                }
-            });
-        }*/
-
         ConfigurationSection bossBarSection = section.getConfigurationSection("bossbar");
         TerritoryBossBarModel sectionBossBarModel = new TerritoryBossBarModel(bossBarSection);
         territoryBossBar = new TerritoryBossBar(sectionBossBarModel, territoryType.getTerritoryBossBarModel());
@@ -132,8 +102,17 @@ public class Territory {
         updateRegionList();
 
         for (RelationType relation : RelationType.values()) {
+            String territoryName;
+            if (getOwnerTeam() != null) {
+                territoryName = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_OCCUPIED);
+            } else {
+                territoryName = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_WILD);
+            }
+
+            territoryName = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(territoryName, this);
+
             relationBossBarMap.put(relation, Bukkit.createBossBar(
-                    territoryModel.getDisplay(),
+                    territoryName,
                     ConfigData.getConfigData().bossbar.stringBarColorMap.get(relation.toString().toLowerCase()),
                     territoryBossBar.getBarStyle()
             ));
@@ -160,6 +139,16 @@ public class Territory {
 
     public void updateAllBossBar() {
         getRelationBossBarMap().forEach((relationType, bossBar) -> {
+            String bossBarTitle;
+            if (currentBattle != null && currentBattle.isBattleStarted()) {
+                bossBarTitle = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_BATTLE);
+            } else if (getOwnerTeam() != null) {
+                bossBarTitle = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_OCCUPIED);
+            } else {
+                bossBarTitle = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_WILD);
+            }
+            bossBarTitle = AdaptMessage.getAdaptMessage().adaptMessage(AdaptMessage.getAdaptMessage().adaptTerritoryMessage(bossBarTitle, this));
+            bossBar.setTitle(bossBarTitle);
             bossBar.removeAll();
         });
 
@@ -336,6 +325,7 @@ public class Territory {
         } else {
             setCurrentBattle(new Battle(this));
         }
+        updateAllBossBar();
     }
 
     public void setupAttackRequirements() {
