@@ -246,7 +246,7 @@ player:
   offline: "&8OFFLINE"
 
 team:
-  none-display: "&lAlone"
+  none-display: "None"
   open: "&aOpen"
   close: "&cClose"
   relations:

@@ -25,12 +25,9 @@ locale:
 map:
   update-delay: 5
 
-teams:
-  none-display: "&7No Team"
-
 team:
-  #system: "nodewar"
   default-relation: neutral
+  none-color: "#CACACA"
 
 bossbar:
   color: # RED, YELLOW, BLUE, GREEN, PINK, PURPLE, WHITE

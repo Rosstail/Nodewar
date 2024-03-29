@@ -96,6 +96,8 @@ public class TerritoryManager {
 
             if (!models.isEmpty()) {
                 String ownerName = models.get(0).getOwnerName();
+                long territoryID = models.get(0).getId();
+                territory.getModel().setId(territoryID);
                 if (ownerName != null && stringTeamMap.containsKey(ownerName)) {
                     territory.setOwnerTeam(stringTeamMap.get(ownerName));
                 }

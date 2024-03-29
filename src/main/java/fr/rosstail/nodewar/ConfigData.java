@@ -2,15 +2,11 @@ package fr.rosstail.nodewar;
 
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.RelationType;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,15 +92,17 @@ public class ConfigData {
     public class ConfigTeam {
         public FileConfiguration configFile;
 
-        public final String teamSystem;
         public final RelationType defaultRelation;
+        public final String noneDisplay;
+        public final String noneColor;
 
         ConfigTeam(FileConfiguration config) {
             configFile = config;
 
-            teamSystem = config.getString("team.system", "nodewar");
             String relationTypeStr = config.getString("team.default-relation", "neutral");
             defaultRelation = RelationType.valueOf(relationTypeStr.toUpperCase());
+            noneDisplay = config.getString("team.none-display", "None");
+            noneColor = config.getString("team.none-color", "#CACACA");
         }
     }
 

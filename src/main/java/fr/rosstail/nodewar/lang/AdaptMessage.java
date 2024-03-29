@@ -8,6 +8,7 @@ import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamModel;
 import fr.rosstail.nodewar.team.rank.TeamRank;
 import fr.rosstail.nodewar.territory.Territory;
+import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.battle.Battle;
@@ -34,6 +35,7 @@ public class AdaptMessage {
     private static final Pattern hexPattern = Pattern.compile("\\{(#[a-fA-F0-9]{6})}");
     private static final Pattern colorPattern = Pattern.compile("\\{([A-Za-z_]+)}");
     private static final Pattern calculatePattern = Pattern.compile("\\[eval(\\w+)?_([^%\\s]*)]");
+    private static final Pattern territoryPattern = Pattern.compile("(\\[territory)_(\\d+)(_\\w+])");
 
     public enum prints {
         OUT,
@@ -111,7 +113,8 @@ public class AdaptMessage {
     public String adaptTeamMessage(String message, NwTeam team) {
         if (team == null) {
             message = message.replaceAll("\\[team_display]", LangManager.getMessage(LangMessage.TEAM_NONE_DISPLAY));
-            message = message.replaceAll("\\[team_(\\w+)]", "!!!");
+            message = message.replaceAll("\\[team_color]", ConfigData.getConfigData().team.noneColor);
+            message = message.replaceAll("\\[team_(\\w+)]", "");
             return message;
         }
         message = message.replaceAll("\\[team_name]", team.getModel().getName());
@@ -252,12 +255,26 @@ public class AdaptMessage {
         }
         message = colorFormat(colorPattern, message);
 
-        Matcher matcher = calculatePattern.matcher(message);
+        Matcher territoryMatcher = territoryPattern.matcher(message);
+
+        while (territoryMatcher.find()) {
+            long territoryId = Long.parseLong(territoryMatcher.group(2));
+
+            Territory territory = TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory1 -> (territory1.getModel().getId() == territoryId)).findFirst().orElse(null);
+            message = message.replace(territoryMatcher.group(), territoryMatcher.group(1) + territoryMatcher.group(3));
+            if (territory != null) {
+                message = adaptTerritoryMessage(message, territory);
+            }
+        }
+
+
+
+        Matcher calculationMatcher = calculatePattern.matcher(message);
 
         StringBuffer buffer = new StringBuffer();
-        while (matcher.find()) {
-            String type = matcher.group(1);
-            String expression = matcher.group(2);
+        while (calculationMatcher.find()) {
+            String type = calculationMatcher.group(1);
+            String expression = calculationMatcher.group(2);
             double result = ExpressionCalculator.eval(expression);
             String replacement;
             if (type != null) {
@@ -278,9 +295,9 @@ public class AdaptMessage {
             } else {
                 replacement = String.valueOf(result);
             }
-            matcher.appendReplacement(buffer, replacement);
+            calculationMatcher.appendReplacement(buffer, replacement);
         }
-        matcher.appendTail(buffer);
+        calculationMatcher.appendTail(buffer);
 
         return buffer.toString();
     }

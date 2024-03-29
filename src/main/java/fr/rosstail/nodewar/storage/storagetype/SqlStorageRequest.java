@@ -440,7 +440,7 @@ public class SqlStorageRequest implements StorageRequest {
 
     public List<TerritoryModel> selectAllTerritoryModel() {
         List<TerritoryModel> territoryModelList = new ArrayList<>();
-        String query = "SELECT ttr.name, ttr.world, t.name\n" +
+        String query = "SELECT ttr.id, ttr.name, ttr.world, t.name\n" +
                 "FROM " + territoryTableName + " AS ttr\n" +
                 "LEFT JOIN " + teamTableName + " AS t ON ttr.owner_team_id = t.id";
         try {
@@ -448,9 +448,10 @@ public class SqlStorageRequest implements StorageRequest {
             while (result.next()) {
                 TerritoryModel territoryModel = new TerritoryModel();
 
-                territoryModel.setName(result.getString(1));
-                territoryModel.setWorldName(result.getString(2));
-                territoryModel.setOwnerName(result.getString(3));
+                territoryModel.setId(result.getInt(1));
+                territoryModel.setName(result.getString(2));
+                territoryModel.setWorldName(result.getString(3));
+                territoryModel.setOwnerName(result.getString(4));
 
                 territoryModelList.add(territoryModel);
             }

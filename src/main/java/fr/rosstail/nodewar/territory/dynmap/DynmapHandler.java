@@ -72,7 +72,7 @@ public class DynmapHandler {
 
         AreaStyle(Territory territory) {
             NwTeam team = territory.getOwnerTeam();
-            String teamColor = team != null ? team.getModel().getTeamColor() : "#CACACA";
+            String teamColor = team != null ? team.getModel().getTeamColor() : ConfigData.getConfigData().team.noneColor;
             if (teamColor.startsWith("#")) {
                 fillColor = teamColor;
             } else {
