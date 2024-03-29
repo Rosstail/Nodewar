@@ -39,7 +39,6 @@ bossbar:
     enemy: RED
 
 dynmap:
-  layer-name: "Nodewar"
   hide-by-default: false
   use-3d-region: false # bugued, keep it false
   dynmap-info-window: false

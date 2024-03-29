@@ -150,12 +150,17 @@ public enum LangMessage {
     TEAM_NONE_DISPLAY("team.none-display", false, false),
     TEAM_OPEN("team.open", false, false),
     TEAM_CLOSE("team.close", false, false),
-    TEAM_RELATION_NEUTRAL("team.relations.neutral", false, false),
-    TEAM_RELATION_CONTROLLED("team.relations.controlled", false, false),
-    TEAM_RELATION_TEAM("team.relations.team", false, false),
-    TEAM_RELATION_ALLY("team.relations.ally", false, false),
-    TEAM_RELATION_TRUCE("team.relations.truce", false, false),
-    TEAM_RELATION_ENEMY("team.relations.enemy", false, false),
+    TEAM_RANK_OWNER("team.rank.owner", false, false),
+    TEAM_RANK_LIEUTENANT("team.rank.lieutenant", false, false),
+    TEAM_RANK_CAPTAIN("team.rank.captain", false, false),
+    TEAM_RANK_MEMBER("team.rank.member", false, false),
+    TEAM_RANK_RECRUIT("team.rank.recruit", false, false),
+    TEAM_RELATION_NEUTRAL("team.relation.neutral", false, false),
+    TEAM_RELATION_CONTROLLED("team.relation.controlled", false, false),
+    TEAM_RELATION_TEAM("team.relation.team", false, false),
+    TEAM_RELATION_ALLY("team.relation.ally", false, false),
+    TEAM_RELATION_TRUCE("team.relation.truce", false, false),
+    TEAM_RELATION_ENEMY("team.relation.enemy", false, false),
 
 
     TERRITORY_BATTLE_STATUS_WAITING("territory.battle.status.waiting", false, false),
@@ -175,6 +180,11 @@ public enum LangMessage {
     TERRITORY_BOSSBAR_GLOBAL_WILD("territory.bossbar.global.wild", false, false),
     TERRITORY_BOSSBAR_GLOBAL_OCCUPIED("territory.bossbar.global.occupied", false, false),
     TERRITORY_BOSSBAR_GLOBAL_BATTLE("territory.bossbar.global.battle", false, false),
+    TERRITORY_PROTECTED("territory.protected", false, false),
+    TERRITORY_VULNERABLE("territory.vulnerable", false, false),
+
+    MAP_DYNMAP_MARKER_LABEL("map.dynmap.marker-label", false, false),
+    MAP_BLUEMAP_MARKER_LABEL("map.bluemap.marker-label", false, false),
 
 
     ;

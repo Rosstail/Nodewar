@@ -141,8 +141,6 @@ public class ConfigData {
     public class ConfigDynmap {
         public FileConfiguration configFile;
 
-        public final String layerName;
-
         public final int layerPriority = 20;
         public final boolean hideByDefault;
         public final boolean use3DRegions;
@@ -158,7 +156,6 @@ public class ConfigData {
 
         ConfigDynmap(FileConfiguration config) {
             configFile = config;
-            layerName = configFile.getString("dynmap.layer-name", "Nodewar");
             hideByDefault = configFile.getBoolean("dynmap.hide-by-default", false);
             use3DRegions = configFile.getBoolean("dynmap.use-3d-region", false);
             infoWindow = configFile.getString("dynmap-info-window",

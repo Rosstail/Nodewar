@@ -5,6 +5,7 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.apis.ExpressionCalculator;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.NwTeam;
+import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.TeamModel;
 import fr.rosstail.nodewar.team.rank.TeamRank;
 import fr.rosstail.nodewar.territory.Territory;
@@ -36,6 +37,7 @@ public class AdaptMessage {
     private static final Pattern colorPattern = Pattern.compile("\\{([A-Za-z_]+)}");
     private static final Pattern calculatePattern = Pattern.compile("\\[eval(\\w+)?_([^%\\s]*)]");
     private static final Pattern territoryPattern = Pattern.compile("(\\[territory)_(\\d+)(_\\w+])");
+    private static final Pattern teamPattern = Pattern.compile("(\\[team)_(\\d+)(_\\w+])");
 
     public enum prints {
         OUT,
@@ -115,7 +117,7 @@ public class AdaptMessage {
             message = message.replaceAll("\\[team_display]", LangManager.getMessage(LangMessage.TEAM_NONE_DISPLAY));
             message = message.replaceAll("\\[team_color]", ConfigData.getConfigData().team.noneColor);
             message = message.replaceAll("\\[team_(\\w+)]", "");
-            return message;
+            return adaptMessage(message);
         }
         message = message.replaceAll("\\[team_name]", team.getModel().getName());
         message = message.replaceAll("\\[team_id]", String.valueOf(team.getModel().getId()));
@@ -125,22 +127,37 @@ public class AdaptMessage {
         message = message.replaceAll("\\[team_permanent]", String.valueOf(team.getModel().isPermanent()));
         message = message.replaceAll("\\[team_creation_date]", String.valueOf(team.getModel().getCreationDate()));
 
-        return message;
+        return adaptMessage(message);
     }
 
     public String adaptTeamMessage(String message, NwTeam nwTeam, Player player) {
         TeamModel teamModel = nwTeam.getModel();
 
         if (message.contains("[team_result_member_line]")) {
-            String memberStringLine = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT_MEMBER_LINE);
+            String defaultMemberStringLine = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT_MEMBER_LINE);
             List<String> memberStringList = new ArrayList<>();
             nwTeam.getModel().getTeamMemberModelMap().forEach((index, teamMember) -> {
-                memberStringList.add(memberStringLine
+                TeamRank playerTeamRank = Arrays.stream(TeamRank.values()).filter(teamRank -> (teamRank.getWeight() == teamMember.getRank())).findFirst().get();
+                String memberStringLine = defaultMemberStringLine
                         .replaceAll("\\[team_player_connected]", Bukkit.getPlayer(teamMember.getUsername()) != null ? "&a+" : "&c-")
-                        .replaceAll("\\[team_player]", teamMember.getUsername())
-                        .replaceAll("\\[team_player_rank]", Arrays.stream(TeamRank.values()).filter(teamRank ->
-                                (teamRank.getWeight() == teamMember.getRank())).findFirst().get().name())
-                );
+                        .replaceAll("\\[team_player]", teamMember.getUsername());
+                switch (playerTeamRank) {
+                    case OWNER:
+                        memberStringLine = memberStringLine.replaceAll("\\[team_player_rank]", LangManager.getMessage(LangMessage.TEAM_RANK_OWNER));
+                        break;
+                    case LIEUTENANT:
+                        memberStringLine = memberStringLine.replaceAll("\\[team_player_rank]", LangManager.getMessage(LangMessage.TEAM_RANK_LIEUTENANT));
+                        break;
+                    case CAPTAIN:
+                        memberStringLine = memberStringLine.replaceAll("\\[team_player_rank]", LangManager.getMessage(LangMessage.TEAM_RANK_CAPTAIN));
+                        break;
+                    case MEMBER:
+                        memberStringLine = memberStringLine.replaceAll("\\[team_player_rank]", LangManager.getMessage(LangMessage.TEAM_RANK_MEMBER));
+                        break;
+                    default:
+                        memberStringLine = memberStringLine.replaceAll("\\[team_player_rank]", LangManager.getMessage(LangMessage.TEAM_RANK_RECRUIT));
+                }
+                memberStringList.add(memberStringLine);
             });
             message = message.replaceAll("\\[team_result_member_line]", String.join("\n", memberStringList));
         }
@@ -148,6 +165,7 @@ public class AdaptMessage {
         if (message.contains("[team_result_relation_line]")) {
             String relationStringLine = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT_RELATION_LINE);
             List<String> relationStringList = new ArrayList<>();
+
             nwTeam.getRelations().forEach((s, teamRelation) -> {
                 relationStringList.add(
                         adaptTeamMessage(
@@ -177,13 +195,19 @@ public class AdaptMessage {
         Objective objective = territory.getObjective();
         Battle battle = territory.getCurrentBattle();
         AttackRequirements attackRequirements = territory.getAttackRequirements();
+        message = message.replaceAll("\\[territory_id]", String.valueOf(territoryModel.getId()));
         message = message.replaceAll("\\[territory_prefix]", territoryModel.getPrefix());
         message = message.replaceAll("\\[territory_suffix]", territoryModel.getSuffix());
         message = message.replaceAll("\\[territory_name]", territoryModel.getName());
         message = message.replaceAll("\\[territory_display]", territoryModel.getDisplay());
         message = message.replaceAll("\\[territory_world]", territoryModel.getWorldName());
         message = message.replaceAll("\\[territory_type]", territoryModel.getTypeName());
-        message = message.replaceAll("\\[territory_protected]", territoryModel.isUnderProtection() ? "protected" : "vulnerable");
+        boolean isProtected = territoryModel.isUnderProtection();
+        if (isProtected) {
+            message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_PROTECTED));
+        } else {
+            message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_VULNERABLE));
+        }
         message = message.replaceAll("\\[territory_owner", "[team");
         message = adaptTeamMessage(message, territory.getOwnerTeam());
         message = message.replaceAll("\\[territory_objective_name]", territory.getModel().getObjectiveTypeName());
@@ -219,7 +243,7 @@ public class AdaptMessage {
         }
 
 
-        return message;
+        return adaptMessage(message);
     }
 
     public String adaptMessageToModel(PlayerModel playerModel, String message, String playerType) {
@@ -267,6 +291,18 @@ public class AdaptMessage {
             }
         }
 
+
+        Matcher teamMatcher = teamPattern.matcher(message);
+
+        while (teamMatcher.find()) {
+            long teamId = Long.parseLong(teamMatcher.group(2));
+
+            NwTeam nwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().values().stream().filter(team -> (team.getModel().getId() == teamId)).findFirst().orElse(null);
+            message = message.replace(teamMatcher.group(), teamMatcher.group(1) + teamMatcher.group(3));
+            if (nwTeam != null) {
+                message = adaptTeamMessage(message, nwTeam);
+            }
+        }
 
 
         Matcher calculationMatcher = calculatePattern.matcher(message);

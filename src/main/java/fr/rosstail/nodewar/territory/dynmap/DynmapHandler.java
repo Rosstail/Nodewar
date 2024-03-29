@@ -13,6 +13,8 @@ import com.sk89q.worldguard.util.profile.cache.ProfileCache;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
@@ -359,9 +361,9 @@ public class DynmapHandler {
         /* Now, add marker set for mobs (make it transient) */
         set = markerAPI.getMarkerSet("nodewar.markerset");
         if (set == null)
-            set = markerAPI.createMarkerSet("nodewar.markerset", configDynmap.layerName, null, false);
+            set = markerAPI.createMarkerSet("nodewar.markerset", LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL), null, false);
         else
-            set.setMarkerSetLabel(configDynmap.layerName);
+            set.setMarkerSetLabel(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL));
         if (set == null) {
             AdaptMessage.print("Error creating marker set", AdaptMessage.prints.WARNING);
             return;
