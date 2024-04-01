@@ -32,7 +32,8 @@ public class ObjectiveSiege extends Objective {
     private final ObjectiveSiegeModel objectiveSiegeModel;
 
     public ObjectiveSiege(Territory territory, ObjectiveSiegeModel childModel, ObjectiveSiegeModel parentModel) {
-        super(territory);
+        super(territory, childModel, parentModel);
+
         ObjectiveSiegeModel clonedChildObjectiveModel = childModel.clone();
         ObjectiveSiegeModel clonedParentObjectiveModel = parentModel.clone();
         this.objectiveSiegeModel = new ObjectiveSiegeModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
@@ -51,6 +52,7 @@ public class ObjectiveSiege extends Objective {
         setObjectiveModel(this.objectiveSiegeModel);
 
         this.maxHealth = Integer.parseInt(this.objectiveSiegeModel.getMaxHealthString());
+
         this.currentHealth = this.maxHealth;
     }
 
@@ -141,11 +143,6 @@ public class ObjectiveSiege extends Objective {
     }
 
     @Override
-    public NwTeam checkNeutralization() {
-        return null;
-    }
-
-    @Override
     public NwTeam checkWinner() {
         NwTeam ownerTeam = territory.getOwnerTeam();
         NwTeam advantagedTeam = territory.getCurrentBattle().getAdvantagedTeam();
@@ -163,10 +160,6 @@ public class ObjectiveSiege extends Objective {
         Territory territory = super.territory;
         currentHealth = maxHealth;
         BattleSiege currentBattleSiege = (BattleSiege) territory.getCurrentBattle();
-        currentBattleSiege.setWinnerTeam(winnerTeam);
-        currentBattleSiege.setBattleEnding();
-
-        AdaptMessage.getAdaptMessage().alertTeam(winnerTeam, "congratz, your team is victorious at [territory_name]", territory, false);
 
         Map<NwTeam, Integer> teamPositionMap = new HashMap<>();
         if (winnerTeam != null) {
@@ -282,42 +275,13 @@ public class ObjectiveSiege extends Objective {
         return objectiveSiegeModel;
     }
 
-
-
     @Override
-    public String print() {
-        StringBuilder builder = new StringBuilder("\n   > Health: " + currentHealth + " / " + maxHealth);
+    public String adaptMessage(String message) {
+        message = message.replaceAll("\\[territory_objective_health]", String.valueOf(currentHealth));
+        message = message.replaceAll("\\[territory_objective_maxhealth]", String.valueOf(maxHealth));
+        message = message.replaceAll("\\[territory_objective_rate]", String.valueOf((float) (currentHealth / maxHealth)));
+        message = message.replaceAll("\\[territory_objective_rate_percent]", String.valueOf((int) ((float) (currentHealth / maxHealth)) * 100));
 
-        Map<Territory, List<Integer>> capturePointsDamageAndRegenPerSecond = getCapturePointsDamageRegenPerSecond();
-        if (!capturePointsDamageAndRegenPerSecond.isEmpty()) {
-            builder.append("\n   > Control points :");
-            capturePointsDamageAndRegenPerSecond.forEach((territory, lists) -> {
-                builder.append("\n     * ").append(territory.getModel().getName()).append(": ");
-                builder.append("\n        - Damage: ").append(lists.get(0));
-                builder.append("\n        - Regen: ").append(lists.get(1));
-            });
-        }
-
-        if (!getStringRewardMap().isEmpty()) {
-            builder.append("\n > Rewards: ");
-
-            getStringRewardMap().forEach((s, reward) -> {
-                builder.append("\n   * " + s + ":");
-                builder.append("\n     - target: " + reward.getRewardModel().getTargetName());
-                builder.append("\n     - minimumTeamScore: " + reward.getRewardModel().getMinimumTeamScoreStr());
-                builder.append("\n     - minimumPlayerScore: " + reward.getRewardModel().getMinimumPlayerScoreStr());
-                builder.append("\n     - teamRole: " + reward.getRewardModel().getTeamRole());
-                builder.append("\n     - playerTeamRole: " + reward.getRewardModel().getPlayerTeamRole());
-                builder.append("\n     - shouldTeamWinStr: " + reward.getRewardModel().getShouldTeamWinStr());
-                if (!reward.getRewardModel().getTeamPositions().isEmpty()) {
-                    builder.append("\n     - teamPositions: " + reward.getRewardModel().getTeamPositions());
-                }
-                if (!reward.getRewardModel().getCommandList().isEmpty()) {
-                    builder.append("\n     - commands: " + reward.getRewardModel().getCommandList());
-                }
-            });
-        }
-
-        return builder.toString();
+        return message;
     }
 }

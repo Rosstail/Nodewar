@@ -6,7 +6,7 @@ public class TeamMemberModel {
     private int id;
     private int teamId;
     private int playerId;
-    private int rank; //0 OWNER, 1 Lieutenant, 2 Member, 3 Recruit
+    private int rank;
     private Timestamp joinDate;
     private String username;
 

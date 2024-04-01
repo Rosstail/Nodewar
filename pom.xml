@@ -153,12 +153,12 @@
             <artifactId>commons-codec</artifactId>
             <version>20041127.091804</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.github.stefvanschie.inventoryframework</groupId>
             <artifactId>IF</artifactId>
             <version>0.10.3</version>
             <scope>compile</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations-java5</artifactId>

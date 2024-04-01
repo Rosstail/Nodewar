@@ -117,6 +117,7 @@ commands:
           result-invite: "Relation invite sent successfully."
           result-weight: "Relation set."
           result-ignore: "Same relation. No change."
+          result-already: "Already sent the invitation"
         invites:
           desc: "Check list of teams relations invites."
           result-header: "&bInvites &8:"
@@ -184,6 +185,7 @@ commands:
             result-invite: "Relation invite sent successfully."
             result-weight: "Relation set."
             result-ignore: "Same relation. No change."
+            result-already: "Already sent the invitation."
           set:
             desc: "Set immediate relation between selected teams"
             result: "Relation set."

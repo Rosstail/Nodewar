@@ -4,14 +4,13 @@ import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
-import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.territory.Territory;
-import fr.rosstail.nodewar.territory.battle.BattleStatus;
+import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.battle.types.BattleControl;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.reward.Reward;
@@ -30,7 +29,7 @@ public class ObjectiveControl extends Objective {
     ObjectiveControlModel objectiveControlModel;
 
     public ObjectiveControl(Territory territory, ObjectiveControlModel childModel, ObjectiveControlModel parentModel) {
-        super(territory);
+        super(territory, childModel, parentModel);
         ObjectiveControlModel clonedChildObjectiveModel = childModel.clone();
         ObjectiveControlModel clonedParentObjectiveModel = parentModel.clone();
         this.objectiveControlModel = new ObjectiveControlModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
@@ -126,6 +125,7 @@ public class ObjectiveControl extends Objective {
         });
     }
 
+    @Override
     public NwTeam checkAdvantage() {
         NwTeam defenderTeam = territory.getOwnerTeam();
         int greatestAttackerEffective = 0;
@@ -182,7 +182,9 @@ public class ObjectiveControl extends Objective {
         }
     }
 
-    private void determineStart(BattleControl battleControl, NwTeam currentAdvantage, NwTeam newAdvantage) {
+    public void determineStart(BattleControl battleControl, NwTeam currentAdvantage, NwTeam newAdvantage) {
+        super.determineStart(battleControl, currentAdvantage, newAdvantage);
+
         NwTeam owner = territory.getOwnerTeam();
 
         if (!battleControl.isBattleWaiting()) {
@@ -240,22 +242,16 @@ public class ObjectiveControl extends Objective {
         return null;
     }
 
+    @Override
     public void neutralize(NwTeam winnerTeam) {
-        Territory territory = super.territory;
-        TerritoryOwnerNeutralizeEvent event = new TerritoryOwnerNeutralizeEvent(territory, winnerTeam, null);
-        Bukkit.getPluginManager().callEvent(event);
+        super.neutralize(winnerTeam);
     }
 
     @Override
     public void win(NwTeam winnerTeam) {
+        super.win(winnerTeam);
         Territory territory = super.territory;
         BattleControl currentBattleControl = (BattleControl) territory.getCurrentBattle();
-        currentBattleControl.setWinnerTeam(winnerTeam);
-
-        AdaptMessage.getAdaptMessage().alertTeam(winnerTeam, "congratz, your team is victorious at [territory_name]", territory, false);
-
-        currentBattleControl.setBattleEnding();
-
 
         Map<NwTeam, Integer> teamPositionMap = new HashMap<>();
         teamPositionMap.put(winnerTeam, 1);
@@ -282,8 +278,11 @@ public class ObjectiveControl extends Objective {
     }
 
     @Override
-    public String print() {
-        return "\n   > Health: " + getCurrentHealth() + " / " + getMaxHealth() + "\n   > Attacker ratio: " + getMinAttackerRatio() + "\n   > Need neutralize: " + isNeedNeutralize();
+    public String adaptMessage(String message) {
+        message = message.replaceAll("\\[territory_ojective_minimum_attacker_ratio]", String.valueOf(minAttackerRatio));
+        message = message.replaceAll("\\[territory_ojective_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)));
+
+        return message;
     }
 
     public ObjectiveControlModel getObjectiveControlModel() {

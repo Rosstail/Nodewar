@@ -146,7 +146,7 @@ public class TeamManageRelationEditCommand extends TeamManageRelationSubCommand 
             if (senderTeam == teamRelationInvite.getTargetTeam()) {
                 createNewRelation(teamRelationInvite.getSenderTeam(), teamRelationInvite.getTargetTeam(), teamRelationInvite.getRelationType());
             } else {
-                System.out.println("already sent the invitation.");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_EDIT_RESULT_ALREADY));
             }
         } else {
             if (!targetTeam.getModel().isOpenRelation()) {

@@ -136,7 +136,7 @@ public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCo
             if (senderTeam == teamRelationInvite.getTargetTeam()) {
                 createNewRelation(teamRelationInvite.getSenderTeam(), teamRelationInvite.getTargetTeam(), teamRelationInvite.getRelationType());
             } else {
-                System.out.println("already sent the invitation.");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_EDIT_RESULT_ALREADY));
             }
         } else {
             if (!targetTeam.getModel().isOpenRelation()) {

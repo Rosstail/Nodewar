@@ -73,7 +73,9 @@ public class BattleSiege extends Battle {
                 if (teamImpactPerSecond.get(controlTeam) != null) {
                     scorePerSecond = teamImpactPerSecond.get(controlTeam);
                 }
-                scorePerSecond += objectiveSiege.getObjectiveSiegeModel().getRegenPerSecondControlPointIntMap().get(controlPointName);
+                if (objectiveSiege.getObjectiveSiegeModel().getRegenPerSecondControlPointIntMap().containsKey(controlPointName)) {
+                    scorePerSecond += objectiveSiege.getObjectiveSiegeModel().getRegenPerSecondControlPointIntMap().get(controlPointName);
+                }
                 teamImpactPerSecond.put(controlTeam, scorePerSecond);
             }
         });

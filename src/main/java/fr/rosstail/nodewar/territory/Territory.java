@@ -18,14 +18,11 @@ import fr.rosstail.nodewar.team.relation.TeamRelation;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.battle.Battle;
-import fr.rosstail.nodewar.territory.battle.BattleStatus;
-import fr.rosstail.nodewar.territory.battle.types.BattleControl;
-import fr.rosstail.nodewar.territory.battle.types.BattleKoth;
-import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
+import fr.rosstail.nodewar.territory.battle.BattleManager;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBar;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
 import fr.rosstail.nodewar.territory.objective.Objective;
-import fr.rosstail.nodewar.territory.objective.types.*;
+import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -271,36 +268,7 @@ public class Territory {
     }
 
     public void setupObjective() {
-        if (territoryModel.getObjectiveTypeName() != null) {
-            switch (territoryModel.getObjectiveTypeName()) {
-                case "siege":
-                    setObjective(new ObjectiveSiege(this, new ObjectiveSiegeModel(objectiveSection), (ObjectiveSiegeModel) territoryType.getObjectiveModel()));
-                    break;
-                case "control":
-                    setObjective(new ObjectiveControl(this, new ObjectiveControlModel(objectiveSection), (ObjectiveControlModel) territoryType.getObjectiveModel()));
-                    break;
-                case "koth":
-                    setObjective(new ObjectiveKoth(this, new ObjectiveKothModel(objectiveSection), (ObjectiveKothModel) territoryType.getObjectiveModel()));
-                    break;
-            }
-        } else {
-            setObjective(new Objective(this) {
-                @Override
-                public NwTeam checkNeutralization() {
-                    return null;
-                }
-
-                @Override
-                public NwTeam checkWinner() {
-                    return null;
-                }
-
-                @Override
-                public void applyProgress() {
-
-                }
-            });
-        }
+        ObjectiveManager.setUpObjectiveToTerritory(this, objectiveSection, territoryModel.getObjectiveTypeName());
     }
 
     public void setupBattle() {
@@ -308,23 +276,9 @@ public class Territory {
             currentBattle.setBattleEnded();
             setPreviousBattle(currentBattle);
         }
-        if (territoryModel.getObjectiveTypeName() != null) {
-            switch (territoryModel.getObjectiveTypeName()) {
-                case "control":
-                    setCurrentBattle(new BattleControl(this));
-                    break;
-                case "siege":
-                    setCurrentBattle(new BattleSiege(this));
-                    break;
-                case "koth":
-                    setCurrentBattle(new BattleKoth(this));
-                    break;
-                default:
-                    setCurrentBattle(new Battle(this));
-            }
-        } else {
-            setCurrentBattle(new Battle(this));
-        }
+
+        BattleManager.setUpBattle(this, territoryModel.getObjectiveTypeName());
+
         updateAllBossBar();
     }
 

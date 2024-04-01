@@ -27,13 +27,13 @@ public class ObjectiveKoth extends Objective {
     private ObjectiveKothModel objectiveKothModel;
 
     public ObjectiveKoth(Territory territory, ObjectiveKothModel childModel, ObjectiveKothModel parentModel) {
-        super(territory);
+        super(territory, childModel, parentModel);
         ObjectiveKothModel clonedChildKothModel = childModel.clone();
         ObjectiveKothModel clonedParentKothModel = parentModel.clone();
         this.objectiveKothModel = new ObjectiveKothModel(clonedChildKothModel, clonedParentKothModel);
 
 
-        this.objectiveKothModel.getControlPointStringSet().forEach(s -> {
+        this.objectiveKothModel.getPointsPerSecondControlPointIntMap().forEach((s, points) -> {
             controlPointList.addAll(TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(
                     (territory1 -> territory1.getModel().getName().equalsIgnoreCase(s)
                             && territory1.getWorld() == territory.getWorld())
@@ -51,23 +51,19 @@ public class ObjectiveKoth extends Objective {
     public Map<Territory, Integer> getCapturePointsValuePerSecond() {
         Map<Territory, Integer> values = new HashMap<>();
 
-        Set<String> controlPointStringSet = objectiveKothModel.getControlPointStringSet();
+        Set<String> controlPointStringSet = objectiveKothModel.getPointsPerSecondControlPointIntMap().keySet();
         Map<String, Integer> controlPointValueMap = objectiveKothModel.getPointsPerSecondControlPointIntMap();
 
         for (String s : controlPointStringSet) {
             if (TerritoryManager.getTerritoryManager().getTerritoryMap().containsKey(s)) {
                 Territory territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(s);
 
+
                 values.put(territory, controlPointValueMap.get(s));
             }
         }
 
         return values;
-    }
-
-    @Override
-    public NwTeam checkNeutralization() {
-        return null;
     }
 
     @Override
@@ -133,6 +129,7 @@ public class ObjectiveKoth extends Objective {
         }
 
         Map<NwTeam, Integer> teamTotalHoldTime = new HashMap<>();
+
         for (Map.Entry<Territory, Integer> entry : getCapturePointsValuePerSecond().entrySet()) {
             Territory territory = entry.getKey();
             int time = entry.getValue();
@@ -166,10 +163,6 @@ public class ObjectiveKoth extends Objective {
     public void win(NwTeam winnerTeam) {
         super.win(winnerTeam);
         BattleKoth currentBattleKoth = (BattleKoth) territory.getCurrentBattle();
-        currentBattleKoth.setWinnerTeam(winnerTeam);
-        currentBattleKoth.setBattleEnding();
-
-        AdaptMessage.getAdaptMessage().alertTeam(winnerTeam, "congratz, your team is victorious at [territory_name]", territory, false);
 
         Map<NwTeam, Integer> teamPositionMap = new HashMap<>();
         if (winnerTeam != null) {
@@ -221,45 +214,9 @@ public class ObjectiveKoth extends Objective {
     }
 
     @Override
-    public String print() {
-        StringBuilder builder = new StringBuilder("Timer: " + timeToReach);
-
-        BattleKoth currentBattle = (BattleKoth) territory.getCurrentBattle();
-
-        currentBattle.getTeamHoldPointMap().forEach((nwTeam, teamHoldTime) -> {
-            builder.append("\n  > " + nwTeam.getModel().getName() + " : " + teamHoldTime + "(" + ((float) (teamHoldTime / timeToReach) * 100) + "%)");
-        });
-
-        Map<Territory, Integer> capturePointsPointsPerSecond = getCapturePointsValuePerSecond();
-        if (!capturePointsPointsPerSecond.isEmpty()) {
-            builder.append("\n > Control points :");
-            capturePointsPointsPerSecond.forEach((territory, pointsInt) -> {
-                builder.append("\n  * ").append(territory.getModel().getName()).append(": ");
-                builder.append("\n    - Points: ").append(pointsInt);
-            });
-        }
-
-        if (!getStringRewardMap().isEmpty()) {
-            builder.append("\n > Rewards: ");
-
-            getStringRewardMap().forEach((s, reward) -> {
-                builder.append("\n   * " + s + ":");
-                builder.append("\n     - target: " + reward.getRewardModel().getTargetName());
-                builder.append("\n     - minimumTeamScore: " + reward.getRewardModel().getMinimumTeamScoreStr());
-                builder.append("\n     - minimumPlayerScore: " + reward.getRewardModel().getMinimumPlayerScoreStr());
-                builder.append("\n     - teamRole: " + reward.getRewardModel().getTeamRole());
-                builder.append("\n     - playerTeamRole: " + reward.getRewardModel().getPlayerTeamRole());
-                builder.append("\n     - shouldTeamWinStr: " + reward.getRewardModel().getShouldTeamWinStr());
-                if (!reward.getRewardModel().getTeamPositions().isEmpty()) {
-                    builder.append("\n     - teamPositions: " + reward.getRewardModel().getTeamPositions());
-                }
-                if (!reward.getRewardModel().getCommandList().isEmpty()) {
-                    builder.append("\n     - commands: " + reward.getRewardModel().getCommandList());
-                }
-            });
-        }
-
-        return builder.toString();
+    public String adaptMessage(String message) {
+        message = message.replaceAll("\\[territory_objective_timetoreach]", String.valueOf(timeToReach));
+        return message;
     }
 
     public ObjectiveKothModel getObjectiveKothModel() {

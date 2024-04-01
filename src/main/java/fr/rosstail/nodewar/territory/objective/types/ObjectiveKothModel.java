@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class ObjectiveKothModel extends ObjectiveModel {
-
-    private Set<String> controlPointStringSet = new HashSet<>();
     private Map<String, Integer> pointsPerSecondControlPointIntMap = new HashMap<>();
     private String timeToReachStr;
 
@@ -27,8 +25,6 @@ public class ObjectiveKothModel extends ObjectiveModel {
                 controlConfigSection.getKeys(false).forEach(s -> {
                     ConfigurationSection controlSection = controlConfigSection.getConfigurationSection(s);
 
-                    controlPointStringSet.add(s);
-
                     pointsPerSecondControlPointIntMap.put(s, controlSection.getInt("points-per-second", 0));
                 });
             }
@@ -38,15 +34,13 @@ public class ObjectiveKothModel extends ObjectiveModel {
     public ObjectiveKothModel(ObjectiveKothModel childObjectiveModel, ObjectiveKothModel parentObjectiveModel) {
         super(childObjectiveModel.clone(), parentObjectiveModel.clone());
 
-        this.controlPointStringSet.addAll(parentObjectiveModel.getControlPointStringSet());
+        this.pointsPerSecondControlPointIntMap.putAll(parentObjectiveModel.getPointsPerSecondControlPointIntMap());
         this.timeToReachStr = childObjectiveModel.getTimeToReachStr() != null ? childObjectiveModel.getTimeToReachStr() : parentObjectiveModel.getTimeToReachStr();
 
-        childObjectiveModel.controlPointStringSet.forEach(s -> {
-            int childPointPerSecond = childObjectiveModel.pointsPerSecondControlPointIntMap.get(s);
+        childObjectiveModel.pointsPerSecondControlPointIntMap.forEach((s, points) -> {
 
-            if (childPointPerSecond != 0) {
-                controlPointStringSet.add(s);
-                pointsPerSecondControlPointIntMap.put(s, childPointPerSecond);
+            if (points != 0) {
+                pointsPerSecondControlPointIntMap.put(s, points);
             }
         });
     }
@@ -57,14 +51,6 @@ public class ObjectiveKothModel extends ObjectiveModel {
 
     public void setTimeToReachStr(String timeToReachStr) {
         this.timeToReachStr = timeToReachStr;
-    }
-
-    public Set<String> getControlPointStringSet() {
-        return controlPointStringSet;
-    }
-
-    public void setControlPointStringSet(Set<String> controlPointStringSet) {
-        this.controlPointStringSet = controlPointStringSet;
     }
 
     public Map<String, Integer> getPointsPerSecondControlPointIntMap() {

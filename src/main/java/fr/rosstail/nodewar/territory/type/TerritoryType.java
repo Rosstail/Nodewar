@@ -5,8 +5,8 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
+import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
-import fr.rosstail.nodewar.territory.objective.types.*;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class TerritoryType {
@@ -44,45 +44,7 @@ public class TerritoryType {
 
         ConfigurationSection objectiveSection = section.getConfigurationSection("objective");
 
-        if (getObjectiveTypeName() != null) {
-            switch (getObjectiveTypeName()) {
-                case "siege":
-                    ObjectiveSiegeModel objectiveSiegeModel;
-                    if (parentType != null) {
-                        objectiveSiegeModel = new ObjectiveSiegeModel(
-                                new ObjectiveSiegeModel(objectiveSection),
-                                (ObjectiveSiegeModel) parentType.getObjectiveModel());
-                    } else {
-                        objectiveSiegeModel = new ObjectiveSiegeModel(objectiveSection).clone();
-                    }
-                    setObjectiveModel(objectiveSiegeModel);
-                    break;
-                case "control":
-                    ObjectiveControlModel objectiveControlModel;
-                    if (parentType != null) {
-                        objectiveControlModel = new ObjectiveControlModel(
-                                new ObjectiveControlModel(objectiveSection),
-                                (ObjectiveControlModel) parentType.getObjectiveModel());
-                    } else {
-                        objectiveControlModel = new ObjectiveControlModel(objectiveSection).clone();
-                    }
-                    setObjectiveModel(objectiveControlModel);
-                    break;
-                case "koth":
-                    ObjectiveKothModel objectiveKothModel;
-                    if (parentType != null) {
-                        objectiveKothModel = new ObjectiveKothModel(
-                                new ObjectiveKothModel(objectiveSection),
-                                (ObjectiveKothModel) parentType.getObjectiveModel());
-                    } else {
-                        objectiveKothModel = new ObjectiveKothModel(objectiveSection).clone();
-                    }
-                    setObjectiveModel(objectiveKothModel);
-                    break;
-            }
-        } else {
-            setObjectiveModel(new ObjectiveModel(objectiveSection));
-        }
+        ObjectiveManager.setupObjectiveModelToTerritoryType(this, parentType, getObjectiveTypeName(), objectiveSection);
 
         if (parentType != null) {
             attackRequirementsModel = new AttackRequirementsModel(new AttackRequirementsModel(section.getConfigurationSection("attack-requirements")), parentType.attackRequirementsModel);

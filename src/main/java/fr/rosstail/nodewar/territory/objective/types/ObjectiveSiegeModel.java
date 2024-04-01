@@ -6,7 +6,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.*;
 
 public class ObjectiveSiegeModel extends ObjectiveModel {
-
     private String maxHealthStr;
     private Set<String> controlPointStringSet = new HashSet<>();
     private Map<String, Integer> damagePerSecondControlPointIntMap = new HashMap<>();
@@ -15,7 +14,6 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
     public ObjectiveSiegeModel(ConfigurationSection section) {
         super(section);
         if (section != null) {
-
             String maxHealthStr = section.getString("maximum-health");
             if (maxHealthStr != null && maxHealthStr.matches("\\d+")) {
                 this.maxHealthStr = maxHealthStr;
@@ -92,10 +90,10 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
         // TODO: copy mutable state here, so the clone can't change the internals of the original
 
         clone.setMaxHealthStr(getMaxHealthString());
-
         clone.setControlPointStringSet(new HashSet<>(getControlPointStringSet()));
         clone.setDamagePerSecondControlPointIntMap(new HashMap<>(getDamagePerSecondControlPointIntMap()));
         clone.setRegenPerSecondControlPointIntMap(new HashMap<>(getRegenPerSecondControlPointIntMap()));
+
         return clone;
     }
 }
