@@ -14,6 +14,7 @@ import java.util.Set;
 public class BattleSiege extends Battle {
 
     private final ObjectiveSiege objectiveSiege;
+    private int currentHealth;
 
     Map<Player, Integer> playerKillMap = new HashMap<>(); // reward per kill
     Map<NwTeam, Integer> teamKillMap = new HashMap<>(); // reward per kill
@@ -23,6 +24,7 @@ public class BattleSiege extends Battle {
     public BattleSiege(Territory territory) {
         super(territory);
         this.objectiveSiege = (ObjectiveSiege) territory.getObjective();
+        this.currentHealth = objectiveSiege.getMaxHealth();
     }
 
 
@@ -33,7 +35,7 @@ public class BattleSiege extends Battle {
         if (isBattleOnEnd()) {
             return;
         }
-        int currentHealth = objectiveSiege.getCurrentHealth();
+        int currentHealth = getCurrentHealth();
         int maxHealth = objectiveSiege.getMaxHealth();
         NwTeam ownerTeam = territory.getOwnerTeam();
         NwTeam advantageTeam = getAdvantagedTeam();
@@ -103,6 +105,14 @@ public class BattleSiege extends Battle {
 
     public Map<NwTeam, Integer> getTeamImpactPerSecond() {
         return teamImpactPerSecond;
+    }
+
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public void setCurrentHealth(int currentHealth) {
+        this.currentHealth = currentHealth;
     }
 }
 

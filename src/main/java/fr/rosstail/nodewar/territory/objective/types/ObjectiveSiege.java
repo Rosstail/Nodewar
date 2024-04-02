@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public class ObjectiveSiege extends Objective {
 
     private int maxHealth;
-    private int currentHealth;
 
     private final List<Territory> controlPointList = new ArrayList<>();
 
@@ -52,16 +51,16 @@ public class ObjectiveSiege extends Objective {
         setObjectiveModel(this.objectiveSiegeModel);
 
         this.maxHealth = Integer.parseInt(this.objectiveSiegeModel.getMaxHealthString());
-
-        this.currentHealth = this.maxHealth;
     }
 
     public NwTeam checkAdvantage() {
         NwTeam defenderTeam = territory.getOwnerTeam();
+        BattleSiege currentBattle = ((BattleSiege) territory.getCurrentBattle());
+
         int greatestAttackerScore = 0;
         int defenderScore = 0;
         final ArrayList<NwTeam> greatestAttacker = new ArrayList<>();
-        Map<NwTeam, Integer> teamImpactPerSecond = ((BattleSiege) territory.getCurrentBattle()).getTeamImpactPerSecond();
+        Map<NwTeam, Integer> teamImpactPerSecond = currentBattle.getTeamImpactPerSecond();
 
         for (Map.Entry<NwTeam, Integer> entry : teamImpactPerSecond.entrySet()) {
             NwTeam attackerTeam = entry.getKey();
@@ -99,19 +98,19 @@ public class ObjectiveSiege extends Objective {
             int totalAttackerScore = 2 * greatestAttackerScore;
             if (totalAttackerScore >= defenderScore) {
                 if (totalAttackerScore > defenderScore) {
-                    setCurrentHealth(Math.max(0, currentHealth - greatestAttackerScore));
+                    currentBattle.setCurrentHealth(Math.max(0, currentBattle.getCurrentHealth() - greatestAttackerScore));
                 }
                 return null;
             } else {
-                setCurrentHealth(Math.min(currentHealth + defenderScore, maxHealth));
+                currentBattle.setCurrentHealth(Math.min(currentBattle.getCurrentHealth() + defenderScore, maxHealth));
                 return defenderTeam;
             }
         } else { //One attacker
             if (greatestAttackerScore > defenderScore) {
-                setCurrentHealth(Math.max(0, currentHealth - greatestAttackerScore));
+                currentBattle.setCurrentHealth(Math.max(0, currentBattle.getCurrentHealth() - greatestAttackerScore));
                 return greatestAttacker.get(0);
             } else if (defenderScore > greatestAttackerScore) {
-                setCurrentHealth(Math.min(currentHealth + defenderScore, maxHealth));
+                currentBattle.setCurrentHealth(Math.min(currentBattle.getCurrentHealth() + defenderScore, maxHealth));
                 return defenderTeam;
             }
             return null;
@@ -145,7 +144,10 @@ public class ObjectiveSiege extends Objective {
     @Override
     public NwTeam checkWinner() {
         NwTeam ownerTeam = territory.getOwnerTeam();
-        NwTeam advantagedTeam = territory.getCurrentBattle().getAdvantagedTeam();
+        BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
+        NwTeam advantagedTeam = currentBattle.getAdvantagedTeam();
+
+        int currentHealth = currentBattle.getCurrentHealth();
         if (currentHealth <= 0 && ownerTeam != advantagedTeam) {
             return advantagedTeam;
         } else if (currentHealth >= maxHealth && ownerTeam == advantagedTeam) {
@@ -158,7 +160,6 @@ public class ObjectiveSiege extends Objective {
     public void win(NwTeam winnerTeam) {
         super.win(winnerTeam);
         Territory territory = super.territory;
-        currentHealth = maxHealth;
         BattleSiege currentBattleSiege = (BattleSiege) territory.getCurrentBattle();
 
         Map<NwTeam, Integer> teamPositionMap = new HashMap<>();
@@ -189,6 +190,7 @@ public class ObjectiveSiege extends Objective {
         BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
         NwTeam currentAdvantage = currentBattle.getAdvantagedTeam();
         NwTeam newAdvantage = checkAdvantage(); //Also apply damage/regen
+        int currentHealth = currentBattle.getCurrentHealth(); //Also apply damage/regen
         currentBattle.updateTeamContributionPerSecond(controlPointList);
 
         if (currentAdvantage != newAdvantage) {
@@ -219,10 +221,11 @@ public class ObjectiveSiege extends Objective {
         });
     }
 
-    private void determineStart(BattleSiege battleControl, NwTeam currentAdvantage, NwTeam newAdvantage) {
+    private void determineStart(BattleSiege battleSiege, NwTeam currentAdvantage, NwTeam newAdvantage) {
         NwTeam owner = territory.getOwnerTeam();
+        int currentHealth = battleSiege.getCurrentHealth();
 
-        if (!battleControl.isBattleWaiting()) {
+        if (!battleSiege.isBattleWaiting()) {
             return;
         }
 
@@ -244,7 +247,7 @@ public class ObjectiveSiege extends Objective {
             }
         }
 
-        battleControl.setBattleOngoing();
+        battleSiege.setBattleOngoing();
 
         AdaptMessage.getAdaptMessage().alertTeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
         AdaptMessage.getAdaptMessage().alertTeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
@@ -263,25 +266,17 @@ public class ObjectiveSiege extends Objective {
         this.maxHealth = maxHealth;
     }
 
-    public int getCurrentHealth() {
-        return currentHealth;
-    }
-
-    public void setCurrentHealth(int currentHealth) {
-        this.currentHealth = currentHealth;
-    }
-
     public ObjectiveSiegeModel getObjectiveSiegeModel() {
         return objectiveSiegeModel;
     }
 
     @Override
     public String adaptMessage(String message) {
-        message = message.replaceAll("\\[territory_objective_health]", String.valueOf(currentHealth));
+        BattleSiege battleSiege = (BattleSiege) territory.getCurrentBattle();
+        message = message.replaceAll("\\[territory_objective_health]", String.valueOf(battleSiege.getCurrentHealth()));
         message = message.replaceAll("\\[territory_objective_maxhealth]", String.valueOf(maxHealth));
-        message = message.replaceAll("\\[territory_objective_rate]", String.valueOf((float) (currentHealth / maxHealth)));
-        message = message.replaceAll("\\[territory_objective_rate_percent]", String.valueOf((int) ((float) (currentHealth / maxHealth)) * 100));
-
+        message = message.replaceAll("\\[territory_objective_rate]", String.valueOf((float) (battleSiege.getCurrentHealth() / maxHealth)));
+        message = message.replaceAll("\\[territory_objective_rate_percent]", String.valueOf((int) ((float) (battleSiege.getCurrentHealth() / maxHealth)) * 100));
         return message;
     }
 }

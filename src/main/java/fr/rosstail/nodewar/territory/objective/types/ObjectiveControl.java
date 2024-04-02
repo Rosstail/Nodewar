@@ -22,9 +22,7 @@ public class ObjectiveControl extends Objective {
 
     private final boolean neutralPeriod;
     private float minAttackerRatio;
-    private boolean needNeutralize;
     private int maxHealth;
-    private int currentHealth;
     private final Map<NwTeam, Integer> teamMemberOnTerritory = new HashMap<>();
     ObjectiveControlModel objectiveControlModel;
 
@@ -41,11 +39,7 @@ public class ObjectiveControl extends Objective {
 
         this.neutralPeriod = Boolean.parseBoolean(this.objectiveControlModel.getNeedNeutralizeStepStr());
         this.minAttackerRatio = Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr());
-        this.needNeutralize = Boolean.parseBoolean(this.objectiveControlModel.getNeedNeutralizeStepStr());
         this.maxHealth = Integer.parseInt(this.objectiveControlModel.getMaxHealthStr());
-        if (territory.getOwnerTeam() != null) {
-            this.currentHealth = maxHealth;
-        }
     }
 
     public float getMinAttackerRatio() {
@@ -62,22 +56,6 @@ public class ObjectiveControl extends Objective {
 
     public void setMaxHealth(int maxHealth) {
         this.maxHealth = maxHealth;
-    }
-
-    public int getCurrentHealth() {
-        return currentHealth;
-    }
-
-    public void setCurrentHealth(int currentHealth) {
-        this.currentHealth = currentHealth;
-    }
-
-    public boolean isNeedNeutralize() {
-        return needNeutralize;
-    }
-
-    public void setNeedNeutralize(boolean needNeutralize) {
-        this.needNeutralize = needNeutralize;
     }
 
     @Override
@@ -121,7 +99,7 @@ public class ObjectiveControl extends Objective {
         }
 
         territory.getRelationBossBarMap().forEach((s, bossBar) -> {
-            bossBar.setProgress((float) currentHealth / maxHealth);
+            bossBar.setProgress((float) currentBattle.getCurrentHealth() / maxHealth);
         });
     }
 
@@ -192,19 +170,19 @@ public class ObjectiveControl extends Objective {
         }
 
         if (newAdvantage == null) {
-            if (currentHealth == 0) {
+            if (battleControl.getCurrentHealth() == 0) {
                 return;
             }
         }
 
         if (newAdvantage == owner) {
-            if (currentHealth == maxHealth) {
+            if (battleControl.getCurrentHealth() == maxHealth) {
                 return;
             }
         }
 
         if (currentAdvantage == null || currentAdvantage == owner) {
-            if (currentHealth == maxHealth) {
+            if (battleControl.getCurrentHealth() == maxHealth) {
                 return;
             }
         }
@@ -220,10 +198,11 @@ public class ObjectiveControl extends Objective {
         if (!neutralPeriod) {
             return null;
         }
+        BattleControl battleControl = (BattleControl) territory.getCurrentBattle();
         NwTeam owner = territory.getOwnerTeam();
         NwTeam advantagedTeam = territory.getCurrentBattle().getAdvantagedTeam();
         if (owner != null && advantagedTeam != owner) {
-            if (currentHealth <= 0) {
+            if (battleControl.getCurrentHealth() <= 0) {
                 return advantagedTeam;
             }
         }
@@ -235,7 +214,7 @@ public class ObjectiveControl extends Objective {
         NwTeam owner = territory.getOwnerTeam();
         BattleControl currentBattle = (BattleControl) territory.getCurrentBattle();
         if (currentBattle.isBattleStarted() && currentBattle.getAdvantagedTeam() != null) {
-            if (getCurrentHealth() >= getMaxHealth() && owner == null) {
+            if (currentBattle.getCurrentHealth() >= getMaxHealth() && owner == null) {
                 return currentBattle.getAdvantagedTeam();
             }
         }
@@ -263,15 +242,16 @@ public class ObjectiveControl extends Objective {
     }
 
     public void updateHealth() {
+        BattleControl currentBattleControl = (BattleControl) territory.getCurrentBattle();
         NwTeam defenderTeam = territory.getOwnerTeam();
         NwTeam advantagedTeam = territory.getCurrentBattle().getAdvantagedTeam();
 
         if (advantagedTeam != null) {
             if (defenderTeam == null || advantagedTeam.equals(defenderTeam)) {
-                setCurrentHealth(Math.min(++currentHealth, maxHealth));
+                currentBattleControl.setCurrentHealth(Math.min(currentBattleControl.getCurrentHealth() + 1,maxHealth));
             } else {
                 //Avoid it if not enemy
-                setCurrentHealth(Math.max(0, --currentHealth));
+                currentBattleControl.setCurrentHealth(Math.max(0, currentBattleControl.getCurrentHealth() - 1));
             }
         }
 

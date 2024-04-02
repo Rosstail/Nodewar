@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class BattleControl extends Battle {
 
     private final ObjectiveControl objectiveControl;
+    private int currentHealth;
 
     Map<Player, Integer> playerAttackTimeMap = new HashMap<>(); // reward per second
     Map<NwTeam, Integer> teamAttackTimeMap = new HashMap<>();  // reward per second
@@ -32,6 +33,7 @@ public class BattleControl extends Battle {
     public BattleControl(Territory territory) {
         super(territory);
         this.objectiveControl = (ObjectiveControl) territory.getObjective();
+        this.currentHealth = territory.getOwnerTeam() != null ? objectiveControl.getMaxHealth() : 0;
     }
 
 
@@ -43,7 +45,7 @@ public class BattleControl extends Battle {
         if (isBattleOnEnd()) {
             return;
         }
-        int currentHealth = objectiveControl.getCurrentHealth();
+        int currentHealth = getCurrentHealth();
         int maxHealth = objectiveControl.getMaxHealth();
         NwTeam ownerTeam = territory.getOwnerTeam();
         NwTeam advantageTeam = getAdvantagedTeam();
@@ -179,6 +181,14 @@ public class BattleControl extends Battle {
 
 
 
+
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public void setCurrentHealth(int currentHealth) {
+        this.currentHealth = currentHealth;
+    }
 
     public Map<NwTeam, Integer> getTeamAttackTimeMap() {
         return teamAttackTimeMap;
