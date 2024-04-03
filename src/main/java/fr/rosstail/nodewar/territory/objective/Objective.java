@@ -26,9 +26,10 @@ public class Objective {
             ObjectiveModel childObjectiveModel = childModel.clone();
             ObjectiveModel parentObjectiveModel = parentModel.clone();
             this.objectiveModel = new ObjectiveModel(childObjectiveModel, parentObjectiveModel);
+        } else {
+            setObjectiveModel(new ObjectiveModel(null));
         }
         this.territory = territory;
-        setObjectiveModel(new ObjectiveModel(null));
         startObjective();
     }
 
@@ -90,8 +91,8 @@ public class Objective {
     }
 
     public String adaptMessage(String message) {
-        message = message.replaceAll("\\[territory_ojective]", getObjectiveModel().getTypeString());
-        message = message.replaceAll("\\[territory_ojective_display]", getObjectiveModel().getTypeString()).toUpperCase();
+        message = message.replaceAll("\\[territory_objective]", getObjectiveModel().getTypeString());
+        message = message.replaceAll("\\[territory_objective_display]", getObjectiveModel().getTypeString().toUpperCase());
         return message;
     }
 

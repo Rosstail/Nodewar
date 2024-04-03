@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.territory.battle.types;
 
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class BattleSiege extends Battle {
 
@@ -113,6 +115,37 @@ public class BattleSiege extends Battle {
 
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
+    }
+
+
+    @Override
+    public String adaptMessage(String message) {
+        message = super.adaptMessage(message);
+        message = message.replaceAll("\\[territory_battle_health]", String.valueOf(currentHealth));
+        message = message.replaceAll("\\[territory_battle_health_percent]", String.valueOf((int) ((float) currentHealth / objectiveSiege.getMaxHealth() * 100)));
+
+        List<List<Integer>> pointPerSecondList = objectiveSiege.getCapturePointsDamageRegenPerSecond().entrySet().stream().filter(territoryListEntry ->
+                (territoryListEntry.getKey().getOwnerTeam() == getAdvantagedTeam())
+        ).map(Map.Entry::getValue).collect(Collectors.toList());
+
+        int damagePerSecond = pointPerSecondList.stream().mapToInt(value -> value.get(0)).sum();
+        int regenPerSecond = pointPerSecondList.stream().mapToInt(value -> value.get(1)).sum();
+
+        int timeLeft = 0;
+        String timeLeftStr = " - ";
+
+        if (getAdvantagedTeam() != null && isBattleStarted()) {
+            if (getAdvantagedTeam() == territory.getOwnerTeam() && regenPerSecond > 0) { //defend
+                timeLeft = (objectiveSiege.getMaxHealth() - getCurrentHealth()) / regenPerSecond;
+            } else if (damagePerSecond > 0) {
+                timeLeft = getCurrentHealth() / damagePerSecond;
+            }
+            timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft);
+        }
+
+        message = message.replaceAll("\\[territory_battle_time_left]", timeLeftStr);
+
+        return message;
     }
 }
 

@@ -117,7 +117,10 @@ public class ObjectiveSiege extends Objective {
         }
     }
 
-
+    /**
+     *
+     * @return map of territory with damage (0) / regen (1) per second
+     */
     public Map<Territory, List<Integer>> getCapturePointsDamageRegenPerSecond() {
         Map<Territory, List<Integer>> values = new HashMap<>();
 
@@ -275,9 +278,7 @@ public class ObjectiveSiege extends Objective {
         message = super.adaptMessage(message);
         BattleSiege battleSiege = (BattleSiege) territory.getCurrentBattle();
         message = message.replaceAll("\\[territory_objective_health]", String.valueOf(battleSiege.getCurrentHealth()));
-        message = message.replaceAll("\\[territory_objective_maxhealth]", String.valueOf(maxHealth));
-        message = message.replaceAll("\\[territory_objective_rate]", String.valueOf((float) (battleSiege.getCurrentHealth() / maxHealth)));
-        message = message.replaceAll("\\[territory_objective_rate_percent]", String.valueOf((int) ((float) (battleSiege.getCurrentHealth() / maxHealth)) * 100));
+        message = message.replaceAll("\\[territory_objective_maximum_health]", String.valueOf(maxHealth));
         return message;
     }
 }

@@ -1,5 +1,8 @@
 package fr.rosstail.nodewar.territory.battle;
 
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import org.bukkit.entity.Player;
@@ -59,6 +62,38 @@ public class Battle {
 
     public void addTeamScore(NwTeam nwTeam, int value) {
         teamScoreMap.put(nwTeam, getTeamScore(nwTeam) + value);
+    }
+
+    public String adaptMessage(String message) {
+        switch (getBattleStatus()) {
+            case WAITING:
+                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_WAITING));
+                break;
+            case ONGOING:
+                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ONGOING));
+                break;
+            case ENDING:
+                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDING));
+                break;
+            case ENDED:
+                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDED));
+                break;
+        }
+
+        String direction = "<--->";
+
+        if (territory.getOwnerTeam() == null || territory.getCurrentBattle().getAdvantagedTeam() == territory.getOwnerTeam()) {
+            direction = "====>";
+        } else if (territory.getOwnerTeam() != null && territory.getCurrentBattle().getAdvantagedTeam() != null && territory.getCurrentBattle().getAdvantagedTeam() != territory.getOwnerTeam()) {
+            direction = "<====";
+        }
+        message = message.replaceAll("\\[territory_battle_direction]", direction);
+        message = message.replaceAll("\\[territory_battle_advantage", "[team");
+        message = AdaptMessage.getAdaptMessage().adaptTeamMessage(message, getAdvantagedTeam());
+        message = message.replaceAll("\\[territory_battle_winner", "[team");
+        message = AdaptMessage.getAdaptMessage().adaptTeamMessage(message, getWinnerTeam());
+
+        return message;
     }
 
     public BattleStatus getBattleStatus() {

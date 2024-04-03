@@ -311,4 +311,31 @@ public class Territory {
 
         return teamPlayerMap;
     }
+
+    public String adaptMessage(String message) {
+        message = message.replaceAll("\\[territory_id]", String.valueOf(territoryModel.getId()));
+        message = message.replaceAll("\\[territory_prefix]", territoryModel.getPrefix());
+        message = message.replaceAll("\\[territory_suffix]", territoryModel.getSuffix());
+        message = message.replaceAll("\\[territory_name]", territoryModel.getName());
+        message = message.replaceAll("\\[territory_display]", territoryModel.getDisplay());
+        message = message.replaceAll("\\[territory_world]", territoryModel.getWorldName());
+        message = message.replaceAll("\\[territory_type]", territoryModel.getTypeName());
+        boolean isProtected = territoryModel.isUnderProtection();
+        if (isProtected) {
+            message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_PROTECTED));
+        } else {
+            message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_VULNERABLE));
+        }
+        if (objective != null) {
+            message = objective.adaptMessage(message);
+        }
+
+        message = message.replaceAll("\\[territory_owner", "[team");
+        message = AdaptMessage.getAdaptMessage().adaptTeamMessage(message, getOwnerTeam());
+
+        if (getCurrentBattle() != null) {
+            message = getCurrentBattle().adaptMessage(message);
+        }
+        return message;
+    }
 }

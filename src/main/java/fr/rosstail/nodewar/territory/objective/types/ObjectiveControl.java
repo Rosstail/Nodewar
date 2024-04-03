@@ -260,13 +260,18 @@ public class ObjectiveControl extends Objective {
     @Override
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
-        message = message.replaceAll("\\[territory_ojective_minimum_attacker_ratio]", String.valueOf(minAttackerRatio));
-        message = message.replaceAll("\\[territory_ojective_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)));
+        message = message.replaceAll("\\[territory_objective_minimum_attacker_ratio]", String.valueOf(minAttackerRatio));
+        message = message.replaceAll("\\[territory_objective_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)));
+        message = message.replaceAll("\\[territory_objective_maximum_health]", String.valueOf(maxHealth));
 
         return message;
     }
 
     public ObjectiveControlModel getObjectiveControlModel() {
         return objectiveControlModel;
+    }
+
+    public boolean isNeutralPeriod() {
+        return neutralPeriod;
     }
 }

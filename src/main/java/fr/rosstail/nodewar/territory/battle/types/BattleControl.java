@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.territory.battle.types;
 
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
@@ -236,6 +237,34 @@ public class BattleControl extends Battle {
 
     public Map<Player, Integer> getPlayerHoldTimeMap() {
         return playerHoldTimeMap;
+    }
+
+    @Override
+    public String adaptMessage(String message) {
+        message = super.adaptMessage(message);
+        message = message.replaceAll("\\[territory_battle_health]", String.valueOf(currentHealth));
+        message = message.replaceAll("\\[territory_battle_health_percent]", String.valueOf((int) ((float) currentHealth / objectiveControl.getMaxHealth() * 100)));
+
+        int timeLeft = 0;
+        String timeLeftStr = " - ";
+
+        if (getAdvantagedTeam() != null && !isBattleStarted()) {
+            if (getAdvantagedTeam() == territory.getOwnerTeam()) { //defend
+                timeLeft = objectiveControl.getMaxHealth() - getCurrentHealth();
+            } else if (territory.getOwnerTeam() == null) { // neutral to cap
+                timeLeft = objectiveControl.getMaxHealth() - getCurrentHealth();
+            } else {
+                if (objectiveControl.isNeutralPeriod()) {
+                    timeLeft = objectiveControl.getMaxHealth();
+                }
+                timeLeft += getCurrentHealth();
+            }
+            timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft);
+        }
+
+        message = message.replaceAll("\\[territory_battle_time_left]", timeLeftStr);
+
+        return message;
     }
 }
 

@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ObjectiveKoth extends Objective {
-    private int timeToReach;
+    private final int timeToReach;
     private final List<Territory> controlPointList = new ArrayList<>();
 
     private ObjectiveKothModel objectiveKothModel;

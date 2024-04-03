@@ -24,8 +24,6 @@ public class ObjectiveModel implements Cloneable {
 
                 });
             }
-        } else {
-            this.typeString = "none";
         }
     }
 

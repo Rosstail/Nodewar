@@ -191,59 +191,7 @@ public class AdaptMessage {
     }
 
     public String adaptTerritoryMessage(String message, Territory territory) {
-        TerritoryModel territoryModel = territory.getModel();
-        Objective objective = territory.getObjective();
-        Battle battle = territory.getCurrentBattle();
-        AttackRequirements attackRequirements = territory.getAttackRequirements();
-        message = message.replaceAll("\\[territory_id]", String.valueOf(territoryModel.getId()));
-        message = message.replaceAll("\\[territory_prefix]", territoryModel.getPrefix());
-        message = message.replaceAll("\\[territory_suffix]", territoryModel.getSuffix());
-        message = message.replaceAll("\\[territory_name]", territoryModel.getName());
-        message = message.replaceAll("\\[territory_display]", territoryModel.getDisplay());
-        message = message.replaceAll("\\[territory_world]", territoryModel.getWorldName());
-        message = message.replaceAll("\\[territory_type]", territoryModel.getTypeName());
-        boolean isProtected = territoryModel.isUnderProtection();
-        if (isProtected) {
-            message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_PROTECTED));
-        } else {
-            message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_VULNERABLE));
-        }
-        message = message.replaceAll("\\[territory_owner", "[team");
-        message = adaptTeamMessage(message, territory.getOwnerTeam());
-        if (objective != null) {
-            message = objective.adaptMessage(message);
-        }
-
-        if (battle != null) {
-            switch (battle.getBattleStatus()) {
-                case WAITING:
-                    message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_WAITING));
-                    break;
-                case ONGOING:
-                    message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ONGOING));
-                    break;
-                case ENDING:
-                    message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDING));
-                    break;
-                case ENDED:
-                    message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDED));
-                    break;
-            }
-
-            String direction = "<--->";
-
-            if (territory.getOwnerTeam() == null || territory.getCurrentBattle().getAdvantagedTeam() == territory.getOwnerTeam()) {
-                direction = "====>";
-            } else if (territory.getOwnerTeam() != null && territory.getCurrentBattle().getAdvantagedTeam() != null && territory.getCurrentBattle().getAdvantagedTeam() != territory.getOwnerTeam()) {
-                direction = "<====";
-            }
-            message = message.replaceAll("\\[territory_battle_direction]", direction);
-            message = message.replaceAll("\\[territory_battle_advantage", "[team");
-            message = adaptTeamMessage(message, battle.getAdvantagedTeam());
-            message = message.replaceAll("\\[territory_battle_winner", "[team");
-            message = adaptTeamMessage(message, battle.getWinnerTeam());
-        }
-
+        message = territory.adaptMessage(message);
 
         return adaptMessage(message);
     }
