@@ -210,7 +210,9 @@ public class AdaptMessage {
         }
         message = message.replaceAll("\\[territory_owner", "[team");
         message = adaptTeamMessage(message, territory.getOwnerTeam());
-        message = message.replaceAll("\\[territory_objective_name]", territory.getModel().getObjectiveTypeName());
+        if (objective != null) {
+            message = objective.adaptMessage(message);
+        }
 
         if (battle != null) {
             switch (battle.getBattleStatus()) {

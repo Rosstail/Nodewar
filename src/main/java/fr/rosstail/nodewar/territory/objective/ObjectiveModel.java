@@ -9,13 +9,13 @@ import java.util.Map;
 
 public class ObjectiveModel implements Cloneable {
 
-    private String objectiveTypeString;
+    private String typeString;
 
     private Map<String, RewardModel> stringRewardModelMap = new HashMap<>();
 
     public ObjectiveModel(ConfigurationSection section) {
         if (section != null) {
-            this.objectiveTypeString = section.getString("type");
+            this.typeString = section.getString("type");
             ConfigurationSection rewardListSection = section.getConfigurationSection("rewards");
             if (rewardListSection != null) {
                 rewardListSection.getKeys(false).forEach(s -> {
@@ -25,27 +25,27 @@ public class ObjectiveModel implements Cloneable {
                 });
             }
         } else {
-            this.objectiveTypeString = "none";
+            this.typeString = "none";
         }
     }
 
     protected ObjectiveModel(ObjectiveModel childObjectiveModel, @NotNull ObjectiveModel parentObjectiveModel) {
-        if (childObjectiveModel.getObjectiveTypeString() != null) {
-            this.objectiveTypeString = childObjectiveModel.objectiveTypeString;
+        if (childObjectiveModel.getTypeString() != null) {
+            this.typeString = childObjectiveModel.typeString;
         } else {
-            this.objectiveTypeString = parentObjectiveModel.objectiveTypeString;
+            this.typeString = parentObjectiveModel.typeString;
         }
 
         this.stringRewardModelMap.putAll(parentObjectiveModel.stringRewardModelMap);
         this.stringRewardModelMap.putAll(childObjectiveModel.stringRewardModelMap);
     }
 
-    public String getObjectiveTypeString() {
-        return objectiveTypeString;
+    public String getTypeString() {
+        return typeString;
     }
 
-    public void setObjectiveTypeString(String objectiveTypeString) {
-        this.objectiveTypeString = objectiveTypeString;
+    public void setTypeString(String typeString) {
+        this.typeString = typeString;
     }
 
     public Map<String, RewardModel> getStringRewardModelMap() {
@@ -61,7 +61,7 @@ public class ObjectiveModel implements Cloneable {
         try {
             ObjectiveModel clone = (ObjectiveModel) super.clone();
             // TODO: copy mutable state here, so the clone can't change the internals of the original
-            clone.setObjectiveTypeString(getObjectiveTypeString());
+            clone.setTypeString(getTypeString());
             clone.setStringRewardModelMap(new HashMap<>(getStringRewardModelMap()));
 
             return clone;

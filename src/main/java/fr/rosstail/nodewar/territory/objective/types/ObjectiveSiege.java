@@ -272,6 +272,7 @@ public class ObjectiveSiege extends Objective {
 
     @Override
     public String adaptMessage(String message) {
+        message = super.adaptMessage(message);
         BattleSiege battleSiege = (BattleSiege) territory.getCurrentBattle();
         message = message.replaceAll("\\[territory_objective_health]", String.valueOf(battleSiege.getCurrentHealth()));
         message = message.replaceAll("\\[territory_objective_maxhealth]", String.valueOf(maxHealth));

@@ -215,6 +215,7 @@ public class ObjectiveKoth extends Objective {
 
     @Override
     public String adaptMessage(String message) {
+        message = super.adaptMessage(message);
         message = message.replaceAll("\\[territory_objective_timetoreach]", String.valueOf(timeToReach));
         return message;
     }

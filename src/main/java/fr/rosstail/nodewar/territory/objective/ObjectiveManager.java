@@ -38,7 +38,6 @@ public class ObjectiveManager {
 
     public static void setupObjectiveModelToTerritoryType(TerritoryType territoryType, TerritoryType parentType, String objectiveName, ConfigurationSection objectiveSection) {
         if (objectiveEntryMap.containsKey(objectiveName)) {
-            System.out.println("TYPE " + territoryType.getName());
             Map.Entry<Class<? extends Objective>, Class<? extends ObjectiveModel>> entry = objectiveEntryMap.get(objectiveName);
             Class<? extends ObjectiveModel> objectiveModelClass = entry.getValue();
 

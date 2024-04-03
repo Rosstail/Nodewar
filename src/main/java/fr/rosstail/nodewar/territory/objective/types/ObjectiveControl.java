@@ -259,6 +259,7 @@ public class ObjectiveControl extends Objective {
 
     @Override
     public String adaptMessage(String message) {
+        message = super.adaptMessage(message);
         message = message.replaceAll("\\[territory_ojective_minimum_attacker_ratio]", String.valueOf(minAttackerRatio));
         message = message.replaceAll("\\[territory_ojective_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)));
 
