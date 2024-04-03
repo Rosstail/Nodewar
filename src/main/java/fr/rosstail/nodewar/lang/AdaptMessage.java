@@ -122,6 +122,7 @@ public class AdaptMessage {
         message = message.replaceAll("\\[team_name]", team.getModel().getName());
         message = message.replaceAll("\\[team_id]", String.valueOf(team.getModel().getId()));
         message = message.replaceAll("\\[team_display]", team.getModel().getDisplay());
+        message = message.replaceAll("\\[team_short]", team.getModel().getShortName());
         message = message.replaceAll("\\[team_color]", team.getModel().getTeamColor());
         message = message.replaceAll("\\[team_open]", String.valueOf(team.getModel().isOpen()));
         message = message.replaceAll("\\[team_permanent]", String.valueOf(team.getModel().isPermanent()));

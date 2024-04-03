@@ -57,6 +57,7 @@ public class TeamCreateCommand extends TeamSubCommand {
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         String teamName;
         String displayName;
+        String shortName;
         Player senderPlayer;
         TeamModel teamModel;
         NwTeam playerNwTeam;
@@ -73,7 +74,7 @@ public class TeamCreateCommand extends TeamSubCommand {
             return;
         }
 
-        if (args.length < 3) {
+        if (args.length < 4) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
@@ -81,6 +82,7 @@ public class TeamCreateCommand extends TeamSubCommand {
         playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
         teamName = ChatColor.stripColor(args[2].toLowerCase());
         displayName = args[2];
+        shortName = args[3];
         ownerId = playerData.getId();
 
         if (teamDataManager.getTeamOfPlayer(senderPlayer) != null) {
@@ -93,7 +95,17 @@ public class TeamCreateCommand extends TeamSubCommand {
             return;
         }
 
-        teamModel = new TeamModel(teamName, displayName, teamDataManager.generateRandomColor());
+        if (shortName.length() > 5) {
+            sender.sendMessage("short name is too long");
+            return;
+        }
+
+        if (teamDataManager.getStringTeamMap().values().stream().anyMatch(nwTeam -> (nwTeam.getModel().getShortName().equalsIgnoreCase(shortName)))) {
+            sender.sendMessage("short name already exists");
+            return;
+        }
+
+        teamModel = new TeamModel(teamName, displayName, shortName, teamDataManager.generateRandomColor());
         StorageManager.getManager().insertTeamModel(teamModel);
 
         TeamMemberModel teamMemberModel =

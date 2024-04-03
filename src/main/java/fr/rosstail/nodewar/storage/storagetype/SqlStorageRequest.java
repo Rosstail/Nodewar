@@ -64,6 +64,7 @@ public class SqlStorageRequest implements StorageRequest {
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " name VARCHAR(40) UNIQUE," +
                 " display VARCHAR(40) UNIQUE," +
+                " short VARCHAR(5) UNIQUE," +
                 " color VARCHAR(20) NOT NULL DEFAULT '" + ChatColor.WHITE.name() + "'," +
                 " is_open BOOLEAN NOT NULL DEFAULT FALSE," +
                 " is_relation_open BOOLEAN NOT NULL DEFAULT TRUE," +
@@ -263,7 +264,7 @@ public class SqlStorageRequest implements StorageRequest {
         try {
             ResultSet result = executeSQLQuery(connection, query, ownerUuid);
             if (result.next()) {
-                TeamModel teamModel = new TeamModel(result.getString("name"), result.getString("display"), result.getString("color"));
+                TeamModel teamModel = new TeamModel(result.getString("name"), result.getString("display"), result.getString("short"), result.getString("color"));
                 teamModel.setId(result.getInt("id"));
                 teamModel.setPermanent(result.getBoolean("is_permanent"));
                 teamModel.setOpen(result.getBoolean("is_open"));
@@ -298,7 +299,7 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     private TeamModel getTeamModelFromResult(ResultSet result, String name) throws SQLException {
-        TeamModel teamModel = new TeamModel(name, result.getString("display"), result.getString("color"));
+        TeamModel teamModel = new TeamModel(name, result.getString("display"), result.getString("short"), result.getString("color"));
         teamModel.setId(result.getInt("id"));
         teamModel.setPermanent(result.getBoolean("is_permanent"));
         teamModel.setOpen(result.getBoolean("is_open"));

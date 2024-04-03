@@ -36,7 +36,7 @@ public class AdminTeamCreateCommand extends AdminTeamSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar admin team create <team>";
+        return "nodewar admin team create <team> <short>";
     }
 
     @Override
@@ -48,6 +48,7 @@ public class AdminTeamCreateCommand extends AdminTeamSubCommand {
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         String teamName;
         String displayTeamName;
+        String shortName;
         TeamModel teamModel;
         NwTeam team;
         TeamDataManager teamDataManager = TeamDataManager.getTeamDataManager();
@@ -56,20 +57,31 @@ public class AdminTeamCreateCommand extends AdminTeamSubCommand {
             return;
         }
 
-        if (args.length < 4) {
+        if (args.length < 5) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
 
         teamName = ChatColor.stripColor(args[3].toLowerCase());
         displayTeamName = args[3];
+        shortName = args[4];
+
+        if (shortName.length() > 5) {
+            sender.sendMessage("short name is too long");
+            return;
+        }
 
         if (TeamDataManager.getTeamDataManager().getStringTeamMap().containsKey(teamName)) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_ALREADY_EXIST));
             return;
         }
 
-        teamModel = new TeamModel(teamName, displayTeamName, teamDataManager.generateRandomColor());
+        if (teamDataManager.getStringTeamMap().values().stream().anyMatch(nwTeam -> (nwTeam.getModel().getShortName().equalsIgnoreCase(shortName)))) {
+            sender.sendMessage("short name already exists");
+            return;
+        }
+
+        teamModel = new TeamModel(teamName, displayTeamName, shortName, teamDataManager.generateRandomColor());
         teamModel.setOpenRelation(false);
         teamModel.setPermanent(true);
         StorageManager.getManager().insertTeamModel(teamModel);

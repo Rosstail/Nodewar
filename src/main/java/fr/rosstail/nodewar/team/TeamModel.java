@@ -2,18 +2,15 @@ package fr.rosstail.nodewar.team;
 
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
 
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TeamModel {
     private int id;
     private String name;
     private String display;
+    private String shortName;
     private String teamColor;
     private boolean open = false;
     private boolean permanent = false;
@@ -25,9 +22,10 @@ public class TeamModel {
     private final Map<Integer, TeamRelationModel> teamRelationModelMap = new HashMap<>();
 
 
-    public TeamModel(String name, String display, String teamColor) {
+    public TeamModel(String name, String display, String shortName, String teamColor) {
         this.name = name;
         this.display = display;
+        this.shortName = shortName;
         this.teamColor = teamColor;
     }
 
@@ -53,6 +51,14 @@ public class TeamModel {
 
     public void setDisplay(String display) {
         this.display = display;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
     public String getTeamColor() {
