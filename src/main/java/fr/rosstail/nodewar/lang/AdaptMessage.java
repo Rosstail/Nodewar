@@ -437,9 +437,11 @@ public class AdaptMessage {
             });
         } else {
             Set<Player> teamMemberInTerritory = territory.getNwTeamEffectivePlayerAmountOnTerritory().get(team);
-            teamMemberInTerritory.forEach(player -> {
-                player.sendMessage(finalMessage);
-            });
+            if (teamMemberInTerritory != null) {
+                teamMemberInTerritory.forEach(player -> {
+                    player.sendMessage(finalMessage);
+                });
+            }
         }
     }
 

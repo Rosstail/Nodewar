@@ -140,7 +140,7 @@ public class BattleSiege extends Battle {
             } else if (damagePerSecond > 0) {
                 timeLeft = getCurrentHealth() / damagePerSecond;
             }
-            timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft);
+            timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft * 1000L);
         }
 
         message = message.replaceAll("\\[territory_battle_time_left]", timeLeftStr);

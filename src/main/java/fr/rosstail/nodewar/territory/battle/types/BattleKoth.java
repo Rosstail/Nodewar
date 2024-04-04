@@ -108,7 +108,7 @@ public class BattleKoth extends Battle {
 
         if (getAdvantagedTeam() != null && !isBattleStarted() && pointsPerSecond != 0) {
             timeLeft = (objectiveKoth.getTimeToReach() - highScore) / pointsPerSecond;
-            timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft);
+            timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft * 1000L);
         }
 
         message = message.replaceAll("\\[territory_battle_time_left]", timeLeftStr);

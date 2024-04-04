@@ -259,7 +259,7 @@ public class BattleControl extends Battle {
                 }
                 timeLeft += getCurrentHealth();
             }
-            timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft);
+            timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft * 1000L);
         }
 
         message = message.replaceAll("\\[territory_battle_time_left]", timeLeftStr);
