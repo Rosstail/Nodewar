@@ -20,6 +20,8 @@ import fr.rosstail.nodewar.territory.objective.reward.Reward;
 import org.bukkit.Bukkit;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ObjectiveSiege extends Objective {
@@ -276,9 +278,26 @@ public class ObjectiveSiege extends Objective {
     @Override
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
-        BattleSiege battleSiege = (BattleSiege) territory.getCurrentBattle();
-        message = message.replaceAll("\\[territory_objective_health]", String.valueOf(battleSiege.getCurrentHealth()));
+
         message = message.replaceAll("\\[territory_objective_maximum_health]", String.valueOf(maxHealth));
+
+        Pattern capturePointPattern = Pattern.compile("(\\[territory_objective_capturepoint)_(\\d+)(_\\w+])");
+        Matcher capturePointMatcher = capturePointPattern.matcher(message);
+
+        while (capturePointMatcher.find()) {
+            int capturePointId = Integer.parseInt(capturePointMatcher.group(2));
+            if (!controlPointList.isEmpty()) {
+                Territory capturePoint = controlPointList.get(capturePointId - 1);
+
+                if (capturePoint != null) {
+                    message = message.replace(capturePointMatcher.group(), "[territory" + capturePointMatcher.group(3));
+                    message = capturePoint.adaptMessage(message);
+                }
+            } else {
+                message = message.replace(capturePointMatcher.group(), "N/A");
+            }
+        }
+
         return message;
     }
 }

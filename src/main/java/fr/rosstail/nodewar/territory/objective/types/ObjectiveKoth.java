@@ -18,6 +18,8 @@ import org.bukkit.Bukkit;
 import scala.Int;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ObjectiveKoth extends Objective {
@@ -217,6 +219,24 @@ public class ObjectiveKoth extends Objective {
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
         message = message.replaceAll("\\[territory_objective_timetoreach]", String.valueOf(timeToReach));
+
+        Pattern capturePointPattern = Pattern.compile("(\\[territory_objective_capturepoint)_(\\d+)(_\\w+])");
+        Matcher capturePointMatcher = capturePointPattern.matcher(message);
+
+        while (capturePointMatcher.find()) {
+            int capturePointId = Integer.parseInt(capturePointMatcher.group(2));
+            if (!controlPointList.isEmpty()) {
+                Territory capturePoint = controlPointList.get(capturePointId - 1);
+
+                if (capturePoint != null) {
+                    message = message.replace(capturePointMatcher.group(), "[territory" + capturePointMatcher.group(3));
+                    message = capturePoint.adaptMessage(message);
+                }
+            } else {
+                message = message.replace(capturePointMatcher.group(), "N/A");
+            }
+        }
+
         return message;
     }
 
