@@ -28,6 +28,7 @@ public class TeamCommand extends TeamSubCommand {
         subCommands.add(new TeamManageCommand());
         subCommands.add(new TeamJoinCommand());
         subCommands.add(new TeamLeaveCommand());
+        subCommands.add(new TeamDeployCommand());
     }
 
     @Override

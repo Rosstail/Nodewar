@@ -8,7 +8,9 @@ public class PlayerModel {
     private String username;
     private boolean teamOpen = true;
 
-    private long lastUpdate = 0;
+    private long lastDeploy = 0L;
+    private long lastUpdate = 0L;
+
 
     /**
      * Constructor if the selected player is connected
@@ -39,6 +41,7 @@ public class PlayerModel {
         this.uuid = playerModel.getUuid();
         this.username = playerModel.getUsername();
         this.teamOpen = playerModel.isTeamOpen();
+        this.lastDeploy = playerModel.getLastDeploy();
         this.lastUpdate = playerModel.getLastUpdate();
     }
 
@@ -92,5 +95,13 @@ public class PlayerModel {
 
     public void setTeamOpen(boolean teamOpen) {
         this.teamOpen = teamOpen;
+    }
+
+    public long getLastDeploy() {
+        return lastDeploy;
+    }
+
+    public void setLastDeploy(long lastDeploy) {
+        this.lastDeploy = lastDeploy;
     }
 }

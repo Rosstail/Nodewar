@@ -69,6 +69,13 @@ commands:
     create:
       desc: "Create a nodewar team"
       result: "Team created"
+    deploy:
+      desc: "Deploy yourself on one of your team territories"
+      result-territory: "Teleport to territory."
+      result-region: "Teleport to region."
+      result-failure-timer: "Cannot deploy until"
+      result-failure-territory: "You cannot deploy to this territory."
+      result-failure-region: "You cannot deploy to this region."
     join:
       desc: "Join an existing nodewar team"
       result: "Joined team"

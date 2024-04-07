@@ -54,6 +54,7 @@ public class SqlStorageRequest implements StorageRequest {
                 " uuid varchar(40) UNIQUE NOT NULL," +
                 " username varchar(40) UNIQUE NOT NULL," +
                 " is_team_open BOOLEAN NOT NULL DEFAULT TRUE," +
+                " last_deploy timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
 
         executeSQL(query);
@@ -212,6 +213,7 @@ public class SqlStorageRequest implements StorageRequest {
                 PlayerModel model = new PlayerModel(uuid, result.getString("username"));
                 model.setId(result.getInt("id"));
                 model.setTeamOpen(result.getBoolean("is_team_open"));
+                model.setLastDeploy(result.getTimestamp("last_deploy").getTime());
                 model.setLastUpdate(result.getTimestamp("last_update").getTime());
                 return model;
             }
@@ -232,6 +234,7 @@ public class SqlStorageRequest implements StorageRequest {
                 String username = PlayerDataManager.getPlayerNameFromUUID(uuid);
                 PlayerModel model = new PlayerModel(uuid, username);
                 model.setTeamOpen(result.getBoolean("is_team_open"));
+                model.setLastDeploy(result.getTimestamp("last_deploy").getTime());
                 model.setLastUpdate(result.getTimestamp("last_update").getTime());
                 modelSet.add(model);
             }
@@ -474,9 +477,9 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public void updatePlayerModel(PlayerModel model) {
-        String query = "UPDATE " + playerTableName + " SET username = ?, last_update = CURRENT_TIMESTAMP, is_team_open = ? WHERE uuid = ?";
+        String query = "UPDATE " + playerTableName + " SET username = ?, last_update = CURRENT_TIMESTAMP, is_team_open = ?, last_deploy = ? WHERE uuid = ?";
         try {
-            executeSQLUpdate(query, model.getUsername(), model.isTeamOpen(), model.getUuid());
+            executeSQLUpdate(query, model.getUsername(), model.isTeamOpen(), new Timestamp(model.getLastDeploy()), model.getUuid());
             model.setLastUpdate(System.currentTimeMillis());
         } catch (SQLException e) {
             e.printStackTrace();

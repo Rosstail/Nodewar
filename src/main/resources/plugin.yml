@@ -35,6 +35,8 @@ permissions:
     default: true
   nodewar.command.team.create:
     default: true
+  nodewar.command.team.deploy:
+    default: true
   nodewar.command.team.join:
     default: true
   nodewar.command.team.leave:
@@ -47,6 +49,7 @@ permissions:
       nodewar.command.team: true
       nodewar.command.team.check: true
       nodewar.command.team.create: true
+      nodewar.command.team.deploy: true
       nodewar.command.team.join: true
       nodewar.command.team.leave: true
       nodewar.command.team.invites.*: true

@@ -38,6 +38,13 @@ public enum LangMessage {
     COMMANDS_TEAM_INVITES_CLOSE_RESULT("commands.team.invites.close.result", false, false),
     COMMANDS_TEAM_CREATE_DESC("commands.team.create.desc", false, false),
     COMMANDS_TEAM_CREATE_RESULT("commands.team.create.result", false, false),
+    COMMANDS_TEAM_DEPLOY_DESC("commands.team.deploy.desc", false, false),
+    COMMANDS_TEAM_DEPLOY_TERRITORY("commands.team.deploy.result-territory", false, false),
+    COMMANDS_TEAM_DEPLOY_REGION("commands.team.deploy.result-region", false, false),
+    COMMANDS_TEAM_DEPLOY_FAILURE_TIMER("commands.team.deploy.result-failure-timer", false, false),
+    COMMANDS_TEAM_DEPLOY_FAILURE_TERRITORY("commands.team.deploy.result-failure-territory", false, false),
+    COMMANDS_TEAM_DEPLOY_FAILURE_REGION("commands.team.deploy.result-failure-region", false, false),
+
     COMMANDS_TEAM_JOIN_DESC("commands.team.join.desc", false, false),
     COMMANDS_TEAM_JOIN_RESULT("commands.team.join.result", false, false),
     COMMANDS_TEAM_LEAVE_DESC("commands.team.leave.desc", false, false),
