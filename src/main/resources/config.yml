@@ -28,6 +28,8 @@ map:
 team:
   default-relation: neutral
   none-color: "#CACACA"
+  deploy-timer: 10
+  deploy-cooldown: 120
 
 bossbar:
   color: # RED, YELLOW, BLUE, GREEN, PINK, PURPLE, WHITE

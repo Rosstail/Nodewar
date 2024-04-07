@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
@@ -85,6 +86,11 @@ public class TeamDeployCommand extends TeamSubCommand {
 
         if (playerNwTeam == null) {
             sender.sendMessage("you are not in a team");
+            return;
+        }
+
+        if (playerData.getLastDeploy() > System.currentTimeMillis() - (ConfigData.getConfigData().team.deployCooldown * 1000L)) {
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DEPLOY_FAILURE_TIMER));
             return;
         }
 
