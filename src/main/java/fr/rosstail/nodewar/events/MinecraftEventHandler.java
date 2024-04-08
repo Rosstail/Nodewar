@@ -82,7 +82,10 @@ public class MinecraftEventHandler implements Listener {
         if (player.hasMetadata("NPC")) {
             return;
         }
-        PlayerDataManager.cancelPlayerDeploy(player);
+
+        if (e.getFrom().getX() != e.getTo().getX() || e.getFrom().getY() != e.getTo().getY() || e.getFrom().getZ() != e.getTo().getZ()) {
+            PlayerDataManager.cancelPlayerDeploy(player);
+        }
         checkPlayerPosition(player, e.getTo());
     }
 

@@ -154,7 +154,7 @@ public class PlayerDataManager {
                 PlayerInitDeployEvent playerInitDeployEvent = entry.getValue();
                 if (playerInitDeployEvent.isCancelled()) {
                     playerInitDeployEventMap.remove(player);
-                    if (playerInitDeployEvent.getStartTime() <= System.currentTimeMillis()) {
+                    if (playerInitDeployEvent.getStartTime() > System.currentTimeMillis()) {
                         player.sendMessage("Deploy cancelled.");
                     }
                 } else {
