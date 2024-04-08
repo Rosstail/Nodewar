@@ -6,6 +6,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
+import fr.rosstail.nodewar.events.playerevents.PlayerInitDeployEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -16,6 +17,7 @@ import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.TerritoryModel;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -89,8 +91,8 @@ public class TeamDeployCommand extends TeamSubCommand {
             return;
         }
 
-        if (playerData.getLastDeploy() > System.currentTimeMillis() - (ConfigData.getConfigData().team.deployCooldown * 1000L)) {
-            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DEPLOY_FAILURE_TIMER));
+        if (playerData.getLastDeploy() > System.currentTimeMillis() - ConfigData.getConfigData().team.deployCooldown) {
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DEPLOY_FAILURE_TIMER).replaceAll("\\[timer]", AdaptMessage.getAdaptMessage().countdownFormatter(Math.abs(System.currentTimeMillis() - ConfigData.getConfigData().team.deployCooldown - playerData.getLastDeploy()))));
             return;
         }
 
@@ -126,8 +128,8 @@ public class TeamDeployCommand extends TeamSubCommand {
             protectedRegion = territory.getProtectedRegionList().get(0);
         }
 
-        playerData.setLastDeploy(System.currentTimeMillis());
-        senderPlayer.teleport(BukkitAdapter.adapt(protectedRegion.getFlag(Flags.TELE_LOC)));
+        PlayerInitDeployEvent playerInitDeployEvent = new PlayerInitDeployEvent(senderPlayer, playerNwTeam, territory, protectedRegion);
+        Bukkit.getPluginManager().callEvent(playerInitDeployEvent);
     }
 
     @Override

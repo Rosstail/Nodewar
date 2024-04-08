@@ -1,11 +1,14 @@
 package fr.rosstail.nodewar.events;
 
+import fr.rosstail.nodewar.events.playerevents.PlayerDeployEvent;
+import fr.rosstail.nodewar.events.playerevents.PlayerInitDeployEvent;
 import fr.rosstail.nodewar.events.territoryevents.*;
+import fr.rosstail.nodewar.player.PlayerData;
+import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
-import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
-import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -72,6 +75,23 @@ public class NodewarEventHandler implements Listener {
         territory.setOwnerTeam(team);
         territory.updateAllBossBar();
         DynmapHandler.getDynmapHandler().resumeRender();
+    }
+
+    @EventHandler
+    public void onPlayerInitDeployEvent(final PlayerInitDeployEvent event) {
+        Player player = event.getPlayer();
+        PlayerDataManager.getPlayerInitDeployEventMap().put(player, event);
+    }
+
+    @EventHandler
+    public void onPlayerDeployEvent(final PlayerDeployEvent event) {
+        Player player = event.getPlayer();
+        Location location = event.getLocation();
+        PlayerData playerData = PlayerDataManager.getPlayerDataFromMap(player);
+
+
+        player.teleport(location);
+        playerData.setLastDeploy(System.currentTimeMillis());
     }
 
 

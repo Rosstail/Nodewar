@@ -59,6 +59,7 @@ public class MinecraftEventHandler implements Listener {
         if (playerNwTeam != null) {
             playerNwTeam.getMemberMap().remove(player);
         }
+        PlayerDataManager.cancelPlayerDeploy(player);
         if (!isClosing) {
             StorageManager.getManager().updatePlayerModel(model, true);
             PlayerDataManager.removePlayerDataFromMap(player);
@@ -71,6 +72,7 @@ public class MinecraftEventHandler implements Listener {
         if (player.hasMetadata("NPC")) {
             return;
         }
+        PlayerDataManager.cancelPlayerDeploy(player);
         checkPlayerPosition(player, player.getLocation());
     }
 
@@ -80,7 +82,7 @@ public class MinecraftEventHandler implements Listener {
         if (player.hasMetadata("NPC")) {
             return;
         }
-
+        PlayerDataManager.cancelPlayerDeploy(player);
         checkPlayerPosition(player, e.getTo());
     }
 
@@ -91,6 +93,7 @@ public class MinecraftEventHandler implements Listener {
             return;
         }
 
+        PlayerDataManager.cancelPlayerDeploy(player);
         checkPlayerPosition(player, e.getTo());
     }
 
@@ -101,6 +104,7 @@ public class MinecraftEventHandler implements Listener {
             return;
         }
 
+        PlayerDataManager.cancelPlayerDeploy(player);
         checkPlayerPosition(player, e.getRespawnLocation());
     }
 
@@ -111,6 +115,7 @@ public class MinecraftEventHandler implements Listener {
             return;
         }
 
+        PlayerDataManager.cancelPlayerDeploy(player);
         checkPlayerPosition(player, player.getLocation());
     }
 

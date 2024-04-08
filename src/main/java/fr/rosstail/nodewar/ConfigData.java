@@ -105,8 +105,8 @@ public class ConfigData {
             defaultRelation = RelationType.valueOf(relationTypeStr.toUpperCase());
             noneDisplay = config.getString("team.none-display", "None");
             noneColor = config.getString("team.none-color", "#CACACA");
-            deployTimer = config.getLong("team.deploy-timer");
-            deployCooldown = config.getLong("team.deploy-cooldown");
+            deployTimer = config.getLong("team.deploy-timer") * 1000;
+            deployCooldown = config.getLong("team.deploy-cooldown") * 1000;
         }
     }
 

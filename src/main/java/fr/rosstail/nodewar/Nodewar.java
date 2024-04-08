@@ -151,6 +151,7 @@ public class Nodewar extends JavaPlugin implements Listener {
         DynmapHandler dynmapHandler = DynmapHandler.getDynmapHandler();
         dynmapHandler.enable();
         dynmapHandler.resumeRender();
+        PlayerDataManager.startDeployHandler();
     }
 
     private void initDefaultConfigs() {

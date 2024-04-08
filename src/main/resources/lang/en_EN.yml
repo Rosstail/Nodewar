@@ -73,7 +73,7 @@ commands:
       desc: "Deploy yourself on one of your team territories"
       result-territory: "Teleport to territory."
       result-region: "Teleport to region."
-      result-failure-timer: "Cannot deploy until"
+      result-failure-timer: "Cannot deploy until [timer]"
       result-failure-territory: "You cannot deploy to this territory."
       result-failure-region: "You cannot deploy to this region."
     join:
