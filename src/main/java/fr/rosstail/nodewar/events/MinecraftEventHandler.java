@@ -10,11 +10,16 @@ import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleMoveEvent;
+
+import java.util.List;
 
 public class MinecraftEventHandler implements Listener {
 
@@ -87,6 +92,31 @@ public class MinecraftEventHandler implements Listener {
             PlayerDataManager.cancelPlayerDeploy(player);
         }
         checkPlayerPosition(player, e.getTo());
+    }
+
+    @EventHandler
+    public void onVehicleMoveEvent(final VehicleMoveEvent e) {
+        Vehicle vehicle = e.getVehicle();
+        if (!vehicle.getPassengers().isEmpty()) {
+            checkPassengers(e.getFrom(), e.getTo(), vehicle.getPassengers());
+        }
+    }
+
+    private void checkPassengers(Location from, Location to, List<Entity> passengerList) {
+        for (Entity passenger : passengerList) {
+            if (passenger instanceof Player) {
+                Player player = ((Player) passenger).getPlayer();
+                if (!player.hasMetadata("NPC")) {
+                    if (from.getX() != to.getX() || from.getY() != to.getY() || from.getZ() != to.getZ()) {
+                        PlayerDataManager.cancelPlayerDeploy(player);
+                    }
+                    checkPlayerPosition(player, to);
+                }
+            }
+            if (!passenger.getPassengers().isEmpty()) {
+                checkPassengers(from, to, passenger.getPassengers());
+            }
+        }
     }
 
     @EventHandler
