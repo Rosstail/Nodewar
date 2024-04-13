@@ -92,7 +92,7 @@ public class TeamDeployCommand extends TeamSubCommand {
         }
 
         if (playerData.getLastDeploy() > System.currentTimeMillis() - ConfigData.getConfigData().team.deployCooldown) {
-            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DEPLOY_FAILURE_TIMER).replaceAll("\\[timer]", AdaptMessage.getAdaptMessage().countdownFormatter(Math.abs(System.currentTimeMillis() - ConfigData.getConfigData().team.deployCooldown - playerData.getLastDeploy()))));
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DEPLOY_FAILURE_TIMER).replaceAll("\\[timer]", AdaptMessage.getAdaptMessage().countdownFormatter(playerData.getLastDeploy() + ConfigData.getConfigData().team.deployCooldown - System.currentTimeMillis())));
             return;
         }
 

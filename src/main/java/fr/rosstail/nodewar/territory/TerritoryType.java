@@ -1,13 +1,19 @@
-package fr.rosstail.nodewar.territory.type;
+package fr.rosstail.nodewar.territory;
 
 
 import fr.rosstail.nodewar.lang.AdaptMessage;
-import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
+import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
 import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TerritoryType {
 
@@ -30,6 +36,8 @@ public class TerritoryType {
     private ObjectiveModel objectiveModel;
     private TerritoryBossBarModel territoryBossBarModel;
     private AttackRequirementsModel attackRequirementsModel;
+
+    private List<TerritoryCommandsModel> territoryCommandsModelList = new ArrayList<>();
 
     public TerritoryType(ConfigurationSection section) {
         this.name = section.getName();
@@ -58,6 +66,37 @@ public class TerritoryType {
             territoryBossBarModel = new TerritoryBossBarModel(section.getConfigurationSection("bossbar"));
         }
 
+        ConfigurationSection territoryCommandsSection = section.getConfigurationSection("commands");
+
+        if (parentType != null) {
+            List<TerritoryCommandsModel> parentTerritoryCommandsModelList = parentType.territoryCommandsModelList;
+            Set<String> territoryCommandsKeys = new HashSet<>();
+
+            if (territoryCommandsSection != null) {
+                territoryCommandsKeys.addAll(territoryCommandsSection.getKeys(false));
+            }
+            Set<String> newTerritoryCommandsKeys = territoryCommandsKeys.stream().filter(s -> parentTerritoryCommandsModelList.stream().noneMatch(territoryCommandsModel -> territoryCommandsModel.getName().equalsIgnoreCase(s))).collect(Collectors.toSet());
+            Set<String> editTerritoryCommandsKeys = territoryCommandsKeys.stream().filter(s -> parentTerritoryCommandsModelList.stream().anyMatch(territoryCommandsModel -> territoryCommandsModel.getName().equalsIgnoreCase(s))).collect(Collectors.toSet());
+            Set<TerritoryCommandsModel> uneditedTerritoryCommands = parentTerritoryCommandsModelList.stream().filter(territoryCommandsModel -> !territoryCommandsKeys.contains(territoryCommandsModel.getName())).collect(Collectors.toSet());
+
+            newTerritoryCommandsKeys.forEach(s -> {
+                territoryCommandsModelList.add(new TerritoryCommandsModel(territoryCommandsSection.getConfigurationSection(s)));
+            });
+            editTerritoryCommandsKeys.forEach(s -> {
+                territoryCommandsModelList.add(new TerritoryCommandsModel(new TerritoryCommandsModel(territoryCommandsSection.getConfigurationSection(s)), parentTerritoryCommandsModelList.stream().filter(territoryCommandsModel -> territoryCommandsModel.getName().equalsIgnoreCase(s)).findFirst().get()));
+            });
+            uneditedTerritoryCommands.forEach(territoryCommandsModel -> {
+                territoryCommandsModelList.add(territoryCommandsModel);
+            });
+
+        } else {
+            if (territoryCommandsSection != null) {
+                Set<String> territoryCommandsKeys = territoryCommandsSection.getKeys(false);
+                territoryCommandsKeys.forEach(s -> {
+                    territoryCommandsModelList.add(new TerritoryCommandsModel(territoryCommandsSection.getConfigurationSection(s)));
+                });
+            }
+        }
     }
 
     public String getName() {
@@ -126,6 +165,14 @@ public class TerritoryType {
 
     public void setAttackRequirementsModel(AttackRequirementsModel attackRequirementsModel) {
         this.attackRequirementsModel = attackRequirementsModel;
+    }
+
+    public List<TerritoryCommandsModel> getTerritoryCommandsModelList() {
+        return territoryCommandsModelList;
+    }
+
+    public void setRewardModelList(List<TerritoryCommandsModel> territoryCommandsModelList) {
+        this.territoryCommandsModelList = territoryCommandsModelList;
     }
 
     public void printModel() {

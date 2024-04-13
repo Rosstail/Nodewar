@@ -6,12 +6,17 @@ import fr.rosstail.nodewar.team.TeamModel;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public interface StorageRequest {
+    ZoneId serverZoneId = ZoneId.systemDefault();
+
+    long offsetMillis = serverZoneId.getRules().getOffset(Instant.now()).getTotalSeconds() * 1000L;
 
     void setupStorage(String host, short port, String database, String username, String password);
 

@@ -10,10 +10,9 @@ import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.territory.Territory;
-import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.battle.types.BattleControl;
 import fr.rosstail.nodewar.territory.objective.Objective;
-import fr.rosstail.nodewar.territory.objective.reward.Reward;
+import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
 
 import java.util.*;
@@ -34,7 +33,7 @@ public class ObjectiveControl extends Objective {
 
 
         getObjectiveControlModel().getStringRewardModelMap().forEach((s, rewardModel) -> {
-            getStringRewardMap().put(s, new Reward(rewardModel));
+            getStringRewardMap().put(s, new ObjectiveReward(rewardModel));
         });
 
         this.neutralPeriod = Boolean.parseBoolean(this.objectiveControlModel.getNeedNeutralizeStepStr());

@@ -74,6 +74,7 @@ public class NodewarEventHandler implements Listener {
 
         territory.setOwnerTeam(team);
         territory.updateAllBossBar();
+        territory.resetCommandsDelay();
         DynmapHandler.getDynmapHandler().resumeRender();
     }
 

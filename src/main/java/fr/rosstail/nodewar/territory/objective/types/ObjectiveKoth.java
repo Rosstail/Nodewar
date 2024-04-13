@@ -9,13 +9,10 @@ import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
-import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.battle.types.BattleKoth;
-import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
 import fr.rosstail.nodewar.territory.objective.Objective;
-import fr.rosstail.nodewar.territory.objective.reward.Reward;
+import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
-import scala.Int;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -44,7 +41,7 @@ public class ObjectiveKoth extends Objective {
 
 
         getObjectiveKothModel().getStringRewardModelMap().forEach((s, rewardModel) -> {
-            getStringRewardMap().put(s, new Reward(rewardModel));
+            getStringRewardMap().put(s, new ObjectiveReward(rewardModel));
         });
 
         this.timeToReach = Integer.parseInt(this.objectiveKothModel.getTimeToReachStr());

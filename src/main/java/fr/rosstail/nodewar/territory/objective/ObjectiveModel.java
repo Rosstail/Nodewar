@@ -1,6 +1,6 @@
 package fr.rosstail.nodewar.territory.objective;
 
-import fr.rosstail.nodewar.territory.objective.reward.RewardModel;
+import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveRewardModel;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +11,7 @@ public class ObjectiveModel implements Cloneable {
 
     private String typeString;
 
-    private Map<String, RewardModel> stringRewardModelMap = new HashMap<>();
+    private Map<String, ObjectiveRewardModel> stringRewardModelMap = new HashMap<>();
 
     public ObjectiveModel(ConfigurationSection section) {
         if (section != null) {
@@ -20,7 +20,7 @@ public class ObjectiveModel implements Cloneable {
             if (rewardListSection != null) {
                 rewardListSection.getKeys(false).forEach(s -> {
                     ConfigurationSection rewardSection = rewardListSection.getConfigurationSection(s);
-                    stringRewardModelMap.put(s, new RewardModel(rewardSection));
+                    stringRewardModelMap.put(s, new ObjectiveRewardModel(rewardSection));
 
                 });
             }
@@ -46,11 +46,11 @@ public class ObjectiveModel implements Cloneable {
         this.typeString = typeString;
     }
 
-    public Map<String, RewardModel> getStringRewardModelMap() {
+    public Map<String, ObjectiveRewardModel> getStringRewardModelMap() {
         return stringRewardModelMap;
     }
 
-    public void setStringRewardModelMap(Map<String, RewardModel> stringRewardModelMap) {
+    public void setStringRewardModelMap(Map<String, ObjectiveRewardModel> stringRewardModelMap) {
         this.stringRewardModelMap = stringRewardModelMap;
     }
 

@@ -6,9 +6,8 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
-import fr.rosstail.nodewar.territory.objective.reward.Reward;
+import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +16,7 @@ public class Objective {
 
     protected Territory territory;
     protected ObjectiveModel objectiveModel;
-    protected Map<String, Reward> stringRewardMap = new HashMap<>();
+    protected Map<String, ObjectiveReward> stringRewardMap = new HashMap<>();
 
     protected int scheduler;
 
@@ -33,11 +32,11 @@ public class Objective {
         startObjective();
     }
 
-    public Map<String, Reward> getStringRewardMap() {
+    public Map<String, ObjectiveReward> getStringRewardMap() {
         return stringRewardMap;
     }
 
-    public void setStringRewardMap(Map<String, Reward> stringRewardMap) {
+    public void setStringRewardMap(Map<String, ObjectiveReward> stringRewardMap) {
         this.stringRewardMap = stringRewardMap;
     }
 
@@ -97,8 +96,8 @@ public class Objective {
     }
 
     public void handleEndRewards(Battle battle, Map<NwTeam, Integer> teamPositionMap) {
-        getStringRewardMap().forEach((s, reward) -> {
-            reward.handleReward(territory, this, battle, teamPositionMap);
+        getStringRewardMap().forEach((s, objectiveReward) -> {
+            objectiveReward.handleReward(territory, this, battle, teamPositionMap);
         });
     }
 }

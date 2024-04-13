@@ -23,7 +23,8 @@ import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBar;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
-import fr.rosstail.nodewar.territory.type.TerritoryType;
+import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommands;
+import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -60,6 +61,8 @@ public class Territory {
     private final Map<RelationType, BossBar> relationBossBarMap = new HashMap<>();
 
     private NwTeam ownerNwTeam;
+
+    private List<TerritoryCommands> territoryCommandsList = new ArrayList<>();
 
     Territory(ConfigurationSection section) {
         territoryModel = new TerritoryModel();
@@ -113,6 +116,37 @@ public class Territory {
                     ConfigData.getConfigData().bossbar.stringBarColorMap.get(relation.toString().toLowerCase()),
                     territoryBossBar.getBarStyle()
             ));
+        }
+
+        ConfigurationSection territoryCommandsSection = section.getConfigurationSection("commands");
+
+        if (territoryType != null) {
+            List<TerritoryCommandsModel> parentTerritoryCommandsModelList = territoryType.getTerritoryCommandsModelList();
+            Set<String> territoryCommandsKeys = new HashSet<>();
+
+            if (territoryCommandsSection != null) {
+                territoryCommandsKeys.addAll(territoryCommandsSection.getKeys(false));
+            }
+            Set<String> newTerritoryCommandsKeys = territoryCommandsKeys.stream().filter(s -> parentTerritoryCommandsModelList.stream().noneMatch(territoryCommandsModel -> territoryCommandsModel.getName().equalsIgnoreCase(s))).collect(Collectors.toSet());
+            Set<String> editTerritoryCommandsKeys = territoryCommandsKeys.stream().filter(s -> parentTerritoryCommandsModelList.stream().anyMatch(territoryCommandsModel -> territoryCommandsModel.getName().equalsIgnoreCase(s))).collect(Collectors.toSet());
+            Set<TerritoryCommandsModel> uneditedTerritoryCommands = parentTerritoryCommandsModelList.stream().filter(territoryCommandsModel -> !territoryCommandsKeys.contains(territoryCommandsModel.getName())).collect(Collectors.toSet());
+
+            newTerritoryCommandsKeys.forEach(s -> {
+                territoryCommandsList.add(new TerritoryCommands(new TerritoryCommandsModel(territoryCommandsSection.getConfigurationSection(s))));
+            });
+            editTerritoryCommandsKeys.forEach(s -> {
+                territoryCommandsList.add(new TerritoryCommands(new TerritoryCommandsModel(territoryCommandsSection.getConfigurationSection(s)), parentTerritoryCommandsModelList.stream().filter(territoryCommandsModel -> territoryCommandsModel.getName().equalsIgnoreCase(s)).findFirst().get()));
+            });
+            uneditedTerritoryCommands.forEach(territoryCommandsModel -> {
+                territoryCommandsList.add(new TerritoryCommands(territoryCommandsModel));
+            });
+        } else {
+            if (territoryCommandsSection != null) {
+                Set<String> territoryCommandsKeys = territoryCommandsSection.getKeys(false);
+                territoryCommandsKeys.forEach(s -> {
+                    territoryCommandsList.add(new TerritoryCommands(new TerritoryCommandsModel(territoryCommandsSection.getConfigurationSection(s))));
+                });
+            }
         }
     }
 
@@ -267,6 +301,14 @@ public class Territory {
         this.previousBattle = previousBattle;
     }
 
+    public List<TerritoryCommands> getTerritoryCommandList() {
+        return territoryCommandsList;
+    }
+
+    public void setTerritoryCommandList(List<TerritoryCommands> territoryCommandsList) {
+        this.territoryCommandsList = territoryCommandsList;
+    }
+
     public void setupObjective() {
         ObjectiveManager.setUpObjectiveToTerritory(this, objectiveSection, territoryModel.getObjectiveTypeName());
     }
@@ -310,6 +352,12 @@ public class Territory {
         }
 
         return teamPlayerMap;
+    }
+
+    public void resetCommandsDelay() {
+        territoryCommandsList.forEach(territoryCommands -> {
+            territoryCommands.setNextOccurrence(System.currentTimeMillis() + territoryCommands.getTerritoryCommandsModel().getInitialDelay());
+        });
     }
 
     public String adaptMessage(String message) {

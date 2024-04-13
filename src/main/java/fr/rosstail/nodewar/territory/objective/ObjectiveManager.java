@@ -3,7 +3,7 @@ package fr.rosstail.nodewar.territory.objective;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.objective.types.*;
-import fr.rosstail.nodewar.territory.type.TerritoryType;
+import fr.rosstail.nodewar.territory.TerritoryType;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.lang.reflect.Constructor;

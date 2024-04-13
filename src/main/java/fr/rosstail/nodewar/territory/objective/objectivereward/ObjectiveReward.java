@@ -1,4 +1,4 @@
-package fr.rosstail.nodewar.territory.objective.reward;
+package fr.rosstail.nodewar.territory.objective.objectivereward;
 
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
@@ -16,8 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Map;
 
-public class Reward {
-    private RewardModel rewardModel;
+public class ObjectiveReward {
+    private ObjectiveRewardModel objectiveRewardModel;
     private boolean hasPlayerMinimumScore;
     private long playerMinimumScore;
     private boolean hasTeamMinimumScore;
@@ -25,8 +25,8 @@ public class Reward {
 
     private boolean shouldTeamWin;
 
-    public Reward(RewardModel model) {
-        this.rewardModel = model;
+    public ObjectiveReward(ObjectiveRewardModel model) {
+        this.objectiveRewardModel = model;
         this.hasPlayerMinimumScore = model.getMinimumPlayerScoreStr() != null;
         this.playerMinimumScore = model.getMinimumPlayerScoreStr() != null ? Long.parseLong(model.getMinimumPlayerScoreStr()) : 0L;
         this.hasTeamMinimumScore = model.getMinimumTeamScoreStr() != null;
@@ -34,27 +34,27 @@ public class Reward {
         this.shouldTeamWin = Boolean.parseBoolean(model.getShouldTeamWinStr());
     }
 
-    public Reward(RewardModel childModel, @NotNull RewardModel parentModel) {
-        RewardModel clonedParentModel = parentModel.clone();
+    public ObjectiveReward(ObjectiveRewardModel childModel, @NotNull ObjectiveRewardModel parentModel) {
+        ObjectiveRewardModel clonedParentModel = parentModel.clone();
         if (childModel != null) {
-            RewardModel clonedChildModel = childModel.clone();
-            this.rewardModel = new RewardModel(clonedChildModel, clonedParentModel);
+            ObjectiveRewardModel clonedChildModel = childModel.clone();
+            this.objectiveRewardModel = new ObjectiveRewardModel(clonedChildModel, clonedParentModel);
         } else {
-            this.rewardModel = clonedParentModel;
+            this.objectiveRewardModel = clonedParentModel;
         }
-        this.hasPlayerMinimumScore = rewardModel.getMinimumPlayerScoreStr() != null;
-        this.playerMinimumScore = Long.parseLong(rewardModel.getMinimumPlayerScoreStr());
-        this.hasTeamMinimumScore = rewardModel.getMinimumTeamScoreStr() != null;
-        this.teamMinimumScore = Long.parseLong(rewardModel.getMinimumTeamScoreStr());
-        this.shouldTeamWin = Boolean.parseBoolean(rewardModel.getShouldTeamWinStr());
+        this.hasPlayerMinimumScore = objectiveRewardModel.getMinimumPlayerScoreStr() != null;
+        this.playerMinimumScore = Long.parseLong(objectiveRewardModel.getMinimumPlayerScoreStr());
+        this.hasTeamMinimumScore = objectiveRewardModel.getMinimumTeamScoreStr() != null;
+        this.teamMinimumScore = Long.parseLong(objectiveRewardModel.getMinimumTeamScoreStr());
+        this.shouldTeamWin = Boolean.parseBoolean(objectiveRewardModel.getShouldTeamWinStr());
     }
 
-    public RewardModel getRewardModel() {
-        return rewardModel;
+    public ObjectiveRewardModel getRewardModel() {
+        return objectiveRewardModel;
     }
 
-    public void setRewardModel(RewardModel rewardModel) {
-        this.rewardModel = rewardModel;
+    public void setRewardModel(ObjectiveRewardModel objectiveRewardModel) {
+        this.objectiveRewardModel = objectiveRewardModel;
     }
 
 

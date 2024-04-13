@@ -9,13 +9,11 @@ import com.sk89q.worldguard.protection.regions.RegionQuery;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.regionevents.RegionEnteredEvent;
 import fr.rosstail.nodewar.events.regionevents.RegionLeftEvent;
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
-import fr.rosstail.nodewar.territory.type.TerritoryType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -37,6 +35,8 @@ public class TerritoryManager {
     private Map<String, TerritoryType> territoryTypeMap = new HashMap<>();
     private TerritoryType defaultTerritoryType;
     private Map<String, Territory> territoryMap = new HashMap<>();
+
+    private int rewardScheduler;
 
     public TerritoryManager(Nodewar plugin) {
         this.plugin = plugin;
@@ -200,6 +200,20 @@ public class TerritoryManager {
             Bukkit.getPluginManager().callEvent(enteredEvent);
         });
 
+    }
+
+    private void handleCommands() {
+        territoryMap.forEach((s, territory) -> {
+            territory.getTerritoryCommandList().forEach(territoryCommands -> {
+                if (territoryCommands.getNextOccurrence() <= System.currentTimeMillis()) {
+                    territoryCommands.handleCommand(territory);
+                }
+            });
+        });
+    }
+
+    public void setupTerritoriesRewardScheduler() {
+        this.rewardScheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), this::handleCommands, 0L, 20L);
     }
 
     public void stopAllObjective() {

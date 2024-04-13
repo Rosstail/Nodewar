@@ -1,11 +1,11 @@
-package fr.rosstail.nodewar.territory.objective.reward;
+package fr.rosstail.nodewar.territory.objective.objectivereward;
 
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RewardModel implements Cloneable {
+public class ObjectiveRewardModel implements Cloneable {
 
     private String name;
     private String targetName; // Server (default) / Teams / Players
@@ -19,7 +19,7 @@ public class RewardModel implements Cloneable {
     private List<Integer> teamPositions = new ArrayList<>(); // 0 (Any), 1, 2 etc...
     private List<String> commandList = new ArrayList<>();
 
-    public RewardModel(ConfigurationSection section) {
+    public ObjectiveRewardModel(ConfigurationSection section) {
         if (section != null) {
             this.name = section.getName();
             this.targetName = section.getString("target");
@@ -33,23 +33,23 @@ public class RewardModel implements Cloneable {
         }
     }
 
-    public RewardModel(RewardModel childRewardModel, RewardModel parentRewardModel) {
-        RewardModel cloneChildRewardModel = childRewardModel.clone();
-        RewardModel cloneParentRewardModel = parentRewardModel.clone();
+    public ObjectiveRewardModel(ObjectiveRewardModel childObjectiveRewardModel, ObjectiveRewardModel parentObjectiveRewardModel) {
+        ObjectiveRewardModel cloneChildObjectiveRewardModel = childObjectiveRewardModel.clone();
+        ObjectiveRewardModel cloneParentObjectiveRewardModel = parentObjectiveRewardModel.clone();
 
-        this.name = childRewardModel.getName();
-        this.targetName = cloneChildRewardModel.getTargetName() != null ? cloneChildRewardModel.getTargetName() : cloneParentRewardModel.getTargetName();
-        this.minimumTeamScoreStr = cloneChildRewardModel.getMinimumTeamScoreStr() != null ? cloneChildRewardModel.getMinimumTeamScoreStr() : cloneParentRewardModel.getMinimumTeamScoreStr();
-        this.minimumTeamScoreStr = cloneChildRewardModel.getMinimumPlayerScoreStr() != null ? cloneChildRewardModel.getMinimumPlayerScoreStr() : cloneParentRewardModel.getMinimumPlayerScoreStr();
-        this.playerTeamRole = cloneChildRewardModel.getTeamRole() != null ? cloneChildRewardModel.getTeamRole() : cloneParentRewardModel.getTeamRole();
-        this.shouldTeamWinStr = cloneChildRewardModel.getShouldTeamWinStr() != null ? cloneChildRewardModel.getShouldTeamWinStr() : cloneParentRewardModel.getShouldTeamWinStr();
+        this.name = childObjectiveRewardModel.getName();
+        this.targetName = cloneChildObjectiveRewardModel.getTargetName() != null ? cloneChildObjectiveRewardModel.getTargetName() : cloneParentObjectiveRewardModel.getTargetName();
+        this.minimumTeamScoreStr = cloneChildObjectiveRewardModel.getMinimumTeamScoreStr() != null ? cloneChildObjectiveRewardModel.getMinimumTeamScoreStr() : cloneParentObjectiveRewardModel.getMinimumTeamScoreStr();
+        this.minimumTeamScoreStr = cloneChildObjectiveRewardModel.getMinimumPlayerScoreStr() != null ? cloneChildObjectiveRewardModel.getMinimumPlayerScoreStr() : cloneParentObjectiveRewardModel.getMinimumPlayerScoreStr();
+        this.playerTeamRole = cloneChildObjectiveRewardModel.getTeamRole() != null ? cloneChildObjectiveRewardModel.getTeamRole() : cloneParentObjectiveRewardModel.getTeamRole();
+        this.shouldTeamWinStr = cloneChildObjectiveRewardModel.getShouldTeamWinStr() != null ? cloneChildObjectiveRewardModel.getShouldTeamWinStr() : cloneParentObjectiveRewardModel.getShouldTeamWinStr();
 
-        if (!cloneChildRewardModel.getTeamPositions().isEmpty() || !cloneParentRewardModel.getTeamPositions().isEmpty()) {
-            teamPositions.addAll(!cloneChildRewardModel.getTeamPositions().isEmpty() ? cloneChildRewardModel.getTeamPositions() : cloneParentRewardModel.getTeamPositions());
+        if (!cloneChildObjectiveRewardModel.getTeamPositions().isEmpty() || !cloneParentObjectiveRewardModel.getTeamPositions().isEmpty()) {
+            teamPositions.addAll(!cloneChildObjectiveRewardModel.getTeamPositions().isEmpty() ? cloneChildObjectiveRewardModel.getTeamPositions() : cloneParentObjectiveRewardModel.getTeamPositions());
         }
 
-        if (!cloneChildRewardModel.getCommandList().isEmpty() || !cloneParentRewardModel.getCommandList().isEmpty()) {
-            commandList.addAll(!cloneChildRewardModel.getCommandList().isEmpty() ? cloneChildRewardModel.getCommandList() : cloneParentRewardModel.getCommandList());
+        if (!cloneChildObjectiveRewardModel.getCommandList().isEmpty() || !cloneParentObjectiveRewardModel.getCommandList().isEmpty()) {
+            commandList.addAll(!cloneChildObjectiveRewardModel.getCommandList().isEmpty() ? cloneChildObjectiveRewardModel.getCommandList() : cloneParentObjectiveRewardModel.getCommandList());
         }
     }
 
@@ -126,9 +126,9 @@ public class RewardModel implements Cloneable {
     }
 
     @Override
-    public RewardModel clone() {
+    public ObjectiveRewardModel clone() {
         try {
-            RewardModel clone = (RewardModel) super.clone();
+            ObjectiveRewardModel clone = (ObjectiveRewardModel) super.clone();
             clone.setName(clone.getName());
             clone.setTargetName(clone.getTargetName());
             clone.setMinimumTeamScoreStr(getMinimumTeamScoreStr());
