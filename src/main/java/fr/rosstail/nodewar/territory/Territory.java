@@ -78,6 +78,7 @@ public class Territory {
         Set everything into model, including type
          */
         territoryModel.setDisplay(section.getString("display", territoryModel.getName()));
+        territoryModel.setDescription(section.getString("description", territoryType.getDescription()));
         territoryModel.getRegionStringList().addAll(section.getStringList("regions"));
         territoryModel.getSubterritoryList().addAll(section.getStringList("subterritories"));
 

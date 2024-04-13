@@ -99,7 +99,6 @@ public class TerritoryCommandsModel implements Cloneable {
     public TerritoryCommandsModel clone() {
         try {
             TerritoryCommandsModel clone = (TerritoryCommandsModel) super.clone();
-            System.out.println("CLONE " + getName());
             clone.setName(getName());
             clone.setTargetName(getTargetName());
             clone.setCommandList(new ArrayList<>(getCommandList()));
