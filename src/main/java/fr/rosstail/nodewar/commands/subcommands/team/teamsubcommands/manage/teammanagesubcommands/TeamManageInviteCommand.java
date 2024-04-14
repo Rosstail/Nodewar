@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.TeamManageSubCommand;
@@ -94,6 +95,10 @@ public class TeamManageInviteCommand extends TeamManageSubCommand {
             return;
         }
 
+        if (playerNwTeam.getModel().getTeamMemberModelMap().size() >= ConfigData.getConfigData().team.maximumMembers) {
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_FULL));
+            return;
+        }
 
         if (TeamDataManager.getTeamDataManager().invite(targetPlayer, playerNwTeam)) {
             senderPlayer.sendMessage("Invitation sent");

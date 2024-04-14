@@ -31,13 +31,14 @@ commands:
     already-exist: "Team already exist"
     does-not-exist: "Team does not exist"
     part-of-no-team: "You are part of no team"
+    team-full: "This team is full !"
     check:
       desc: "Check team's data"
       result:
         - "[team_display]&r &8:&r"
         - "* Color &8:&r {[team_color]}[team_color]&r"
         - "* Your rank &8:&r [team_player_rank]"
-        - "* Members &8:&r [team_online_member] - [team_open]&r"
+        - "* Members &8:&r [team_online_member]/[team_maximum_members] - [team_open]&r"
         - "[team_result_member_line]"
         - "* Relations &8:&r (default &8:&r [team_relation_default])"
         - "[team_result_relation_line]"
@@ -121,10 +122,11 @@ commands:
           result: "Team closed to relation invites"
         edit:
           desc: "Set relation with selected team"
-          result-invite: "Relation invite sent successfully."
-          result-weight: "Relation set."
-          result-ignore: "Same relation. No change."
-          result-already: "Already sent the invitation"
+          result-sent: "Relation invite sent successfully."
+          result-effective: "Relation set."
+          result-unchanged: "Same relation. No change."
+          result-already-sent: "Already sent the invitation"
+          result-blocked: "This team does not receive invites of relation improvements"
         invites:
           desc: "Check list of teams relations invites."
           result-header: "&bInvites &8:"

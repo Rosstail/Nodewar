@@ -107,11 +107,11 @@ public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCo
         if (currentRelation == null) { // implicit default relation
             if (newRelationType.getWeight() > defaultRelationWeight) {
                 createNewRelation(baseTeam, targetTeam, newRelationType);
-                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_EFFECTIVE));
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_EDIT_RESULT_EFFECTIVE));
             } else if (newRelationType.getWeight() < defaultRelationWeight) {
                 inviteOrAccept(sender, baseTeam, targetTeam, newRelationType, teamRelationInvite);
             } else {
-                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_UNCHANGED));
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_EDIT_RESULT_UNCHANGED));
             }
         } else { // explicit relation
             if (newRelationType.getWeight() != currentRelation.getRelationType().getWeight()) {
@@ -121,12 +121,12 @@ public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCo
                     targetTeam.getRelations().remove(baseTeam.getModel().getName());
 
                     createNewRelation(baseTeam, targetTeam, newRelationType);
-                    sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_EFFECTIVE));
+                    sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_EDIT_RESULT_EFFECTIVE));
                 } else {
                     inviteOrAccept(sender, baseTeam, targetTeam, newRelationType, teamRelationInvite);
                 }
             } else {
-                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_UNCHANGED));
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_EDIT_RESULT_UNCHANGED));
             }
         }
     }
@@ -140,12 +140,12 @@ public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCo
             }
         } else {
             if (!targetTeam.getModel().isOpenRelation()) {
-                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_BLOCKED));
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_EDIT_RESULT_BLOCKED));
                 return;
             }
             teamRelationInvite = new NwTeamRelationInvite(senderTeam, targetTeam, newRelationType);
             TeamRelationManager.getRelationInvitesHashSet().add(teamRelationInvite);
-            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_SENT));
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_EDIT_RESULT_SENT));
         }
     }
 

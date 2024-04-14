@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
@@ -86,7 +87,12 @@ public class TeamJoinCommand extends TeamSubCommand {
         nwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(teamName);
 
         if (nwTeam == null) {
-            sender.sendMessage("TeamJoinCommand - This team does not exist");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE));
+            return;
+        }
+
+        if (nwTeam.getModel().getTeamMemberModelMap().size() >= ConfigData.getConfigData().team.maximumMembers) {
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_FULL));
             return;
         }
 

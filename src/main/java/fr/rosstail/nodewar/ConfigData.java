@@ -95,6 +95,7 @@ public class ConfigData {
         public final RelationType defaultRelation;
         public final String noneDisplay;
         public final String noneColor;
+        public final int maximumMembers;
         public final long deployTimer;
         public final long deployCooldown;
 
@@ -105,6 +106,7 @@ public class ConfigData {
             defaultRelation = RelationType.valueOf(relationTypeStr.toUpperCase());
             noneDisplay = config.getString("team.none-display", "None");
             noneColor = config.getString("team.none-color", "#CACACA");
+            maximumMembers = config.getInt("team.maximum-members", 50);
             deployTimer = config.getLong("team.deploy-timer") * 1000;
             deployCooldown = config.getLong("team.deploy-cooldown") * 1000;
         }

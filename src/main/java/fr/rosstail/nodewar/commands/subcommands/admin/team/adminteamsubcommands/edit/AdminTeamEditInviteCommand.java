@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.admin.team.AdminTeamSubCommand;
 import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.AdminTeamEditSubCommand;
@@ -71,6 +72,11 @@ public class AdminTeamEditInviteCommand extends AdminTeamEditSubCommand {
             return;
         }
 
+        if (targetTeam.getModel().getTeamMemberModelMap().size() >= ConfigData.getConfigData().team.maximumMembers) {
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_FULL));
+            return;
+        }
+
         targetPlayer = Bukkit.getPlayer(targetPlayerName);
 
         if (targetPlayer == null) {
@@ -79,6 +85,7 @@ public class AdminTeamEditInviteCommand extends AdminTeamEditSubCommand {
         }
 
         targetPlayerData = PlayerDataManager.getPlayerDataFromMap(targetPlayer);
+
 
         if (targetPlayerData.getTeam() != null) {
             sender.sendMessage("player already in a team");
