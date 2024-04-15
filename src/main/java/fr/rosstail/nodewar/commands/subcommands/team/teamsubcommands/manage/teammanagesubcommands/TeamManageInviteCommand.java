@@ -84,14 +84,14 @@ public class TeamManageInviteCommand extends TeamManageSubCommand {
         targetPlayer = Bukkit.getPlayer(args[3]);
 
         if (targetPlayer == null) {
-            senderPlayer.sendMessage("Player does not exist or is disconnected");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_DOES_NOT_EXIST).replaceAll("\\[value]", args[3]));
             return;
         }
 
         targetPlayerData = PlayerDataManager.getPlayerDataFromMap(targetPlayer);
 
         if (targetPlayerData.getTeam() != null) {
-            sender.sendMessage("player already in a team");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_ALREADY_IN_TEAM));
             return;
         }
 

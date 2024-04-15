@@ -69,7 +69,7 @@ public class TeamJoinCommand extends TeamSubCommand {
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Must be sent by player");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_BY_PLAYER_ONLY));
             return;
         }
         senderPlayer = ((Player) sender).getPlayer();

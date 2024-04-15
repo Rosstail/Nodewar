@@ -89,7 +89,7 @@ public class AdminTeamEditMemberTransferCommand extends AdminTeamEditMemberSubCo
 
 
         if (targetTeamMemberModel == null) {
-            sender.sendMessage("the player is not in the team.");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM));
             return;
         }
 

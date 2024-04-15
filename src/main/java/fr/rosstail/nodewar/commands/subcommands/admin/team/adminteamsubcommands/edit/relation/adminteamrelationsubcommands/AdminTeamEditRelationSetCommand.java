@@ -71,23 +71,23 @@ public class AdminTeamEditRelationSetCommand extends AdminTeamEditRelationSubCom
         targetTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
         if (baseTeam == null) {
-            sender.sendMessage("base team does not exist");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", baseTeamName));
             return;
         }
 
         if (targetTeam == null) {
-            sender.sendMessage("target team does not exist");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", targetTeamName));
             return;
         }
 
         try {
             relationType = RelationType.valueOf(args[7].toUpperCase());
             if (!RelationType.getSelectableRelations().contains(relationType)) {
-                sender.sendMessage("this relation type is not selectable: " + args[7].toUpperCase());
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", args[7].toUpperCase()));
                 return;
             }
         } catch (IllegalArgumentException e) {
-            sender.sendMessage("this relation type does not exist: " + args[7].toUpperCase());
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", args[7].toUpperCase()));
             return;
         }
 

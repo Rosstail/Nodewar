@@ -96,7 +96,7 @@ public class CommandManager implements CommandExecutor, TabExecutor {
     private static void permissionDenied(CommandSender sender, SubCommand command) {
         AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
         String message = LangManager.getMessage(LangMessage.COMMANDS_PERMISSION_DENIED);
-        message = adaptMessage.adaptPlayerMessage((Player) sender, message, PlayerType.PLAYER.getText());
+        message = adaptMessage.adaptPlayerMessage((Player) sender, message);
         message = adaptMessage.adaptMessage(message);
         message = message.replaceAll("\\[command]", command.getName());
         message = message.replaceAll("\\[permission]", command.getPermission());
@@ -117,66 +117,6 @@ public class CommandManager implements CommandExecutor, TabExecutor {
         if (e instanceof NumberFormatException) {
             sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE)));
             e.printStackTrace();
-        }
-    }
-
-    public static void commandsLauncher(Player player, List<String> commands) {
-        if (commands != null) {
-            commands.forEach(s -> {
-                placeCommands(player, s);
-            });
-        }
-    }
-
-    public static void commandsLauncher(Player attacker, Player victim, List<String> commands) {
-        if (commands != null) {
-            commands.forEach(s -> {
-                placeCommands(attacker, victim, s);
-            });
-        }
-    }
-
-    private static void placeCommands(Player player, String command) {
-        command = AdaptMessage.getAdaptMessage().adaptPlayerMessage(player, command, PlayerType.PLAYER.getText());
-
-        CommandSender senderOrTarget = Bukkit.getConsoleSender();
-
-        String regex = PlayerType.PLAYER.getText();
-        if (command.startsWith(regex)) {
-            command = command.replaceFirst(regex, "").trim();
-            senderOrTarget = player;
-        }
-        if (command.startsWith("[msg")) {
-            if (senderOrTarget instanceof Player) {
-                AdaptMessage.getAdaptMessage().sendToPlayer(player, command);
-            } else {
-                senderOrTarget.sendMessage(command.replaceAll("\\[msg(.+)?]", "").trim());
-            }
-        } else {
-            Bukkit.dispatchCommand(senderOrTarget, command);
-        }
-    }
-
-    private static void placeCommands(Player attacker, Player victim, String command) {
-        command = AdaptMessage.getAdaptMessage().adaptPvpMessage(attacker, victim, command);
-
-        CommandSender senderOrTarget = Bukkit.getConsoleSender();
-        if (command.startsWith(PlayerType.VICTIM.getText())) {
-            command = command.replaceFirst(PlayerType.VICTIM.getText(), "").trim();
-            senderOrTarget = victim;
-        } else if (command.startsWith(PlayerType.ATTACKER.getText())) {
-            command = command.replaceFirst(PlayerType.ATTACKER.getText(), "").trim();
-            senderOrTarget = attacker;
-        }
-
-        if (command.startsWith("[msg")) {
-            if (senderOrTarget instanceof Player) {
-                AdaptMessage.getAdaptMessage().sendToPlayer((Player) senderOrTarget, command);
-            } else {
-                senderOrTarget.sendMessage(command);
-            }
-        } else {
-            Bukkit.dispatchCommand(senderOrTarget, command);
         }
     }
 

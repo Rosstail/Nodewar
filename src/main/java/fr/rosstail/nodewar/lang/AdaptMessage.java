@@ -3,6 +3,8 @@ package fr.rosstail.nodewar.lang;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.apis.ExpressionCalculator;
+import fr.rosstail.nodewar.player.PlayerData;
+import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
@@ -37,6 +39,7 @@ public class AdaptMessage {
     private static final Pattern colorPattern = Pattern.compile("\\{([A-Za-z_]+)}");
     private static final Pattern calculatePattern = Pattern.compile("\\[eval(\\w+)?_([^%\\s]*)]");
     private static final Pattern territoryPattern = Pattern.compile("(\\[territory)_(\\d+)(_\\w+])");
+    private static final Pattern playerTeamPattern = Pattern.compile("(\\[player_team)(_\\w+])");
     private static final Pattern teamPattern = Pattern.compile("(\\[team)_(\\d+)(_\\w+])");
 
     public enum prints {
@@ -84,31 +87,31 @@ public class AdaptMessage {
 
     private void sendActionBar(Player player, String message) {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(
-                adaptMessage(adaptPlayerMessage(player, message, PlayerType.PLAYER.getText()))
+                adaptMessage(adaptPlayerMessage(player, message))
         ));
     }
 
     private void sendTitle(Player player, String title, String subTitle) {
         ConfigData.ConfigLocale configLocale = ConfigData.getConfigData().locale;
-        player.sendTitle(adaptPlayerMessage(player, title, PlayerType.PLAYER.getText()),
-                adaptPlayerMessage(player, subTitle, PlayerType.PLAYER.getText()),
+        player.sendTitle(adaptPlayerMessage(player, title),
+                adaptPlayerMessage(player, subTitle),
                 configLocale.titleFadeIn, configLocale.titleStay, configLocale.titleFadeOut);
     }
 
-    public String adaptPvpMessage(Player attacker, Player victim, String message) {
-        message = adaptPlayerMessage(attacker, message, PlayerType.ATTACKER.getText());
-        message = adaptPlayerMessage(victim, message, PlayerType.VICTIM.getText());
+    public String adaptPlayerMessage(Player player, String message) {
+        message = message.replaceAll("\\[player]", player.getName());
+        NwTeam playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
 
-        message = setPlaceholderMessage(attacker, message);
-        message = setPlaceholderMessage(victim, message);
-        return ChatColor.translateAlternateColorCodes('&', adaptMessage(message));
-    }
+        Matcher playerTeamMatcher = playerTeamPattern.matcher(message);
 
-    public String adaptPlayerMessage(Player player, String message, String playerType) {
-        message = message.replaceAll("\\[" + playerType + "]", player.getName());
-        if (Objects.equals(playerType, PlayerType.PLAYER.getText())) {
-            message = ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(player, message));
+        while (playerTeamMatcher.find()) {
+            message = message.replace(playerTeamMatcher.group(), "[team" + playerTeamMatcher.group(2));
+            if (playerTeam != null) {
+                message = adaptTeamMessage(message, playerTeam);
+            }
         }
+
+        message = ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(player, message));
         return adaptMessage(message);
     }
 
@@ -293,7 +296,7 @@ public class AdaptMessage {
     public String[] listMessage(Player player, List<String> messages) {
         ArrayList<String> newMessages = new ArrayList<>();
         messages.forEach(s -> {
-            newMessages.add(adaptMessage(adaptPlayerMessage(player, s, PlayerType.PLAYER.getText())));
+            newMessages.add(adaptMessage(adaptPlayerMessage(player, s)));
         });
         return newMessages.toArray(new String[0]);
     }

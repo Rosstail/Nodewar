@@ -79,11 +79,11 @@ public class TeamManageRelationEditCommand extends TeamManageRelationSubCommand 
         try {
             relationType = RelationType.valueOf(args[4].toUpperCase());
             if (!RelationType.getSelectableRelations().contains(relationType)) {
-                sender.sendMessage("this relation type is not selectable: " + args[4].toUpperCase());
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", args[4].toUpperCase()));
                 return;
             }
         } catch (IllegalArgumentException e) {
-            sender.sendMessage("this relation type does not exist: " + args[4].toUpperCase());
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", args[4].toUpperCase()));
             return;
         }
 
@@ -99,7 +99,7 @@ public class TeamManageRelationEditCommand extends TeamManageRelationSubCommand 
             return;
         }
         if (targetNwTeam == null) {
-            sender.sendMessage("This team does not exist " + targetTeamName);
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", targetTeamName));
             return;
         }
         if (targetNwTeam.equals(playerNwTeam)) {

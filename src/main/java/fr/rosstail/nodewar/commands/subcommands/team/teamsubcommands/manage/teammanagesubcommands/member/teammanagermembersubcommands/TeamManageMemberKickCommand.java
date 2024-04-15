@@ -84,13 +84,13 @@ public class TeamManageMemberKickCommand extends TeamManageMemberSubCommand {
             targetName = args[4];
 
             if (player.getName().equals(targetName)) {
-                sender.sendMessage("you can't kick yourself !");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_CANNOT_TARGET_SELF));
                 return;
             }
 
             if (playerNwTeam.getModel().getTeamMemberModelMap().values().stream()
                     .noneMatch(teamMemberModel -> teamMemberModel.getUsername().equalsIgnoreCase(targetName))) {
-                sender.sendMessage("the player is not in your team.");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM));
                 return;
             }
 

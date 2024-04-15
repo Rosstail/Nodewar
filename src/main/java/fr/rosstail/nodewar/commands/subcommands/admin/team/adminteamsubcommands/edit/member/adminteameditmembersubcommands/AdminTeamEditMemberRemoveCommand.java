@@ -77,7 +77,7 @@ public class AdminTeamEditMemberRemoveCommand extends AdminTeamEditMemberSubComm
 
         if (targetTeam.getModel().getTeamMemberModelMap().values().stream()
                 .noneMatch(teamMemberModel -> teamMemberModel.getUsername().equalsIgnoreCase(targetTeamName))) {
-            sender.sendMessage("the player is not in your team.");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM));
             return;
         }
 

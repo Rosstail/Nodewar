@@ -20,9 +20,11 @@ commands:
   insert-player-name: "[prefix]Insert player target name."
   wrong-command: "[prefix]Wrong command."
   wrong-value: "[prefix]Wrong value."
-  too-few-arguments: "Too few arguments"
-  player-does-not-exist: "[prefix][player] does not exist."
+  too-few-arguments: "[prefix]Too few arguments"
+  player-does-not-exist: "[prefix][player] does not exist or is disconnected."
   player-no-data: "[prefix]No nodewar data for [player]."
+  player-not-in-team: "[prefix][player] is not in the team."
+  player-already-in-team: "[prefix][player] is already in the team."
   help:
     header: "&b====== &cNODEWAR HELP &b======"
     line: "&a► &6/[syntax] &8: &r[desc]"
@@ -77,6 +79,7 @@ commands:
       result-failure-timer: "Cannot deploy until [timer]"
       result-failure-territory: "You cannot deploy to this territory."
       result-failure-region: "You cannot deploy to this region."
+      cancelled: "Deployment cancelled."
     join:
       desc: "Join an existing nodewar team"
       result: "Joined team"
@@ -100,6 +103,7 @@ commands:
         result-blocked: "This team cannot receive team invitations."
       member:
         desc: "Manage players from your team"
+        cannot-target-self: "You cannot target yourself !"
         promote:
           desc: "Promote a team member"
           result: "Player [player] promoted to [team_member_rank]."
@@ -251,6 +255,8 @@ commands:
         - "  * Status &8:&r [territory_battle_status]"
         - "  * Winner &8:&r {[territory_battle_winner_color]}[territory_battle_winner]"
         - "  * Advantage &8:&r {[territory_battle_advantage_color]}[territory_battle_advantage]"
+      result-not-on-territory: "You are not standing on a territory"
+      result-on-multiple-territory: "You are standing on multiple territories: please select one of them: [territories]"
   reload:
     desc: "Reload current Nodewar config."
     result: "[prefix]Reloaded config."

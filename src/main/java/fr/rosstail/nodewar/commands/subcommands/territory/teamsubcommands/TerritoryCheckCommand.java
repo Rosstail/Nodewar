@@ -65,7 +65,7 @@ public class TerritoryCheckCommand extends TerritorySubCommand {
                 message = territory.getModel().getDescription();
                 sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory));
             } else {
-                message = "this territory does not exist";
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", args[2]));
                 sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message));
             }
         } else {
@@ -73,11 +73,11 @@ public class TerritoryCheckCommand extends TerritorySubCommand {
             List<Territory> territoryList = TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory1 -> (territory1.getPlayers().contains(senderPlayer))).collect(Collectors.toList());
 
             if (territoryList.isEmpty()) {
-                sender.sendMessage("You are not on a territory");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_CHECK_RESULT_NOT_ON_TERRITORY));
                 return;
             } else if (territoryList.size() > 1) {
                 String territoryNames = territoryList.stream().map(territory1 -> territory1.getModel().getName()).collect(Collectors.joining(", "));
-                sender.sendMessage("You stand on multiple territories. Please select one of them: " + territoryNames);
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_CHECK_RESULT_ON_MULTIPLE_TERRITORY).replaceAll("\\[territories]", territoryNames));
                 return;
             }
 

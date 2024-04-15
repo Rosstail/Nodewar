@@ -82,7 +82,7 @@ public class AdminTeamEditMemberPromoteCommand extends AdminTeamEditMemberSubCom
                 .filter(teamMemberModel -> teamMemberModel.getUsername().equalsIgnoreCase(targetPlayerName)).findFirst().orElse(null);
 
         if (targetTeamMemberModel == null) {
-            sender.sendMessage("the player is not in the team.");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM));
             return;
         }
 

@@ -88,7 +88,7 @@ public class AdminTeamEditInviteCommand extends AdminTeamEditSubCommand {
 
 
         if (targetPlayerData.getTeam() != null) {
-            sender.sendMessage("player already in a team");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_ALREADY_IN_TEAM));
             return;
         }
 

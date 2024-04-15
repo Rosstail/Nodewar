@@ -61,7 +61,7 @@ public class AdminTerritoryTeamSetCommand extends AdminTerritoryTeamSubCommand {
         team = TeamDataManager.getTeamDataManager().getStringTeamMap().get(args[5]);
 
         if (team == null) {
-            message = "this team does not exist";
+            message = LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", args[5]);
             sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message));
             return;
         }

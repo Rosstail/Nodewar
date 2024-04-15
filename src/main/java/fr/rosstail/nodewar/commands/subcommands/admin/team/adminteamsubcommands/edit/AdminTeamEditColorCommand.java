@@ -89,7 +89,7 @@ public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
             try {
                 ChatColor.valueOf(colorValue);
             } catch (IllegalArgumentException e) {
-                sender.sendMessage("this color does not exist.");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", colorValue));
                 return;
             }
         }

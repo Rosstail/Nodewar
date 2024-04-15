@@ -11,6 +11,8 @@ public enum LangMessage {
     COMMANDS_WRONG_COMMAND("commands.wrong-command", false, false),
     COMMANDS_PLAYER_DOES_NOT_EXIST("commands.player-does-not-exist", false, false),
     COMMANDS_PLAYER_NO_DATA("commands.player-no-data", false, false),
+    COMMANDS_PLAYER_NOT_IN_TEAM("commands.player-not-in-team", false, false),
+    COMMANDS_PLAYER_ALREADY_IN_TEAM("commands.player-already-in-team", false, false),
 
     COMMANDS_HELP_HEADER("commands.help.header", false, false),
 
@@ -45,6 +47,7 @@ public enum LangMessage {
     COMMANDS_TEAM_DEPLOY_FAILURE_TIMER("commands.team.deploy.result-failure-timer", false, false),
     COMMANDS_TEAM_DEPLOY_FAILURE_TERRITORY("commands.team.deploy.result-failure-territory", false, false),
     COMMANDS_TEAM_DEPLOY_FAILURE_REGION("commands.team.deploy.result-failure-region", false, false),
+    COMMANDS_TEAM_DEPLOY_CANCELLED("commands.team.deploy.cancelled", false, false),
 
     COMMANDS_TEAM_JOIN_DESC("commands.team.join.desc", false, false),
     COMMANDS_TEAM_JOIN_RESULT("commands.team.join.result", false, false),
@@ -63,6 +66,7 @@ public enum LangMessage {
     COMMANDS_TEAM_MANAGE_INVITE_RESULT_UNCHANGED("commands.team.manage.invite.result-unchanged", false, false),
     COMMANDS_TEAM_MANAGE_INVITE_RESULT_BLOCKED("commands.team.manage.invite.result-blocked", false, false),
     COMMANDS_TEAM_MANAGE_MEMBER_DESC("commands.team.manage.member.desc", false, false),
+    COMMANDS_TEAM_MANAGE_MEMBER_CANNOT_TARGET_SELF("commands.team.manage.member.cannot-target-self", false, false),
     COMMANDS_TEAM_MANAGE_MEMBER_KICK_DESC("commands.team.manage.member.kick.desc", false, false),
     COMMANDS_TEAM_MANAGE_MEMBER_KICK_RESULT("commands.team.manage.member.kick.result", false, false),
     COMMANDS_TEAM_MANAGE_MEMBER_PROMOTE_DESC("commands.team.manage.member.promote.desc", false, false),
@@ -93,6 +97,8 @@ public enum LangMessage {
     COMMANDS_TERRITORY_CHECK_DESC("commands.territory.check.desc", false, false),
     COMMANDS_TERRITORY_CHECK_RESULT("commands.territory.check.result", false, true),
     COMMANDS_TERRITORY_CHECK_RESULT_OTHER("commands.territory.check.result-other", false, true),
+    COMMANDS_TERRITORY_CHECK_RESULT_NOT_ON_TERRITORY("commands.territory.check.result-not-on-territory", false, true),
+    COMMANDS_TERRITORY_CHECK_RESULT_ON_MULTIPLE_TERRITORY("commands.territory.check.result-on-multiple-territory", false, true),
     COMMANDS_ADMIN_DESC("commands.admin.desc", false, false),
     COMMANDS_ADMIN_TEAM_DESC("commands.admin.team.desc", false, false),
     COMMANDS_ADMIN_TEAM_CREATE_DESC("commands.admin.team.create.desc", false, false),

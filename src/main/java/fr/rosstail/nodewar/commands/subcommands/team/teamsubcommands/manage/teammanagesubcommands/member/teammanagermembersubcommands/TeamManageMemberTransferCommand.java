@@ -101,7 +101,7 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
             senderTeamMemberModel = senderTeamMember.getModel();
 
             if (targetTeamMemberModel == null) {
-                sender.sendMessage("the player is not in your team.");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM));
                 return;
             }
 

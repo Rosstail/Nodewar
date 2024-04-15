@@ -89,7 +89,7 @@ public class TeamManageMemberDemoteCommand extends TeamManageMemberSubCommand {
             targetName = args[4];
 
             if (player.getName().equals(targetName)) {
-                sender.sendMessage("you can't demote yourself !");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_CANNOT_TARGET_SELF));
                 return;
             }
 
@@ -97,7 +97,7 @@ public class TeamManageMemberDemoteCommand extends TeamManageMemberSubCommand {
                     .filter(teamMemberModel -> teamMemberModel.getUsername().equalsIgnoreCase(targetName)).findFirst().orElse(null);
 
             if (targetTeamMemberModel == null) {
-                sender.sendMessage("the player is not in your team.");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM));
                 return;
             }
 

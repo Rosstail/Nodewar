@@ -79,7 +79,7 @@ public class AdminTeamEditMemberAddCommand extends AdminTeamEditMemberSubCommand
 
         if (targetTeam.getModel().getTeamMemberModelMap().values().stream()
                 .anyMatch(teamMemberModel -> teamMemberModel.getUsername().equalsIgnoreCase(targetTeamName))) {
-            sender.sendMessage("the player is already in a team.");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_ALREADY_IN_TEAM));
             return;
         }
 

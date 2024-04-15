@@ -75,7 +75,7 @@ public class TeamCheckCommand extends TeamSubCommand {
                 message = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT_OTHER);
                 sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTeamMessage(message, team, null));
             } else {
-                message = "this team does not exist";
+                message = LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", args[2]);
                 sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message));
             }
         } else {

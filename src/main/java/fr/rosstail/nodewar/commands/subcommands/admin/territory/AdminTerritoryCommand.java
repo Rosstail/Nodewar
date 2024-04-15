@@ -52,7 +52,7 @@ public class AdminTerritoryCommand extends AdminTerritorySubCommand {
         }
 
         if (!TerritoryManager.getTerritoryManager().getTerritoryMap().containsKey(territoryName)) {
-            sender.sendMessage("this territory does not exists: " + territoryName);
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", territoryName));
             return;
         }
 
