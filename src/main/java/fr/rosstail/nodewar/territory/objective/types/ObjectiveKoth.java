@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.territory.objective.types;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
@@ -45,6 +46,7 @@ public class ObjectiveKoth extends Objective {
         });
 
         this.timeToReach = Integer.parseInt(this.objectiveKothModel.getTimeToReachStr());
+        this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.description.koth").stream().map(String::valueOf).collect(Collectors.joining("\n"));
     }
 
     public Map<Territory, Integer> getCapturePointsValuePerSecond() {

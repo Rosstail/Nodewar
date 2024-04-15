@@ -118,6 +118,9 @@ public class AdaptMessage {
     public String adaptTeamMessage(String message, NwTeam team) {
         if (team == null) {
             message = message.replaceAll("\\[team_display]", LangManager.getMessage(LangMessage.TEAM_NONE_DISPLAY));
+            message = message.replaceAll("\\[team_color_display]", "{" + ConfigData.getConfigData().team.noneColor + "}" + LangManager.getMessage(LangMessage.TEAM_NONE_DISPLAY));
+            message = message.replaceAll("\\[team_short]", "");
+            message = message.replaceAll("\\[team_color_short]", "{" + ConfigData.getConfigData().team.noneColor + "}");
             message = message.replaceAll("\\[team_color]", ConfigData.getConfigData().team.noneColor);
             message = message.replaceAll("\\[team_(\\w+)]", "");
             return adaptMessage(message);
@@ -125,7 +128,9 @@ public class AdaptMessage {
         message = message.replaceAll("\\[team_name]", team.getModel().getName());
         message = message.replaceAll("\\[team_id]", String.valueOf(team.getModel().getId()));
         message = message.replaceAll("\\[team_display]", team.getModel().getDisplay());
+        message = message.replaceAll("\\[team_color_display]", "{" + team.getModel().getTeamColor() + "}" + team.getModel().getDisplay());
         message = message.replaceAll("\\[team_short]", team.getModel().getShortName());
+        message = message.replaceAll("\\[team_color_short]", "{" + team.getModel().getTeamColor() + "}" + team.getModel().getShortName());
         message = message.replaceAll("\\[team_color]", team.getModel().getTeamColor());
         message = message.replaceAll("\\[team_open]", String.valueOf(team.getModel().isOpen()));
         message = message.replaceAll("\\[team_permanent]", String.valueOf(team.getModel().isPermanent()));
@@ -182,6 +187,9 @@ public class AdaptMessage {
 
         message = message.replaceAll("\\[team]", teamModel.getName());
         message = message.replaceAll("\\[team_display]", teamModel.getDisplay());
+        message = message.replaceAll("\\[team_color_display]", "{" + teamModel.getTeamColor() + "}" + teamModel.getDisplay());
+        message = message.replaceAll("\\[team_short]", teamModel.getShortName());
+        message = message.replaceAll("\\[team_color_short]", "{" + teamModel.getTeamColor() + "}" + teamModel.getShortName());
         message = message.replaceAll("\\[team_color]", teamModel.getTeamColor());
         message = message.replaceAll("\\[team_open]", LangManager.getMessage(nwTeam.getModel().isOpen() ? LangMessage.TEAM_OPEN : LangMessage.TEAM_CLOSE));
         message = message.replaceAll("\\[team_maximum_members]", String.valueOf(ConfigData.getConfigData().team.maximumMembers));

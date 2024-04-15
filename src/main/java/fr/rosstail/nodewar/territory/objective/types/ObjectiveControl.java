@@ -16,6 +16,7 @@ import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ObjectiveControl extends Objective {
 
@@ -39,6 +40,7 @@ public class ObjectiveControl extends Objective {
         this.neutralPeriod = Boolean.parseBoolean(this.objectiveControlModel.getNeedNeutralizeStepStr());
         this.minAttackerRatio = Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr());
         this.maxHealth = Integer.parseInt(this.objectiveControlModel.getMaxHealthStr());
+        this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.description.control").stream().map(String::valueOf).collect(Collectors.joining("\n"));
     }
 
     public float getMinAttackerRatio() {

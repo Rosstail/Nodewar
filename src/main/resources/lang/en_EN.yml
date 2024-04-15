@@ -37,7 +37,7 @@ commands:
     check:
       desc: "Check team's data"
       result:
-        - "[team_display]&r &8:&r"
+        - "[team_color_short]&r - [team_color_display]&r &8:&r"
         - "* Color &8:&r {[team_color]}[team_color]&r"
         - "* Your rank &8:&r [team_player_rank]"
         - "* Members &8:&r [team_online_member]/[team_maximum_members] - [team_open]&r"
@@ -56,13 +56,13 @@ commands:
     list:
       desc: "Check the list of teams"
       result-header: "&bTeams list &8:"
-      result-line: "&a► {[team_color]}[team_display]&r"
+      result-line: "&a► [team_color_display]&r"
     invites:
       desc: "Manage teams invites."
       check:
         desc: "Check which teams want to recruit you."
         result-header: "&bInvites &8:"
-        result-line: "&a► {[team_color]}[team_display]&r"
+        result-line: "&a► [team_color_display]&r"
       open:
         desc: "Receive any team invitation"
         result: "You are now open to team invites"
@@ -134,7 +134,7 @@ commands:
         invites:
           desc: "Check list of teams relations invites."
           result-header: "&bInvites &8:"
-          result-line: "&a► [team_line_direction]&r {[team_color]}[team_display] &8: [team_relation] -> [team_relation_invite]&r"
+          result-line: "&a► [team_line_direction]&r [team_color_display] &8: [team_relation] -> [team_relation_invite]&r"
           result-line-received: "&e<<<"
           result-line-sent: "&6>>>"
       disband:
@@ -149,7 +149,7 @@ commands:
       desc: "Admin team command"
       create:
         desc: "Create a new team"
-        result: "Succesfully created {[team_color]}[team_display]."
+        result: "Succesfully created [team_color_display]."
       edit:
         desc: "Edit selected team"
         color:
@@ -205,7 +205,7 @@ commands:
           invites:
             desc: "Check list of teams relations invites."
             result-header: "&bInvites &8:"
-            result-line: "&a► [team_line_direction]&r {[team_color]}[team_display] &8: [team_relation] -> [team_relation_invite]&r"
+            result-line: "&a► [team_line_direction]&r [team_color_display] &8: [team_relation] -> [team_relation_invite]&r"
             result-line-received: "&e<<<"
             result-line-sent: "&6>>>"
         disband:
@@ -240,6 +240,7 @@ commands:
         - "  * Type &8:&r [territory_type]&r"
         - "  * Protected &8:&r [territory_protected]&r"
         - "  * Owner &8:&r {[territory_owner_color]}[territory_owner_display]&r"
+        - "[territory_objective_description]"
         - " Battle:"
         - "  * Status &8:&r [territory_battle_status]"
         - "  * Winner &8:&r {[territory_battle_winner_color]}[territory_battle_winner]"
@@ -251,6 +252,7 @@ commands:
         - "  * Type &8:&r [territory_type]&r"
         - "  * Protected &8:&r [territory_protected]&r"
         - "  * Owner &8:&r {[territory_owner_color]}[territory_owner_display]&r"
+        - "[territory_objective_description]"
         - " Battle:"
         - "  * Status &8:&r [territory_battle_status]"
         - "  * Winner &8:&r {[territory_battle_winner_color]}[territory_battle_winner]"
@@ -287,6 +289,22 @@ team:
     enemy: "&cEnemy"
 
 territory:
+  objective:
+    description:
+      none:
+        - "  Objective: none"
+        - "  - TEST"
+      control:
+        - "  Objective: CONTROL"
+        - "  - &5Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
+      siege:
+        - "  Objective: Siege"
+        - "  - &5Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
+        - "  - &5Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
+        - "  - &5Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
+      koth:
+        - "  Objective: KOTH"
+        - "  - TIST"
   battle:
     status:
       waiting: "&5Waiting"

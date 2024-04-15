@@ -50,6 +50,7 @@ public class ObjectiveSiege extends Objective {
         setObjectiveModel(this.objectiveSiegeModel);
 
         this.maxHealth = Integer.parseInt(this.objectiveSiegeModel.getMaxHealthString());
+        this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.description.siege").stream().map(String::valueOf).collect(Collectors.joining("\n"));
     }
 
     public NwTeam checkAdvantage() {
