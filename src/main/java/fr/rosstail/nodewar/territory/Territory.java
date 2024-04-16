@@ -379,7 +379,7 @@ public class Territory {
             message = objective.adaptMessage(message);
         }
 
-        message = message.replaceAll("\\[territory_owner", "[team");
+        message = message.replaceAll("\\[territory_team", "[team");
         message = AdaptMessage.getAdaptMessage().adaptTeamMessage(message, getOwnerTeam());
 
         if (getCurrentBattle() != null) {

@@ -81,7 +81,6 @@ public class TerritoryCheckCommand extends TerritorySubCommand {
             }
 
             territory = territoryList.get(0);
-            System.out.println(message);
             sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory));
         }
     }

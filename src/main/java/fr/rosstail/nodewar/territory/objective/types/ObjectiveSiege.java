@@ -50,7 +50,22 @@ public class ObjectiveSiege extends Objective {
         setObjectiveModel(this.objectiveSiegeModel);
 
         this.maxHealth = Integer.parseInt(this.objectiveSiegeModel.getMaxHealthString());
-        this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.description.siege").stream().map(String::valueOf).collect(Collectors.joining("\n"));
+        List<String> rawDescriptionList = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.siege.description");
+        String capturePointLine = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.siege.line-capturepoint", "");
+
+        for (int lineIndex = 0; lineIndex < rawDescriptionList.size(); lineIndex++) {
+            String line = rawDescriptionList.get(lineIndex);
+            if (line.contains("[line_capturepoint]")) {
+                rawDescriptionList.remove(lineIndex);
+                for (int controlPointIndex = 0; controlPointIndex < controlPointList.size(); controlPointIndex++) {
+                    rawDescriptionList.add(lineIndex + controlPointIndex, capturePointLine.replaceAll("\\[index]", String.valueOf(controlPointIndex + 1)));
+                }
+                lineIndex += controlPointList.size();
+            }
+        }
+
+        this.description = rawDescriptionList;
+
     }
 
     public NwTeam checkAdvantage() {

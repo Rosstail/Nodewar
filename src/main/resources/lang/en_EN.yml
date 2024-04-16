@@ -239,24 +239,16 @@ commands:
         - " Info:"
         - "  * Type &8:&r [territory_type]&r"
         - "  * Protected &8:&r [territory_protected]&r"
-        - "  * Owner &8:&r {[territory_owner_color]}[territory_owner_display]&r"
+        - "  * Owner &8:&r {[territory_team_color]}[territory_team_display]&r"
         - "[territory_objective_description]"
-        - " Battle:"
-        - "  * Status &8:&r [territory_battle_status]"
-        - "  * Winner &8:&r {[territory_battle_winner_color]}[territory_battle_winner]"
-        - "  * Advantage &8:&r {[territory_battle_advantage_color]}[territory_battle_advantage]"
       result-other:
         - "[territory_id] - [territory_display]&r &8:&r"
         - " Info:"
         - "  * World &8:&r [territory_world]&r"
         - "  * Type &8:&r [territory_type]&r"
         - "  * Protected &8:&r [territory_protected]&r"
-        - "  * Owner &8:&r {[territory_owner_color]}[territory_owner_display]&r"
+        - "  * Owner &8:&r {[territory_team_color]}[territory_team_display]&r"
         - "[territory_objective_description]"
-        - " Battle:"
-        - "  * Status &8:&r [territory_battle_status]"
-        - "  * Winner &8:&r {[territory_battle_winner_color]}[territory_battle_winner]"
-        - "  * Advantage &8:&r {[territory_battle_advantage_color]}[territory_battle_advantage]"
       result-not-on-territory: "You are not standing on a territory"
       result-on-multiple-territory: "You are standing on multiple territories: please select one of them: [territories]"
   reload:
@@ -290,21 +282,39 @@ team:
 
 territory:
   objective:
-    description:
-      none:
-        - "  Objective: none"
-        - "  - TEST"
-      control:
+    none:
+      description:
+        - "  Objective: NONE"
+    control:
+      description:
         - "  Objective: CONTROL"
         - "  - &5Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
-      siege:
-        - "  Objective: Siege"
-        - "  - &5Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
-        - "  - &5Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
-        - "  - &5Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
-      koth:
+    siege:
+      description:
+        - "  Objective: SIEGE"
+        - "    Capture points:"
+        - "[line_capturepoint]"
+        - "  Current battle&d:"
+        - "    - &eStatus&d:&r %nodewar_territory_battle_status%"
+        - "    - &eAdvantage&d:&r %nodewar_territory_battle_advantage_color_display%"
+        - "    - &eHealth&d:&r %nodewar_territory_battle_health% / %nodewar_territory_objective_maximum_health%"
+        - "    - &eTime left&d:&r %nodewar_territory_battle_time_left%"
+        - "  Previous battle&d:"
+        - "    - &eWinner&d:&r %nodewar_territory_battle_winner_color_display%"
+      line-capturepoint: "      > [territory_objective_capturepoint_[index]_display]: [territory_objective_capturepoint_[index]_team_color_display]&r"
+    koth:
+      description:
         - "  Objective: KOTH"
-        - "  - TIST"
+        - "    Capture points:"
+        - "[line_capturepoint]"
+        - "  Current battle&d:"
+        - "    - &eStatus&d:&r %nodewar_territory_battle_status%"
+        - "    - &eAdvantage&d:&r %nodewar_territory_battle_advantage_color_display%"
+        - "    - &eHealth&d:&r %nodewar_territory_battle_health% / %nodewar_territory_objective_maximum_health%"
+        - "    - &eTime left&d:&r %nodewar_territory_battle_time_left%"
+        - "  Previous battle&d:"
+        - "    - &eWinner&d:&r %nodewar_territory_battle_winner_color_display%"
+      line-capturepoint: "      > [territory_objective_capturepoint_[index]_display]: [territory_objective_capturepoint_[index]_team_color_display]&r"
   battle:
     status:
       waiting: "&5Waiting"
@@ -328,7 +338,7 @@ territory:
   bossbar:
     global:
       wild: "[territory_display] - [territory_battle_status]"
-      occupied: "[territory_display] - {[territory_owner_color]}[territory_owner_display] - [territory_battle_status]"
-      battle: "[territory_display] - {[territory_owner_color]}[territory_owner_display]&r {[territory_battle_advantage_color]}[territory_battle_direction]&r {[territory_battle_advantage_color]}[territory_battle_advantage_display]"
+      occupied: "[territory_display] - {[territory_team_color]}[territory_team_display] - [territory_battle_status]"
+      battle: "[territory_display] - {[territory_team_color]}[territory_team_display]&r {[territory_battle_advantage_color]}[territory_battle_direction]&r {[territory_battle_advantage_color]}[territory_battle_advantage_display]"
   protected: "&dProtected"
   vulnerable: "&cVulnerable"

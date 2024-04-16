@@ -11,7 +11,9 @@ import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -21,7 +23,7 @@ public class Objective {
     protected ObjectiveModel objectiveModel;
     protected Map<String, ObjectiveReward> stringRewardMap = new HashMap<>();
 
-    protected String description = "";
+    protected List<String> description = new ArrayList<>();
 
     protected int scheduler;
 
@@ -34,7 +36,7 @@ public class Objective {
             setObjectiveModel(new ObjectiveModel(null));
         }
         this.territory = territory;
-        this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.description.none").stream().map(String::valueOf).collect(Collectors.joining("\n"));
+        this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.description.none");
         startObjective();
     }
 
@@ -96,7 +98,7 @@ public class Objective {
     }
 
     public String adaptMessage(String message) {
-        message = message.replaceAll("\\[territory_objective_description]", description);
+        message = message.replaceAll("\\[territory_objective_description]", description.stream().map(String::valueOf).collect(Collectors.joining("\n")));
         message = message.replaceAll("\\[territory_objective_name]", getObjectiveModel().getTypeString());
         message = message.replaceAll("\\[territory_objective_display]", getObjectiveModel().getTypeString().toUpperCase());
         return message;
