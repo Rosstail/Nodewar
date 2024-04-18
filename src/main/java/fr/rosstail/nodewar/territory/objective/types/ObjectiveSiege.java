@@ -50,8 +50,8 @@ public class ObjectiveSiege extends Objective {
         setObjectiveModel(this.objectiveSiegeModel);
 
         this.maxHealth = Integer.parseInt(this.objectiveSiegeModel.getMaxHealthString());
-        List<String> rawDescriptionList = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.siege.description");
-        String capturePointLine = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.siege.line-capturepoint", "");
+        List<String> rawDescriptionList = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.types.siege.description");
+        String capturePointLine = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.types.siege.line-capturepoint", "");
 
         for (int lineIndex = 0; lineIndex < rawDescriptionList.size(); lineIndex++) {
             String line = rawDescriptionList.get(lineIndex);

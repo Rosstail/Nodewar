@@ -46,8 +46,8 @@ public class ObjectiveKoth extends Objective {
         });
 
         this.timeToReach = Integer.parseInt(this.objectiveKothModel.getTimeToReachStr());
-        List<String> rawDescriptionList = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.koth.description");
-        String capturePointLine = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.koth.line-capturepoint", "");
+        List<String> rawDescriptionList = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.types.koth.description");
+        String capturePointLine = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.types.koth.line-capturepoint", "");
 
         for (int lineIndex = 0; lineIndex < rawDescriptionList.size(); lineIndex++) {
             String line = rawDescriptionList.get(lineIndex);
@@ -231,7 +231,7 @@ public class ObjectiveKoth extends Objective {
     @Override
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
-        message = message.replaceAll("\\[territory_objective_timetoreach]", String.valueOf(timeToReach));
+        message = message.replaceAll("\\[territory_objective_time_to_reach]", String.valueOf(timeToReach));
 
         Pattern capturePointPattern = Pattern.compile("(\\[territory_objective_capturepoint)_(\\d+)(_\\w+])");
         Matcher capturePointMatcher = capturePointPattern.matcher(message);

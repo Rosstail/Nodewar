@@ -180,7 +180,6 @@ public enum LangMessage {
 
 
     TERRITORY_DESCRIPTION("territory.description", false, true),
-    TERRITORY_BATTLE_DESCRIPTION("territory.battle.description", false, true),
     TERRITORY_BATTLE_STATUS_WAITING("territory.battle.status.waiting", false, false),
     TERRITORY_BATTLE_STATUS_ONGOING("territory.battle.status.ongoing", false, false),
     TERRITORY_BATTLE_STATUS_ENDING("territory.battle.status.ending", false, false),

@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.territory.battle.types;
 
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
@@ -27,6 +28,7 @@ public class BattleSiege extends Battle {
         super(territory);
         this.objectiveSiege = (ObjectiveSiege) territory.getObjective();
         this.currentHealth = objectiveSiege.getMaxHealth();
+        this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.battle.types.siege.description");
     }
 
 

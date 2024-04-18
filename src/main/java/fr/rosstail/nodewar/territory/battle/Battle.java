@@ -7,8 +7,11 @@ import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Battle {
 
@@ -22,9 +25,11 @@ public class Battle {
 
     NwTeam advantageTeam;
     NwTeam winnerTeam;
+    protected List<String> description = new ArrayList<>();
 
     public Battle(Territory territory) {
         this.territory = territory;
+        this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.battle.types.none.description");
     }
 
     public Map<Player, Integer> getPlayerScoreMap() {
@@ -65,6 +70,7 @@ public class Battle {
     }
 
     public String adaptMessage(String message) {
+        message = message.replaceAll("\\[territory_battle_description]", description.stream().map(String::valueOf).collect(Collectors.joining("\n")));
         switch (getBattleStatus()) {
             case WAITING:
                 message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_WAITING));

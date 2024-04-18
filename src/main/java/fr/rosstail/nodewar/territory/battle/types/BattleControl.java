@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.territory.battle.types;
 
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
@@ -35,6 +36,7 @@ public class BattleControl extends Battle {
         super(territory);
         this.objectiveControl = (ObjectiveControl) territory.getObjective();
         this.currentHealth = territory.getOwnerTeam() != null ? objectiveControl.getMaxHealth() : 0;
+        this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.battle.types.control.description");
     }
 
 

@@ -14,6 +14,7 @@ public class TerritoryCommands {
 
     public TerritoryCommands(TerritoryCommandsModel model) {
         this.territoryCommandsModel = model;
+        nextOccurrence = System.currentTimeMillis() + territoryCommandsModel.getInitialDelay();
     }
 
     public TerritoryCommands(TerritoryCommandsModel childModel, @NotNull TerritoryCommandsModel parentModel) {

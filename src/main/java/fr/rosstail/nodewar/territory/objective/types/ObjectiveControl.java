@@ -40,7 +40,7 @@ public class ObjectiveControl extends Objective {
         this.neutralPeriod = Boolean.parseBoolean(this.objectiveControlModel.getNeedNeutralizeStepStr());
         this.minAttackerRatio = Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr());
         this.maxHealth = Integer.parseInt(this.objectiveControlModel.getMaxHealthStr());
-        this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.control.description");
+        this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.types.control.description");
     }
 
     public float getMinAttackerRatio() {

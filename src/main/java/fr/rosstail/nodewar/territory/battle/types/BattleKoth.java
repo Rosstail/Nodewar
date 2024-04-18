@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.territory.battle.types;
 
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
@@ -21,6 +22,7 @@ public class BattleKoth extends Battle {
     public BattleKoth(Territory territory) {
         super(territory);
         this.objectiveKoth = (ObjectiveKoth) territory.getObjective();
+        this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.battle.types.koth.description");
     }
 
 
@@ -103,7 +105,7 @@ public class BattleKoth extends Battle {
 
         int pointsPerSecond = pointPerSecondList.stream().mapToInt(value -> value).sum();
 
-        int timeLeft = 0;
+        int timeLeft;
         String timeLeftStr = " - ";
 
         if (getAdvantagedTeam() != null && !isBattleStarted() && pointsPerSecond != 0) {
