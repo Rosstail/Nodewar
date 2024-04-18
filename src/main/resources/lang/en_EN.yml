@@ -271,7 +271,7 @@ team:
 
 territory:
   description:
-    - "&a[territory_id] &7- &6[territory_display]&r &d:"
+    - "&a[territory_id] &7- &6[territory_display]&r&d:"
     - "&r  &aInfo&d:"
     - "&c    * &eWorld&d:&r [territory_world]"
     - "&c    * &eType&d:&r [territory_type]"
