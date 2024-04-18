@@ -290,13 +290,13 @@ territory:
         - "&a  Objective&d: &cSIEGE"
         - "&c    *  &eCapture points&d:"
         - "[line_capturepoint]"
-      line-capturepoint: "&5      - [territory_objective_capturepoint_[index]_display]: [territory_objective_capturepoint_[index]_team_color_display]"
+      line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
     koth:
       description:
         - "&a  Objective&d: &6KOTH"
         - "&c    *  &eCapture points&d:"
         - "[line_capturepoint]"
-      line-capturepoint: "&r      &c* [territory_objective_capturepoint_[index]_display]: [territory_objective_capturepoint_[index]_team_color_display]"
+      line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
   battle:
     description:
       - "&a  Current battle&d:"
