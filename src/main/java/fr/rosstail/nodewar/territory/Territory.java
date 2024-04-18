@@ -375,16 +375,19 @@ public class Territory {
         } else {
             message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_VULNERABLE));
         }
-        if (objective != null) {
-            message = objective.adaptMessage(message);
-        }
+
 
         message = message.replaceAll("\\[territory_team", "[team");
         message = AdaptMessage.getAdaptMessage().adaptTeamMessage(message, getOwnerTeam());
 
         if (getCurrentBattle() != null) {
-            message = getCurrentBattle().adaptMessage(message);
+            message = currentBattle.adaptMessage(message);
         }
+
+        if (objective != null) {
+            message = objective.adaptMessage(message);
+        }
+
         return message;
     }
 }

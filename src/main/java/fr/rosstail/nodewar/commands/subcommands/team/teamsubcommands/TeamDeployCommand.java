@@ -103,7 +103,7 @@ public class TeamDeployCommand extends TeamSubCommand {
         }
 
         List<Territory> teleportTerritoryList = TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream()
-                .filter(streamTerritory -> streamTerritory.getOwnerTeam().equals(playerNwTeam) &&
+                .filter(streamTerritory -> streamTerritory.getOwnerTeam() == playerNwTeam &&
                         streamTerritory.getProtectedRegionList().stream().anyMatch(region ->
                                 region.getFlags().containsKey(Flags.TELE_LOC))).collect(Collectors.toList());
         if (!teleportTerritoryList.stream().anyMatch(territory1 -> territory1.getModel().getName().equalsIgnoreCase(territoryName))) {
@@ -139,7 +139,7 @@ public class TeamDeployCommand extends TeamSubCommand {
         String selectedTerritoryName;
         if (playerNwTeam != null && args.length <= 4) {
             Stream<Territory> territoryStream = TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream()
-                    .filter(territory -> territory.getOwnerTeam().equals(playerNwTeam) &&
+                    .filter(territory -> territory.getOwnerTeam() == playerNwTeam &&
                             territory.getProtectedRegionList().stream().anyMatch(region ->
                                     region.getFlags().containsKey(Flags.TELE_LOC)));
             if (args.length <= 3) {
