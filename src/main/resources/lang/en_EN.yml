@@ -271,41 +271,41 @@ team:
 
 territory:
   description:
-    - "[territory_id] - [territory_display]&r &d:"
-    - "&r  Info:"
-    - "&r    * World &d:&r [territory_world]"
-    - "&r    * Type &d:&r [territory_type]&r"
-    - "&r    * Protected &d:&r [territory_protected]&r"
-    - "&r    * Owner &d:&r {[territory_team_color]}[territory_team_display]&r"
+    - "&a[territory_id] &7- &6[territory_display]&r &d:"
+    - "&r  &aInfo&d:"
+    - "&c    * &eWorld&d:&r [territory_world]"
+    - "&c    * &eType&d:&r [territory_type]"
+    - "&c    * &eProtected&d:&r [territory_protected]"
+    - "&c    * &eOwner&d:&r {[territory_team_color]}[territory_team_display]"
   objective:
     none:
       description:
-        - "  Objective&d: &7NONE&r"
+        - "&a  Objective&d: &7NONE&r"
     control:
       description:
-        - "  Objective&d: &9CONTROL"
-        - "&r  - &5Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
+        - "&a  Objective&d: &9CONTROL"
+        - "&c    *  &eAttackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
     siege:
       description:
-        - "  Objective&d: &cSIEGE"
-        - "&r    Capture points&d:"
+        - "&a  Objective&d: &cSIEGE"
+        - "&c    *  &eCapture points&d:"
         - "[line_capturepoint]"
-      line-capturepoint: "&r      > [territory_objective_capturepoint_[index]_display]: [territory_objective_capturepoint_[index]_team_color_display]&r"
+      line-capturepoint: "&5      - [territory_objective_capturepoint_[index]_display]: [territory_objective_capturepoint_[index]_team_color_display]"
     koth:
       description:
-        - "  Objective&d: &6KOTH"
-        - "&r  *  Capture points&d:"
+        - "&a  Objective&d: &6KOTH"
+        - "&c    *  &eCapture points&d:"
         - "[line_capturepoint]"
-      line-capturepoint: "&r      > [territory_objective_capturepoint_[index]_display]: [territory_objective_capturepoint_[index]_team_color_display]&r"
+      line-capturepoint: "&r      &c* [territory_objective_capturepoint_[index]_display]: [territory_objective_capturepoint_[index]_team_color_display]"
   battle:
     description:
-      - "  Current battle&d:"
-      - "&r    * &eStatus&d:&r [territory_battle_status]"
-      - "&r    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
-      - "&r    * &eHealth&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
-      - "&r    * &eTime left&d:&r [territory_battle_time_left]"
-      - "  Previous battle&d:"
-      - "&r    * &eWinner&d:&r [territory_battle_winner_color_display]"
+      - "&a  Current battle&d:"
+      - "&c    * &eStatus&d:&r [territory_battle_status]"
+      - "&c    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
+      - "&c    * &eHealth&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
+      - "&c    * &eTime left&d:&r [territory_battle_time_left]"
+      - "&a  Previous battle&d:"
+      - "&c    * &eWinner&d:&r [territory_battle_winner_color_display]"
     status:
       waiting: "&5Waiting"
       ongoing: "&eOngoing"
