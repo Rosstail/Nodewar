@@ -10,6 +10,7 @@ import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
+import fr.rosstail.nodewar.team.NwTeamInvite;
 import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
@@ -64,6 +65,7 @@ public class TeamJoinCommand extends TeamSubCommand {
         NwTeam nwTeam;
         PlayerData playerData;
         TeamMemberModel teamMemberModel;
+        NwTeamInvite teamInvite = null;
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
@@ -90,12 +92,26 @@ public class TeamJoinCommand extends TeamSubCommand {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE));
             return;
         }
+        
+        if (!nwTeam.getModel().isOpenRelation()) {
+            teamInvite = TeamDataManager.getTeamDataManager().getTeamInviteHashSet().stream()
+                    .filter(nwTeamInvite -> nwTeamInvite.getNwTeam() == nwTeam && nwTeamInvite.getReceiver() == sender)
+                    .findFirst().orElse(null);
+            if (teamInvite == null) {
+                sender.sendMessage("This team needs an invitation.");
+                return;
+            }
+        }
 
-        if (nwTeam.getModel().getTeamMemberModelMap().size() >= ConfigData.getConfigData().team.maximumMembers) {
+        if (ConfigData.getConfigData().team.maximumMembers > -1 && nwTeam.getModel().getTeamMemberModelMap().size() >= ConfigData.getConfigData().team.maximumMembers) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_FULL));
             return;
         }
 
+        if (teamInvite != null) {
+            TeamDataManager.getTeamDataManager().getTeamInviteHashSet().remove(teamInvite);
+        }
+        
         teamMemberModel = new TeamMemberModel(nwTeam.getModel().getId(), playerData.getId(), 3, new Timestamp(System.currentTimeMillis()), senderPlayer.getName());
         TeamMember teamMember = new TeamMember(senderPlayer, nwTeam, teamMemberModel);
         StorageManager.getManager().insertTeamMemberModel(teamMemberModel);

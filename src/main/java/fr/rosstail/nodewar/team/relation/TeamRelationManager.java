@@ -6,6 +6,7 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.team.TeamDataManager;
+import org.bukkit.Bukkit;
 
 import java.util.*;
 
@@ -15,7 +16,8 @@ public class TeamRelationManager {
     private final Nodewar plugin;
     private static final ArrayList<TeamRelation> relationArrayList = new ArrayList<>();
 
-    private static final HashSet<NwTeamRelationInvite> relationInvitesHashSet = new HashSet<>();
+    private static final HashSet<NwTeamRelationRequest> relationRequestHashSet = new HashSet<>();
+    private static int expirationScheduler;
 
     private TeamRelationManager(Nodewar plugin) {
         this.plugin = plugin;
@@ -59,7 +61,17 @@ public class TeamRelationManager {
         return teamRelationMap;
     }
 
-    public RelationType getRelationBetweenTeams(NwTeam firstTeam, NwTeam secondTeam) {
+    public TeamRelation getRelationBetweenTeams(NwTeam firstTeam, NwTeam secondTeam) {
+        if (firstTeam != null && secondTeam != null) {
+            if (firstTeam.getRelations().containsKey(secondTeam.getModel().getName())) {
+                return firstTeam.getRelations().get(secondTeam.getModel().getName());
+            }
+        }
+
+        return null;
+    }
+
+    public RelationType getRelationTypeBetweenTeams(NwTeam firstTeam, NwTeam secondTeam) {
         if (firstTeam != null && secondTeam != null) {
             if (firstTeam == secondTeam) {
                 return RelationType.TEAM;
@@ -80,7 +92,15 @@ public class TeamRelationManager {
         return relationArrayList;
     }
 
-    public static HashSet<NwTeamRelationInvite> getRelationInvitesHashSet() {
-        return relationInvitesHashSet;
+    public static HashSet<NwTeamRelationRequest> getRelationRequestHashSet() {
+        return relationRequestHashSet;
+    }
+
+    public static void startRequestExpirationHandler() {
+        Runnable handleRequestExpiration = () -> {
+            relationRequestHashSet.removeIf(nwTeamRelationInvite -> nwTeamRelationInvite.getExpirationDateTime() <= System.currentTimeMillis());
+        };
+
+        expirationScheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), handleRequestExpiration, 1L, 1L);
     }
 }

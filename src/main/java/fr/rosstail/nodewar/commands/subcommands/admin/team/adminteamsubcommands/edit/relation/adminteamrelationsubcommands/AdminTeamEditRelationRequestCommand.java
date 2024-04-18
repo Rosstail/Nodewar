@@ -10,7 +10,7 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.team.TeamDataManager;
-import fr.rosstail.nodewar.team.relation.NwTeamRelationInvite;
+import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import fr.rosstail.nodewar.team.relation.TeamRelation;
 import fr.rosstail.nodewar.team.relation.TeamRelationManager;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
@@ -20,18 +20,18 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCommand {
+public class AdminTeamEditRelationRequestCommand extends AdminTeamEditRelationSubCommand {
 
-    public AdminTeamEditRelationEditCommand() {
+    public AdminTeamEditRelationRequestCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_EDIT_DESC))
+                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_REQUEST_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
     }
 
     @Override
     public String getName() {
-        return "edit";
+        return "request";
     }
 
     @Override
@@ -41,7 +41,7 @@ public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCo
 
     @Override
     public String getSyntax() {
-        return "nodewar admin team edit <team> relation edit <team2> <relation>";
+        return "nodewar admin team edit <team> relation request <team2> <relation>";
     }
 
     @Override
@@ -102,16 +102,16 @@ public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCo
 
     private void handleRelationChange(CommandSender sender, NwTeam baseTeam, NwTeam targetTeam, RelationType newRelationType, TeamRelation currentRelation) {
         int defaultRelationWeight = ConfigData.getConfigData().team.defaultRelation.getWeight();
-        NwTeamRelationInvite teamRelationInvite = TeamRelationManager.getRelationInvitesHashSet().stream().filter(nwTeamRelationInvite -> nwTeamRelationInvite.getTargetTeam() == targetTeam).findFirst().orElse(null);
+        NwTeamRelationRequest teamRelationInvite = TeamRelationManager.getRelationRequestHashSet().stream().filter(nwTeamRelationInvite -> nwTeamRelationInvite.getTargetTeam() == targetTeam).findFirst().orElse(null);
 
         if (currentRelation == null) { // implicit default relation
             if (newRelationType.getWeight() > defaultRelationWeight) {
                 createNewRelation(baseTeam, targetTeam, newRelationType);
-                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_EDIT_RESULT_EFFECTIVE));
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_RESULT_EFFECTIVE));
             } else if (newRelationType.getWeight() < defaultRelationWeight) {
                 inviteOrAccept(sender, baseTeam, targetTeam, newRelationType, teamRelationInvite);
             } else {
-                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_EDIT_RESULT_UNCHANGED));
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_RESULT_UNCHANGED));
             }
         } else { // explicit relation
             if (newRelationType.getWeight() != currentRelation.getRelationType().getWeight()) {
@@ -121,31 +121,31 @@ public class AdminTeamEditRelationEditCommand extends AdminTeamEditRelationSubCo
                     targetTeam.getRelations().remove(baseTeam.getModel().getName());
 
                     createNewRelation(baseTeam, targetTeam, newRelationType);
-                    sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_EDIT_RESULT_EFFECTIVE));
+                    sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_RESULT_EFFECTIVE));
                 } else {
                     inviteOrAccept(sender, baseTeam, targetTeam, newRelationType, teamRelationInvite);
                 }
             } else {
-                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_EDIT_RESULT_UNCHANGED));
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_RESULT_UNCHANGED));
             }
         }
     }
 
-    private void inviteOrAccept(CommandSender sender, NwTeam senderTeam, NwTeam targetTeam, RelationType newRelationType, NwTeamRelationInvite teamRelationInvite) {
+    private void inviteOrAccept(CommandSender sender, NwTeam senderTeam, NwTeam targetTeam, RelationType newRelationType, NwTeamRelationRequest teamRelationInvite) {
         if (teamRelationInvite != null) {
             if (senderTeam == teamRelationInvite.getTargetTeam()) {
                 createNewRelation(teamRelationInvite.getSenderTeam(), teamRelationInvite.getTargetTeam(), teamRelationInvite.getRelationType());
             } else {
-                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_EDIT_RESULT_ALREADY));
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_REQUEST_RESULT_ALREADY));
             }
         } else {
             if (!targetTeam.getModel().isOpenRelation()) {
-                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_EDIT_RESULT_BLOCKED));
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_RESULT_BLOCKED));
                 return;
             }
-            teamRelationInvite = new NwTeamRelationInvite(senderTeam, targetTeam, newRelationType);
-            TeamRelationManager.getRelationInvitesHashSet().add(teamRelationInvite);
-            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_EDIT_RESULT_SENT));
+            teamRelationInvite = new NwTeamRelationRequest(senderTeam, targetTeam, newRelationType);
+            TeamRelationManager.getRelationRequestHashSet().add(teamRelationInvite);
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_RESULT_SENT));
         }
     }
 

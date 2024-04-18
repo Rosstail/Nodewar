@@ -8,7 +8,7 @@ import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
 import fr.rosstail.nodewar.team.rank.TeamRank;
-import fr.rosstail.nodewar.team.relation.NwTeamRelationInvite;
+import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import fr.rosstail.nodewar.team.relation.TeamRelationManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -78,7 +78,7 @@ public class TeamManageRelationInvitesCommand extends TeamManageRelationSubComma
             return;
         }
 
-        Set<NwTeamRelationInvite> teamRelationInviteSet = TeamRelationManager.getRelationInvitesHashSet().stream().filter(teamRelationModel -> (
+        Set<NwTeamRelationRequest> teamRelationInviteSet = TeamRelationManager.getRelationRequestHashSet().stream().filter(teamRelationModel -> (
                 teamRelationModel.getSenderTeam() == playerNwTeam || teamRelationModel.getTargetTeam() == playerNwTeam
         )).collect(Collectors.toSet());
 
@@ -89,7 +89,7 @@ public class TeamManageRelationInvitesCommand extends TeamManageRelationSubComma
                                     LangMessage.COMMANDS_TEAM_MANAGE_RELATION_INVITES_RESULT_LINE
                             ).replaceAll("\\[team_line_direction]", invite.getSenderTeam() == playerNwTeam ? sentInvitationLine : receivedInvitationLine)
                             .replaceAll("\\[team_relation]",
-                                    TeamRelationManager.getTeamRelationManager().getRelationBetweenTeams(invite.getSenderTeam(), invite.getTargetTeam()).name())
+                                    TeamRelationManager.getTeamRelationManager().getRelationTypeBetweenTeams(invite.getSenderTeam(), invite.getTargetTeam()).name())
                             .replaceAll("\\[team_relation_invite]", invite.getRelationType().name())
                     , invite.getSenderTeam() == playerNwTeam ? invite.getTargetTeam() : invite.getSenderTeam()));
         });

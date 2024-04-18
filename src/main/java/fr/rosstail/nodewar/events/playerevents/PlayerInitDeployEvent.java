@@ -4,6 +4,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -27,6 +28,7 @@ public class PlayerInitDeployEvent extends Event implements Cancellable {
     private final ProtectedRegion protectedRegion;
     private final long startTime = System.currentTimeMillis() + ConfigData.getConfigData().team.deployTimer;
     private boolean cancelled = false;
+    private final Location location;
 
     private long tickLeft = ConfigData.getConfigData().team.deployTimer * 20L / 1000L;
 
@@ -36,6 +38,7 @@ public class PlayerInitDeployEvent extends Event implements Cancellable {
         this.playerTeam = playerTeam;
         this.territory = territory;
         this.protectedRegion = protectedRegion;
+        this.location = player.getLocation();
     }
 
     public Player getPlayer() {
@@ -74,5 +77,9 @@ public class PlayerInitDeployEvent extends Event implements Cancellable {
 
     public void setTickLeft(long tickLeft) {
         this.tickLeft = tickLeft;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 }

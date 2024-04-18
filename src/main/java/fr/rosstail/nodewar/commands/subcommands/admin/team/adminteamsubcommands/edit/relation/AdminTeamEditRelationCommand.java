@@ -24,7 +24,7 @@ public class AdminTeamEditRelationCommand extends AdminTeamEditRelationSubComman
         subCommands.add(new AdminTeamEditRelationOpenCommand());
         subCommands.add(new AdminTeamEditRelationInvitesCommand());
         subCommands.add(new AdminTeamEditRelationSetCommand());
-        subCommands.add(new AdminTeamEditRelationEditCommand());
+        subCommands.add(new AdminTeamEditRelationRequestCommand());
     }
 
     @Override

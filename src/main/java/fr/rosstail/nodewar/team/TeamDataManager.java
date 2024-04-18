@@ -25,6 +25,7 @@ public class TeamDataManager {
     private final Map<String, NwTeam> stringTeamMap = new HashMap<>();
 
     private final HashSet<NwTeamInvite> teamInviteHashSet = new HashSet<>();
+    private int expirationScheduler;
 
     private TeamDataManager(Nodewar plugin) {
         this.plugin = plugin;
@@ -143,5 +144,13 @@ public class TeamDataManager {
 
         }
         return randomHexColor.toString().toUpperCase();
+    }
+
+    public void startInviteExpirationHandler() {
+        Runnable handleRequestExpiration = () -> {
+            teamInviteHashSet.removeIf(nwTeamInvite -> nwTeamInvite.getExpirationDateTime() <= System.currentTimeMillis());
+        };
+
+        expirationScheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), handleRequestExpiration, 1L, 1L);
     }
 }

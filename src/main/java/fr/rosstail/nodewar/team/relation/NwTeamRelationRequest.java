@@ -2,9 +2,8 @@ package fr.rosstail.nodewar.team.relation;
 
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
-import org.bukkit.entity.Player;
 
-public class NwTeamRelationInvite {
+public class NwTeamRelationRequest {
 
     private final NwTeam senderTeam;
     private final NwTeam targetTeam;
@@ -12,7 +11,7 @@ public class NwTeamRelationInvite {
     private final RelationType relationType;
     private final long expirationDateTime;
 
-    public NwTeamRelationInvite(NwTeam senderTeam, NwTeam targetTeam, RelationType relationType) {
+    public NwTeamRelationRequest(NwTeam senderTeam, NwTeam targetTeam, RelationType relationType) {
         this.senderTeam = senderTeam;
         this.targetTeam = targetTeam;
         this.relationType = relationType;

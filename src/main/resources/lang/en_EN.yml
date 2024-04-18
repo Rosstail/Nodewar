@@ -118,13 +118,15 @@ commands:
           result: "Ownership transferred successfully."
       relation:
         desc: "Manage relations with other teams"
+        accept:
+          desc: "Accept an incoming relation request"
         open:
           desc: "Enable reception of relation invites"
           result: "Team open to relation invites"
         close:
           desc: "Disable reception of relation invites"
           result: "Team closed to relation invites"
-        edit:
+        request:
           desc: "Set relation with selected team"
           result-sent: "Relation invite sent successfully."
           result-effective: "Relation set."
@@ -193,7 +195,13 @@ commands:
           close:
             desc: "Disable reception of relation invites"
             result: "Team closed to relation invites"
-          edit:
+          invites:
+            desc: "Check list of teams relations invites."
+            result-header: "&bInvites &8:"
+            result-line: "&a► [team_line_direction]&r [team_color_display] &8: [team_relation] -> [team_relation_invite]&r"
+            result-line-received: "&e<<<"
+            result-line-sent: "&6>>>"
+          request:
             desc: "Set relation with selected team"
             result-invite: "Relation invite sent successfully."
             result-weight: "Relation set."
@@ -202,12 +210,6 @@ commands:
           set:
             desc: "Set immediate relation between selected teams"
             result: "Relation set."
-          invites:
-            desc: "Check list of teams relations invites."
-            result-header: "&bInvites &8:"
-            result-line: "&a► [team_line_direction]&r [team_color_display] &8: [team_relation] -> [team_relation_invite]&r"
-            result-line-received: "&e<<<"
-            result-line-sent: "&6>>>"
         disband:
           desc: "Disband selected nodewar team"
           result: "Disbanded team"

@@ -149,7 +149,7 @@ public class ObjectiveReward {
     private boolean shallRewardTeam(Territory territory, Battle battle, Map<NwTeam, Integer> teamPositionMap, NwTeam team) {
         int teamPosition = teamPositionMap.get(team);
         String teamRole = getRewardModel().getTeamRole();
-        RelationType relation = TeamRelationManager.getTeamRelationManager().getRelationBetweenTeams(team, territory.getOwnerTeam());
+        RelationType relation = TeamRelationManager.getTeamRelationManager().getRelationTypeBetweenTeams(team, territory.getOwnerTeam());
         List<Integer> teamPositions = getRewardModel().getTeamPositions();
 
         if (isShouldTeamWin() && teamPosition != 1) {

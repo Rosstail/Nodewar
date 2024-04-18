@@ -72,7 +72,7 @@ public class AdminTeamEditInviteCommand extends AdminTeamEditSubCommand {
             return;
         }
 
-        if (targetTeam.getModel().getTeamMemberModelMap().size() >= ConfigData.getConfigData().team.maximumMembers) {
+        if (ConfigData.getConfigData().team.maximumMembers > -1 && targetTeam.getModel().getTeamMemberModelMap().size() >= ConfigData.getConfigData().team.maximumMembers) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_FULL));
             return;
         }

@@ -30,7 +30,7 @@ team:
   none-color: "#CACACA"
   deploy-timer: 10
   deploy-cooldown: 120
-  maximum-members: 50
+  maximum-members: 50 #-1 for infinite
 
 bossbar:
   color: # RED, YELLOW, BLUE, GREEN, PINK, PURPLE, WHITE

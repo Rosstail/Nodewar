@@ -144,15 +144,14 @@ public class Nodewar extends JavaPlugin implements Listener {
         territoryManager.setupTerritoriesAttackRequirements();
         territoryManager.setupTerritoriesRewardScheduler();
 
-        //AdaptMessage.print("=============", AdaptMessage.prints.OUT);
-        //territoryManager.getTerritoryMap().forEach((s, territory) -> AdaptMessage.getAdaptMessage().printTerritory(territory));
-        //AdaptMessage.print("=====END=====", AdaptMessage.prints.OUT);
+        PlayerDataManager.startDeployHandler();
+        TeamDataManager.getTeamDataManager().startInviteExpirationHandler();
+        TeamRelationManager.startRequestExpirationHandler();
 
         PointInPolygon.main(null);
         DynmapHandler dynmapHandler = DynmapHandler.getDynmapHandler();
         dynmapHandler.enable();
         dynmapHandler.resumeRender();
-        PlayerDataManager.startDeployHandler();
     }
 
     private void initDefaultConfigs() {

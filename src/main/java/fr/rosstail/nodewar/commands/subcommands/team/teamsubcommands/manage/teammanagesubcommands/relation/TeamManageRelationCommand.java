@@ -3,10 +3,7 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.tea
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.SubCommand;
 import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.TeamManageSubCommand;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.relation.teammanagerelationsubcommands.TeamManageRelationCloseCommand;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.relation.teammanagerelationsubcommands.TeamManageRelationEditCommand;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.relation.teammanagerelationsubcommands.TeamManageRelationInvitesCommand;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.relation.teammanagerelationsubcommands.TeamManageRelationOpenCommand;
+import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.relation.teammanagerelationsubcommands.*;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -23,10 +20,11 @@ public class TeamManageRelationCommand extends TeamManageRelationSubCommand {
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
+        subCommands.add(new TeamManageRelationAcceptCommand());
         subCommands.add(new TeamManageRelationCloseCommand());
         subCommands.add(new TeamManageRelationOpenCommand());
         subCommands.add(new TeamManageRelationInvitesCommand());
-        subCommands.add(new TeamManageRelationEditCommand());
+        subCommands.add(new TeamManageRelationRequestCommand());
     }
 
     @Override
