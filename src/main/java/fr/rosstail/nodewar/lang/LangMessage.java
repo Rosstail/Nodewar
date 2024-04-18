@@ -96,7 +96,6 @@ public enum LangMessage {
     COMMANDS_TERRITORY_DESC("commands.territory.desc", false, false),
     COMMANDS_TERRITORY_CHECK_DESC("commands.territory.check.desc", false, false),
     COMMANDS_TERRITORY_CHECK_RESULT("commands.territory.check.result", false, true),
-    COMMANDS_TERRITORY_CHECK_RESULT_OTHER("commands.territory.check.result-other", false, true),
     COMMANDS_TERRITORY_CHECK_RESULT_NOT_ON_TERRITORY("commands.territory.check.result-not-on-territory", false, false),
     COMMANDS_TERRITORY_CHECK_RESULT_ON_MULTIPLE_TERRITORY("commands.territory.check.result-on-multiple-territory", false, false),
     COMMANDS_ADMIN_DESC("commands.admin.desc", false, false),
@@ -180,6 +179,8 @@ public enum LangMessage {
     TEAM_RELATION_ENEMY("team.relation.enemy", false, false),
 
 
+    TERRITORY_DESCRIPTION("territory.description", false, true),
+    TERRITORY_BATTLE_DESCRIPTION("territory.battle.description", false, true),
     TERRITORY_BATTLE_STATUS_WAITING("territory.battle.status.waiting", false, false),
     TERRITORY_BATTLE_STATUS_ONGOING("territory.battle.status.ongoing", false, false),
     TERRITORY_BATTLE_STATUS_ENDING("territory.battle.status.ending", false, false),

@@ -134,25 +134,38 @@ public class ObjectiveSiege extends Objective {
 
     /**
      *
-     * @return map of territory with damage (0) / regen (1) per second
+     * @return map of territory with damage per second
      */
-    public Map<Territory, List<Integer>> getCapturePointsDamageRegenPerSecond() {
-        Map<Territory, List<Integer>> values = new HashMap<>();
+    public Map<Territory, Integer> getCapturePointsDamagePerSecond() {
+        Map<Territory, Integer> values = new HashMap<>();
 
         Set<String> controlPointStringSet = objectiveSiegeModel.getControlPointStringSet();
         Map<String, Integer> controlPointDamageMap = objectiveSiegeModel.getDamagePerSecondControlPointIntMap();
+
+        for (String s : controlPointStringSet) {
+            if (TerritoryManager.getTerritoryManager().getTerritoryMap().containsKey(s)) {
+                Territory territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(s);
+                values.put(territory, controlPointDamageMap.get(s));
+            }
+        }
+
+        return values;
+    }
+
+    /**
+     *
+     * @return map of territory with regen per second
+     */
+    public Map<Territory, Integer> getCapturePointsRegenPerSecond() {
+        Map<Territory, Integer> values = new HashMap<>();
+
+        Set<String> controlPointStringSet = objectiveSiegeModel.getControlPointStringSet();
         Map<String, Integer> controlPointRegenMap = objectiveSiegeModel.getRegenPerSecondControlPointIntMap();
 
         for (String s : controlPointStringSet) {
-            List<Integer> damageRegenList = new ArrayList<>();
-
             if (TerritoryManager.getTerritoryManager().getTerritoryMap().containsKey(s)) {
                 Territory territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(s);
-
-                damageRegenList.add(controlPointDamageMap.get(s));
-                damageRegenList.add(controlPointRegenMap.get(s));
-
-                values.put(territory, damageRegenList);
+                values.put(territory, controlPointRegenMap.get(s));
             }
         }
 

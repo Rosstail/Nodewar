@@ -62,7 +62,7 @@ public class TerritoryCheckCommand extends TerritorySubCommand {
         if (args.length >= 3) {
             territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(args[2]);
             if (territory != null) {
-                message = LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_CHECK_RESULT_OTHER);
+                message = LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_CHECK_RESULT);
                 sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory));
             } else {
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", args[2]));

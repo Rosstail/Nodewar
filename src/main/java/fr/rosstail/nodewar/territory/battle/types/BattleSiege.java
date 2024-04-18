@@ -41,26 +41,46 @@ public class BattleSiege extends Battle {
         int maxHealth = objectiveSiege.getMaxHealth();
         NwTeam ownerTeam = territory.getOwnerTeam();
         NwTeam advantageTeam = getAdvantagedTeam();
-        objectiveSiege.getCapturePointsDamageRegenPerSecond().forEach((capturePoint, integers) -> {
-            NwTeam pointOwner = capturePoint.getOwnerTeam();
-            if (pointOwner != null) {
-                int score = 5;
-                Set<Player> players = territory.getNwTeamEffectivePlayerAmountOnTerritory().get(pointOwner);
-                if (pointOwner == ownerTeam) {
-                    score *= integers.get(1);
-                } else {
-                    score *= integers.get(0);
+
+        handleRegenScore();
+        handleDamageScore();
+    }
+
+    private void handleRegenScore() {
+        NwTeam defenderTeam = territory.getOwnerTeam();
+        int regenPerSecond = objectiveSiege.getCapturePointsRegenPerSecond().entrySet().stream().filter(territoryIntegerEntry -> (
+                territoryIntegerEntry.getKey().getOwnerTeam() == defenderTeam)).mapToInt(Map.Entry::getValue).sum();
+
+        if (territory.getOwnerTeam() != null && regenPerSecond > 0) {
+            int score = 5 * regenPerSecond;
+            Set<Player> players = territory.getNwTeamEffectivePlayerAmountOnTerritory().get(defenderTeam);
+            addTeamScore(defenderTeam, score);
+            if (players != null) {
+                for (Player player : players) {
+                    addPlayerScore(player, score);
                 }
-                addTeamScore(capturePoint.getOwnerTeam(), score);
+            }
+        }
+    }
+
+    private void handleDamageScore() {
+        NwTeam defenderTeam = territory.getOwnerTeam();
+
+        List<Map.Entry<Territory, Integer>> damageList = objectiveSiege.getCapturePointsDamagePerSecond().entrySet().stream().filter(territoryIntegerEntry -> (territoryIntegerEntry.getKey().getOwnerTeam() != null && territoryIntegerEntry.getKey().getOwnerTeam() != defenderTeam && territoryIntegerEntry.getValue() > 0)).collect(Collectors.toList());
+
+        if (!damageList.isEmpty()) {
+            damageList.forEach(territoryIntegerEntry -> {
+                NwTeam pointOwner = territoryIntegerEntry.getKey().getOwnerTeam();
+                Set<Player> players = territory.getNwTeamEffectivePlayerAmountOnTerritory().get(pointOwner);
+                int score = 5 * territoryIntegerEntry.getValue();
+                addTeamScore(defenderTeam, score);
                 if (players != null) {
                     for (Player player : players) {
                         addPlayerScore(player, score);
                     }
                 }
-            }
-        });
-
-
+            });
+        }
     }
 
     public void updateTeamContributionPerSecond(List<Territory> controlPointList) {
@@ -124,23 +144,25 @@ public class BattleSiege extends Battle {
         message = message.replaceAll("\\[territory_battle_health]", String.valueOf(currentHealth));
         message = message.replaceAll("\\[territory_battle_health_percent]", String.valueOf((int) ((float) currentHealth / objectiveSiege.getMaxHealth() * 100)));
 
-        List<List<Integer>> pointPerSecondList = objectiveSiege.getCapturePointsDamageRegenPerSecond().entrySet().stream().filter(territoryListEntry ->
+        int regenPerSecond = objectiveSiege.getCapturePointsRegenPerSecond().entrySet().stream().filter(territoryListEntry ->
                 (territoryListEntry.getKey().getOwnerTeam() == getAdvantagedTeam())
-        ).map(Map.Entry::getValue).collect(Collectors.toList());
+        ).map(Map.Entry::getValue).mapToInt(value -> value).sum();
+        int damagePerSecond = objectiveSiege.getCapturePointsDamagePerSecond().entrySet().stream().filter(territoryListEntry ->
+                (territoryListEntry.getKey().getOwnerTeam() == getAdvantagedTeam())
+        ).map(Map.Entry::getValue).mapToInt(value -> value).sum();
 
-        int damagePerSecond = pointPerSecondList.stream().mapToInt(value -> value.get(0)).sum();
-        int regenPerSecond = pointPerSecondList.stream().mapToInt(value -> value.get(1)).sum();
-
-        int timeLeft = 0;
         String timeLeftStr = " - ";
+        int deltaHealth = regenPerSecond - damagePerSecond;
 
         if (getAdvantagedTeam() != null && isBattleStarted()) {
-            if (getAdvantagedTeam() == territory.getOwnerTeam() && regenPerSecond > 0) { //defend
-                timeLeft = (objectiveSiege.getMaxHealth() - getCurrentHealth()) / regenPerSecond;
-            } else if (damagePerSecond > 0) {
-                timeLeft = getCurrentHealth() / damagePerSecond;
+            int timeLeft;
+            if (getAdvantagedTeam() == territory.getOwnerTeam() && deltaHealth > 0) { //defend
+                timeLeft = (objectiveSiege.getMaxHealth() - getCurrentHealth()) / deltaHealth;
+                timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft * 1000L);
+            } else if (deltaHealth < 0) {
+                timeLeft = getCurrentHealth() / deltaHealth;
+                timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft * 1000L);
             }
-            timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft * 1000L);
         }
 
         message = message.replaceAll("\\[territory_battle_time_left]", timeLeftStr);

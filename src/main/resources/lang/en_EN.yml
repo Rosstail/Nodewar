@@ -235,34 +235,9 @@ commands:
     check:
       desc: "Check status of a territory"
       result:
-        - "[territory_id] - [territory_display]&r &8:&r"
-        - "  Info:"
-        - "    * Type &8:&r [territory_type]&r"
-        - "    * Protected &8:&r [territory_protected]&r"
-        - "    * Owner &8:&r {[territory_team_color]}[territory_team_display]&r"
+        - "[territory_description]"
         - "[territory_objective_description]"
-        - "  Current battle&d:"
-        - "    * &eStatus&d:&r [territory_battle_status]"
-        - "    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
-        - "    * &eHealth&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
-        - "    * &eTime left&d:&r [territory_battle_time_left]"
-        - "  Previous battle&d:"
-        - "    * &eWinner&d:&r [territory_battle_winner_color_display]"
-      result-other:
-        - "[territory_id] - [territory_display]&r &8:&r"
-        - "  Info:"
-        - "    * World &8:&r [territory_world]&r"
-        - "    * Type &8:&r [territory_type]&r"
-        - "    * Protected &8:&r [territory_protected]&r"
-        - "    * Owner &8:&r {[territory_team_color]}[territory_team_display]&r"
-        - "[territory_objective_description]"
-        - "  Current battle&d:"
-        - "    * &eStatus&d:&r [territory_battle_status]"
-        - "    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
-        - "    * &eHealth&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
-        - "    * &eTime left&d:&r [territory_battle_time_left]"
-        - "  Previous battle&d:"
-        - "    * &eWinner&d:&r [territory_battle_winner_color_display]"
+        - "[territory_battle_description]"
       result-not-on-territory: "You are not standing on a territory"
       result-on-multiple-territory: "You are standing on multiple territories: please select one of them: [territories]"
   reload:
@@ -295,27 +270,42 @@ team:
     enemy: "&cEnemy"
 
 territory:
+  description:
+    - "[territory_id] - [territory_display]&r &d:"
+    - "&r  Info:"
+    - "&r    * World &d:&r [territory_world]"
+    - "&r    * Type &d:&r [territory_type]&r"
+    - "&r    * Protected &d:&r [territory_protected]&r"
+    - "&r    * Owner &d:&r {[territory_team_color]}[territory_team_display]&r"
   objective:
     none:
       description:
-        - "  Objective: NONE"
+        - "  Objective&d: &7NONE&r"
     control:
       description:
-        - "  Objective: CONTROL"
-        - "  - &5Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
+        - "  Objective&d: &9CONTROL"
+        - "&r  - &5Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
     siege:
       description:
-        - "  Objective: SIEGE"
-        - "    Capture points:"
+        - "  Objective&d: &cSIEGE"
+        - "&r    Capture points&d:"
         - "[line_capturepoint]"
-      line-capturepoint: "      > [territory_objective_capturepoint_[index]_display]: [territory_objective_capturepoint_[index]_team_color_display]&r"
+      line-capturepoint: "&r      > [territory_objective_capturepoint_[index]_display]: [territory_objective_capturepoint_[index]_team_color_display]&r"
     koth:
       description:
-        - "  Objective: KOTH"
-        - "  *  Capture points:"
+        - "  Objective&d: &6KOTH"
+        - "&r  *  Capture points&d:"
         - "[line_capturepoint]"
-      line-capturepoint: "      > [territory_objective_capturepoint_[index]_display]: [territory_objective_capturepoint_[index]_team_color_display]&r"
+      line-capturepoint: "&r      > [territory_objective_capturepoint_[index]_display]: [territory_objective_capturepoint_[index]_team_color_display]&r"
   battle:
+    description:
+      - "  Current battle&d:"
+      - "&r    * &eStatus&d:&r [territory_battle_status]"
+      - "&r    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
+      - "&r    * &eHealth&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
+      - "&r    * &eTime left&d:&r [territory_battle_time_left]"
+      - "  Previous battle&d:"
+      - "&r    * &eWinner&d:&r [territory_battle_winner_color_display]"
     status:
       waiting: "&5Waiting"
       ongoing: "&eOngoing"

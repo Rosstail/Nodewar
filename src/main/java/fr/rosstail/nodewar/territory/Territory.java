@@ -362,6 +362,8 @@ public class Territory {
     }
 
     public String adaptMessage(String message) {
+        message = message.replaceAll("\\[territory_description]", LangManager.getMessage(LangMessage.TERRITORY_DESCRIPTION));
+        message = message.replaceAll("\\[territory_battle_description]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_DESCRIPTION));
         message = message.replaceAll("\\[territory_id]", String.valueOf(territoryModel.getId()));
         message = message.replaceAll("\\[territory_prefix]", territoryModel.getPrefix());
         message = message.replaceAll("\\[territory_suffix]", territoryModel.getSuffix());
