@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.team;
 
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
 import fr.rosstail.nodewar.permissionmannager.PermissionManagerHandler;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
@@ -9,6 +10,7 @@ import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TeamRelation;
 import fr.rosstail.nodewar.team.relation.TeamRelationManager;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
+import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -80,6 +82,9 @@ public class TeamDataManager {
         )).collect(Collectors.toList());
         TeamRelationManager.getRelationArrayList().removeAll(teamRelationList);
 
+        TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory -> territory.getOwnerTeam() == team).collect(Collectors.toList()).forEach(territory -> {
+            Bukkit.getServer().getPluginManager().callEvent(new TerritoryOwnerNeutralizeEvent(territory, null, null));
+        });
 
         PermissionManagerHandler.deleteGroup(teamName);
         StorageManager.getManager().deleteTeamModel(team.getModel().getId());
