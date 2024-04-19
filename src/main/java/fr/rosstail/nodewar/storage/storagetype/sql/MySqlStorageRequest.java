@@ -25,7 +25,7 @@ public class MySqlStorageRequest extends SqlStorageRequest {
                 " team_id INTEGER NOT NULL," +
                 " player_rank INTEGER NOT NULL," +
                 " join_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-                " FOREIGN KEY (player_id) REFERENCES " + playerTableName + "(id) ON DELETE CASCADE" +
+                " FOREIGN KEY (player_id) REFERENCES " + playerTableName + "(id) ON DELETE CASCADE," +
                 " FOREIGN KEY (team_id) REFERENCES " + teamTableName + "(id) ON DELETE CASCADE" +
                 ");";
 
