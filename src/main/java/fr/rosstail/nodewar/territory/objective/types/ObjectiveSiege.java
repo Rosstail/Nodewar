@@ -193,6 +193,19 @@ public class ObjectiveSiege extends Objective {
         Territory territory = super.territory;
         BattleSiege currentBattleSiege = (BattleSiege) territory.getCurrentBattle();
 
+        currentBattleSiege.getTeamScoreMap().entrySet().stream()
+                .filter(nwTeamIntegerEntry -> nwTeamIntegerEntry.getKey() != winnerTeam && nwTeamIntegerEntry.getKey() != territory.getOwnerTeam())
+                .forEach(nwTeamIntegerEntry -> {
+                    AdaptMessage.getAdaptMessage().alertTeam(nwTeamIntegerEntry.getKey(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
+                });
+        if (winnerTeam == territory.getOwnerTeam()) {
+            AdaptMessage.getAdaptMessage().alertTeam(territory.getOwnerTeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_VICTORY), territory, true);
+            AdaptMessage.getAdaptMessage().alertTeam(winnerTeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
+        } else {
+            AdaptMessage.getAdaptMessage().alertTeam(winnerTeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DEFEAT), territory, true);
+            AdaptMessage.getAdaptMessage().alertTeam(territory.getOwnerTeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_VICTORY), territory, true);
+        }
+
         Map<NwTeam, Integer> teamPositionMap = new HashMap<>();
         if (winnerTeam != null) {
             teamPositionMap.put(winnerTeam, 1);
@@ -225,6 +238,13 @@ public class ObjectiveSiege extends Objective {
         currentBattle.updateTeamContributionPerSecond(controlPointList);
 
         if (currentAdvantage != newAdvantage) {
+            if (newAdvantage == territory.getOwnerTeam()) {
+                AdaptMessage.getAdaptMessage().alertTeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
+                AdaptMessage.getAdaptMessage().alertTeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
+            } else {
+                AdaptMessage.getAdaptMessage().alertTeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
+                AdaptMessage.getAdaptMessage().alertTeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
+            }
             TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantage, null);
             Bukkit.getPluginManager().callEvent(advantageChangeEvent);
 

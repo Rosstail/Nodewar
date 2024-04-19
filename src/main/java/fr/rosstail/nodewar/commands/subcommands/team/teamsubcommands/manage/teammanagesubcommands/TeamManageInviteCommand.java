@@ -69,7 +69,7 @@ public class TeamManageInviteCommand extends TeamManageSubCommand {
 
 
         if (playerNwTeam == null) {
-            senderPlayer.sendMessage("Your have no team");
+            senderPlayer.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));
             return;
         }
 
@@ -101,9 +101,9 @@ public class TeamManageInviteCommand extends TeamManageSubCommand {
         }
 
         if (TeamDataManager.getTeamDataManager().invite(targetPlayer, playerNwTeam)) {
-            senderPlayer.sendMessage("Invitation sent");
+            senderPlayer.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_SENT));
         } else {
-            senderPlayer.sendMessage("impossible invitation");
+            senderPlayer.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_RESULT_IGNORE));
         }
     }
 

@@ -113,19 +113,22 @@ public class TeamDeployCommand extends TeamSubCommand {
 
         territory = teleportTerritoryList.stream().filter(territory1 -> territory1.getModel().getName().equalsIgnoreCase(territoryName)).findFirst().get();
 
+        List<ProtectedRegion> teleportTerritoryRegionList = territory.getProtectedRegionList().stream().filter(region ->
+                                region.getFlags().containsKey(Flags.TELE_LOC)).collect(Collectors.toList());
+
         String finalTerritoryRegionName = territoryRegionName;
         ProtectedRegion protectedRegion;
         if (territoryRegionName != null) {
-            if (territory.getProtectedRegionList().stream().noneMatch(protectedRegion1 -> protectedRegion1.getId().equalsIgnoreCase(finalTerritoryRegionName))) {
+            if (teleportTerritoryRegionList.stream().noneMatch(protectedRegion1 -> protectedRegion1.getId().equalsIgnoreCase(finalTerritoryRegionName))) {
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DEPLOY_FAILURE_REGION));
                 return;
             }
 
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DEPLOY_REGION));
-            protectedRegion = territory.getProtectedRegionList().stream().filter(protectedRegion1 -> protectedRegion1.getId().equalsIgnoreCase(finalTerritoryRegionName)).findFirst().get();
+            protectedRegion = teleportTerritoryRegionList.stream().filter(protectedRegion1 -> protectedRegion1.getId().equalsIgnoreCase(finalTerritoryRegionName)).findFirst().get();
         } else {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DEPLOY_TERRITORY));
-            protectedRegion = territory.getProtectedRegionList().get(0);
+            protectedRegion = teleportTerritoryRegionList.get((int) (Math.random() * teleportTerritoryRegionList.size()));
         }
 
         PlayerInitDeployEvent playerInitDeployEvent = new PlayerInitDeployEvent(senderPlayer, playerNwTeam, territory, protectedRegion);
@@ -148,7 +151,9 @@ public class TeamDeployCommand extends TeamSubCommand {
                 selectedTerritoryName = args[2];
                 Territory selectedTerritory = territoryStream.filter(territory -> (territory.getModel().getName().equalsIgnoreCase(selectedTerritoryName))).findFirst().orElse(null);
                 if (selectedTerritory != null) {
-                    return selectedTerritory.getProtectedRegionList().stream().map(ProtectedRegion::getId).collect(Collectors.toList());
+                    List<ProtectedRegion> teleportTerritoryRegionList = selectedTerritory.getProtectedRegionList().stream().filter(region ->
+                            region.getFlags().containsKey(Flags.TELE_LOC)).collect(Collectors.toList());
+                    return teleportTerritoryRegionList.stream().map(ProtectedRegion::getId).collect(Collectors.toList());
                 }
             }
         }

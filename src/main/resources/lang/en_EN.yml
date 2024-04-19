@@ -83,6 +83,7 @@ commands:
     join:
       desc: "Join an existing nodewar team"
       result: "Joined team"
+      result-uninvited: "This team requires an invite"
     manage:
       desc: "Manage your team."
       color:
@@ -97,10 +98,9 @@ commands:
         result: "your team is now close"
       invite:
         desc: "Invite a player into your team"
-        result-effective: "Relation effective."
-        result-instant: "You declared being [team_relation] with [team_display]."
-        result-unchanged: "Same relation as before. No invite sent."
-        result-blocked: "This team cannot receive team invitations."
+        result: "Invitation sent successfully."
+        result-already: "Already sent an invite to this player."
+        result-ignore: "This player ignore invitations."
       member:
         desc: "Manage players from your team"
         cannot-target-self: "You cannot target yourself !"
@@ -168,6 +168,8 @@ commands:
         invite:
           desc: "Invite a player into selected team"
           result: "Invitation sent successfully."
+          result-already: "Already sent an invite to this player."
+          result-ignore: "This player ignore invitations."
         member:
           desc: "manage members of a team"
           add:
@@ -206,11 +208,13 @@ commands:
             desc: "Set relation with selected team"
             result-invite: "Relation invite sent successfully."
             result-weight: "Relation set."
-            result-ignore: "Same relation. No change."
+            result-ignore: "Target team is not open to requests."
+            result-unchanged: "Same relation. No change."
             result-already: "Already sent the invitation."
           set:
             desc: "Set immediate relation between selected teams"
             result: "Relation set."
+            result-unchanged: "Same relation. No changes"
         disband:
           desc: "Disband selected nodewar team"
           result: "Disbanded team"

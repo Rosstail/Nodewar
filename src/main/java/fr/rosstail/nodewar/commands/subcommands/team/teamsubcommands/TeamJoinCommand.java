@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class TeamJoinCommand extends TeamSubCommand {
 
@@ -78,7 +77,7 @@ public class TeamJoinCommand extends TeamSubCommand {
         playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
 
         if (playerData.getTeam() != null) {
-            sender.sendMessage("You are already on a team");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_ALREADY_IN_TEAM));
             return;
         } else if (args.length < 3) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_BY_PLAYER_ONLY));
@@ -98,7 +97,7 @@ public class TeamJoinCommand extends TeamSubCommand {
                     .filter(nwTeamInvite -> nwTeamInvite.getNwTeam() == nwTeam && nwTeamInvite.getReceiver() == sender)
                     .findFirst().orElse(null);
             if (teamInvite == null) {
-                sender.sendMessage("This team needs an invitation.");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_JOIN_RESULT_UNINVITED));
                 return;
             }
         }
@@ -111,7 +110,9 @@ public class TeamJoinCommand extends TeamSubCommand {
         if (teamInvite != null) {
             TeamDataManager.getTeamDataManager().getTeamInviteHashSet().remove(teamInvite);
         }
-        
+
+        sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_JOIN_RESULT));
+
         teamMemberModel = new TeamMemberModel(nwTeam.getModel().getId(), playerData.getId(), 3, new Timestamp(System.currentTimeMillis()), senderPlayer.getName());
         TeamMember teamMember = new TeamMember(senderPlayer, nwTeam, teamMemberModel);
         StorageManager.getManager().insertTeamMemberModel(teamMemberModel);

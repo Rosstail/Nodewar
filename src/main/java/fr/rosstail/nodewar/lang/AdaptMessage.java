@@ -430,7 +430,7 @@ public class AdaptMessage {
     }
 
     public void alertTeam(NwTeam team, String message, Territory territory, boolean serverWide) {
-        if (team == null) {
+        if (team == null || message == null) {
             return;
         }
 

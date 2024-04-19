@@ -86,12 +86,12 @@ public class TeamCreateCommand extends TeamSubCommand {
         ownerId = playerData.getId();
 
         if (teamDataManager.getTeamOfPlayer(senderPlayer) != null) {
-            sender.sendMessage("You are already on a team");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_ALREADY_IN_TEAM));
             return;
         }
 
         if (teamDataManager.getStringTeamMap().get(teamName) != null) {
-            sender.sendMessage("TeamCreateCommand - This team already exists");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_ALREADY_EXIST));
             return;
         }
 
@@ -101,7 +101,7 @@ public class TeamCreateCommand extends TeamSubCommand {
         }
 
         if (teamDataManager.getStringTeamMap().values().stream().anyMatch(nwTeam -> (nwTeam.getModel().getShortName().equalsIgnoreCase(shortName)))) {
-            sender.sendMessage("short name already exists");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_ALREADY_EXIST));
             return;
         }
 
@@ -115,6 +115,7 @@ public class TeamCreateCommand extends TeamSubCommand {
         playerNwTeam = new NwTeam(teamModel);
         teamMember = new TeamMember(senderPlayer, playerNwTeam, teamMemberModel);
 
+        sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_CREATE_RESULT));
         teamDataManager.addNewTeam(playerNwTeam);
         playerData.setTeam(playerNwTeam);
         playerNwTeam.getModel().getTeamMemberModelMap().put(teamMemberModel.getId(), teamMemberModel);

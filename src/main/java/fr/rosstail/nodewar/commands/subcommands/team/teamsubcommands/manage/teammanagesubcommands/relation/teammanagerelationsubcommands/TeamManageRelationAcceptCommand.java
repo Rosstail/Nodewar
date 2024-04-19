@@ -104,7 +104,7 @@ public class TeamManageRelationAcceptCommand extends TeamManageRelationSubComman
         playerNwTeam.getRelations().remove(senderNwTeam.getModel().getName());
         senderNwTeam.getRelations().remove(playerNwTeam.getModel().getName());
         createNewRelation(senderNwTeam, playerNwTeam, teamRelationInvite.getRelationType());
-        sender.sendMessage("Accepted !");
+        sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_RESULT_EFFECTIVE));
     }
 
     private void createNewRelation(NwTeam senderTeam, NwTeam targetTeam, RelationType newRelationType) {
