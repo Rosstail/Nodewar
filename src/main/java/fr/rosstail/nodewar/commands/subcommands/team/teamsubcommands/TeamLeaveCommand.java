@@ -69,21 +69,21 @@ public class TeamLeaveCommand extends TeamSubCommand {
         nwTeam = playerData.getTeam();
 
         if (nwTeam == null) {
-            sender.sendMessage("You are not on a team");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM));
             return;
         }
 
         teamMember = nwTeam.getMemberMap().get(senderPlayer);
 
         if (teamMember.getRank() == TeamRank.OWNER) {
-            sender.sendMessage("You cannot leave the team while you are his owner");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_LEAVE_RESULT_FAILURE_OWNER));
             return;
         }
 
         StorageManager.getManager().deleteTeamMemberModel(teamMember.getModel().getId());
         nwTeam.getMemberMap().remove(senderPlayer);
         playerData.removeTeam();
-        sender.sendMessage("You successfully left " + nwTeam.getModel().getDisplay() + " team");
+        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_LEAVE_RESULT), nwTeam, senderPlayer) );
     }
 
     @Override

@@ -24,11 +24,11 @@ public class SqlStorageRequest implements StorageRequest {
     protected String password;
     private Connection connection;
 
-    private String playerTableName;
-    private String teamTableName;
-    private String teamMemberTableName;
-    private String teamRelationTableName;
-    private String territoryTableName;
+    protected String playerTableName;
+    protected String teamTableName;
+    protected String teamMemberTableName;
+    protected String teamRelationTableName;
+    protected String territoryTableName;
 
     public SqlStorageRequest(String pluginName) {
         this.pluginName = pluginName;
@@ -133,16 +133,17 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public boolean insertTeamModel(TeamModel model) {
-        String query = "INSERT INTO " + teamTableName + " (name, display, color, is_open, is_relation_open, is_permanent)"
-                + " VALUES (?, ?, ?, ?, ?, ?);";
+        String query = "INSERT INTO " + teamTableName + " (name, display, short, color, is_open, is_relation_open, is_permanent)"
+                + " VALUES (?, ?, ?, ?, ?, ?, ?);";
         String name = model.getName();
         String display = model.getDisplay();
+        String shortName = model.getShortName();
         String teamColor = model.getTeamColor();
         boolean open = model.isOpen();
         boolean openRelation = model.isOpenRelation();
         boolean permanent = model.isPermanent();
         try {
-            int id = executeSQLUpdate(query, name, display, teamColor, open, openRelation, permanent);
+            int id = executeSQLUpdate(query, name, display, shortName, teamColor, open, openRelation, permanent);
             model.setId(id);
             return true;
         } catch (SQLException e) {
@@ -569,7 +570,7 @@ public class SqlStorageRequest implements StorageRequest {
     @Override
     public void deleteTeamMemberModel(int playerId) {
         String query = "DELETE FROM " + teamMemberTableName +
-                " WHERE id = ?";
+                " WHERE player_id = ?";
         try {
             executeSQLUpdate(query, playerId);
         } catch (SQLException e) {

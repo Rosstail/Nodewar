@@ -3,8 +3,11 @@ package fr.rosstail.nodewar.territory.objective.objectivereward;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
+import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
+import fr.rosstail.nodewar.team.TeamDataManager;
+import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TeamRelationManager;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
@@ -120,7 +123,16 @@ public class ObjectiveReward {
     private void rewardPlayer(Player player, Battle battle, Map<NwTeam, Integer> teamPositionMap, Territory territory, String command) {
         AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
         PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
-        NwTeam playerTeam = playerData.getTeam();
+        NwTeam playerTeam;
+        if (player.isOnline()) {
+            playerTeam = playerData.getTeam();
+        } else {
+            TeamMemberModel offlineTeamMemberModel = StorageManager.getManager().selectTeamMemberModelByUsername(player.getName());
+            if (offlineTeamMemberModel == null) {
+                return;
+            }
+            playerTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().values().stream().filter(nwTeam -> nwTeam.getModel().getId() == offlineTeamMemberModel.getTeamId()).findAny().orElse(null); ;
+        }
 
         if (playerTeam != null && shallRewardPlayer(territory, battle, teamPositionMap, player, playerTeam)) {
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptMessage(command.replaceAll("\\[player]", player.getName())));

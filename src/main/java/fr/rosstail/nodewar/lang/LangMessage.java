@@ -53,6 +53,7 @@ public enum LangMessage {
     COMMANDS_TEAM_JOIN_RESULT("commands.team.join.result", false, false),
     COMMANDS_TEAM_LEAVE_DESC("commands.team.leave.desc", false, false),
     COMMANDS_TEAM_LEAVE_RESULT("commands.team.leave.result", false, false),
+    COMMANDS_TEAM_LEAVE_RESULT_FAILURE_OWNER("commands.team.leave.result-failure-owner", false, false),
     COMMANDS_TEAM_MANAGE_DESC("commands.team.manage.desc", false, false),
     COMMANDS_TEAM_MANAGE_COLOR_DESC("commands.team.manage.color.desc", false, false),
     COMMANDS_TEAM_MANAGE_COLOR_RESULT("commands.team.manage.color.result", false, false),

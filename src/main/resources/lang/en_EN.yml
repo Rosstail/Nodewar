@@ -145,6 +145,7 @@ commands:
     leave:
       desc: "Leave your current team"
       result: "Left team"
+      result-failure-owner: "You cannot leave the team as the owner !"
   admin:
     desc: "Admin commands"
     team:
