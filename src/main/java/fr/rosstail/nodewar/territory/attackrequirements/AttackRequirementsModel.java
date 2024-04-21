@@ -7,14 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttackRequirementsModel implements Cloneable {
-    private List<String> previousTerritoryNameList;
+    private String startPointStr;
+    private List<String> targetNameList;
 
     public AttackRequirementsModel(ConfigurationSection section) {
         if (section == null) {
             return;
         }
 
-        this.previousTerritoryNameList = section.getStringList("previous-territories");
+        this.startPointStr = section.getString("startpoint");
+        this.targetNameList = section.getStringList("targets");
     }
 
     /**
@@ -24,30 +26,44 @@ public class AttackRequirementsModel implements Cloneable {
      */
     public AttackRequirementsModel(AttackRequirementsModel childAtkReqModel, @NotNull AttackRequirementsModel parentAtkReqModel) {
         AttackRequirementsModel clonedParentModel = parentAtkReqModel.clone();
-        if (parentAtkReqModel.getPreviousTerritoryNameList() != null) {
-            this.previousTerritoryNameList = new ArrayList<>(clonedParentModel.getPreviousTerritoryNameList());
+
+        if (childAtkReqModel.getStartPointStr() != null) {
+            this.startPointStr = childAtkReqModel.getStartPointStr();
+        } else {
+            this.startPointStr = clonedParentModel.getStartPointStr();
         }
 
-        if (childAtkReqModel.previousTerritoryNameList != null) {
-            this.previousTerritoryNameList = new ArrayList<>(childAtkReqModel.getPreviousTerritoryNameList());
+        if (childAtkReqModel.targetNameList != null) {
+            this.targetNameList = new ArrayList<>(childAtkReqModel.getTargetNameList());
+        } else if (clonedParentModel.targetNameList != null) {
+            this.targetNameList = new ArrayList<>(clonedParentModel.getTargetNameList());
         }
+
     }
 
-    public List<String> getPreviousTerritoryNameList() {
-        return previousTerritoryNameList;
+    public String getStartPointStr() {
+        return startPointStr;
     }
 
-    public void setPreviousTerritoryNameList(List<String> previousTerritoryNameList) {
-        this.previousTerritoryNameList = previousTerritoryNameList;
+    public void setStartPointStr(String startPointStr) {
+        this.startPointStr = startPointStr;
+    }
+
+    public List<String> getTargetNameList() {
+        return targetNameList;
+    }
+
+    public void setTargetNameList(List<String> targetNameList) {
+        this.targetNameList = targetNameList;
     }
 
     @Override
     public AttackRequirementsModel clone() {
         try {
             AttackRequirementsModel clone = (AttackRequirementsModel) super.clone();
-            // DONE: copy mutable state here, so the clone can't change the internals of the original
 
-            clone.setPreviousTerritoryNameList(getPreviousTerritoryNameList());
+            clone.setStartPointStr(getStartPointStr());
+            clone.setTargetNameList(getTargetNameList());
 
             return clone;
         } catch (CloneNotSupportedException e) {

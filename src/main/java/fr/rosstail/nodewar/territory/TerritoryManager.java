@@ -217,8 +217,8 @@ public class TerritoryManager {
     }
 
     public void stopAllObjective() {
-        getTerritoryMap().forEach((s, territory) -> {
-            territory.getObjective().stopObjective();
+        getTerritoryMap().entrySet().stream().filter(stringTerritoryEntry -> stringTerritoryEntry.getValue().getObjective() != null).collect(Collectors.toList()).forEach(stringTerritoryEntry -> {
+            stringTerritoryEntry.getValue().getObjective().stopObjective();
         });
     }
 }

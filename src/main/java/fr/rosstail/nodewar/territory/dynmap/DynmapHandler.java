@@ -19,6 +19,7 @@ import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -26,9 +27,7 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.dynmap.DynmapAPI;
-import org.dynmap.markers.AreaMarker;
-import org.dynmap.markers.MarkerAPI;
-import org.dynmap.markers.MarkerSet;
+import org.dynmap.markers.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -80,19 +79,13 @@ public class DynmapHandler {
             } else {
                 fillColor = AdaptMessage.getAdaptMessage().getChatColoHexValue(teamColor);
             }
-            /*if (!territory.getTerritoryType().isUnderProtection()) {
-                strokeOpacity = 0.1f;
-            } else if (territory) {
-                strokeWeight = 7;
-                if (territory.isNeedLinkToNode()) {
-                    strokeColor = "#D4AF37";
-                } else {
-                    strokeColor = "#B87333";
-                }
-            } else {
-                strokeWeight = 3;
-                strokeColor = "#CACACA";
-            }*/
+            if (ConfigData.getConfigData().dynmap.use3DRegions) {
+                strokeColor = fillColor;
+                strokeWeight = 5;
+            }
+            if (territory.getModel().isUnderProtection()) {
+                strokeColor = "#FFFFFF";
+            }
             label = ChatColor.stripColor(territory.getModel().getDisplay());
         }
     }
@@ -180,7 +173,7 @@ public class DynmapHandler {
         } else {  /* Unsupported type */
             return;
         }
-        String markerid = world.getName() + "_" + id;
+        String markerid = world.getName() + "_" + id + "_" + "zone";
         AreaMarker m = resAreas.remove(markerid); /* Existing area? */
         if (m == null) {
             m = set.createAreaMarker(markerid, name, false, world.getName(), x, z, false);
@@ -384,6 +377,14 @@ public class DynmapHandler {
         worldList.forEach((world) -> {
             territoryManager.getTerritoryListPerWorld(world).forEach((territory) -> {
                 territoryAreaStyleMap.put(territory, new AreaStyle(territory));
+                if (territory.getCenter() != null) {
+                    createTerritoryMarker(territory);
+                    territory.getAttackRequirements().getTargetTerritoryList().forEach(targetTerritory -> {
+                        if (targetTerritory.getDynmapInfo().isDrawLine()) {
+                            createArrowBetweenRegions(territory, targetTerritory);
+                        }
+                    });
+                }
             });
         });
 
@@ -417,5 +418,87 @@ public class DynmapHandler {
 
     public void pauseRender() {
         setPause(true);
+    }
+
+    public void createTerritoryMarker(Territory territory) {
+        if (this.dynmapAPI == null && territory.getDynmapInfo().getTerritoryDynmapModel().getMarker() != null) {
+            return;
+        }
+
+        /* Now, add marker set for mobs (make it transient) */
+        set = markerAPI.getMarkerSet("nodewar.markerset");
+        if (set == null)
+            set = markerAPI.createMarkerSet("nodewar.markerset", LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL), null, false);
+        else
+            set.setMarkerSetLabel(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL));
+        if (set == null) {
+            AdaptMessage.print("Error creating marker set", AdaptMessage.prints.WARNING);
+            return;
+        }
+
+        Location territoryCenter = territory.getCenter();
+
+        set.createMarker(null, ChatColor.stripColor(territory.getModel().getDisplay()), territoryCenter.getWorld().getName(),
+                territoryCenter.getX(), territoryCenter.getY(), territoryCenter.getZ(), dynmapAPI.getMarkerAPI().getMarkerIcon(territory.getDynmapInfo().getTerritoryDynmapModel().getMarker()), false);
+    }
+
+    public static int hexToDecimal(String hex) {
+        // Supprime le caractère '#' s'il est présent
+        hex = hex.replace("#", "");
+
+        // Récupère les valeurs de chaque composante
+        int red = Integer.parseInt(hex.substring(0, 2), 16);
+        int green = Integer.parseInt(hex.substring(2, 4), 16);
+        int blue = Integer.parseInt(hex.substring(4, 6), 16);
+
+        // Concatène les valeurs de chaque composante pour former un entier
+        return (red << 16) | (green << 8) | blue;
+    }
+
+    public void createArrowBetweenRegions(Territory territory, Territory targetTerritory) {
+        if (this.dynmapAPI == null) {
+            return;
+        }
+
+        /* Now, add marker set for mobs (make it transient) */
+        set = markerAPI.getMarkerSet("nodewar.markerset");
+        if (set == null)
+            set = markerAPI.createMarkerSet("nodewar.markerset", LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL), null, false);
+        else
+            set.setMarkerSetLabel(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL));
+        if (set == null) {
+            AdaptMessage.print("Error creating marker set", AdaptMessage.prints.WARNING);
+            return;
+        }
+
+        double[] x = new double[2];
+        double[] y = new double[2];
+        double[] z = new double[2];
+        double[] aroundY = new double[2];
+
+        x[0] = territory.getCenter().getX();
+        x[1] = targetTerritory.getCenter().getX();
+        y[0] = territory.getCenter().getY() + 3;
+        y[1] = targetTerritory.getCenter().getY() - 3;
+        z[0] = territory.getCenter().getZ();
+        z[1] = targetTerritory.getCenter().getZ();
+
+        aroundY[0] = y[0] - 0.1F;
+        aroundY[1] = y[1] - 0.1F;
+
+        PolyLineMarker lineMarker = set.createPolyLineMarker(null, ChatColor.stripColor(territory.getModel().getDisplay() + " -> " + targetTerritory.getModel().getDisplay()), true, territory.getModel().getWorldName(), x, y, z, false);
+        PolyLineMarker aroundLineMarker = set.createPolyLineMarker(null, ChatColor.stripColor(territory.getModel().getDisplay() + " -> " + targetTerritory.getModel().getDisplay()), true, territory.getModel().getWorldName(), x, aroundY, z, false);
+
+        if (aroundLineMarker != null) {
+            aroundLineMarker.setLineStyle(8, 0.5f, 0x000000);
+        }
+        if (lineMarker != null) {
+            NwTeam nwTeam = territory.getOwnerTeam();
+            if (nwTeam != null) {
+                lineMarker.setLineStyle(5, 1f, hexToDecimal(nwTeam.getModel().getTeamColor()));
+            } else {
+                lineMarker.setLineStyle(5, 1f, hexToDecimal(ConfigData.getConfigData().team.noneColor));
+            }
+        }
     }
 }

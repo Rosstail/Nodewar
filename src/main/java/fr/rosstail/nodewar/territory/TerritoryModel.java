@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.territory;
 
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
+import fr.rosstail.nodewar.territory.dynmap.TerritoryDynmapModel;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class TerritoryModel {
     private String objectiveTypeName;
     private TerritoryBossBarModel bossBarModel;
     private AttackRequirementsModel attackRequirementsModel;
+    private TerritoryDynmapModel territoryDynmapModel;
     private Map<String, TerritoryCommandsModel> territoryCommandsModelMap = new HashMap<>();
 
     public String getTypeName() {
@@ -138,6 +140,14 @@ public class TerritoryModel {
 
     public void setAttackRequirementsModel(AttackRequirementsModel attackRequirementsModel) {
         this.attackRequirementsModel = attackRequirementsModel;
+    }
+
+    public TerritoryDynmapModel getDynmapModel() {
+        return territoryDynmapModel;
+    }
+
+    public void setDynmapModel(TerritoryDynmapModel territoryDynmapModel) {
+        this.territoryDynmapModel = territoryDynmapModel;
     }
 
     public Map<String, TerritoryCommandsModel> getTerritoryCommandsModelMap() {

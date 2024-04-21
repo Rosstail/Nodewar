@@ -4,6 +4,7 @@ package fr.rosstail.nodewar.territory;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
+import fr.rosstail.nodewar.territory.dynmap.TerritoryDynmapModel;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
@@ -39,6 +40,7 @@ public class TerritoryType {
     private ObjectiveModel objectiveModel;
     private TerritoryBossBarModel territoryBossBarModel;
     private AttackRequirementsModel attackRequirementsModel;
+    private TerritoryDynmapModel territoryDynmapModel;
 
     private List<TerritoryCommandsModel> territoryCommandsModelList = new ArrayList<>();
 
@@ -62,6 +64,12 @@ public class TerritoryType {
             attackRequirementsModel = new AttackRequirementsModel(new AttackRequirementsModel(section.getConfigurationSection("attack-requirements")), parentType.attackRequirementsModel);
         } else {
             attackRequirementsModel = new AttackRequirementsModel(section.getConfigurationSection("attack-requirements"));
+        }
+
+        if (parentType != null) {
+            territoryDynmapModel = new TerritoryDynmapModel(new TerritoryDynmapModel(section.getConfigurationSection("dynmap")), parentType.territoryDynmapModel);
+        } else {
+            territoryDynmapModel = new TerritoryDynmapModel(section.getConfigurationSection("dynmap"));
         }
 
         if (parentType != null) {
@@ -177,6 +185,14 @@ public class TerritoryType {
 
     public void setAttackRequirementsModel(AttackRequirementsModel attackRequirementsModel) {
         this.attackRequirementsModel = attackRequirementsModel;
+    }
+
+    public TerritoryDynmapModel getTerritoryDynmapModel() {
+        return territoryDynmapModel;
+    }
+
+    public void setTerritoryDynmapModel(TerritoryDynmapModel territoryDynmapModel) {
+        this.territoryDynmapModel = territoryDynmapModel;
     }
 
     public List<TerritoryCommandsModel> getTerritoryCommandsModelList() {

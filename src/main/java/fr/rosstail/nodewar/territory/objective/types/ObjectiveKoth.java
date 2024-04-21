@@ -72,8 +72,6 @@ public class ObjectiveKoth extends Objective {
         for (String s : controlPointStringSet) {
             if (TerritoryManager.getTerritoryManager().getTerritoryMap().containsKey(s)) {
                 Territory territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(s);
-
-
                 values.put(territory, controlPointValueMap.get(s));
             }
         }
@@ -153,10 +151,10 @@ public class ObjectiveKoth extends Objective {
         Map<NwTeam, Integer> teamTotalHoldTime = new HashMap<>();
 
         for (Map.Entry<Territory, Integer> entry : getCapturePointsValuePerSecond().entrySet()) {
-            Territory territory = entry.getKey();
+            Territory capturePoint = entry.getKey();
             int time = entry.getValue();
-            NwTeam owner = territory.getOwnerTeam();
-            if (owner != null && maxHoldTimeTeam.contains(owner)) {
+            NwTeam owner = capturePoint.getOwnerTeam();
+            if (owner != null && maxHoldTimeTeam.contains(owner) && capturePoint.getAttackRequirements().checkAttackRequirements(owner) ) {
                 teamTotalHoldTime.put(owner, teamTotalHoldTime.getOrDefault(owner, 0) + time);
             }
         }
@@ -171,12 +169,11 @@ public class ObjectiveKoth extends Objective {
         if (!battleKoth.isBattleWaiting()) {
             return;
         }
-        if (controlPointList.stream().noneMatch(capturePoint -> (capturePoint.getOwnerTeam() != null && capturePoint.getOwnerTeam() != territory.getOwnerTeam()))) {
+        if (controlPointList.stream().noneMatch(capturePoint -> (capturePoint.getOwnerTeam() != null && capturePoint.getOwnerTeam() != territory.getOwnerTeam() && territory.getAttackRequirements().checkAttackRequirements(capturePoint.getOwnerTeam()) ))) {
             return;
         }
 
         battleKoth.setBattleOngoing();
-
         AdaptMessage.getAdaptMessage().alertTeam(territory.getOwnerTeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
     }
 

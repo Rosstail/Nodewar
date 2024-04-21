@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.territory;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -21,12 +22,15 @@ import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.battle.BattleManager;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBar;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
+import fr.rosstail.nodewar.territory.dynmap.TerritoryDynmap;
+import fr.rosstail.nodewar.territory.dynmap.TerritoryDynmapModel;
 import fr.rosstail.nodewar.territory.objective.Objective;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommands;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
@@ -55,6 +59,7 @@ public class Territory {
     private final TerritoryBossBar territoryBossBar;
 
     private AttackRequirements attackRequirements;
+    private TerritoryDynmap dynmapInfo;
 
     private final List<Player> players = new ArrayList<>();
 
@@ -99,6 +104,12 @@ public class Territory {
         territoryModel.setAttackRequirementsModel(sectionAttackRequirementsModel);
 
         attackRequirements = new AttackRequirements(this, sectionAttackRequirementsModel, territoryType.getAttackRequirementsModel());
+
+        ConfigurationSection dynmapSection = section.getConfigurationSection("dynmap");
+        TerritoryDynmapModel territoryDynmapModel = new TerritoryDynmapModel(dynmapSection);
+        territoryModel.setDynmapModel(territoryDynmapModel);
+
+        dynmapInfo = new TerritoryDynmap(this, territoryDynmapModel, territoryType.getTerritoryDynmapModel());
 
         updateRegionList();
 
@@ -359,6 +370,44 @@ public class Territory {
         territoryCommandsList.forEach(territoryCommands -> {
             territoryCommands.setNextOccurrence(System.currentTimeMillis() + territoryCommands.getTerritoryCommandsModel().getInitialDelay());
         });
+    }
+
+    public Location getCenter() {
+        if (protectedRegionList.isEmpty()) {
+            return null;
+        }
+        ProtectedRegion firstRegion = protectedRegionList.get(0);
+
+        BlockVector3 min = firstRegion.getMinimumPoint();
+        BlockVector3 max = firstRegion.getMaximumPoint();
+
+        double centerX;
+
+        if (dynmapInfo.isxSet()) {
+            centerX = dynmapInfo.getX();
+        } else {
+            centerX = (min.getX() + max.getX()) / 2.0;
+        }
+        double centerY;
+
+        if (dynmapInfo.isySet()) {
+            centerY = dynmapInfo.getY();
+        } else {
+            centerY = (min.getY() + max.getY()) / 2.0;
+        }
+        double centerZ;
+
+        if (dynmapInfo.iszSet()) {
+            centerZ = dynmapInfo.getZ();
+        } else {
+            centerZ = (min.getZ() + max.getZ()) / 2.0;
+        }
+
+        return new Location(world, centerX, centerY, centerZ);
+    }
+
+    public TerritoryDynmap getDynmapInfo() {
+        return dynmapInfo;
     }
 
     public String adaptMessage(String message) {
