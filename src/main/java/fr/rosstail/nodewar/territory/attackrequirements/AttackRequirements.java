@@ -41,13 +41,12 @@ public class AttackRequirements {
     }
 
     public boolean checkAttackRequirements(NwTeam nwTeam) {
+        if (territory.getOwnerTeam() == nwTeam) {
+            return true;
+        }
         List<Territory> ownedTerritoryList = TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(teamTerritory ->
                 (teamTerritory.getWorld() == territory.getWorld() && teamTerritory.getOwnerTeam() == nwTeam)).collect(Collectors.toList());
-        System.out.println(territory.getModel().getName() + " " + nwTeam.getModel().getName());
 
-        for (Territory territory1 : ownedTerritoryList) {
-            System.out.println(territory1.getModel().getName());
-        }
         if (startPoint) { //Cannot capture another startpoint if not targeted by other territory
             if (!ownedTerritoryList.isEmpty() &&
                     ownedTerritoryList.stream().noneMatch(territory1 -> territory1.getAttackRequirements().getTargetTerritoryList().contains(territory))) {
@@ -56,37 +55,42 @@ public class AttackRequirements {
             }
         }
 
+        ownedTerritoryList.forEach(territory1 -> {
+            System.out.println(" > " + territory1.getModel().getName() + " is startpoint " + territory1.getAttackRequirements().startPoint);
+        });
+
         List<Territory> startPointList = ownedTerritoryList.stream().filter(
                 territory1 -> (territory1.getAttackRequirements().isStartPoint())
         ).collect(Collectors.toList());
 
         for (Territory startPoint : startPointList) {
-            return checkAttackRequirements(nwTeam, startPoint, new ArrayList<>());
+            System.out.println(" > " + startPoint.getModel().getName());
+            return checkAttackRequirements(nwTeam, startPoint, new ArrayList<>(), territory);
         }
         System.err.println("STARTPOINT DEFINITIVE FAIL " + territory.getModel().getName() + " " + nwTeam.getModel().getName());
 
         return false;
     }
 
-    public boolean checkAttackRequirements(NwTeam nwTeam, Territory territoryToCheck, ArrayList<Territory> territoryToIgnoreList) {
+    public boolean checkAttackRequirements(NwTeam nwTeam, Territory territoryToCheck, ArrayList<Territory> territoryToIgnoreList, Territory finalTerritory) {
+        System.out.println("checking " + territoryToCheck.getModel().getName() + " if is  " + finalTerritory.getModel().getName());
+
         territoryToIgnoreList.add(territoryToCheck);
-        if (territory == territoryToCheck) {
+        if (finalTerritory == territoryToCheck) {
             return true;
         }
-        System.out.println("ON AVANCE " + territoryToCheck.getModel().getName() + " " + nwTeam.getModel().getName());
 
         List<Territory> territoryListToCheck = territoryToCheck.getAttackRequirements().getTargetTerritoryList().stream()
                 .filter(territory1 -> (
-                        !territoryToIgnoreList.contains(territory1)
-                                && territory1.getOwnerTeam() == nwTeam
+                        !territoryToIgnoreList.contains(territory1) && territory1.getOwnerTeam() == nwTeam
                 )).collect(Collectors.toList());
 
         for (Territory territory1 : territoryListToCheck) {
-            if (checkAttackRequirements(nwTeam, territory1, new ArrayList<>(territoryToIgnoreList))) {
+            if (checkAttackRequirements(nwTeam, territory1, new ArrayList<>(territoryToIgnoreList), finalTerritory)) {
                 return true;
             }
         }
-        System.out.println("TO CHECK JAAJ FAIL " + territoryToCheck.getModel().getName() + " " + nwTeam.getModel().getName());
+        System.err.println("TO CHECK JAAJ FAIL " + territoryToCheck.getModel().getName() + " " + nwTeam.getModel().getName());
 
         return false;
     }
