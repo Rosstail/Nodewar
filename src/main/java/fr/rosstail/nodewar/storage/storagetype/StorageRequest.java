@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.storage.storagetype;
 
+import fr.rosstail.nodewar.battlefield.BattlefieldModel;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
@@ -58,6 +59,14 @@ public interface StorageRequest {
      * @return if the result is successful
      */
     boolean insertTerritoryModel(TerritoryModel model);
+
+    /**
+     * CREATE
+     * inert battlefield model into storage
+     * @param model the model to insert
+     * @return if the result is successful
+     */
+    boolean insertBattlefieldModel(BattlefieldModel model);
 
     /**
      * READ

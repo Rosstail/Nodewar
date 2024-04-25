@@ -49,46 +49,16 @@ dynmap:
   many-update-delay: 1
   fill-opacity: 80
 
-calendar:
+battlefield:
   wednesday-bf:
+    reset-team: true
+    end-on-battle-end: true
     start:
-      day: wednesday
+      day: "monday"
       time: "18:00"
-      vulnerable: true
-      team: neutral
-      territories:
-        - "garreg-mach"
     end:
-      day: wednesday
+      day: "monday"
       time: "21:00"
-      vulnerable: false
-      territories:
-        - "garreg-mach"
-  friday-bf:
-    start:
-      day: friday
-      time: "20:00"
-      vulnerable: true
-      team: neutral
-      territories:
-        - "garreg-mach"
-    end:
-      day: friday
-      time: "22:00"
-      vulnerable: false
-      territories:
-        - "garreg-mach"
-  sunday-bf:
-    start:
-      day: sunday
-      time: "16:00"
-      vulnerable: true
-      team: neutral
-      territories:
-        - "garreg-mach"
-    end:
-      day: sunday
-      time: "20:00"
-      vulnerable: false
-      territories:
-        - "garreg-mach"
+    territory-types:
+      - "headquarter-koth"
+    territories: []

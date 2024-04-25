@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.storage;
 
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.battlefield.BattlefieldModel;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.storagetype.sql.MongoDbStorageRequest;
 import fr.rosstail.nodewar.storage.storagetype.sql.LiteSqlStorageRequest;
@@ -163,6 +164,22 @@ public class StorageManager {
                 return mongoDBStorageRequest.insertTerritoryModel(model);
             default:
                 return liteSqlDBStorageRequest.insertTerritoryModel(model);
+        }
+    }
+
+    /**
+     * CREATE
+     */
+    public boolean insertBattlefieldModel(BattlefieldModel model) {
+        switch (type) {
+            case "mysql":
+                return mySqlStorageRequest.insertBattlefieldModel(model);
+            case "mariadb":
+                return mariaDBStorageRequest.insertBattlefieldModel(model);
+            case "mongodb":
+                return mongoDBStorageRequest.insertBattlefieldModel(model);
+            default:
+                return liteSqlDBStorageRequest.insertBattlefieldModel(model);
         }
     }
 

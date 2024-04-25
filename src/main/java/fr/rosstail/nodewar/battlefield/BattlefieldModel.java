@@ -5,6 +5,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.List;
 
 public class BattlefieldModel {
+
+    private int id;
     private final String name;
     private final String display;
     private String fromDayStr;
@@ -30,6 +32,14 @@ public class BattlefieldModel {
 
         territoryTypeList = section.getStringList("territory-types");
         territoryList = section.getStringList("territories");
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

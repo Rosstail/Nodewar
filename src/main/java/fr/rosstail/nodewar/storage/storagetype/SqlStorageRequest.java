@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.storage.storagetype;
 
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.battlefield.BattlefieldModel;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.*;
@@ -29,6 +30,7 @@ public class SqlStorageRequest implements StorageRequest {
     protected String teamMemberTableName;
     protected String teamRelationTableName;
     protected String territoryTableName;
+    protected String battlefieldTableName;
 
     public SqlStorageRequest(String pluginName) {
         this.pluginName = pluginName;
@@ -37,6 +39,7 @@ public class SqlStorageRequest implements StorageRequest {
         this.teamMemberTableName = pluginName + "_teams_members";
         this.teamRelationTableName = pluginName + "_teams_relations";
         this.territoryTableName = pluginName + "_territories";
+        this.battlefieldTableName = pluginName + "_battlefields";
     }
 
     @Override
@@ -46,6 +49,7 @@ public class SqlStorageRequest implements StorageRequest {
         createNodewarTeamMemberTable();
         createNodewarTeamRelationTable();
         createNodewarTerritoryTable();
+        createNodewarBattlefieldTable();
     }
 
     public void createNodewarPlayerTable() {
@@ -111,6 +115,17 @@ public class SqlStorageRequest implements StorageRequest {
                 " owner_team_id INTEGER" +
                 " REFERENCES " + teamTableName + " (id)" +
                 " ON DELETE SET NULL," +
+                " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
+        executeSQL(query);
+    }
+
+    public void createNodewarBattlefieldTable() {
+        String query = "CREATE TABLE IF NOT EXISTS " + battlefieldTableName + " ( " +
+                " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
+                " name varchar(40) UNIQUE NOT NULL," +
+                " open_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                " close_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                " is_open BOOLEAN NOT NULL DEFAULT false," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
         executeSQL(query);
     }
@@ -197,6 +212,21 @@ public class SqlStorageRequest implements StorageRequest {
         String worldName = model.getWorldName();
         try {
             int id = executeSQLUpdate(query, territoryName, worldName);
+            model.setId(id);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean insertBattlefieldModel(BattlefieldModel model) {
+        String query = "INSERT INTO " + battlefieldTableName + " (name)"
+                + " VALUES (?);";
+        String battlefieldName = model.getName();
+        try {
+            int id = executeSQLUpdate(query, battlefieldName);
             model.setId(id);
             return true;
         } catch (SQLException e) {
