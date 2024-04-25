@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ConfigData {
@@ -19,6 +20,7 @@ public class ConfigData {
     public final ConfigLocale locale;
 
     public final ConfigTeam team;
+    public final ConfigBattlefield battlefield;
 
     public final ConfigBossBar bossbar;
 
@@ -112,6 +114,17 @@ public class ConfigData {
         }
     }
 
+    public class ConfigBattlefield {
+        public FileConfiguration configFile;
+
+        public final List<String> alertTimers;
+
+        ConfigBattlefield(FileConfiguration config) {
+            configFile = config;
+            alertTimers = config.getStringList("battlefield.alerts");
+        }
+    }
+
     public class ConfigBossBar {
         public FileConfiguration configFile;
 
@@ -186,6 +199,7 @@ public class ConfigData {
         this.locale = new ConfigLocale(readConfig(config, "locale"));
         this.general = new ConfigGeneral(readConfig(config, "general"));
         this.team = new ConfigTeam(readConfig(config, "team"));
+        this.battlefield = new ConfigBattlefield(readConfig(config, "battlefield"));
         this.bossbar = new ConfigBossBar(readConfig(config, "bossbar"));
         this.dynmap = new ConfigDynmap(readConfig(config, "dynmap"));
     }

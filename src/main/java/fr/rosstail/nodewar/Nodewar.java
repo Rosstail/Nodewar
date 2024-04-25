@@ -2,6 +2,7 @@ package fr.rosstail.nodewar;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.apis.PAPIExpansion;
+import fr.rosstail.nodewar.battlefield.BattlefieldManager;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.events.NodewarEventHandler;
 import fr.rosstail.nodewar.events.WorldguardEventHandler;
@@ -89,6 +90,7 @@ public class Nodewar extends JavaPlugin implements Listener {
         TeamRelationManager.init(this);
         TerritoryManager.init(this);
         DynmapHandler.init(this);
+        BattlefieldManager.init(this);
 
         loadCustomConfig();
 
@@ -138,6 +140,7 @@ public class Nodewar extends JavaPlugin implements Listener {
 
         TeamDataManager.getTeamDataManager().loadTeams();
         TeamRelationManager.getTeamRelationManager().loadRelations();
+        BattlefieldManager.getBattlefieldManager().loadBattlefieldList();
         territoryManager.setupTerritoriesOwner();
         territoryManager.setupTerritoriesObjective();
         territoryManager.setupTerritoriesBattle();

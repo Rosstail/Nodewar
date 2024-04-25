@@ -676,6 +676,7 @@ public class SqlStorageRequest implements StorageRequest {
                 return connection;
             }
         } catch (SQLException e) {
+            System.err.println("Error on checking current connexion");
             throw new RuntimeException(e);
         }
 
@@ -688,8 +689,11 @@ public class SqlStorageRequest implements StorageRequest {
             } else {
                 connection = DriverManager.getConnection(url);
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
+            System.err.println("Error upon getConnection");
             throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            System.err.println("Class not found for SQL driver");
         }
         return connection;
     }
@@ -701,7 +705,7 @@ public class SqlStorageRequest implements StorageRequest {
                     connection.close();
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.err.println(("Error upon closing connection"));
             }
         }
     }
