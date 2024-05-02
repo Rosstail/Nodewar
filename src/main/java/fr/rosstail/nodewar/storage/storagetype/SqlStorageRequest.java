@@ -239,7 +239,7 @@ public class SqlStorageRequest implements StorageRequest {
     public PlayerModel selectPlayerModel(String uuid) {
         String query = "SELECT * FROM " + playerTableName + " WHERE uuid = ?";
         try {
-            ResultSet result = executeSQLQuery(connection, query, uuid);
+            ResultSet result = executeSQLQuery(openConnection(), query, uuid);
             if (result.next()) {
                 PlayerModel model = new PlayerModel(uuid, result.getString("username"));
                 model.setId(result.getInt("id"));
@@ -259,7 +259,7 @@ public class SqlStorageRequest implements StorageRequest {
     public Set<PlayerModel> selectPlayerModelSet(String query, int limit) {
         Set<PlayerModel> modelSet = new HashSet<>();
         try {
-            ResultSet result = executeSQLQuery(connection, query, limit);
+            ResultSet result = executeSQLQuery(openConnection(), query, limit);
             while (result.next()) {
                 String uuid = result.getString("uuid");
                 String username = PlayerDataManager.getPlayerNameFromUUID(uuid);
@@ -280,7 +280,7 @@ public class SqlStorageRequest implements StorageRequest {
         String query = "SELECT * FROM " + teamTableName + " WHERE name = ?";
         TeamModel teamModel = null;
         try {
-            ResultSet result = executeSQLQuery(connection, query, teamName);
+            ResultSet result = executeSQLQuery(openConnection(), query, teamName);
             if (result.next()) {
                 teamModel = getTeamModelFromResult(result, teamName);
             }
@@ -296,7 +296,7 @@ public class SqlStorageRequest implements StorageRequest {
         String query = "SELECT * FROM " + teamTableName + " AS tt, " + teamMemberTableName + " AS tmt, " + playerTableName + " AS pt " +
                 "WHERE tt.id = tmt.team_id AND tmt.player_id = pt.id AND tmt.player_rank = 1 AND pt.uuid = ?";
         try {
-            ResultSet result = executeSQLQuery(connection, query, ownerUuid);
+            ResultSet result = executeSQLQuery(openConnection(), query, ownerUuid);
             if (result.next()) {
                 TeamModel teamModel = new TeamModel(result.getString("name"), result.getString("display"), result.getString("short"), result.getString("color"));
                 teamModel.setId(result.getInt("id"));
@@ -319,7 +319,7 @@ public class SqlStorageRequest implements StorageRequest {
         Map<String, TeamModel> stringTeamModelMap = new HashMap<>();
         String query = "SELECT * FROM " + teamTableName;
         try {
-            ResultSet result = executeSQLQuery(connection, query);
+            ResultSet result = executeSQLQuery(openConnection(), query);
             while (result.next()) {
                 String name = result.getString("name");
                 TeamModel teamModel = getTeamModelFromResult(result, name);
@@ -379,7 +379,7 @@ public class SqlStorageRequest implements StorageRequest {
                 "WHERE tt.id = tmt.team_id AND tmt.player_id = pt.id AND pt.uuid = ? " +
                 "LIMIT 1";
         try {
-            ResultSet result = executeSQLQuery(connection, query, playerUUID);
+            ResultSet result = executeSQLQuery(openConnection(), query, playerUUID);
             if (result.next()) {
                 TeamMemberModel teamMemberModel = new TeamMemberModel(
                         result.getInt("team_id"),
@@ -404,7 +404,7 @@ public class SqlStorageRequest implements StorageRequest {
                 "WHERE tt.id = tmt.team_id AND tmt.player_id = pt.id AND pt.username = ? " +
                 "LIMIT 1";
         try {
-            ResultSet result = executeSQLQuery(connection, query, userName);
+            ResultSet result = executeSQLQuery(openConnection(), query, userName);
             if (result.next()) {
                 TeamMemberModel teamMemberModel = new TeamMemberModel(
                         result.getInt("team_id"),
@@ -429,7 +429,7 @@ public class SqlStorageRequest implements StorageRequest {
         String query = "SELECT * FROM " + teamRelationTableName
                 + " WHERE relation_type != ?;";
         try {
-            ResultSet result = executeSQLQuery(connection, query, ConfigData.getConfigData().team.defaultRelation.getWeight());
+            ResultSet result = executeSQLQuery(openConnection(), query, ConfigData.getConfigData().team.defaultRelation.getWeight());
             while (result.next()) {
                 TeamRelationModel teamRelationModel = new TeamRelationModel(
                         result.getInt("first_team_id"),
@@ -457,7 +457,7 @@ public class SqlStorageRequest implements StorageRequest {
                 "    END\n" +
                 "WHERE tt.name = ?;";
         try {
-            ResultSet result = executeSQLQuery(connection, query, teamUuid);
+            ResultSet result = executeSQLQuery(openConnection(), query, teamUuid);
             while (result.next()) {
                 TeamRelationModel teamRelationModel = new TeamRelationModel(
                         result.getInt("first_team_id"),
@@ -479,7 +479,7 @@ public class SqlStorageRequest implements StorageRequest {
                 "FROM " + territoryTableName + " AS ttr\n" +
                 "LEFT JOIN " + teamTableName + " AS t ON ttr.owner_team_id = t.id";
         try {
-            ResultSet result = executeSQLQuery(connection, query);
+            ResultSet result = executeSQLQuery(openConnection(), query);
             while (result.next()) {
                 TerritoryModel territoryModel = new TerritoryModel();
 
@@ -628,8 +628,7 @@ public class SqlStorageRequest implements StorageRequest {
      */
     private int executeSQLUpdate(String query, Object... params) throws SQLException {
         int affectedRows = 0;
-        openConnection();
-        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = openConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
             }
@@ -666,7 +665,6 @@ public class SqlStorageRequest implements StorageRequest {
      */
     public ResultSet executeSQLQuery(Connection connection, String query, Object... params) {
         try {
-            openConnection();
             PreparedStatement statement = connection.prepareStatement(query);
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
@@ -674,8 +672,7 @@ public class SqlStorageRequest implements StorageRequest {
 
             return statement.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -688,25 +685,25 @@ public class SqlStorageRequest implements StorageRequest {
     public boolean executeSQL(String query, Object... params) {
         boolean execute = false;
         try {
-            openConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = openConnection().prepareStatement(query);
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
             }
             execute = statement.execute();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return execute;
     }
 
     public Connection openConnection() {
         try {
-            if (connection != null && !connection.isClosed()) {
+            if (connection != null && !connection.isClosed() && connection.isValid(1)) {
+                System.out.println("Same connection");
                 return connection;
             }
         } catch (SQLException e) {
-            System.err.println("Error on checking current connexion");
+            System.err.println("Error on checking current connection");
             throw new RuntimeException(e);
         }
 
@@ -714,18 +711,26 @@ public class SqlStorageRequest implements StorageRequest {
             if (driver != null) {
                 Class.forName(driver);
             }
+
             if (username != null) {
                 connection = DriverManager.getConnection(url, username, password);
             } else {
                 connection = DriverManager.getConnection(url);
             }
+
+            System.out.println("NW - NEW CONNECTION");
+
+            return connection;
         } catch (SQLException e) {
             System.err.println("Error upon getConnection");
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
             System.err.println("Class not found for SQL driver");
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            System.err.println("EXPLOSIONNN");
+            throw new RuntimeException(e);
         }
-        return connection;
     }
 
     public void closeConnection() {
@@ -735,7 +740,7 @@ public class SqlStorageRequest implements StorageRequest {
                     connection.close();
                 }
             } catch (SQLException e) {
-                System.err.println(("Error upon closing connection"));
+                System.err.println("Error upon closing connection");
             }
         }
     }
