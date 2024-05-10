@@ -398,13 +398,12 @@ public class AdaptMessage {
     }
 
     /**
-     * Calculate from an expression and optional current wanted time of a player
+     * Calculate from a formatted string
      *
-     * @param currentWantedTime Long, Current wanted time of player.
      * @param expression        String, add time with parameters suchs as Xh for x hours (s, m, h, d)
      * @return the calculated duration in ms (Long)
      */
-    public static long evalDuration(Long currentWantedTime, String expression) {
+    public static long evalDuration(String expression) {
         List<String> matches = Arrays.asList("(\\d+)s", "(\\d+)m", "(\\d+)h", "(\\d+)d");
         List<Integer> ints = Arrays.asList(1000, 60, 60, 24);
 
@@ -417,13 +416,6 @@ public class AdaptMessage {
             if (matcher.find()) {
                 totalTimeMs += (long) Integer.parseInt(String.valueOf(matcher.group(1))) * multiplier;
             }
-        }
-
-        if (expression.contains("[now]") || expression.contains("[timestamp]")) {
-            totalTimeMs += System.currentTimeMillis();
-        }
-        if (expression.contains("[player_wanted_time]")) {
-            totalTimeMs += Math.max(System.currentTimeMillis(), currentWantedTime);
         }
 
         return totalTimeMs;

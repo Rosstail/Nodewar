@@ -325,6 +325,24 @@ public class StorageManager {
         }
     }
 
+    /**
+     * READ
+     *
+     * @param name
+     */
+    public BattlefieldModel selectBattlefieldModel(String name) {
+        switch (type) {
+            case "mysql":
+                return mySqlStorageRequest.selectBattlefieldModel(name);
+            case "mariadb":
+                return mariaDBStorageRequest.selectBattlefieldModel(name);
+            case "mongodb":
+                return mongoDBStorageRequest.selectBattlefieldModel(name);
+            default:
+                return liteSqlDBStorageRequest.selectBattlefieldModel(name);
+        }
+    }
+
 
     /**
      * UPDATE
@@ -426,6 +444,28 @@ public class StorageManager {
                 break;
             default:
                 liteSqlDBStorageRequest.updateTerritoryModel(model);
+                break;
+        }
+    }
+
+    /**
+     * UPDATE
+     *
+     * @param model
+     */
+    public void updateBattlefieldModel(BattlefieldModel model, boolean async) {
+        switch (type) {
+            case "mysql":
+                mySqlStorageRequest.updateBattlefieldModel(model);
+                break;
+            case "mariadb":
+                mariaDBStorageRequest.updateBattlefieldModel(model);
+                break;
+            case "mongodb":
+                mongoDBStorageRequest.updateBattlefieldModel(model);
+                break;
+            default:
+                liteSqlDBStorageRequest.updateBattlefieldModel(model);
                 break;
         }
     }

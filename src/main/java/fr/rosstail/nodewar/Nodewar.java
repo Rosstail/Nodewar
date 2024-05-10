@@ -150,6 +150,7 @@ public class Nodewar extends JavaPlugin implements Listener {
         PlayerDataManager.startDeployHandler();
         TeamDataManager.getTeamDataManager().startInviteExpirationHandler();
         TeamRelationManager.startRequestExpirationHandler();
+        BattlefieldManager.getBattlefieldManager().startBattlefieldDispatcher();
 
         PointInPolygon.main(null);
         DynmapHandler dynmapHandler = DynmapHandler.getDynmapHandler();

@@ -46,6 +46,7 @@ public class ObjectiveKoth extends Objective {
         });
 
         this.timeToReach = Integer.parseInt(this.objectiveKothModel.getTimeToReachStr());
+        this.display = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.description.koth.display");
         List<String> rawDescriptionList = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.types.koth.description");
         String capturePointLine = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.types.koth.line-capturepoint", "");
 

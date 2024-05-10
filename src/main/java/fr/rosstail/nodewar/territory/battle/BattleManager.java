@@ -56,7 +56,7 @@ public class BattleManager {
                 throw new RuntimeException(e);
             }
         } else {
-            AdaptMessage.print("[Nodewar] Custom objective " + objectiveName + " not found!", AdaptMessage.prints.ERROR);
+            territory.setCurrentBattle(new Battle(territory));
         }
     }
 

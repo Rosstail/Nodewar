@@ -11,10 +11,10 @@ import fr.rosstail.nodewar.team.relation.TeamRelationModel;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 
 import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 public class SqlStorageRequest implements StorageRequest {
     private final Nodewar plugin = Nodewar.getInstance();
@@ -222,11 +222,16 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public boolean insertBattlefieldModel(BattlefieldModel model) {
-        String query = "INSERT INTO " + battlefieldTableName + " (name)"
-                + " VALUES (?);";
+        String query = "INSERT INTO " + battlefieldTableName + " (name, open_time, close_time)"
+                + " VALUES (?, ?, ?);";
         String battlefieldName = model.getName();
         try {
-            int id = executeSQLUpdate(query, battlefieldName);
+            System.out.println(model.getOpenDateTime() + " " + model.getCloseDateTime() + "  vs " + System.currentTimeMillis());
+
+            System.out.println(1715788800 > System.currentTimeMillis());
+
+            System.out.println(new Date(model.getOpenDateTime()));
+            int id = executeSQLUpdate(query, battlefieldName, new Timestamp(model.getOpenDateTime()), new Timestamp(model.getCloseDateTime()));
             model.setId(id);
             return true;
         } catch (SQLException e) {
@@ -497,6 +502,23 @@ public class SqlStorageRequest implements StorageRequest {
         return territoryModelList;
     }
 
+    @Override
+    public BattlefieldModel selectBattlefieldModel(String name) {
+        String query = "SELECT * FROM " + battlefieldTableName + " WHERE name = ?";
+        try {
+            ResultSet result = executeSQLQuery(openConnection(), query, name);
+            if (result.next()) {
+                BattlefieldModel model = new BattlefieldModel(name);
+                model.setId(result.getInt("id"));
+                return model;
+            }
+            result.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void updatePlayerModelAsync(PlayerModel model) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
@@ -571,6 +593,21 @@ public class SqlStorageRequest implements StorageRequest {
                         model.getName()
                 );
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateBattlefieldModel(BattlefieldModel model) {
+        String query = "UPDATE " + battlefieldTableName + " SET open_time = ?, close_time = ?, is_open = ? WHERE name = ?";
+        try {
+            executeSQLUpdate(query,
+                    new Timestamp(model.getOpenDateTime()),
+                    new Timestamp(model.getCloseDateTime()),
+                    model.isOpen(),
+                    model.getName()
+            );
         } catch (SQLException e) {
             e.printStackTrace();
         }

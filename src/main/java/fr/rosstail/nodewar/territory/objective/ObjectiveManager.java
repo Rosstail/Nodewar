@@ -75,8 +75,7 @@ public class ObjectiveManager {
                 throw new RuntimeException(e);
             }
         } else {
-            AdaptMessage.print("[Nodewar] Custom objective model " + objectiveName + " not found!", AdaptMessage.prints.ERROR);
-            territoryType.setObjectiveModel(new ObjectiveModel(null));
+            territoryType.setObjectiveModel(new ObjectiveModel(objectiveSection));
         }
     }
 
@@ -116,7 +115,7 @@ public class ObjectiveManager {
                 throw new RuntimeException(e);
             }
         } else {
-            AdaptMessage.print("[Nodewar] Custom objective " + objectiveName + " not found!", AdaptMessage.prints.ERROR);
+            territory.setObjective(new Objective(territory, null, null));
         }
     }
 

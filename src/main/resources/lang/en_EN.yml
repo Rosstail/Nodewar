@@ -287,6 +287,7 @@ territory:
   objective:
     types:
       none:
+        display: "None"
         description:
           - "&a  Objective&d: &7NONE&r"
       control:
@@ -294,12 +295,14 @@ territory:
           - "&a  Objective&d: &9CONTROL"
           - "&c    *  &eAttackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
       siege:
+        display: "Siege"
         description:
           - "&a  Objective&d: &cSIEGE"
           - "&c    *  &eCapture points&d:"
           - "[line_capturepoint]"
         line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
       koth:
+        display: "King of the Hill"
         description:
           - "&a  Objective&d: &6KOTH"
           - "&c    *  &eCapture points&d:"

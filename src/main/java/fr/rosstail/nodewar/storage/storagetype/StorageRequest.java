@@ -144,6 +144,8 @@ public interface StorageRequest {
      */
     List<TerritoryModel> selectAllTerritoryModel();
 
+    BattlefieldModel selectBattlefieldModel(String name);
+
     /**
      * UPDATE
      * Edit player model to storage
@@ -171,6 +173,8 @@ public interface StorageRequest {
      * @param model The model to update
      */
     void updateTerritoryModel(TerritoryModel model);
+
+    void updateBattlefieldModel(BattlefieldModel model);
 
     /**
      * DELETE
