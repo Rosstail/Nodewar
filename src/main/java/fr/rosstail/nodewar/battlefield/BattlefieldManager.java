@@ -2,12 +2,14 @@ package fr.rosstail.nodewar.battlefield;
 
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.dynmap.DynmapAPI;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -44,11 +46,11 @@ public class BattlefieldManager {
             alertTimeList.add(AdaptMessage.evalDuration(s));
         });
         Collections.sort(alertTimeList);
+        alertTimeList.add(31536000000000L); // 10 years
 
         ConfigurationSection battlefieldListSection = ConfigData.getConfigData().battlefield.configFile.getConfigurationSection("battlefield.list");
 
         battlefieldListSection.getKeys(false).forEach(s -> {
-            System.out.println(s);
             BattlefieldModel dbBattlefieldModel = StorageManager.getManager().selectBattlefieldModel(s);
             BattlefieldModel battlefieldModel = new BattlefieldModel(battlefieldListSection.getConfigurationSection(s));
 
@@ -76,7 +78,16 @@ public class BattlefieldManager {
     }
 
     public void openBattlefield(Battlefield battlefield) {
-        AdaptMessage.print(battlefield.getModel().getDisplay() + " battlefield is now open !", AdaptMessage.prints.OUT);
+        if (battlefield.getModel().isResetTeam()) {
+            battlefield.getTerritoryList().forEach(territory -> {
+                TerritoryOwnerNeutralizeEvent event = new TerritoryOwnerNeutralizeEvent(territory, null, null);
+                Bukkit.getPluginManager().callEvent(event);
+            });
+        }
+        if (battlefield.getModel().isAnnouncement()) {
+            String announcement = battlefield.adaptMessage(LangManager.getMessage(LangMessage.BATTLEFIELD_ANNOUNCEMENT_OPEN));
+            Bukkit.broadcastMessage(AdaptMessage.getAdaptMessage().adaptMessage(announcement));
+        }
         battlefield.getModel().setOpen(true);
         battlefield.getTerritoryList().forEach(territory -> {
             territory.getModel().setUnderProtection(false);
@@ -86,7 +97,10 @@ public class BattlefieldManager {
     }
 
     public void closeBattlefield(Battlefield battlefield) {
-        AdaptMessage.print(battlefield.getModel().getDisplay() + " battlefield is now closed !", AdaptMessage.prints.OUT);
+        if (battlefield.getModel().isAnnouncement()) {
+            String announcement = battlefield.adaptMessage(LangManager.getMessage(LangMessage.BATTLEFIELD_ANNOUNCEMENT_CLOSE));
+            Bukkit.broadcastMessage(AdaptMessage.getAdaptMessage().adaptMessage(announcement));
+        }
         battlefield.getModel().setOpen(false);
         battlefield.getTerritoryList().forEach(territory -> {
             territory.getModel().setUnderProtection(true);
@@ -112,15 +126,45 @@ public class BattlefieldManager {
         return nextDay.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000L;
     }
 
-    private void test() {
+    private void handleAlertAndAccess() {
         long now = System.currentTimeMillis();
+        if (!alertTimeList.isEmpty()) {
 
-        battlefieldList.forEach(battlefield -> {
+            battlefieldList.stream().filter(battlefield -> battlefield.getModel().isAnnouncement()).forEach(battlefield -> {
+                if (battlefield.getModel().getOpenDateTime() > now) {
+                    long delay = battlefield.getModel().getOpenDateTime() - now;
+                    if (battlefield.getLastWarningIndex() > 0) {
+                        long nextAlertDelay = alertTimeList.get(battlefield.getLastWarningIndex() - 1);
 
-        });
+                        if (nextAlertDelay > delay) {
+                            String announcement = LangManager.getMessage(LangMessage.BATTLEFIELD_ANNOUNCEMENT_OPEN_DELAY);
+                            announcement = announcement.replaceAll("\\[delay]", AdaptMessage.getAdaptMessage().countdownFormatter(nextAlertDelay));
+                            announcement = battlefield.adaptMessage(announcement);
+                            Bukkit.broadcastMessage(AdaptMessage.getAdaptMessage().adaptMessage(announcement));
 
-        battlefieldList.stream().filter(battlefield -> battlefield.getLastWarningIndex() < 0 || battlefield.getLastWarningIndex() >= alertTimeList.size()).forEach(battlefield -> {
-            battlefield.setLastWarningIndex(0);
+                            editBattlefieldAnouncementTimer(battlefield, battlefield.getModel().getOpenDateTime());
+                        }
+                    }
+                } else if (battlefield.getModel().getCloseDateTime() > now) {
+                    long delay = battlefield.getModel().getCloseDateTime() - now;
+                    if (battlefield.getLastWarningIndex() > 0) {
+                        long nextAlertDelay = alertTimeList.get(battlefield.getLastWarningIndex() - 1);
+
+                        if (nextAlertDelay > delay) {
+                            String announcement = LangManager.getMessage(LangMessage.BATTLEFIELD_ANNOUNCEMENT_CLOSE_DELAY);
+                            announcement = announcement.replaceAll("\\[delay]", AdaptMessage.getAdaptMessage().countdownFormatter(nextAlertDelay));
+                            announcement = battlefield.adaptMessage(announcement);
+                            Bukkit.broadcastMessage(AdaptMessage.getAdaptMessage().adaptMessage(announcement));
+
+                            editBattlefieldAnouncementTimer(battlefield, battlefield.getModel().getCloseDateTime());
+                        }
+                    }
+                }
+            });
+        }
+
+        battlefieldList.stream().filter(battlefield -> battlefield.getLastWarningIndex() <= 0).forEach(battlefield -> {
+            battlefield.setLastWarningIndex(alertTimeList.size() - 1);
         });
 
 
@@ -140,12 +184,36 @@ public class BattlefieldManager {
         }
     }
 
+    public void editBattlefieldAnouncementTimer(Battlefield battlefield, long dateTime) {
+        if (alertTimeList.isEmpty()) {
+            battlefield.setLastWarningIndex(-1);
+            return;
+        }
+
+        long delay = dateTime - System.currentTimeMillis();
+
+        List<Long> higherValues = alertTimeList.stream().filter(timer -> (timer > delay)).collect(Collectors.toList());
+
+        if (higherValues.isEmpty()) {
+            battlefield.setLastWarningIndex(-1);
+            return;
+        }
+
+        int index = alertTimeList.indexOf(Collections.min(higherValues));
+
+        battlefield.setLastWarningIndex(index);
+    }
+
     public void startBattlefieldDispatcher() {
-        Runnable handleRequestExpiration = this::test;
+        Runnable handleRequestExpiration = this::handleAlertAndAccess;
         scheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), handleRequestExpiration, 20L, 20L);
     }
 
     public static BattlefieldManager getBattlefieldManager() {
         return battlefieldManager;
+    }
+
+    public List<Long> getAlertTimeList() {
+        return alertTimeList;
     }
 }

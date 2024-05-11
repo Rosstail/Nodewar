@@ -226,11 +226,6 @@ public class SqlStorageRequest implements StorageRequest {
                 + " VALUES (?, ?, ?);";
         String battlefieldName = model.getName();
         try {
-            System.out.println(model.getOpenDateTime() + " " + model.getCloseDateTime() + "  vs " + System.currentTimeMillis());
-
-            System.out.println(1715788800 > System.currentTimeMillis());
-
-            System.out.println(new Date(model.getOpenDateTime()));
             int id = executeSQLUpdate(query, battlefieldName, new Timestamp(model.getOpenDateTime()), new Timestamp(model.getCloseDateTime()));
             model.setId(id);
             return true;
@@ -510,6 +505,8 @@ public class SqlStorageRequest implements StorageRequest {
             if (result.next()) {
                 BattlefieldModel model = new BattlefieldModel(name);
                 model.setId(result.getInt("id"));
+                model.setOpenDateTime(result.getTimestamp("open_time").getTime());
+                model.setCloseDateTime(result.getTimestamp("close_time").getTime());
                 return model;
             }
             result.close();

@@ -276,6 +276,15 @@ team:
     truce: "&dTruce"
     enemy: "&cEnemy"
 
+battlefield:
+  open: "OPEN"
+  closed: "CLOSED"
+  announcement:
+    open: "The [battlefield_display] battlefield is now open !"
+    open-delay: "The [battlefield_display] battlefield will open in [delay]"
+    close: "The [battlefield_display] battlefield is now closed !"
+    close-delay: "The [battlefield_display] battlefield will close in [delay]"
+
 territory:
   description:
     - "&a[territory_id] &7- &6[territory_display]&r&d:"

@@ -25,6 +25,8 @@ public class BattlefieldModel {
     private List<String> territoryTypeList;
     private List<String> territoryList;
 
+    private boolean announcement;
+
     public BattlefieldModel(ConfigurationSection section) {
         this.name = section.getName();
         this.display = section.getString("display");
@@ -44,6 +46,7 @@ public class BattlefieldModel {
 
         territoryTypeList = section.getStringList("territory-types");
         territoryList = section.getStringList("territories");
+        announcement = section.getBoolean("announcement", true);
     }
 
     public BattlefieldModel(String name) {
@@ -153,5 +156,13 @@ public class BattlefieldModel {
 
     public void setTerritoryList(List<String> territoryList) {
         this.territoryList = territoryList;
+    }
+
+    public boolean isAnnouncement() {
+        return announcement;
+    }
+
+    public void setAnnouncement(boolean announcement) {
+        this.announcement = announcement;
     }
 }

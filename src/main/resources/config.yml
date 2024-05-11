@@ -53,6 +53,7 @@ battlefield:
   wednesday-bf:
     reset-team: true
     end-on-battle-end: true
+    # announcements: false
     start:
       day: "monday"
       time: "18:00"

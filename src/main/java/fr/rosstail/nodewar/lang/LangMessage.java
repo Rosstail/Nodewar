@@ -182,6 +182,12 @@ public enum LangMessage {
     TEAM_RELATION_TRUCE("team.relation.truce", false, false),
     TEAM_RELATION_ENEMY("team.relation.enemy", false, false),
 
+    BATTLEFIELD_OPEN("battlefield.open", false, false),
+    BATTLEFIELD_CLOSED("battlefield.closed", false, false),
+    BATTLEFIELD_ANNOUNCEMENT_OPEN("battlefield.announcement.open", false, false),
+    BATTLEFIELD_ANNOUNCEMENT_OPEN_DELAY("battlefield.announcement.open-delay", false, false),
+    BATTLEFIELD_ANNOUNCEMENT_CLOSE("battlefield.announcement.close", false, false),
+    BATTLEFIELD_ANNOUNCEMENT_CLOSE_DELAY("battlefield.announcement.close-delay", false, false),
 
     TERRITORY_DESCRIPTION("territory.description", false, true),
     TERRITORY_BATTLE_STATUS_WAITING("territory.battle.status.waiting", false, false),
