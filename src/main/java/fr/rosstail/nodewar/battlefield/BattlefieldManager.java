@@ -102,9 +102,18 @@ public class BattlefieldManager {
             Bukkit.broadcastMessage(AdaptMessage.getAdaptMessage().adaptMessage(announcement));
         }
         battlefield.getModel().setOpen(false);
-        battlefield.getTerritoryList().forEach(territory -> {
-            territory.getModel().setUnderProtection(true);
-        });
+        if (battlefield.getModel().isEndBattleOnBattlefieldEnd()) {
+            battlefield.getTerritoryList().forEach(territory -> {
+                if (territory.getCurrentBattle().isBattleStarted()) {
+                    if (territory.getOwnerTeam() != null) {
+                        territory.getObjective().win(territory.getOwnerTeam());
+                    } else {
+                        territory.getObjective().neutralize(territory.getOwnerTeam());
+                    }
+                }
+                territory.getModel().setUnderProtection(true);
+            });
+        }
         String[] startTimeStr = battlefield.getModel().getFromTimeStr().split(":");
         String[] endTimeStr = battlefield.getModel().getToTimeStr().split(":");
 

@@ -21,7 +21,7 @@ public class BattlefieldModel {
 
     private boolean open;
     private boolean resetTeam;
-    private boolean closeOnBattleEnd;
+    private boolean endBattleOnBattlefieldEnd;
     private List<String> territoryTypeList;
     private List<String> territoryList;
 
@@ -42,7 +42,7 @@ public class BattlefieldModel {
         this.closeDateTime = BattlefieldManager.getBattlefieldManager().getNextDayTime(DayOfWeek.valueOf(toDayStr.toUpperCase()), Integer.parseInt(endTimeStr[0]), Integer.parseInt(endTimeStr[1]));
 
         this.resetTeam = section.getBoolean("reset-team", false);
-        this.closeOnBattleEnd = section.getBoolean("clone-on-battle-end", false);
+        this.endBattleOnBattlefieldEnd = section.getBoolean("end-battle-on-battlefield-end", false);
 
         territoryTypeList = section.getStringList("territory-types");
         territoryList = section.getStringList("territories");
@@ -134,12 +134,12 @@ public class BattlefieldModel {
         this.resetTeam = resetTeam;
     }
 
-    public boolean isCloseOnBattleEnd() {
-        return closeOnBattleEnd;
+    public boolean isEndBattleOnBattlefieldEnd() {
+        return endBattleOnBattlefieldEnd;
     }
 
-    public void setCloseOnBattleEnd(boolean closeOnBattleEnd) {
-        this.closeOnBattleEnd = closeOnBattleEnd;
+    public void setEndBattleOnBattlefieldEnd(boolean endBattleOnBattlefieldEnd) {
+        this.endBattleOnBattlefieldEnd = endBattleOnBattlefieldEnd;
     }
 
     public List<String> getTerritoryTypeList() {
