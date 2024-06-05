@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.admin.team.AdminTeamSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
@@ -66,18 +67,24 @@ public class AdminTeamCreateCommand extends AdminTeamSubCommand {
         displayTeamName = args[3];
         shortName = args[4];
 
-        if (shortName.length() > 5) {
-            sender.sendMessage("short name is too long");
+        if (shortName.length() > ConfigData.getConfigData().team.minimumNameLength && shortName.length() > ConfigData.getConfigData().team.maximumNameLength) {
+            String message = LangManager.getMessage(teamName.length() > 40 ? LangMessage.COMMANDS_TEAM_CREATE_TOO_LONG : LangMessage.COMMANDS_TEAM_CREATE_TOO_SHORT);
+            sender.sendMessage(message.replaceAll("\\[name]", teamName));
             return;
         }
 
-        if (TeamDataManager.getTeamDataManager().getStringTeamMap().containsKey(teamName)) {
-            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_ALREADY_EXIST));
+        if (shortName.length() > ConfigData.getConfigData().team.minimumShortnameLength && shortName.length() > ConfigData.getConfigData().team.maximumShortNameLength) {
+            String message = LangManager.getMessage(shortName.length() > 40 ? LangMessage.COMMANDS_TEAM_CREATE_TOO_LONG : LangMessage.COMMANDS_TEAM_CREATE_TOO_SHORT);
+            sender.sendMessage(message.replaceAll("\\[name]", shortName));
             return;
         }
 
-        if (teamDataManager.getStringTeamMap().values().stream().anyMatch(nwTeam -> (nwTeam.getModel().getShortName().equalsIgnoreCase(shortName)))) {
-            sender.sendMessage("short name already exists");
+        if (teamDataManager.getStringTeamMap().containsKey(teamName)) {
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_ALREADY_EXIST).replaceAll("\\[name]", teamName));
+            return;
+        }
+        if (teamDataManager.getStringTeamMap().values().stream().anyMatch(team1 -> team1.getModel().getShortName().equalsIgnoreCase(shortName))) {
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_ALREADY_EXIST).replaceAll("\\[name]", shortName));
             return;
         }
 

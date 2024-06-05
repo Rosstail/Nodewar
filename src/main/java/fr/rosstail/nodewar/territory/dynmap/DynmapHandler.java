@@ -380,7 +380,9 @@ public class DynmapHandler {
                 if (territory.getCenter() != null) {
                     createTerritoryMarker(territory);
                     territory.getAttackRequirements().getTargetTerritoryList().forEach(targetTerritory -> {
-                        if (targetTerritory.getDynmapInfo().isDrawLine()) {
+                        if (territory.getDynmapInfo().isDrawLine() && targetTerritory.getDynmapInfo().isDrawLine()
+                                && !territory.getProtectedRegionList().isEmpty()
+                                && !targetTerritory.getProtectedRegionList().isEmpty()) {
                             createArrowBetweenRegions(territory, targetTerritory);
                         }
                     });

@@ -104,11 +104,13 @@ public class BattlefieldManager {
         battlefield.getModel().setOpen(false);
         if (battlefield.getModel().isEndBattleOnBattlefieldEnd()) {
             battlefield.getTerritoryList().forEach(territory -> {
-                if (territory.getCurrentBattle().isBattleStarted()) {
-                    if (territory.getOwnerTeam() != null) {
-                        territory.getObjective().win(territory.getOwnerTeam());
-                    } else {
-                        territory.getObjective().neutralize(territory.getOwnerTeam());
+                if (territory.getCurrentBattle() != null) {
+                    if (territory.getCurrentBattle().isBattleStarted()) {
+                        if (territory.getOwnerTeam() != null) {
+                            territory.getObjective().win(territory.getOwnerTeam());
+                        } else {
+                            territory.getObjective().neutralize(territory.getOwnerTeam());
+                        }
                     }
                 }
                 territory.getModel().setUnderProtection(true);

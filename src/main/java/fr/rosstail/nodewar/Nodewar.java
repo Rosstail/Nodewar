@@ -142,6 +142,7 @@ public class Nodewar extends JavaPlugin implements Listener {
         TeamRelationManager.getTeamRelationManager().loadRelations();
         BattlefieldManager.getBattlefieldManager().loadBattlefieldList();
         territoryManager.setupTerritoriesOwner();
+        territoryManager.setupTerritoriesSubTerritories();
         territoryManager.setupTerritoriesObjective();
         territoryManager.setupTerritoriesBattle();
         territoryManager.setupTerritoriesAttackRequirements();

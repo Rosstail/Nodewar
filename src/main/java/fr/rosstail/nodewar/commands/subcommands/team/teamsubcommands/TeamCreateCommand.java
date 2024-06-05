@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
@@ -95,8 +96,15 @@ public class TeamCreateCommand extends TeamSubCommand {
             return;
         }
 
-        if (shortName.length() > 5) {
-            sender.sendMessage("short name is too long");
+        if (shortName.length() > ConfigData.getConfigData().team.minimumNameLength && shortName.length() > ConfigData.getConfigData().team.maximumNameLength) {
+            String message = LangManager.getMessage(teamName.length() > 40 ? LangMessage.COMMANDS_TEAM_CREATE_TOO_LONG : LangMessage.COMMANDS_TEAM_CREATE_TOO_SHORT);
+            sender.sendMessage(message.replaceAll("\\[name]", teamName));
+            return;
+        }
+
+        if (shortName.length() > ConfigData.getConfigData().team.minimumShortnameLength && shortName.length() > ConfigData.getConfigData().team.maximumShortNameLength) {
+            String message = LangManager.getMessage(shortName.length() > 40 ? LangMessage.COMMANDS_TEAM_CREATE_TOO_LONG : LangMessage.COMMANDS_TEAM_CREATE_TOO_SHORT);
+            sender.sendMessage(message.replaceAll("\\[name]", shortName));
             return;
         }
 

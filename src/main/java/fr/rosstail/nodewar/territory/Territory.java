@@ -47,6 +47,7 @@ public class Territory {
     private Map<NwTeam, List<Player>> teamPlayerList;
 
     private final List<ProtectedRegion> protectedRegionList = new ArrayList<>();
+    private final List<Territory> subTerritoryList = new ArrayList<>();
 
     private TerritoryType territoryType;
 
@@ -85,7 +86,7 @@ public class Territory {
         territoryModel.setDisplay(section.getString("display", territoryModel.getName()));
         territoryModel.setDescription(section.getString("description", territoryType.getDescription()));
         territoryModel.getRegionStringList().addAll(section.getStringList("regions"));
-        territoryModel.getSubterritoryList().addAll(section.getStringList("subterritories"));
+        territoryModel.getSubTerritoryList().addAll(section.getStringList("subterritories"));
 
         territoryModel.setWorldName(section.getString("world", territoryType.getWorldName()));
         territoryModel.setPrefix(section.getString("prefix", territoryType.getPrefix()));
@@ -241,6 +242,10 @@ public class Territory {
 
     public void setTerritoryType(TerritoryType territoryType) {
         this.territoryType = territoryType;
+    }
+
+    public List<Territory> getSubTerritoryList() {
+        return subTerritoryList;
     }
 
     public Objective getObjective() {

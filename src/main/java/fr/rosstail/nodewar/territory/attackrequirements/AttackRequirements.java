@@ -47,6 +47,10 @@ public class AttackRequirements {
         List<Territory> ownedTerritoryList = TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(teamTerritory ->
                 (teamTerritory.getWorld() == territory.getWorld() && teamTerritory.getOwnerTeam() == nwTeam)).collect(Collectors.toList());
 
+        if (ownedTerritoryList.stream().anyMatch(territory1 -> territory1.getSubTerritoryList().contains(territory))) {
+            return true;
+        }
+
         if (startPoint) { //Cannot capture another startpoint if not targeted by other territory
             if (!ownedTerritoryList.isEmpty() &&
                     ownedTerritoryList.stream().noneMatch(territory1 -> territory1.getAttackRequirements().getTargetTerritoryList().contains(territory))) {
@@ -70,12 +74,13 @@ public class AttackRequirements {
         List<Territory> territoryListToCheck = territoryToCheck.getAttackRequirements().getTargetTerritoryList().stream()
                 .filter(territory1 -> (!territoryToIgnoreList.contains(territory1))).collect(Collectors.toList());
 
-        if (territoryListToCheck.contains(finalTerritory)) {
-            return true;
-        }
 
         if (territoryToCheck.getOwnerTeam() != nwTeam) {
             return false;
+        }
+
+        if (territoryListToCheck.contains(finalTerritory)) {
+            return true;
         }
 
         territoryToIgnoreList.add(territoryToCheck);

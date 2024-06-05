@@ -31,6 +31,10 @@ team:
   deploy-timer: 10
   deploy-cooldown: 120
   maximum-members: 50 #-1 for infinite
+  name-min-length: 5
+  name-max-length: 20
+  shortname-min-length: 3
+  shortname-max-length: 5
 
 bossbar:
   color: # RED, YELLOW, BLUE, GREEN, PINK, PURPLE, WHITE

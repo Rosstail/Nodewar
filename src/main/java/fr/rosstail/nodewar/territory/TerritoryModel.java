@@ -23,7 +23,7 @@ public class TerritoryModel {
     private String ownerName;
     private boolean underProtection;
     private final List<String> regionStringList = new ArrayList<>();
-    private final List<String> subterritoryList = new ArrayList<>();
+    private final List<String> subTerritoryList = new ArrayList<>();
 
     private String objectiveTypeName;
     private TerritoryBossBarModel bossBarModel;
@@ -114,8 +114,8 @@ public class TerritoryModel {
         return regionStringList;
     }
 
-    public List<String> getSubterritoryList() {
-        return subterritoryList;
+    public List<String> getSubTerritoryList() {
+        return subTerritoryList;
     }
 
     public String getObjectiveTypeName() {

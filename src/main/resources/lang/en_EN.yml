@@ -72,6 +72,9 @@ commands:
     create:
       desc: "Create a nodewar team"
       result: "Team created"
+      too-short: "Too short team name or short name [name]"
+      too-long: "Too long team name or short name [name]"
+      already-exist: "This team name or shortname already exists [name]"
     deploy:
       desc: "Deploy yourself on one of your team territories"
       result-territory: "Teleport to territory."
@@ -120,6 +123,7 @@ commands:
         desc: "Manage relations with other teams"
         accept:
           desc: "Accept an incoming relation request"
+          none: "No invites yet"
         open:
           desc: "Enable reception of relation invites"
           result: "Team open to relation invites"
@@ -370,7 +374,7 @@ territory:
         attack:
           start: "&eYour team engage a fight in [territory_display] !" # server-wide
           advantage: "&aYour team is capturing [territory_display]" # territory-wide
-          disadvantage: "&cYou team is getting repelled at [territory_display]" # territory-wide
+          disadvantage: "&cYour team is getting repelled at [territory_display]" # territory-wide
           victory: "&bYour team has conquered [territory_display] !" # server-wide
           defeat: "&4Your team has been repelled at [territory_display]..." # server-wide
   bossbar:

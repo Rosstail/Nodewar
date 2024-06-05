@@ -94,7 +94,7 @@ public class TeamManageRelationAcceptCommand extends TeamManageRelationSubComman
         NwTeamRelationRequest teamRelationInvite = TeamRelationManager.getRelationRequestHashSet().stream().filter(nwTeamRelationInvite -> (nwTeamRelationInvite.getSenderTeam() == senderNwTeam && nwTeamRelationInvite.getTargetTeam() == playerNwTeam)).findFirst().orElse(null);
 
         if (teamRelationInvite == null) {
-            sender.sendMessage("no invites yet");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_ACCEPT_NONE));
             return;
         }
 

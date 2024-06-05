@@ -101,6 +101,11 @@ public class ConfigData {
         public final long deployTimer;
         public final long deployCooldown;
 
+        public final short minimumNameLength;
+        public final short maximumNameLength;
+        public final short minimumShortnameLength;
+        public final short maximumShortNameLength;
+
         ConfigTeam(FileConfiguration config) {
             configFile = config;
 
@@ -111,6 +116,10 @@ public class ConfigData {
             maximumMembers = config.getInt("team.maximum-members", 50);
             deployTimer = config.getLong("team.deploy-timer") * 1000;
             deployCooldown = config.getLong("team.deploy-cooldown") * 1000;
+            minimumNameLength = (short) Math.min(config.getInt("team.name-min-length", 5), 40);
+            maximumNameLength = (short) Math.min(config.getInt("team.name-max-length", 20), 40);
+            minimumShortnameLength = (short) Math.min(config.getInt("team.shortname-min-length", 3), 40);
+            maximumShortNameLength = (short) Math.min(config.getInt("team.shortname-max-length", 5), 40);
         }
     }
 

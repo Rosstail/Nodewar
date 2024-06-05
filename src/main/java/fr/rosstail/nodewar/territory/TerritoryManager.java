@@ -107,6 +107,25 @@ public class TerritoryManager {
         });
     }
 
+    /**
+     * Just add the list of sub territories to territory subterritory list
+     */
+    public void setupTerritoriesSubTerritories() {
+        getTerritoryMap().forEach((s, territory) -> {
+            List<String> subTerritoryStringList = territory.getModel().getSubTerritoryList();
+
+            subTerritoryStringList.forEach(subTerritoryName -> {
+                if (territoryMap.get(subTerritoryName) != null) {
+                    Territory subTerritory = territoryMap.get(subTerritoryName);
+                    if (subTerritory.getWorld() == territory.getWorld()) {
+                        territory.getSubTerritoryList().add(subTerritory);
+                    }
+                }
+            });
+
+        });
+    }
+
     public void setupTerritoriesObjective() {
         getTerritoryMap().forEach((s, territory) -> {
             territory.setupObjective();
