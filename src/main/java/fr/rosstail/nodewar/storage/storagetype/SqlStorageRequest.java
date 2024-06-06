@@ -59,7 +59,7 @@ public class SqlStorageRequest implements StorageRequest {
                 " username varchar(40) UNIQUE NOT NULL," +
                 " is_team_open BOOLEAN NOT NULL DEFAULT TRUE," +
                 " last_deploy timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-                " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
+                " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP) CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
 
         executeSQL(query);
     }
@@ -67,7 +67,7 @@ public class SqlStorageRequest implements StorageRequest {
     public void createNodewarTeamTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + teamTableName + " (" +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
-                " name VARCHAR(40) UNIQUE," +
+                " name varchar(40) UNIQUE," +
                 " display VARCHAR(40) UNIQUE," +
                 " short VARCHAR(5) UNIQUE," +
                 " color VARCHAR(20) NOT NULL DEFAULT '" + ChatColor.WHITE.name() + "'," +
@@ -75,7 +75,7 @@ public class SqlStorageRequest implements StorageRequest {
                 " is_relation_open BOOLEAN NOT NULL DEFAULT TRUE," +
                 " is_permanent BOOLEAN NOT NULL DEFAULT FALSE," +
                 " creation_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-                " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
+                " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP) CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
         executeSQL(query);
     }
 
@@ -115,7 +115,7 @@ public class SqlStorageRequest implements StorageRequest {
                 " owner_team_id INTEGER" +
                 " REFERENCES " + teamTableName + " (id)" +
                 " ON DELETE SET NULL," +
-                " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
+                " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP) CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
         executeSQL(query);
     }
 
@@ -126,7 +126,7 @@ public class SqlStorageRequest implements StorageRequest {
                 " open_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 " close_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 " is_open BOOLEAN NOT NULL DEFAULT false," +
-                " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
+                " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP) CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
         executeSQL(query);
     }
 

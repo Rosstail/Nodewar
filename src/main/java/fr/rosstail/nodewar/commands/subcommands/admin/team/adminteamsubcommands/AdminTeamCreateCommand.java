@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.text.Normalizer;
 import java.util.List;
 
 public class AdminTeamCreateCommand extends AdminTeamSubCommand {
@@ -63,7 +64,8 @@ public class AdminTeamCreateCommand extends AdminTeamSubCommand {
             return;
         }
 
-        teamName = ChatColor.stripColor(args[3].toLowerCase());
+        teamName = Normalizer.normalize(ChatColor.stripColor(args[3]).toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");;
+
         displayTeamName = args[3];
         shortName = args[4];
 

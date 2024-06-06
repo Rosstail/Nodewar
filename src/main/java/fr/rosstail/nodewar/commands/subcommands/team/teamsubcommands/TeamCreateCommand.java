@@ -18,6 +18,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
+import java.text.Normalizer;
 import java.util.List;
 
 public class TeamCreateCommand extends TeamSubCommand {
@@ -81,7 +82,8 @@ public class TeamCreateCommand extends TeamSubCommand {
         }
         senderPlayer = (Player) sender;
         playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
-        teamName = ChatColor.stripColor(args[2].toLowerCase());
+        teamName = Normalizer.normalize(ChatColor.stripColor(args[2]).toLowerCase(), Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+
         displayName = args[2];
         shortName = args[3];
         ownerId = playerData.getId();

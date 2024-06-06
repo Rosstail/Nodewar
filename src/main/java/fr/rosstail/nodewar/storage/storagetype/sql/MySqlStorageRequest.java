@@ -54,7 +54,7 @@ public class MySqlStorageRequest extends SqlStorageRequest {
                 " owner_team_id INTEGER," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 " FOREIGN KEY (owner_team_id) REFERENCES " + teamTableName + "(id) ON DELETE SET NULL" +
-                ");";
+                ") CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
         executeSQL(query);
     }
 
