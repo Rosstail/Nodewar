@@ -660,14 +660,13 @@ public class SqlStorageRequest implements StorageRequest {
      * @param params #The values to put as WHERE
      * @return # Returns the id of the new line if INSERT
      */
-    private int executeSQLUpdate(String query, Object... params) throws SQLException {
+    protected int executeSQLUpdate(String query, Object... params) throws SQLException {
         int affectedRows = 0;
         try (PreparedStatement statement = openConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
             }
 
-            System.out.println(statement.toString());
             statement.executeUpdate();
             affectedRows = statement.getUpdateCount();
 

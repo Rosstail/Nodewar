@@ -1,6 +1,9 @@
 package fr.rosstail.nodewar.storage.storagetype.sql;
 
+import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.storagetype.SqlStorageRequest;
+
+import java.sql.Timestamp;
 
 public class MySqlStorageRequest extends SqlStorageRequest {
 
@@ -56,6 +59,17 @@ public class MySqlStorageRequest extends SqlStorageRequest {
                 " FOREIGN KEY (owner_team_id) REFERENCES " + teamTableName + "(id) ON DELETE SET NULL" +
                 ") CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
         executeSQL(query);
+    }
+
+    @Override
+    public void updatePlayerModel(PlayerModel model) {
+        String query = "UPDATE " + playerTableName + " SET username = ?, last_update = CURRENT_TIMESTAMP, is_team_open = ?, last_deploy = ? WHERE uuid = ?";
+        try {
+            super.executeSQLUpdate(query, model.getUsername(), model.isTeamOpen(), new Timestamp(model.getLastDeploy()), model.getUuid());
+            model.setLastUpdate(System.currentTimeMillis());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
