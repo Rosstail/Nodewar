@@ -75,6 +75,7 @@ commands:
       too-short: "Too short team name or short name [name]"
       too-long: "Too long team name or short name [name]"
       already-exist: "This team name or shortname already exists [name]"
+      not-enough-money: "&cYou need [price] to create a team."
     deploy:
       desc: "Deploy yourself on one of your team territories"
       result-territory: "Teleport to territory."
@@ -110,9 +111,11 @@ commands:
         promote:
           desc: "Promote a team member"
           result: "Player [player] promoted to [team_member_rank]."
+          error: "You cannot promote this player."
         demote:
           desc: "Demote a team member"
           result: "Player [player] demoted to [team_member_rank]."
+          error: "You cannot demote this player."
         kick:
           desc: "Kick a player from your team"
           result: "Player kicked successfully."

@@ -94,6 +94,7 @@ public class ConfigData {
     public class ConfigTeam {
         public FileConfiguration configFile;
 
+        public final double creationCost;
         public final RelationType defaultRelation;
         public final String noneDisplay;
         public final String noneColor;
@@ -109,6 +110,7 @@ public class ConfigData {
         ConfigTeam(FileConfiguration config) {
             configFile = config;
 
+            creationCost = config.getDouble("team.creation-cost");
             String relationTypeStr = config.getString("team.default-relation", "neutral");
             defaultRelation = RelationType.valueOf(relationTypeStr.toUpperCase());
             noneDisplay = config.getString("team.none-display", "None");

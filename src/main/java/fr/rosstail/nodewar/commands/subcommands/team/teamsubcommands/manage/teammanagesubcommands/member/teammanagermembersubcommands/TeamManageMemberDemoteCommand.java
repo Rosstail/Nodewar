@@ -103,7 +103,7 @@ public class TeamManageMemberDemoteCommand extends TeamManageMemberSubCommand {
 
             newRank = targetTeamMemberModel.getRank() - 1;
             if (targetTeamMemberModel.getRank() >= playerRank.getWeight() || newRank == 0) {
-                sender.sendMessage("You cannot demote this player.");
+                sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_DEMOTE_ERROR)));
                 return;
             }
 

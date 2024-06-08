@@ -103,7 +103,7 @@ public class TeamManageMemberPromoteCommand extends TeamManageMemberSubCommand {
 
             newRank = targetTeamMemberModel.getRank() + 1;
             if (newRank >= playerRank.getWeight()) {
-                sender.sendMessage("You cannot promote this player.");
+                sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_PROMOTE_ERROR)));
                 return;
             }
 

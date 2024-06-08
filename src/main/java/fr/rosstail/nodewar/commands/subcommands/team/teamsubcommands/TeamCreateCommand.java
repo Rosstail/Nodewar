@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
 import fr.rosstail.nodewar.ConfigData;
+import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
@@ -13,6 +14,7 @@ import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -113,6 +115,15 @@ public class TeamCreateCommand extends TeamSubCommand {
         if (teamDataManager.getStringTeamMap().values().stream().anyMatch(nwTeam -> (nwTeam.getModel().getShortName().equalsIgnoreCase(shortName)))) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_ALREADY_EXIST));
             return;
+        }
+
+        if (Nodewar.getEconomy() != null) {
+            Economy economy = Nodewar.getEconomy();
+            double price = ConfigData.getConfigData().team.creationCost;
+            if (!Nodewar.getEconomy().withdrawPlayer(senderPlayer, price).transactionSuccess()) {
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_CREATE_NOT_ENOUGH_MONEY).replaceAll("\\[price]", economy.format(price)));
+                return;
+            }
         }
 
         teamModel = new TeamModel(teamName, displayName, shortName, teamDataManager.generateRandomColor());

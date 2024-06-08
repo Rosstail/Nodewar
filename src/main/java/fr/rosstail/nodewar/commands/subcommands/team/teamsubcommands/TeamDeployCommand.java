@@ -87,7 +87,7 @@ public class TeamDeployCommand extends TeamSubCommand {
         playerNwTeam = teamDataManager.getTeamOfPlayer(senderPlayer);
 
         if (playerNwTeam == null) {
-            sender.sendMessage("you are not in a team");
+            sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM)));
             return;
         }
 

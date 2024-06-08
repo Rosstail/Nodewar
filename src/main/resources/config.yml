@@ -26,6 +26,7 @@ map:
   update-delay: 5
 
 team:
+  creation-cost: 0
   default-relation: neutral
   none-color: "#CACACA"
   deploy-timer: 10

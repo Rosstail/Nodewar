@@ -132,12 +132,12 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public boolean insertPlayerModel(PlayerModel model) {
-        String query = "INSERT INTO " + playerTableName + " (uuid)"
-                + " VALUES (?);";
+        String query = "INSERT INTO " + playerTableName + " (uuid, username)"
+                + " VALUES (?, ?);";
 
         String uuid = model.getUuid();
         try {
-            int id = executeSQLUpdate(query, uuid);
+            int id = executeSQLUpdate(query, uuid, model.getUsername());
             model.setId(id);
             return true;
         } catch (SQLException e) {
@@ -529,9 +529,9 @@ public class SqlStorageRequest implements StorageRequest {
     public void updatePlayerModel(PlayerModel model) {
         String query = "UPDATE " + playerTableName + " SET username = ?, last_update = CURRENT_TIMESTAMP, is_team_open = ?, last_deploy = ? WHERE uuid = ?";
         try {
-            executeSQLUpdate(query, model.getUsername(), model.isTeamOpen(), new Timestamp(model.getLastDeploy()), model.getUuid());
+            executeSQLUpdate(query, model.getUsername(), model.isTeamOpen(), new Timestamp(model.getLastDeploy()).getTime(), model.getUuid());
             model.setLastUpdate(System.currentTimeMillis());
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -667,6 +667,7 @@ public class SqlStorageRequest implements StorageRequest {
                 statement.setObject(i + 1, params[i]);
             }
 
+            System.out.println(statement.toString());
             statement.executeUpdate();
             affectedRows = statement.getUpdateCount();
 

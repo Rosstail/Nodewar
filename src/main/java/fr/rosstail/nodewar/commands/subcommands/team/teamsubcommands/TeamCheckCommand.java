@@ -83,7 +83,7 @@ public class TeamCheckCommand extends TeamSubCommand {
             playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
 
             if (playerData.getTeam() == null) {
-                sender.sendMessage("You are not on a team");
+                sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM)));
                 return;
             }
             team = playerData.getTeam();
