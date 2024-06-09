@@ -15,7 +15,7 @@ map:
     marker-label: "Territories"
 
 commands:
-  by-player-only: "[prefix] This command must be sent by a player."
+  by-player-only: "[prefix]This command must be sent by a player."
   permission-denied: "[prefix]You don't have permission for command [command_name] : [command_permission]."
   insert-player-name: "[prefix]Insert player target name."
   wrong-command: "[prefix]Wrong command."
@@ -29,15 +29,15 @@ commands:
     header: "&b====== &cNODEWAR HELP &b======"
     line: "&a► &6/[syntax] &8: &r[desc]"
   team:
-    desc: "Check, manage or create a team"
-    already-exist: "Team already exist"
-    does-not-exist: "Team does not exist"
-    part-of-no-team: "You are part of no team"
-    team-full: "This team is full !"
+    desc: "[prefix]Check, manage or create a team"
+    already-exist: "[prefix]Team already exist"
+    does-not-exist: "[prefix]Team does not exist"
+    part-of-no-team: "[prefix]You are part of no team"
+    team-full: "[prefix]This team is full !"
     check:
-      desc: "Check team's data"
+      desc: "[prefix]Check team's data"
       result:
-        - "[team_color_short]&r - [team_color_display]&r &8:&r"
+        - "[prefix][team_color_short]&r - [team_color_display]&r &8:&r"
         - "* Color &8:&r {[team_color]}[team_color]&r"
         - "* Your rank &8:&r [team_player_rank]"
         - "* Members &8:&r [team_online_member]/[team_maximum_members] - [team_open]&r"
@@ -45,7 +45,7 @@ commands:
         - "* Relations &8:&r (default &8:&r [team_relation_default])"
         - "[team_result_relation_line]"
       result-other:
-        - "[team_display]&r &8:&r"
+        - "[prefix][team_display]&r &8:&r"
         - "* Color &8:&r {[team_color]}[team_color]&r"
         - "* Members &8:&r [team_online_member] - [team_open]&r"
         - "[team_result_member_line]"
@@ -55,195 +55,195 @@ commands:
       result-relation-line: "   - [team_display] &8:&r [team_relation]&r"
     list:
       desc: "Check the list of teams"
-      result-header: "&bTeams list &8:"
+      result-header: "[prefix]&bTeams list &8:"
       result-line: "&a► [team_color_display]&r"
     invites:
       desc: "Manage teams invites."
       check:
         desc: "Check which teams want to recruit you."
-        result-header: "&bInvites &8:"
+        result-header: "[prefix]&bInvites &8:"
         result-line: "&a► [team_color_display]&r"
       open:
         desc: "Receive any team invitation"
-        result: "You are now open to team invites"
+        result: "[prefix]You are now open to team invites"
       close:
         desc: "Refuse any team invitation"
-        result: "You are now close to team invites"
+        result: "[prefix]You are now close to team invites"
     create:
       desc: "Create a nodewar team"
-      result: "Team created"
-      too-short: "Too short team name or short name [name]"
-      too-long: "Too long team name or short name [name]"
-      already-exist: "This team name or shortname already exists [name]"
-      not-enough-money: "&cYou need [price] to create a team."
+      result: "[prefix]Team created"
+      too-short: "[prefix]Too short team name or short name [name]"
+      too-long: "[prefix]Too long team name or short name [name]"
+      already-exist: "[prefix]This team name or shortname already exists [name]"
+      not-enough-money: "[prefix]&cYou need [price] to create a team."
     deploy:
       desc: "Deploy yourself on one of your team territories"
-      result-territory: "Teleport to territory."
-      result-region: "Teleport to region."
-      result-failure-timer: "Cannot deploy until [timer]"
-      result-failure-territory: "You cannot deploy to this territory."
-      result-failure-region: "You cannot deploy to this region."
-      cancelled: "Deployment cancelled."
+      result-territory: "[prefix]Teleport to territory."
+      result-region: "[prefix]Teleport to region."
+      result-failure-timer: "[prefix]Cannot deploy until [timer]"
+      result-failure-territory: "[prefix]You cannot deploy to this territory."
+      result-failure-region: "[prefix]You cannot deploy to this region."
+      cancelled: "[prefix]Deployment cancelled."
     join:
       desc: "Join an existing nodewar team"
-      result: "Joined team"
-      result-uninvited: "This team requires an invite"
+      result: "[prefix]Joined team"
+      result-uninvited: "[prefix]This team requires an invite"
     manage:
       desc: "Manage your team."
       color:
         desc: "Edit your current team color"
-        result: "Team color set to {[team_color]}[team_color]"
+        result: "[prefix]Team color set to {[team_color]}[team_color]"
       open:
         desc: "Make your team joinable by anybody"
-        result: "your team is now open"
-        result-close: "your team is now close"
+        result: "[prefix]Your team is now open"
+        result-close: "[prefix]Your team is now close"
       close:
         desc: "Make your team joinable only on invites"
-        result: "your team is now close"
+        result: "[prefix]Your team is now close"
       invite:
         desc: "Invite a player into your team"
-        result: "Invitation sent successfully."
-        result-already: "Already sent an invite to this player."
-        result-ignore: "This player ignore invitations."
+        result: "[prefix]Invitation sent successfully."
+        result-already: "[prefix]Already sent an invite to this player."
+        result-ignore: "[prefix]This player ignore invitations."
       member:
         desc: "Manage players from your team"
-        cannot-target-self: "You cannot target yourself !"
+        cannot-target-self: "[prefix]You cannot target yourself !"
         promote:
           desc: "Promote a team member"
-          result: "Player [player] promoted to [team_member_rank]."
-          error: "You cannot promote this player."
+          result: "[prefix]Player [player] promoted to [team_member_rank]."
+          error: "[prefix]You cannot promote this player."
         demote:
           desc: "Demote a team member"
-          result: "Player [player] demoted to [team_member_rank]."
-          error: "You cannot demote this player."
+          result: "[prefix]Player [player] demoted to [team_member_rank]."
+          error: "[prefix]You cannot demote this player."
         kick:
           desc: "Kick a player from your team"
-          result: "Player kicked successfully."
+          result: "[prefix]Player kicked successfully."
         transfer:
           desc: "Transfer ownership of team to player"
-          result: "Ownership transferred successfully."
+          result: "[prefix]Ownership transferred successfully."
       relation:
         desc: "Manage relations with other teams"
         accept:
           desc: "Accept an incoming relation request"
-          none: "No invites yet"
+          none: "[prefix]No invites yet"
         open:
           desc: "Enable reception of relation invites"
-          result: "Team open to relation invites"
+          result: "[prefix]Team open to relation invites"
         close:
           desc: "Disable reception of relation invites"
-          result: "Team closed to relation invites"
+          result: "[prefix]Team closed to relation invites"
         request:
           desc: "Set relation with selected team"
-          result-sent: "Relation invite sent successfully."
-          result-effective: "Relation set."
-          result-unchanged: "Same relation. No change."
-          result-already-sent: "Already sent the invitation"
-          result-blocked: "This team does not receive invites of relation improvements"
+          result-sent: "[prefix]Relation invite sent successfully."
+          result-effective: "[prefix]Relation set."
+          result-unchanged: "[prefix]Same relation. No change."
+          result-already-sent: "[prefix]Already sent the invitation"
+          result-blocked: "[prefix]This team does not receive invites of relation improvements"
         invites:
           desc: "Check list of teams relations invites."
-          result-header: "&bInvites &8:"
+          result-header: "[prefix]&bInvites &8:"
           result-line: "&a► [team_line_direction]&r [team_color_display] &8: [team_relation] -> [team_relation_invite]&r"
           result-line-received: "&e<<<"
           result-line-sent: "&6>>>"
       disband:
         desc: "Disband your nodewar team"
-        result: "Disbanded team"
+        result: "[prefix]Disbanded team"
     leave:
       desc: "Leave your current team"
-      result: "Left team"
-      result-failure-owner: "You cannot leave the team as the owner !"
+      result: "[prefix]Left team"
+      result-failure-owner: "[prefix]You cannot leave the team as the owner !"
   admin:
     desc: "Admin commands"
     team:
       desc: "Admin team command"
       create:
         desc: "Create a new team"
-        result: "Succesfully created [team_color_display]."
+        result: "[prefix]Succesfully created [team_color_display]."
       edit:
         desc: "Edit selected team"
         color:
           desc: "Edit selected team current team color"
-          result: "Team color set to {[team_color]}[team_color]"
+          result: "[prefix]Team color set to {[team_color]}[team_color]"
         open:
           desc: "Make selected team joinable by anybody"
-          result: "Selected team is now open"
-          result-close: "Selected team is now close"
+          result: "[prefix]Selected team is now open"
+          result-close: "[prefix]Selected team is now close"
         close:
           desc: "Make selected team joinable only on invites"
-          result: "Selected team is now close"
+          result: "[prefix]Selected team is now close"
         invite:
           desc: "Invite a player into selected team"
-          result: "Invitation sent successfully."
-          result-already: "Already sent an invite to this player."
-          result-ignore: "This player ignore invitations."
+          result: "[prefix]Invitation sent successfully."
+          result-already: "[prefix]Already sent an invite to this player."
+          result-ignore: "[prefix]This player ignore invitations."
         member:
           desc: "manage members of a team"
           add:
             desc: "Add a player to team"
-            result: "Player [player] added to [team_display]."
+            result: "[prefix]Player [player] added to [team_display]."
           remove:
             desc: "Remove a player from team"
-            result: "Player [player] removed from [team_display]."
+            result: "[prefix]Player [player] removed from [team_display]."
           promote:
             desc: "Promote a team member"
-            result: "Player [player] promoted to [team_member_rank]."
+            result: "[prefix]Player [player] promoted to [team_member_rank]."
           demote:
             desc: "Demote a team member"
-            result: "Player [player] demoted to [team_member_rank]."
+            result: "[prefix]Player [player] demoted to [team_member_rank]."
           kick:
             desc: "Kick a player from selected team"
-            result: "Player kicked successfully."
+            result: "[prefix]Player kicked successfully."
           transfer:
             desc: "Transfer ownership of team to player"
-            result: "Ownership transferred successfully."
+            result: "[prefix]Ownership transferred successfully."
         relation:
           desc: "Manage relations with other teams"
           open:
             desc: "Enable reception of relation invites"
-            result: "Team open to relation invites"
+            result: "[prefix]Team open to relation invites"
           close:
             desc: "Disable reception of relation invites"
-            result: "Team closed to relation invites"
+            result: "[prefix]Team closed to relation invites"
           invites:
             desc: "Check list of teams relations invites."
-            result-header: "&bInvites &8:"
+            result-header: "[prefix]&bInvites &8:"
             result-line: "&a► [team_line_direction]&r [team_color_display] &8: [team_relation] -> [team_relation_invite]&r"
             result-line-received: "&e<<<"
             result-line-sent: "&6>>>"
           request:
             desc: "Set relation with selected team"
-            result-invite: "Relation invite sent successfully."
-            result-weight: "Relation set."
-            result-ignore: "Target team is not open to requests."
-            result-unchanged: "Same relation. No change."
-            result-already: "Already sent the invitation."
+            result-invite: "[prefix]Relation invite sent successfully."
+            result-weight: "[prefix]Relation set."
+            result-ignore: "[prefix]Target team is not open to requests."
+            result-unchanged: "[prefix]Same relation. No change."
+            result-already: "[prefix]Already sent the invitation."
           set:
             desc: "Set immediate relation between selected teams"
-            result: "Relation set."
-            result-unchanged: "Same relation. No changes"
+            result: "[prefix]Relation set."
+            result-unchanged: "[prefix]Same relation. No changes"
         disband:
           desc: "Disband selected nodewar team"
-          result: "Disbanded team"
+          result: "[prefix]Disbanded team"
     territory:
       desc: "Edit the selected territory"
       reload-regions:
-        desc: "Reload regions of a territory"
-        result: "Regions of [territory_display] reloaded"
+        desc: "[prefix]Reload regions of a territory"
+        result: "[prefix]Regions of [territory_display] reloaded"
       team:
         desc: "Edit owner team of territory"
         set:
           desc: "Set owner team of territory"
-          result: "Territory owner is now [team_display]"
+          result: "[prefix]Territory owner is now [team_display]"
         reset:
           desc: "Remove current owner of territory"
-          result: "Territory is now neutral."
+          result: "[prefix]Territory is now neutral."
       vulnerable:
         desc: "Makes the territory vulnerable to player attacks"
-        result: "[territory_display] is now vulnerable"
+        result: "[prefix][territory_display] is now vulnerable"
       protect:
         desc: "Makes the territory immune to player attacks"
-        result: "[territory_display] is now immune"
+        result: "[prefix][territory_display] is now immune"
   territory:
     desc: "Territory commands"
     check:
@@ -287,10 +287,10 @@ battlefield:
   open: "OPEN"
   closed: "CLOSED"
   announcement:
-    open: "The [battlefield_display] battlefield is now open !"
-    open-delay: "The [battlefield_display] battlefield will open in [delay]"
-    close: "The [battlefield_display] battlefield is now closed !"
-    close-delay: "The [battlefield_display] battlefield will close in [delay]"
+    open: "[prefix]The [battlefield_display] battlefield is now open !"
+    open-delay: "[prefix]The [battlefield_display] battlefield will open in [delay]"
+    close: "[prefix]The [battlefield_display] battlefield is now closed !"
+    close-delay: "[prefix]The [battlefield_display] battlefield will close in [delay]"
 
 territory:
   description:
