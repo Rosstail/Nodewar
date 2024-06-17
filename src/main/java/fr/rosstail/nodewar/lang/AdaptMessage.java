@@ -102,9 +102,7 @@ public class AdaptMessage {
 
         while (playerTeamMatcher.find()) {
             message = message.replace(playerTeamMatcher.group(), "[team" + playerTeamMatcher.group(2));
-            if (playerTeam != null) {
-                message = adaptTeamMessage(message, playerTeam);
-            }
+            message = adaptTeamMessage(message, playerTeam);
         }
 
         message = ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(player, message));
@@ -121,6 +119,9 @@ public class AdaptMessage {
             message = message.replaceAll("\\[team_color_short]", "{" + ConfigData.getConfigData().team.noneColor + "}");
             message = message.replaceAll("\\[team_color]", ConfigData.getConfigData().team.noneColor);
             message = message.replaceAll("\\[team_(\\w+)]", "");
+            message = message.replaceAll("\\[team_open]", "-");
+            message = message.replaceAll("\\[team_permanent]", "-");
+            message = message.replaceAll("\\[team_creation_date]", "-");
             return adaptMessage(message);
         }
         message = message.replaceAll("\\[team_name]", team.getModel().getName());
