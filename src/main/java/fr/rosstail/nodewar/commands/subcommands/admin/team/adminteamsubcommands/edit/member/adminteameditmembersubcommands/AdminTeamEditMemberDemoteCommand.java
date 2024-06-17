@@ -88,7 +88,7 @@ public class AdminTeamEditMemberDemoteCommand extends AdminTeamEditMemberSubComm
 
         newRank = targetTeamMemberModel.getRank() - 1;
         if (newRank == 0) {
-            sender.sendMessage("You cannot demote this player.");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_DEMOTE_ERROR));
             return;
         }
 

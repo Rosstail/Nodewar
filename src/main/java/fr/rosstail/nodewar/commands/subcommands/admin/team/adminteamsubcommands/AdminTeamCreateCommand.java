@@ -69,14 +69,14 @@ public class AdminTeamCreateCommand extends AdminTeamSubCommand {
         displayTeamName = args[3];
         shortName = args[4];
 
-        if (shortName.length() > ConfigData.getConfigData().team.minimumNameLength && shortName.length() > ConfigData.getConfigData().team.maximumNameLength) {
-            String message = LangManager.getMessage(teamName.length() > 40 ? LangMessage.COMMANDS_TEAM_CREATE_TOO_LONG : LangMessage.COMMANDS_TEAM_CREATE_TOO_SHORT);
+        if (teamName.length() < ConfigData.getConfigData().team.minimumNameLength || teamName.length() > ConfigData.getConfigData().team.maximumNameLength) {
+            String message = LangManager.getMessage(shortName.length() > ConfigData.getConfigData().team.maximumNameLength ? LangMessage.COMMANDS_TEAM_CREATE_TOO_LONG : LangMessage.COMMANDS_TEAM_CREATE_TOO_SHORT);
             sender.sendMessage(message.replaceAll("\\[name]", teamName));
             return;
         }
 
-        if (shortName.length() > ConfigData.getConfigData().team.minimumShortnameLength && shortName.length() > ConfigData.getConfigData().team.maximumShortNameLength) {
-            String message = LangManager.getMessage(shortName.length() > 40 ? LangMessage.COMMANDS_TEAM_CREATE_TOO_LONG : LangMessage.COMMANDS_TEAM_CREATE_TOO_SHORT);
+        if (shortName.length() < ConfigData.getConfigData().team.minimumShortnameLength || shortName.length() > ConfigData.getConfigData().team.maximumShortNameLength) {
+            String message = LangManager.getMessage(teamName.length() > ConfigData.getConfigData().team.maximumShortNameLength ? LangMessage.COMMANDS_TEAM_CREATE_TOO_LONG : LangMessage.COMMANDS_TEAM_CREATE_TOO_SHORT);
             sender.sendMessage(message.replaceAll("\\[name]", shortName));
             return;
         }

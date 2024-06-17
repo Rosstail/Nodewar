@@ -89,7 +89,7 @@ public class AdminTeamEditMemberPromoteCommand extends AdminTeamEditMemberSubCom
         newRank = targetTeamMemberModel.getRank() + 1;
         if (newRank == 5 && targetTeam.getModel().getTeamMemberModelMap().values().stream()
                 .anyMatch(teamMemberModel -> teamMemberModel.getRank() == TeamRank.OWNER.getWeight())) {
-            sender.sendMessage("You cannot promote this player.");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_PROMOTE_ERROR));
             return;
         }
 

@@ -89,9 +89,9 @@ public class TerritoryManager {
         List<TerritoryModel> territoryOwnerMap = StorageManager.getManager().selectAllTerritoryModel();
         getTerritoryMap().forEach((s, territory) -> {
             List<TerritoryModel> models = territoryOwnerMap.stream().filter(model ->
-                model.getWorldName().equalsIgnoreCase(territory.getModel().getWorldName())
+                    model.getWorldName().equalsIgnoreCase(territory.getModel().getWorldName())
             ).filter(model ->
-                model.getName().equalsIgnoreCase(territory.getModel().getName())
+                    model.getName().equalsIgnoreCase(territory.getModel().getName())
             ).collect(Collectors.toList());
 
             if (!models.isEmpty()) {
@@ -158,8 +158,8 @@ public class TerritoryManager {
 
     public List<Territory> getTerritoryListPerWorld(World world) {
         return getTerritoryMap().values().stream().filter(territory -> (
-                territory.getWorld().equals(world)
-                )).collect(Collectors.toList());
+                territory.getWorld() == world
+        )).collect(Collectors.toList());
     }
 
     public TerritoryType getTerritoryTypeFromMap(String type) {

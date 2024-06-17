@@ -49,32 +49,33 @@ public class BattlefieldManager {
         alertTimeList.add(31536000000000L); // 10 years
 
         ConfigurationSection battlefieldListSection = ConfigData.getConfigData().battlefield.configFile.getConfigurationSection("battlefield.list");
+        if (battlefieldListSection != null) {
+            battlefieldListSection.getKeys(false).forEach(s -> {
+                BattlefieldModel dbBattlefieldModel = StorageManager.getManager().selectBattlefieldModel(s);
+                BattlefieldModel battlefieldModel = new BattlefieldModel(battlefieldListSection.getConfigurationSection(s));
 
-        battlefieldListSection.getKeys(false).forEach(s -> {
-            BattlefieldModel dbBattlefieldModel = StorageManager.getManager().selectBattlefieldModel(s);
-            BattlefieldModel battlefieldModel = new BattlefieldModel(battlefieldListSection.getConfigurationSection(s));
+                Battlefield battlefield = new Battlefield(battlefieldModel);
+                battlefieldList.add(battlefield);
 
-            Battlefield battlefield = new Battlefield(battlefieldModel);
-            battlefieldList.add(battlefield);
-
-            if (dbBattlefieldModel == null) {
-                StorageManager.getManager().insertBattlefieldModel(battlefieldModel);
-            } else {
-                battlefieldModel.setId(dbBattlefieldModel.getId());
-                battlefieldModel.setOpen(dbBattlefieldModel.isOpen());
-
-                long dbOpenTime = dbBattlefieldModel.getOpenDateTime();
-                long dbCloseTime = dbBattlefieldModel.getCloseDateTime();
-
-                if (now >= dbOpenTime && now <= dbCloseTime) {
-                    battlefieldModel.setOpenDateTime(dbOpenTime);
-                    battlefieldModel.setCloseDateTime(dbCloseTime);
-                    openBattlefield(battlefield);
+                if (dbBattlefieldModel == null) {
+                    StorageManager.getManager().insertBattlefieldModel(battlefieldModel);
                 } else {
-                    closeBattlefield(battlefield);
+                    battlefieldModel.setId(dbBattlefieldModel.getId());
+                    battlefieldModel.setOpen(dbBattlefieldModel.isOpen());
+
+                    long dbOpenTime = dbBattlefieldModel.getOpenDateTime();
+                    long dbCloseTime = dbBattlefieldModel.getCloseDateTime();
+
+                    if (now >= dbOpenTime && now <= dbCloseTime) {
+                        battlefieldModel.setOpenDateTime(dbOpenTime);
+                        battlefieldModel.setCloseDateTime(dbCloseTime);
+                        openBattlefield(battlefield);
+                    } else {
+                        closeBattlefield(battlefield);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public void openBattlefield(Battlefield battlefield) {

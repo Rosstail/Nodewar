@@ -52,7 +52,7 @@ public class AdminTeamEditDisbandCommand extends AdminTeamEditSubCommand {
         }
         
         if (args.length < 6) {
-            sender.sendMessage("Add the team name to the command to confirm");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RESULT_NAME_CONFIRM));
             return;
         }
         
@@ -68,13 +68,13 @@ public class AdminTeamEditDisbandCommand extends AdminTeamEditSubCommand {
         teamNameConfirmStr = args[5];
 
         if (!targetTeamName.equals(teamNameConfirmStr)) {
-            sender.sendMessage("wrong team name");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
             return;
         }
 
         TeamDataManager.getTeamDataManager().deleteTeam(targetTeam.getModel().getName());
 
-        sender.sendMessage("Disbanded team");
+        sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_DISBAND_RESULT));
         DynmapHandler.getDynmapHandler().resumeRender();
     }
 

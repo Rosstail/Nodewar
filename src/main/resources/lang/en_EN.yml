@@ -29,13 +29,13 @@ commands:
     header: "&b====== &cNODEWAR HELP &b======"
     line: "&a► &6/[syntax] &8: &r[desc]"
   team:
-    desc: "[prefix]Check, manage or create a team"
+    desc: "Check, manage or create a team"
     already-exist: "[prefix]Team already exist"
     does-not-exist: "[prefix]Team does not exist"
     part-of-no-team: "[prefix]You are part of no team"
     team-full: "[prefix]This team is full !"
     check:
-      desc: "[prefix]Check team's data"
+      desc: "Check team's data"
       result:
         - "[prefix][team_color_short]&r - [team_color_display]&r &8:&r"
         - "* Color &8:&r {[team_color]}[team_color]&r"
@@ -90,6 +90,8 @@ commands:
       result-uninvited: "[prefix]This team requires an invite"
     manage:
       desc: "Manage your team."
+      error-clearance: "You do not have enough clearance in your team."
+      result-confirm-name: "Insert the name of team to confirm."
       color:
         desc: "Edit your current team color"
         result: "[prefix]Team color set to {[team_color]}[team_color]"
@@ -137,6 +139,7 @@ commands:
           desc: "Set relation with selected team"
           result-sent: "[prefix]Relation invite sent successfully."
           result-effective: "[prefix]Relation set."
+          result-same-team: "[prefix]You can't target your own team."
           result-unchanged: "[prefix]Same relation. No change."
           result-already-sent: "[prefix]Already sent the invitation"
           result-blocked: "[prefix]This team does not receive invites of relation improvements"
@@ -228,7 +231,7 @@ commands:
     territory:
       desc: "Edit the selected territory"
       reload-regions:
-        desc: "[prefix]Reload regions of a territory"
+        desc: "Reload regions of a territory"
         result: "[prefix]Regions of [territory_display] reloaded"
       team:
         desc: "Edit owner team of territory"

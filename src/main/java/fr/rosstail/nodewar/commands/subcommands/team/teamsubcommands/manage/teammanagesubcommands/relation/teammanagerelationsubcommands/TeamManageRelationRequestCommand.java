@@ -103,7 +103,7 @@ public class TeamManageRelationRequestCommand extends TeamManageRelationSubComma
             return;
         }
         if (targetNwTeam.equals(playerNwTeam)) {
-            sender.sendMessage("You cannot edit relation with your own team");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_RESULT_SAME_TEAM));
             return;
         }
 

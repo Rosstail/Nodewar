@@ -75,7 +75,9 @@ public class TeamDataManager {
         getStringTeamMap().remove(teamName);
 
         PlayerDataManager.getPlayerDataMap().values().stream().filter(playerData ->
-                (playerData.getTeam() == team)).forEach(this::deleteTeamMember);
+                (playerData.getTeam() == team)).forEach(playerData -> {
+            deleteTeamMember(playerData, true);
+        });
 
         List<TeamRelation> teamRelationList = TeamRelationManager.getRelationArrayList().stream().filter(teamRelation -> (
                 teamRelation.getFirstTeam() == team || teamRelation.getSecondTeam() == team
@@ -90,8 +92,10 @@ public class TeamDataManager {
         StorageManager.getManager().deleteTeamModel(team.getModel().getId());
     }
 
-    public void deleteTeamMember(PlayerData playerData) {
-        StorageManager.getManager().deleteTeamMemberModel(playerData.getId());
+    public void deleteTeamMember(PlayerData playerData, boolean disband) {
+        if (!disband) {
+            StorageManager.getManager().deleteTeamMemberModel(playerData.getId());
+        }
         playerData.setTeam(null);
     }
 

@@ -90,7 +90,7 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
             targetName = args[4];
 
             if (senderPlayer.getName().equals(targetName)) {
-                sender.sendMessage("you are already owner of " + senderNwTeam.getModel().getDisplay());
+                sender.sendMessage("You are already owner of " + senderNwTeam.getModel().getDisplay());
                 return;
             }
 
@@ -106,14 +106,14 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
             }
 
             if (args.length < 6) {
-                sender.sendMessage("Add the team name to the command to confirm");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RESULT_NAME_CONFIRM));
                 return;
             }
 
             teamNameConfirmStr = args[5];
 
             if (!senderNwTeam.getModel().getName().equalsIgnoreCase(teamNameConfirmStr)) {
-                sender.sendMessage("Wrong team name");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
                 return;
             }
 

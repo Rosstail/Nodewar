@@ -33,7 +33,7 @@ team:
   deploy-cooldown: 120
   maximum-members: 50 #-1 for infinite
   name-min-length: 5
-  name-max-length: 20
+  name-max-length: 20 # Maximum 33
   shortname-min-length: 3
   shortname-max-length: 5
 
@@ -55,16 +55,17 @@ dynmap:
   fill-opacity: 80
 
 battlefield:
-  wednesday-bf:
-    reset-team: true
-    end-on-battle-end: true
-    # announcements: false
-    start:
-      day: "monday"
-      time: "18:00"
-    end:
-      day: "monday"
-      time: "21:00"
-    territory-types:
-      - "headquarter-koth"
-    territories: []
+  list:
+    wednesday-bf:
+      reset-team: true
+      end-battle-on-battlefield-end: true
+      # announcements: false
+      from:
+        day: "monday"
+        time: "18:00"
+      to:
+        day: "monday"
+        time: "21:00"
+      territory-types:
+        - "headquarter-koth"
+      territories: []

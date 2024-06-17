@@ -93,7 +93,7 @@ public class AdminTeamEditRelationRequestCommand extends AdminTeamEditRelationSu
         }
 
         if (targetTeam.equals(baseTeam)) {
-            sender.sendMessage("Teams are the same.");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_RESULT_SAME_TEAM));
             return;
         }
 

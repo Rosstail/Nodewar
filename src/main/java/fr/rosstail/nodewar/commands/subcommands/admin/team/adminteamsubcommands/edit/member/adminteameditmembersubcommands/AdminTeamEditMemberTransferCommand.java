@@ -99,7 +99,7 @@ public class AdminTeamEditMemberTransferCommand extends AdminTeamEditMemberSubCo
         }
 
         if (args.length < 8) {
-            sender.sendMessage("add the team name to the command to confirm");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RESULT_NAME_CONFIRM));
             return;
         }
 

@@ -67,20 +67,20 @@ public class TeamManageDisbandCommand extends TeamManageSubCommand {
             }
 
             if (args.length < 4) {
-                sender.sendMessage("Add the team name to the command to confirm");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RESULT_NAME_CONFIRM));
                 return;
             }
 
             teamNameConfirmStr = args[3];
 
             if (!playerNwTeam.getModel().getName().equalsIgnoreCase(teamNameConfirmStr)) {
-                sender.sendMessage("Wrong team name");
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
                 return;
             }
 
             TeamDataManager.getTeamDataManager().deleteTeam(playerNwTeam.getModel().getName());
 
-            sender.sendMessage("Disbanded team");
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_DISBAND_RESULT));
             DynmapHandler.getDynmapHandler().resumeRender();
         }
     }

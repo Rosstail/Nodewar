@@ -118,8 +118,8 @@ public class ConfigData {
             maximumMembers = config.getInt("team.maximum-members", 50);
             deployTimer = config.getLong("team.deploy-timer") * 1000;
             deployCooldown = config.getLong("team.deploy-cooldown") * 1000;
-            minimumNameLength = (short) Math.min(config.getInt("team.name-min-length", 5), 40);
-            maximumNameLength = (short) Math.min(config.getInt("team.name-max-length", 20), 40);
+            minimumNameLength = (short) Math.min(config.getInt("team.name-min-length", 5), 33);
+            maximumNameLength = (short) Math.min(config.getInt("team.name-max-length", 20), 33);
             minimumShortnameLength = (short) Math.min(config.getInt("team.shortname-min-length", 3), 40);
             maximumShortNameLength = (short) Math.min(config.getInt("team.shortname-max-length", 5), 40);
         }
