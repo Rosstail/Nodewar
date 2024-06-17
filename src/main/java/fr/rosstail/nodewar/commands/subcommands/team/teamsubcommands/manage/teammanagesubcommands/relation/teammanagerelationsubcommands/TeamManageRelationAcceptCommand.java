@@ -76,7 +76,7 @@ public class TeamManageRelationAcceptCommand extends TeamManageRelationSubComman
         }
 
         senderteamName = args[4];
-        playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender));
+        playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(((Player) sender));
         senderNwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(senderteamName);
 
         if (playerNwTeam == null) {
@@ -117,7 +117,7 @@ public class TeamManageRelationAcceptCommand extends TeamManageRelationSubComman
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
+        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(sender);
         if (args.length <= 5) {
             return TeamRelationManager.getRelationRequestHashSet().stream().filter(nwTeamRelationInvite -> (nwTeamRelationInvite.getTargetTeam() == playerNwTeam)).map(nwTeamRelationInvite -> nwTeamRelationInvite.getSenderTeam().getModel().getName()).collect(Collectors.toList());
         }

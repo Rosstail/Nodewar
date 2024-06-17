@@ -38,7 +38,7 @@ public class MinecraftEventHandler implements Listener {
         }
 
         PlayerDataManager.initPlayerDataToMap(playerData);
-        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
+        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(player);
         playerData.setTeam(playerNwTeam);
         if (playerNwTeam != null) {
             TeamMemberModel teamMemberModel = playerNwTeam.getModel().getTeamMemberModelMap().values().stream().filter(
@@ -54,7 +54,7 @@ public class MinecraftEventHandler implements Listener {
     public void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         PlayerModel model = PlayerDataManager.getPlayerDataMap().get(player.getName());
-        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
+        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(player);
 
         checkPlayerPosition(player, player.getLocation());
         TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory ->

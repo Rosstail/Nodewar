@@ -3,8 +3,6 @@ package fr.rosstail.nodewar.lang;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.apis.ExpressionCalculator;
-import fr.rosstail.nodewar.player.PlayerData;
-import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
@@ -96,15 +94,13 @@ public class AdaptMessage {
 
     public String adaptPlayerMessage(Player player, String message) {
         message = message.replaceAll("\\[player]", player.getName());
-        NwTeam playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
+        NwTeam playerTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(player);
 
         Matcher playerTeamMatcher = playerTeamPattern.matcher(message);
 
         while (playerTeamMatcher.find()) {
             message = message.replace(playerTeamMatcher.group(), "[team" + playerTeamMatcher.group(2));
-            if (playerTeam != null) {
-                message = adaptTeamMessage(message, playerTeam);
-            }
+            message = adaptTeamMessage(message, playerTeam);
         }
 
         message = ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(player, message));
@@ -121,6 +117,9 @@ public class AdaptMessage {
             message = message.replaceAll("\\[team_color_short]", "{" + ConfigData.getConfigData().team.noneColor + "}");
             message = message.replaceAll("\\[team_color]", ConfigData.getConfigData().team.noneColor);
             message = message.replaceAll("\\[team_(\\w+)]", "");
+            message = message.replaceAll("\\[team_open]", "-");
+            message = message.replaceAll("\\[team_permanent]", "-");
+            message = message.replaceAll("\\[team_creation_date]", "-");
             return adaptMessage(message);
         }
         message = message.replaceAll("\\[team_name]", team.getModel().getName());

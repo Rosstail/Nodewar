@@ -7,7 +7,6 @@ import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.objective.types.ObjectiveKoth;
 import org.bukkit.entity.Player;
-import scala.math.Ordered;
 
 import java.util.*;
 import java.util.stream.Collectors;

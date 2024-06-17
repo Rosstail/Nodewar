@@ -1,13 +1,10 @@
 package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.member.teammanagermembersubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.TeamManageSubCommand;
 import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.teammanagesubcommands.member.TeamManageMemberSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
-import fr.rosstail.nodewar.player.PlayerData;
-import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
@@ -71,7 +68,7 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
         }
         if (sender instanceof Player) {
             senderPlayer = ((Player) sender).getPlayer();
-            NwTeam senderNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
+            NwTeam senderNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(senderPlayer);
 
             if (senderNwTeam == null) {
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));
@@ -140,7 +137,7 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
+        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(sender);
         if (playerNwTeam != null) {
             return playerNwTeam.getModel().getTeamMemberModelMap().values().stream().map(TeamMemberModel::getUsername).collect(Collectors.toList());
         }

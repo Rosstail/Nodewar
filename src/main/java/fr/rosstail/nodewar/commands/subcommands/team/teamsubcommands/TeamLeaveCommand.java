@@ -11,6 +11,7 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.rank.TeamRank;
+import fr.rosstail.nodewar.team.NwTeam;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

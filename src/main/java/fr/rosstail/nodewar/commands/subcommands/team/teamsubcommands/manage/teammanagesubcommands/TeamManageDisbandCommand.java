@@ -54,7 +54,7 @@ public class TeamManageDisbandCommand extends TeamManageSubCommand {
         }
         if (sender instanceof Player) {
             Player player = ((Player) sender).getPlayer();
-            NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
+            NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(player);
             String teamNameConfirmStr;
 
             if (playerNwTeam == null) {

@@ -69,7 +69,7 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
         }
 
         player = ((Player) sender).getPlayer();
-        playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
+        playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(player);
 
         if (playerNwTeam == null) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));

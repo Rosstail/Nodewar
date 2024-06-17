@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.team;
 
+import fr.rosstail.nodewar.team.NwTeam;
 import org.bukkit.entity.Player;
 
 public class NwTeamInvite {

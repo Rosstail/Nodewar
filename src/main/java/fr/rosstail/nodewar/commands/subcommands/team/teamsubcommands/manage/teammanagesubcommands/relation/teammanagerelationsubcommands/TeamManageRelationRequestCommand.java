@@ -88,7 +88,7 @@ public class TeamManageRelationRequestCommand extends TeamManageRelationSubComma
         }
 
         targetTeamName = args[5];
-        playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender));
+        playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(((Player) sender));
         targetNwTeam = TeamDataManager.getTeamDataManager().getStringTeamMap().get(targetTeamName);
 
         if (playerNwTeam == null) {
@@ -169,7 +169,7 @@ public class TeamManageRelationRequestCommand extends TeamManageRelationSubComma
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
+        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(sender);
         if (args.length <= 5) {
             List<String> relations = new ArrayList<>();
 

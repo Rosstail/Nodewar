@@ -29,7 +29,7 @@ public class BattlefieldModel {
 
     public BattlefieldModel(ConfigurationSection section) {
         this.name = section.getName();
-        this.display = section.getString("display");
+        this.display = section.getString("display", name);
         this.fromDayStr = section.getString("from.day");
         this.fromTimeStr = section.getString("from.time");
 

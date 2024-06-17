@@ -10,6 +10,7 @@ import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TeamRelation;
 import fr.rosstail.nodewar.team.relation.TeamRelationManager;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
+import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,7 +18,6 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class TeamDataManager {
 
@@ -107,7 +107,7 @@ public class TeamDataManager {
         return teamDataManager;
     }
 
-    public NwTeam getTeamOfPlayer(Player player) {
+    public NwTeam getPlayerTeam(Player player) {
         PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
         List<NwTeam> nwTeams = new ArrayList<>(TeamDataManager.getTeamDataManager().getStringTeamMap().values());
 

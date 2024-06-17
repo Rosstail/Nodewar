@@ -5,7 +5,6 @@ import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.team
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
-import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
@@ -68,7 +67,7 @@ public class TeamManageMemberPromoteCommand extends TeamManageMemberSubCommand {
         }
         if (sender instanceof Player) {
             Player player = ((Player) sender).getPlayer();
-            NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
+            NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(player);
 
             if (playerNwTeam == null) {
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));
@@ -125,7 +124,7 @@ public class TeamManageMemberPromoteCommand extends TeamManageMemberSubCommand {
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(sender);
+        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(sender);
         if (playerNwTeam != null) {
             return playerNwTeam.getModel().getTeamMemberModelMap().values().stream().map(TeamMemberModel::getUsername).collect(Collectors.toList());
         }
