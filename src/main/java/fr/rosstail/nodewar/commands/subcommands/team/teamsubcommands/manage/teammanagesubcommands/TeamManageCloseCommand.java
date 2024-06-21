@@ -59,7 +59,7 @@ public class TeamManageCloseCommand extends TeamManageSubCommand {
             return;
         }
         senderPlayer = ((Player) sender).getPlayer();
-        playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
+        playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(senderPlayer);
 
         if (playerNwTeam == null) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));

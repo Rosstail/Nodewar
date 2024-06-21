@@ -8,13 +8,13 @@ import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
+import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.sql.*;
 import java.util.*;
-import java.util.Date;
 
 public class SqlStorageRequest implements StorageRequest {
     private final Nodewar plugin = Nodewar.getInstance();
@@ -138,12 +138,14 @@ public class SqlStorageRequest implements StorageRequest {
         String uuid = model.getUuid();
         try {
             int id = executeSQLUpdate(query, uuid, model.getUsername());
-            model.setId(id);
-            return true;
+            if (id != 0) {
+                model.setId(id);
+                return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -159,12 +161,14 @@ public class SqlStorageRequest implements StorageRequest {
         boolean permanent = model.isPermanent();
         try {
             int id = executeSQLUpdate(query, name, display, shortName, teamColor, open, openRelation, permanent);
-            model.setId(id);
-            return true;
+            if (id != 0) {
+                model.setId(id);
+                return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -178,12 +182,14 @@ public class SqlStorageRequest implements StorageRequest {
         int memberRank = model.getRank();
         try {
             int id = executeSQLUpdate(query, teamId, memberUuid, memberRank);
-            model.setId(id);
-            return true;
+            if (id != 0) {
+                model.setId(id);
+                return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -196,12 +202,14 @@ public class SqlStorageRequest implements StorageRequest {
         int relationTypeID = model.getRelationTypeID();
         try {
             int id = executeSQLUpdate(query, firstTeamId, secondTeamId, relationTypeID);
-            model.setId(id);
-            return true;
+            if (id != 0) {
+                model.setId(id);
+                return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -212,12 +220,14 @@ public class SqlStorageRequest implements StorageRequest {
         String worldName = model.getWorldName();
         try {
             int id = executeSQLUpdate(query, territoryName, worldName);
-            model.setId(id);
-            return true;
+            if (id != 0) {
+                model.setId(id);
+                return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -227,12 +237,14 @@ public class SqlStorageRequest implements StorageRequest {
         String battlefieldName = model.getName();
         try {
             int id = executeSQLUpdate(query, battlefieldName, new Timestamp(model.getOpenDateTime()), new Timestamp(model.getCloseDateTime()));
-            model.setId(id);
-            return true;
+            if (id !=  0) {
+                model.setId(id);
+                return true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -614,7 +626,7 @@ public class SqlStorageRequest implements StorageRequest {
     public void deletePlayerModel(String uuid) {
         String query = "DELETE FROM " + playerTableName + " WHERE uuid = ?";
         try {
-            boolean success = executeSQLUpdate(query, uuid) > 0;
+            executeSQLUpdate(query, uuid);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -678,10 +690,6 @@ public class SqlStorageRequest implements StorageRequest {
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     return generatedKeys.getInt(1);
-                } else {
-                    if (affectedRows == 0) {
-                        throw new SQLException("SQL request failed, no rows affected: " + statement);
-                    }
                 }
             }
         } catch (SQLException e) {

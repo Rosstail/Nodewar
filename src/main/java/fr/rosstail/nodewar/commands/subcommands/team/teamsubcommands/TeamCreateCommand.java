@@ -13,6 +13,7 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
+import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
@@ -90,7 +91,7 @@ public class TeamCreateCommand extends TeamSubCommand {
         shortName = args[3];
         ownerId = playerData.getId();
 
-        if (teamDataManager.getTeamOfPlayer(senderPlayer) != null) {
+        if (teamDataManager.getPlayerTeam(senderPlayer) != null) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_ALREADY_IN_TEAM));
             return;
         }

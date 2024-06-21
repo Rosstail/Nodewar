@@ -55,7 +55,7 @@ public class TeamManageOpenCommand extends TeamManageSubCommand {
         }
         if (sender instanceof Player) {
             Player player = ((Player) sender).getPlayer();
-            NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
+            NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(player);
 
             if (playerNwTeam == null) {
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));

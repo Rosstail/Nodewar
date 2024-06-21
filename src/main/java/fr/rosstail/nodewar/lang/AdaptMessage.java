@@ -3,8 +3,6 @@ package fr.rosstail.nodewar.lang;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.apis.ExpressionCalculator;
-import fr.rosstail.nodewar.player.PlayerData;
-import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
@@ -96,7 +94,7 @@ public class AdaptMessage {
 
     public String adaptPlayerMessage(Player player, String message) {
         message = message.replaceAll("\\[player]", player.getName());
-        NwTeam playerTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(player);
+        NwTeam playerTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(player);
 
         Matcher playerTeamMatcher = playerTeamPattern.matcher(message);
 

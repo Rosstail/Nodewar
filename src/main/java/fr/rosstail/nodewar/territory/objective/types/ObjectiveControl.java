@@ -16,7 +16,6 @@ import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ObjectiveControl extends Objective {
 

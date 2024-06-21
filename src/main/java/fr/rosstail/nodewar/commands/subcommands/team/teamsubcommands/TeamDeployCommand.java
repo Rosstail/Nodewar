@@ -1,6 +1,5 @@
 package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.rosstail.nodewar.ConfigData;
@@ -84,7 +83,7 @@ public class TeamDeployCommand extends TeamSubCommand {
         }
         senderPlayer = (Player) sender;
         playerData = PlayerDataManager.getPlayerDataFromMap(senderPlayer);
-        playerNwTeam = teamDataManager.getTeamOfPlayer(senderPlayer);
+        playerNwTeam = teamDataManager.getPlayerTeam(senderPlayer);
 
         if (playerNwTeam == null) {
             sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM)));
@@ -138,7 +137,7 @@ public class TeamDeployCommand extends TeamSubCommand {
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
         TeamDataManager teamDataManager = TeamDataManager.getTeamDataManager();
-        NwTeam playerNwTeam = teamDataManager.getTeamOfPlayer(sender);
+        NwTeam playerNwTeam = teamDataManager.getPlayerTeam(sender);
         String selectedTerritoryName;
         if (playerNwTeam != null && args.length <= 4) {
             Stream<Territory> territoryStream = TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream()

@@ -1,7 +1,6 @@
 package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit;
 
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.admin.team.AdminTeamSubCommand;
 import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.AdminTeamEditSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;

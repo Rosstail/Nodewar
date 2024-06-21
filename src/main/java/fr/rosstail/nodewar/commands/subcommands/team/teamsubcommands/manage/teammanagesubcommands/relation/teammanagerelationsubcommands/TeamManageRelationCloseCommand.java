@@ -61,7 +61,7 @@ public class TeamManageRelationCloseCommand extends TeamManageRelationSubCommand
             return;
         }
 
-        playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(((Player) sender));
+        playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(((Player) sender));
 
         if (playerNwTeam == null) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_PART_OF_NO_TEAM));

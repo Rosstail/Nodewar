@@ -16,7 +16,7 @@ general:
 
 locale:
   lang: en_EN
-  decimal:display: 1
+  decimal-display: 1
   title:
     fade-in: 1
     stay: 18
@@ -33,7 +33,7 @@ team:
   deploy-cooldown: 120
   maximum-members: 50 #-1 for infinite
   name-min-length: 5
-  name-max-length: 20 # Maximum 33
+  name-max-length: 11 # Maximum 33
   shortname-min-length: 3
   shortname-max-length: 5
 
@@ -56,7 +56,8 @@ dynmap:
 
 battlefield:
   list:
-    wednesday-bf:
+    monday-bf:
+      display: "Monday's battlefield"
       reset-team: true
       end-battle-on-battlefield-end: true
       # announcements: false

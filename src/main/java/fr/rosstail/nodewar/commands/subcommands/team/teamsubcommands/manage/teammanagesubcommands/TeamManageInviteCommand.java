@@ -2,7 +2,6 @@ package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.tea
 
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.TeamManageSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
@@ -63,7 +62,7 @@ public class TeamManageInviteCommand extends TeamManageSubCommand {
         }
 
         Player senderPlayer = ((Player) sender).getPlayer();
-        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getTeamOfPlayer(senderPlayer);
+        NwTeam playerNwTeam = TeamDataManager.getTeamDataManager().getPlayerTeam(senderPlayer);
         Player targetPlayer;
         PlayerData targetPlayerData;
 

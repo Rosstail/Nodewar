@@ -1,6 +1,5 @@
 package fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands;
 
-import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
@@ -10,15 +9,11 @@ import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwTeam;
 import fr.rosstail.nodewar.team.TeamDataManager;
-import fr.rosstail.nodewar.team.member.TeamMember;
-import fr.rosstail.nodewar.team.member.TeamMemberModel;
-import fr.rosstail.nodewar.team.relation.TeamRelation;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class TeamCheckCommand extends TeamSubCommand {
 
