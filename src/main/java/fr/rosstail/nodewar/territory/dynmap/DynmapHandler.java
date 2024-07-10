@@ -64,7 +64,7 @@ public class DynmapHandler {
     }
 
     private static class AreaStyle {
-        String strokeColor = "#CC0000";
+        String strokeColor = "#f06b6b";
         double strokeOpacity = 0.8f;
         int strokeWeight = 2;
         String fillColor;

@@ -12,8 +12,10 @@ import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.TerritoryManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
@@ -21,13 +23,45 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MinecraftEventHandler implements Listener {
 
     private boolean isClosing = false;
+
+    public MinecraftEventHandler() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Bukkit.getWorlds().forEach(world -> {
+                    List<Entity> entityList = world.getEntities().stream().filter(entity ->
+                            !(entity instanceof Player)
+                                    && !(entity instanceof Minecart)
+                                    && (!entity.getPassengers().isEmpty())
+                    ).collect(Collectors.toList());
+
+                    entityList.forEach(entity -> {
+                        checkEntityPassengersMovement(entity);
+                    });
+                });
+            }
+        }.runTaskTimer(Nodewar.getInstance(), 0, 1);
+    }
+
+    private void checkEntityPassengersMovement(Entity entity) {
+        entity.getPassengers().forEach(passenger -> {
+            if (passenger instanceof Player) {
+                Player player = (Player) passenger;
+                checkPlayerPosition(player, player.getLocation());
+            } else if (!passenger.getPassengers().isEmpty()) {
+                checkEntityPassengersMovement(passenger);
+            }
+        });
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

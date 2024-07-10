@@ -7,7 +7,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;

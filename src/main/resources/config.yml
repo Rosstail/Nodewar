@@ -8,10 +8,7 @@ storage:
   save-delay: 300
 
 general:
-  delay-between-database-updates: 300
-  use-action-bar-on-actions: true
   debug-messages: true
-  use-calendar: false
   permission-plugin: auto # luckperms
 
 locale:
@@ -22,14 +19,11 @@ locale:
     stay: 18
     fade-out: 2
 
-map:
-  update-delay: 5
-
 team:
   system: "Nodewar" # Nodewar, Towny
   creation-cost: 0
   default-relation: neutral
-  none-color: "#CACACA"
+  none-color: "#4C4C4C"
   deploy-timer: 10
   deploy-cooldown: 120
   maximum-members: 50 #-1 for infinite
@@ -56,6 +50,20 @@ dynmap:
   fill-opacity: 80
 
 battlefield:
+  alerts:
+    - "1h"
+    - "30m"
+    - "10m"
+    - "5m"
+    - "2m"
+    - "1m"
+    - "30s"
+    - "10s"
+    - "5s"
+    - "4s"
+    - "3s"
+    - "2s"
+    - "1s"
   list:
     monday-bf:
       display: "Monday's battlefield"

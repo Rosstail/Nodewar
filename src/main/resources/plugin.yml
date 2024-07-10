@@ -117,6 +117,10 @@ permissions:
 
   nodewar.command.team.manage.relation:
     default: true
+  nodewar.command.team.manage.relation.accept:
+    default: true
+  nodewar.command.team.manage.relation.request:
+    default: true
   nodewar.command.team.manage.relation.close:
     default: true
   nodewar.command.team.manage.relation.edit:
@@ -129,6 +133,8 @@ permissions:
     default: op
     children:
       nodewar.command.team.manage.relation: true
+      nodewar.command.team.manage.relation.accept: true
+      nodewar.command.team.manage.relation.request: true
       nodewar.command.team.manage.relation.close: true
       nodewar.command.team.manage.relation.edit: true
       nodewar.command.team.manage.relation.invites: true
