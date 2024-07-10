@@ -174,6 +174,8 @@ public class ConfigData {
         public FileConfiguration configFile;
 
         public final int layerPriority = 20;
+        public final boolean simpleLine;
+        public final int lineThickness;
         public final boolean hideByDefault;
         public final boolean use3DRegions;
 
@@ -200,6 +202,8 @@ public class ConfigData {
             tickPerUpdate = Math.max(1, configFile.getInt("dynmap.tick-per-update", 20));
             mapUpdateDelay = Math.max(1, configFile.getInt("dynmap.many-update-delay", 1));
             fillOpacity = Math.max(0f, (float) configFile.getInt("dynmap.fill-opacity", 50) / 100);
+            simpleLine = config.getBoolean("dynmap.simple-line", false);
+            lineThickness = Math.max(config.getInt("dynmap.line-thickness", 4), 1);
         }
     }
 
