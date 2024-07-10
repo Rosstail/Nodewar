@@ -15,7 +15,7 @@ public class ObjectiveKothModel extends ObjectiveModel {
     public ObjectiveKothModel(ConfigurationSection section) {
         super(section);
         if (section != null) {
-            String timeToReachStr = section.getString("time-to-reach");
+            String timeToReachStr = section.getString("points-to-reach");
             if (timeToReachStr != null && timeToReachStr.matches("(\\d+)")) {
                 this.timeToReachStr = timeToReachStr;
             }
@@ -25,7 +25,7 @@ public class ObjectiveKothModel extends ObjectiveModel {
                 controlConfigSection.getKeys(false).forEach(s -> {
                     ConfigurationSection controlSection = controlConfigSection.getConfigurationSection(s);
 
-                    pointsPerSecondControlPointIntMap.put(s, controlSection.getInt("points-per-second", 0));
+                    pointsPerSecondControlPointIntMap.put(s, controlSection.getInt("points-per-second", 1));
                 });
             }
         }

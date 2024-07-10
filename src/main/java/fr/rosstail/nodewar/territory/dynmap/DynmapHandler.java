@@ -488,19 +488,25 @@ public class DynmapHandler {
         aroundY[0] = y[0] - 0.1F;
         aroundY[1] = y[1] - 0.1F;
 
-        PolyLineMarker lineMarker = set.createPolyLineMarker(null, ChatColor.stripColor(territory.getModel().getDisplay() + " -> " + targetTerritory.getModel().getDisplay()), true, territory.getModel().getWorldName(), x, y, z, false);
-        PolyLineMarker aroundLineMarker = set.createPolyLineMarker(null, ChatColor.stripColor(territory.getModel().getDisplay() + " -> " + targetTerritory.getModel().getDisplay()), true, territory.getModel().getWorldName(), x, aroundY, z, false);
+        int thickness = ConfigData.getConfigData().dynmap.lineThickness;
 
-        if (aroundLineMarker != null) {
-            aroundLineMarker.setLineStyle(8, 0.5f, 0x000000);
+        if (!ConfigData.getConfigData().dynmap.simpleLine) {
+            PolyLineMarker aroundLineMarker = set.createPolyLineMarker(null, ChatColor.stripColor(territory.getModel().getDisplay() + " -> " + targetTerritory.getModel().getDisplay()), true, territory.getModel().getWorldName(), x, aroundY, z, false);
+            if (aroundLineMarker != null) {
+                aroundLineMarker.setLineStyle(thickness + 3, 0.5f, 0x000000);
+            }
         }
+
+        PolyLineMarker lineMarker = set.createPolyLineMarker(null, ChatColor.stripColor(territory.getModel().getDisplay() + " -> " + targetTerritory.getModel().getDisplay()), true, territory.getModel().getWorldName(), x, y, z, false);
+
         if (lineMarker != null) {
             NwITeam nwTeam = territory.getOwnerITeam();
             if (nwTeam != null) {
-                lineMarker.setLineStyle(5, 1f, hexToDecimal(nwTeam.getTeamColor()));
+                lineMarker.setLineStyle(thickness, 1f, hexToDecimal(nwTeam.getTeamColor()));
             } else {
-                lineMarker.setLineStyle(5, 1f, hexToDecimal(ConfigData.getConfigData().team.noneColor));
+                lineMarker.setLineStyle(thickness, 1f, hexToDecimal(ConfigData.getConfigData().team.noneColor));
             }
         }
+
     }
 }

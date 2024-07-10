@@ -5,6 +5,7 @@ import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
+import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.TeamManager;
@@ -44,13 +45,13 @@ public class AdminTeamEditRelationCloseCommand extends AdminTeamEditRelationSubC
 
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
-        NwITeam nwTeam;
+        NwTeam nwTeam;
 
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
 
-        nwTeam = TeamManager.getManager().getStringTeamMap().get(args[3]);
+        nwTeam = (NwTeam) TeamManager.getManager().getStringTeamMap().get(args[3]);
 
         if (nwTeam == null) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
@@ -58,6 +59,8 @@ public class AdminTeamEditRelationCloseCommand extends AdminTeamEditRelationSubC
         }
 
         nwTeam.setOpenRelation(false);
+        StorageManager.getManager().updateTeamModel(nwTeam);
+
         sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_CLOSE_RESULT)));
     }
 

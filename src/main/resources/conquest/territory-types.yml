@@ -1,26 +1,58 @@
-control-point:
-  prefix: "-cp-"
-  world: "amerish"
-  suffix: "-cp-"
+cp:
+  prefix: "🞖"
+  world: "world"
   objective:
     type: control
     attacker-ratio: 1
     maximum-health: 10
     neutralize: true
-  protected: false
-  dynmap:
-    marker:
-      set: cp # 'Nodewar' by default
-
-outpost: # basic configurations
-  prefix: "-o-" # none
-  world: "amerish"
-  suffix: "-o-" # none
-  objective:
-    type: siege
-    maximum-health: 40
     rewards:
-      player-outpost-reward:
+      winner-player-reward:
+        target: "player"
+        should-team-win: true
+        commands:
+          - "toast [player] -t:task -icon:light_blue_banner [territory_display] capturé !"
+          - "bc [player] %player_x% %player_y% %player_z%"
+          - "playsound minecraft:block.amethyst_block.resonate music [player] %player_x% %player_y% %player_z% 2 1"
+  protected: true
+  dynmap:
+    marker: "Target"
+    draw-line: false
+
+cp-t1:
+  type: cp
+
+cp-t2:
+  type: cp
+
+cp-t3:
+  type: cp
+
+t1:
+  prefix: "T1⛫"
+  world: "world"
+  attack-requirements:
+    startpoint: true
+  protected: true
+  bossbar:
+    style: "SEGMENTED_6"
+  dynmap:
+    marker: "greenflag"
+    y: 64
+  objective:
+    type: koth
+    points-to-reach: 300
+    rewards:
+      player-guaranted-reward:
+        target: "player"
+        commands:
+          - "give [player] emerald 1 -s"
+      winner-player-reward:
+        target: "player"
+        should-team-win: true
+        commands:
+          - "toast [player] -t:challenge -icon:green_banner [territory_display] capturé !"
+      player-startpoint-reward:
         target: "player"
         team-minimum-score: 25
         player-minimum-score: 1
@@ -31,78 +63,162 @@ outpost: # basic configurations
           - "2"
           - "3"
         commands:
-          - "give [player] goldnugget 2"
-      winner-team-outpost-reward:
-        target: "team"
-        team-minimum-score: 500
-        team-role: attacker
-        should-team-win: true
-        commands:
-          - "nodewar team eco add 1000"
-          - "nodewar team message Your team won 1000 credits by capturing [territory_name]"
-      global-outpost-reward:
+          - "give [player] goldnugget 2 -s"
+      global-startpoint-reward:
         target: "server"
         commands:
-          - "broadcast [territory_team_display] is victorious at [territory_display] !"
-  protected: false
-  bossbar:
-    style: "SEGMENTED_6" # SOLID or SEGMENTED_6/10/12/20
+          - "broadcast [territory_team_name] is victorious at [territory_name] !"
+  commands:
+    server-periodic-reward:
+      target: "server"
+      initial-delay: 3600
+      delay: 3600
+      commands: []
+      #- "bc Territory command: [territory_display]"
+    team-periodic-reward:
+      target: "team"
+      initial-delay: 3600
+      delay: 3600
+      commands: []
+      #- "bc Team owning command: [team_display]"
+    player-periodic-reward:
+      target: "player"
+      target-offline-player: true
+      initial-delay: 3600
+      delay: 3600
+      commands:
+        - "cmi money give [player] 30 -s"
+    online-player-periodic-reward:
+      target: "player"
+      initial-delay: 3600
+      delay: 3600
+      commands:
+        - "toast [player] -t:task -icon:green_banner [territory_display] &a30&6$"
 
-small-outpost: # basic configurations
-  prefix: "-so-"
-  suffix: "-so-"
-  type: outpost
-
-large-outpost: # basic configurations
-  prefix: "-lo-"
-  suffix: "-lo-"
-  type: outpost
-  objective:
-    maximum-health: 100
-
-tower: # basic configurations
-  prefix: "-T-" # none
-  world: "amerish"
-  suffix: "-T-" # none
-  protected: false
-  bossbar:
-    style: "SEGMENTED_10" # SOLID or SEGMENTED_6/10/12/20
-
-facility: # basic configurations
-  prefix: "-F-" # none
-  world: "amerish"
-  suffix: "-F-" # none
-  protected: false
-  bossbar:
-    style: "SEGMENTED_10"
-
-amp-station:
-  prefix: "-AMP-"
-  suffix: "-Station-"
-  type: facility
+t2:
+  prefix: "T2"
+  world: "world"
+  protected: true
   bossbar:
     style: "SEGMENTED_12"
-
-tech-plant:
-  prefix: "-TP-"
-  suffix: "-Tech Plant-"
-  type: facility
-  bossbar:
-    style: "SEGMENTED_12"
-
-biolab: # basic configurations
-  prefix: "-b-" # none
-  world: "amerish"
-  suffix: "-b-" # none
-  protected: false
+  dynmap:
+    marker: "blueflag"
+    y: 64
   objective:
     type: siege
-    maximum-health: 100
+    maximum-health: 300
+    rewards:
+      player-guaranted-reward:
+        target: "player"
+        commands:
+          - "give [player] emerald 1 -s"
+      winner-player-reward:
+        target: "player"
+        should-team-win: true
+        commands:
+          - "toast [player] -t:challenge -icon:light_blue_banner [territory_display] capturé !"
+      player-startpoint-reward:
+        target: "player"
+        team-minimum-score: 25
+        player-minimum-score: 1
+        team-role: defender
+        player-team-role: defender
+        should-team-win: false
+        team-positions:
+          - "2"
+          - "3"
+        commands:
+          - "give [player] goldnugget 2 -s"
+      global-startpoint-reward:
+        target: "server"
+        commands:
+          - "broadcast [territory_team_name] is victorious at [territory_name] !"
+  commands:
+    server-periodic-reward:
+      target: "server"
+      initial-delay: 3600
+      delay: 3600
+      commands: []
+      #- "bc Territory command: [territory_display]"
+    team-periodic-reward:
+      target: "team"
+      initial-delay: 3600
+      delay: 3600
+      commands: []
+      #- "bc Team owning command: [team_display]"
+    player-periodic-reward:
+      target: "player"
+      target-offline-player: true
+      initial-delay: 3600
+      delay: 3600
+      commands:
+        - "cmi money give [player] 50 -s"
+    online-player-periodic-reward:
+      target: "player"
+      initial-delay: 3600
+      delay: 3600
+      commands:
+        - "toast [player] -t:task -icon:light_blue_banner [territory_display] &a50&6$"
+
+t3:
+  prefix: "T3"
+  world: "world"
+  protected: true
   bossbar:
     style: "SEGMENTED_20"
-
-warpgate: # basic configurations
-  prefix: "-W-" # none
-  world: "amerish"
-  suffix: "-W-" # none
-  protected: true
+  dynmap:
+    marker: "yellowflag"
+    y: 64
+  objective:
+    type: siege
+    maximum-health: 450
+    rewards:
+      player-guaranted-reward:
+        target: "player"
+        commands:
+          - "give [player] emerald 1 -s"
+      winner-player-reward:
+        target: "player"
+        should-team-win: true
+        commands:
+          - "toast [player] -t:challenge -icon:light_yellow_banner [territory_display] capturé !"
+      player-startpoint-reward:
+        target: "player"
+        team-minimum-score: 25
+        player-minimum-score: 1
+        team-role: defender
+        player-team-role: defender
+        should-team-win: false
+        team-positions:
+          - "2"
+          - "3"
+        commands:
+          - "give [player] goldnugget 2 -s"
+      global-startpoint-reward:
+        target: "server"
+        commands:
+          - "broadcast [territory_team_name] is victorious at [territory_name] !"
+  commands:
+    server-periodic-reward:
+      target: "server"
+      initial-delay: 3600
+      delay: 3600
+      commands: []
+    team-periodic-reward:
+      target: "team"
+      initial-delay: 3600
+      delay: 3600
+      commands: []
+    player-periodic-reward:
+      target: "player"
+      target-offline-player: true
+      initial-delay: 3600
+      delay: 3600
+      commands:
+        - "cmi money give [player] 80 -s"
+    online-player-periodic-reward:
+      target: "player"
+      initial-delay: 3600
+      delay: 3600
+      commands:
+        - "toast [player] -t:task -icon:yellow_banner [territory_display] &a80&6$"
