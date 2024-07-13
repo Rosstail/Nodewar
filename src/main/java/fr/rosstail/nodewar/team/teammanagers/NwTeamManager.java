@@ -181,6 +181,33 @@ public class NwTeamManager implements NwITeamManager {
         StorageManager.getManager().deleteTeamRelationModel(originNwTeam.getIRelation(targetITeam).getID());
     }
 
+    @Override
+    public NwTeamRelationRequest getTeamRelationRequest(NwITeam firstTeam, NwITeam secondTeam) {
+        return relationRequestHashSet.stream().filter(relationRequest -> (
+                relationRequest.getSenderTeam() == firstTeam && relationRequest.getTargetTeam() == secondTeam
+                )).findFirst().orElse(null);
+    }
+
+    @Override
+    public Set<NwTeamRelationRequest> getTeamRelationRequestSet() {
+        return relationRequestHashSet;
+    }
+
+    @Override
+    public void createRelationRequest(NwITeam originITeam, NwITeam targetITeam, RelationType type) {
+        NwTeamRelationRequest nwTeamRelationRequest = new NwTeamRelationRequest(originITeam, targetITeam, type);
+        relationRequestHashSet.add(nwTeamRelationRequest);
+    }
+
+    @Override
+    public void deleteRelationRequest(NwITeam originTeam, NwITeam targetITeam) {
+        relationRequestHashSet.removeIf(relationRequest -> (
+                relationRequest.getSenderTeam() == originTeam &&
+                        relationRequest.getTargetTeam() == targetITeam
+                )
+        );
+    }
+
     private void startInviteExpirationHandler() {
         Runnable handleRequestExpiration = () -> {
 

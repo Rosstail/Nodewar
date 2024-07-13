@@ -6,6 +6,7 @@ import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.team
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
+import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.team.TeamIRelation;
@@ -106,8 +107,7 @@ public class TeamManageRelationRequestCommand extends TeamManageRelationSubComma
 
     private void handleRelationChange(CommandSender sender, NwITeam senderTeam, NwITeam targetTeam, RelationType newRelationType, TeamIRelation currentRelation) {
         int defaultRelationWeight = ConfigData.getConfigData().team.defaultRelation.getWeight();
-        /* TODO
-        NwTeamRelationRequest teamRelationInvite = TeamRelationManager.getRelationRequestHashSet().stream().filter(nwTeamRelationInvite -> nwTeamRelationInvite.getTargetTeam() == targetTeam).findFirst().orElse(null);
+        NwTeamRelationRequest teamRelationInvite = TeamManager.getManager().getTeamRelationRequest(senderTeam, targetTeam);
 
         if (currentRelation == null) { // implicit default relation
             if (newRelationType.getWeight() > defaultRelationWeight) {
@@ -134,8 +134,6 @@ public class TeamManageRelationRequestCommand extends TeamManageRelationSubComma
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_RESULT_UNCHANGED));
             }
         }
-
-         */
     }
 
     private void inviteOrAccept(CommandSender sender, NwITeam senderTeam, NwITeam targetTeam, RelationType newRelationType, NwTeamRelationRequest teamRelationInvite) {
@@ -150,9 +148,8 @@ public class TeamManageRelationRequestCommand extends TeamManageRelationSubComma
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_RESULT_BLOCKED));
                 return;
             }
-            teamRelationInvite = new NwTeamRelationRequest(senderTeam, targetTeam, newRelationType);
-            //TODO
-            // TeamRelationManager.getRelationRequestHashSet().add(teamRelationInvite);
+
+            TeamManager.getManager().createRelationRequest(senderTeam, targetTeam, newRelationType);
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_RESULT_SENT));
         }
     }

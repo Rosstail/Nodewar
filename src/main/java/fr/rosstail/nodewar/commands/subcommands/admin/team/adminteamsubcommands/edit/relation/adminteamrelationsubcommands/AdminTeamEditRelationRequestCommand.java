@@ -10,6 +10,7 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamIRelation;
 import fr.rosstail.nodewar.team.relation.*;
+import fr.rosstail.nodewar.team.teammanagers.NwTeamManager;
 import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.team.TeamManager;
@@ -102,15 +103,14 @@ public class AdminTeamEditRelationRequestCommand extends AdminTeamEditRelationSu
     private void handleRelationChange(CommandSender sender, NwITeam baseTeam, NwITeam targetTeam, RelationType newRelationType, TeamIRelation currentIRelation) {
         int defaultRelationWeight = ConfigData.getConfigData().team.defaultRelation.getWeight();
 
-        /* TODO
-        NwTeamRelationRequest teamRelationInvite = TeamManager.getManager(). TeamRelationManager.getRelationRequestHashSet().stream().filter(nwTeamRelationInvite -> nwTeamRelationInvite.getTargetTeam() == targetTeam).findFirst().orElse(null);
+        NwTeamRelationRequest teamRelationRequest = TeamManager.getManager().getTeamRelationRequest(baseTeam, targetTeam);
 
         if (currentIRelation == null) { // implicit default relation
             if (newRelationType.getWeight() > defaultRelationWeight) {
                 createNewRelation(baseTeam, targetTeam, newRelationType);
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_REQUEST_RESULT_WEIGHT));
             } else if (newRelationType.getWeight() < defaultRelationWeight) {
-                inviteOrAccept(sender, baseTeam, targetTeam, newRelationType, teamRelationInvite);
+                inviteOrAccept(sender, baseTeam, targetTeam, newRelationType, teamRelationRequest);
             } else {
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_REQUEST_RESULT_UNCHANGED));
             }
@@ -127,14 +127,13 @@ public class AdminTeamEditRelationRequestCommand extends AdminTeamEditRelationSu
                     createNewRelation(baseTeam, targetTeam, newRelationType);
                     sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_REQUEST_RESULT_WEIGHT));
                 } else {
-                    inviteOrAccept(sender, baseTeam, targetTeam, newRelationType, teamRelationInvite);
+                    inviteOrAccept(sender, baseTeam, targetTeam, newRelationType, teamRelationRequest);
                 }
             } else {
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_REQUEST_RESULT_UNCHANGED));
             }
         }
 
-         */
     }
 
     private void inviteOrAccept(CommandSender sender, NwITeam senderTeam, NwITeam targetTeam, RelationType newRelationType, NwTeamRelationRequest teamRelationInvite) {
@@ -149,9 +148,8 @@ public class AdminTeamEditRelationRequestCommand extends AdminTeamEditRelationSu
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_REQUEST_RESULT_IGNORE));
                 return;
             }
-            teamRelationInvite = new NwTeamRelationRequest(senderTeam, targetTeam, newRelationType);
-            // TODO
-            // TeamRelationManager.getRelationRequestHashSet().add(teamRelationInvite);
+
+            TeamManager.getManager().createRelationRequest(senderTeam, targetTeam, newRelationType);
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_REQUEST_RESULT_INVITE));
         }
     }

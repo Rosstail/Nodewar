@@ -76,10 +76,7 @@ public class TeamManageRelationInvitesCommand extends TeamManageRelationSubComma
         if (!hasPlayerEnoughClearance(((Player) sender).getPlayer(), playerNwITeam, NwTeamRank.CAPTAIN)) {
         }
 
-        // TODO
-        /*Set<NwTeamRelationRequest> teamRelationInviteSet = TeamManager.getManager().
-
-                TeamRelationManager.getRelationRequestHashSet().stream().filter(teamRelation -> (
+        Set<NwTeamRelationRequest> teamRelationInviteSet = TeamManager.getManager().getTeamRelationRequestSet().stream().filter(teamRelation -> (
                 teamRelation.getSenderTeam() == playerNwITeam || teamRelation.getTargetTeam() == playerNwITeam
         )).collect(Collectors.toSet());
 
@@ -95,7 +92,6 @@ public class TeamManageRelationInvitesCommand extends TeamManageRelationSubComma
                             ), invite.getSenderTeam() == playerNwITeam ? invite.getTargetTeam() : invite.getSenderTeam()));
         });
 
-         */
         sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message.toString()));
     }
 

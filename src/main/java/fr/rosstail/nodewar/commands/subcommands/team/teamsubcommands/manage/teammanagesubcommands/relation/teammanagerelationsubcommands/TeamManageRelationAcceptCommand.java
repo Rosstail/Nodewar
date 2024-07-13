@@ -88,23 +88,20 @@ public class TeamManageRelationAcceptCommand extends TeamManageRelationSubComman
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", senderteamName));
         }
 
-        /* TODO
-        NwTeamRelationRequest teamRelationInvite = TeamRelationManager.getRelationRequestHashSet().stream().filter(nwTeamRelationInvite -> (nwTeamRelationInvite.getSenderTeam() == senderNwITeam && nwTeamRelationInvite.getTargetTeam() == playerNwITeam)).findFirst().orElse(null);
+        NwTeamRelationRequest teamRelationRequest = TeamManager.getManager().getTeamRelationRequest(senderNwITeam, playerNwITeam);
 
-        if (teamRelationInvite == null) {
+        if (teamRelationRequest == null) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_ACCEPT_NONE));
             return;
         }
 
         TeamIRelation currentIRelation = TeamManager.getManager().getTeamRelation(senderNwITeam, playerNwITeam);
-        // TeamRelationManager.getRelationRequestHashSet().remove(teamRelationInvite);
+        TeamManager.getManager().deleyeRelationRequest(senderNwITeam, playerNwITeam);
         StorageManager.getManager().deleteTeamRelationModel(currentIRelation.getID());
         playerNwITeam.getRelations().remove(senderNwITeam);
         senderNwITeam.getRelations().remove(playerNwITeam);
-        createNewRelation(senderNwITeam, playerNwITeam, teamRelationInvite.getRelationType());
+        createNewRelation(senderNwITeam, playerNwITeam, teamRelationRequest.getRelationType());
         sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_RESULT_EFFECTIVE));
-
-         */
 
     }
 
@@ -116,8 +113,7 @@ public class TeamManageRelationAcceptCommand extends TeamManageRelationSubComman
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
         NwITeam playerNwITeam = TeamManager.getManager().getPlayerTeam(sender);
         if (args.length <= 5) {
-            // TODO
-            //return TeamRelationManager.getRelationRequestHashSet().stream().filter(nwTeamRelationInvite -> (nwTeamRelationInvite.getTargetTeam() == playerNwITeam)).map(nwTeamRelationInvite -> nwTeamRelationInvite.getSenderTeam().getName()).collect(Collectors.toList());
+            return TeamManager.getManager().getTeamRelationRequestSet().stream().filter(nwTeamRelationInvite -> (nwTeamRelationInvite.getTargetTeam() == playerNwITeam)).map(nwTeamRelationInvite -> nwTeamRelationInvite.getSenderTeam().getName()).collect(Collectors.toList());
         }
         return null;
     }

@@ -4,16 +4,13 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import fr.rosstail.nodewar.permissionmannager.PermissionManager;
-import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.*;
+import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import fr.rosstail.nodewar.team.type.TownTeam;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TownyTeamManager implements NwITeamManager {
     private final Map<String, TownTeam> stringTeamMap = new HashMap<>();
@@ -159,5 +156,25 @@ public class TownyTeamManager implements NwITeamManager {
         originTown.removeAlly(targetTown);
         originTown.removeTrustedTown(targetTown);
         originTown.removeEnemy(targetTown);
+    }
+
+    @Override
+    public NwTeamRelationRequest getTeamRelationRequest(NwITeam firstTeam, NwITeam secondTeam) {
+        throw new RuntimeException("Towny shoud use its own relation request system");
+    }
+
+    @Override
+    public Set<NwTeamRelationRequest> getTeamRelationRequestSet() {
+        throw new RuntimeException("Towny shoud use its own relation request system");
+    }
+
+    @Override
+    public void createRelationRequest(NwITeam originITeam, NwITeam targetITeam, RelationType type) {
+        throw new RuntimeException("Towny shoud use its own relation request system");
+    }
+
+    @Override
+    public void deleteRelationRequest(NwITeam originTeam, NwITeam targetITeam) {
+        throw new RuntimeException("Towny shoud use its own relation request system");
     }
 }

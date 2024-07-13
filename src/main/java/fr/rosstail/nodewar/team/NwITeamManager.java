@@ -1,12 +1,13 @@
 package fr.rosstail.nodewar.team;
 
-import fr.rosstail.nodewar.team.type.NwTeam;
+import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface NwITeamManager {
 
@@ -32,4 +33,11 @@ public interface NwITeamManager {
     void createRelation(NwITeam originITeam, NwITeam targetITeam, RelationType type);
 
     void deleteRelation(NwITeam originTeam, NwITeam targetITeam);
+
+    NwTeamRelationRequest getTeamRelationRequest(NwITeam firstTeam, NwITeam secondTeam);
+
+    Set<NwTeamRelationRequest> getTeamRelationRequestSet();
+    void createRelationRequest(NwITeam originITeam, NwITeam targetITeam, RelationType type);
+
+    void deleteRelationRequest(NwITeam originTeam, NwITeam targetITeam);
 }

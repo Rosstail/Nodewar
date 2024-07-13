@@ -24,43 +24,5 @@ public class RegionLeftEvent extends RegionEvent
      */
     public RegionLeftEvent(ProtectedRegion region, World world, Player player, Event parent) {
         super(region, world, player, parent);
-
-
-        /*boolean found = false;
-        World world = player.getWorld();
-        if (TerritoryManager.getUsedWorlds().containsKey(world)) {
-            for (Map.Entry<String, Territory> entry : TerritoryManager.getUsedWorlds().get(world).getTerritories().entrySet()) {
-                String s = entry.getKey();
-                Territory territory = entry.getValue();
-                List<ProtectedRegion> territoryRegionList = territory.getProtectedRegionList();
-                if (territoryRegion != null && territoryRegion.equals(region)) {
-                    Objective objective = territory.getObjective();
-                    if (objective != null) {
-                        objective.bossBarRemove(player);
-                    }
-                    territory.getPlayers().remove(player);
-                    found = true;
-                }
-            }
-        }
-        //Needs some optimization because 2 loops
-        if (!found) {
-            for (Map.Entry<World, TerritoryManager> entry : TerritoryManager.getUsedWorlds().entrySet()) {
-                World world1 = entry.getKey();
-                TerritoryManager TerritoryManager = entry.getValue();
-                if (world1 != world) {
-                    TerritoryManager.getTerritoryMap().forEach((s, territory) -> {
-                        List<ProtectedRegion> territoryRegionList = territory.getProtectedRegionList();
-                        if (territoryRegion != null && territoryRegion.equals(region)) {
-                            Objective objective = territory.getObjective();
-                            if (objective != null) {
-                                objective.bossBarRemove(player);
-                            }
-                            territory.getPlayers().remove(player);
-                        }
-                    });
-                }
-            }
-        }*/
     }
 }

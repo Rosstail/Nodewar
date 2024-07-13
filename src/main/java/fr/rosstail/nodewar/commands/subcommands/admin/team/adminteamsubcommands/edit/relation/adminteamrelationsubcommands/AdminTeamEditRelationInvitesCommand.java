@@ -64,8 +64,7 @@ public class AdminTeamEditRelationInvitesCommand extends AdminTeamEditRelationSu
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DOES_NOT_EXIST));
         }
 
-        /* TODO
-        Set<NwTeamRelationRequest> teamRelationInviteSet = TeamRelationManager.getRelationRequestHashSet().stream().filter(teamRelationModel -> (
+        Set<NwTeamRelationRequest> teamRelationInviteSet = TeamManager.getManager().getTeamRelationRequestSet().stream().filter(teamRelationModel -> (
                 teamRelationModel.getSenderTeam() == baseTeam || teamRelationModel.getTargetTeam() == baseTeam
         )).collect(Collectors.toSet());
 
@@ -81,7 +80,6 @@ public class AdminTeamEditRelationInvitesCommand extends AdminTeamEditRelationSu
             ));
         });
         sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message.toString()));
-         */
     }
 
     @Override

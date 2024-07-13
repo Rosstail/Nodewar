@@ -1,0 +1,391 @@
+prefix: "&f[&cNW&f]&r "
+
+format:
+  datetime: "yyyy-MM-dd HH:mm:ss"
+  datetime-never: "&7Jamais"
+  countdown: "{dd}d {HH}:{mm}:{ss}" #use dd, d, hh, h, mm, m, ss, s
+
+storage:
+  type: "[prefix]Utilisation du stockage [type]."
+
+map:
+  dynmap:
+    marker-label: "Territoires"
+  bluemap:
+    marker-label: "Territoires"
+
+commands:
+  by-player-only: "[prefix]Cette commande doit être envoyée par un joueur."
+  permission-denied: "[prefix]Vous n'avez pas la permission pour la commande [command_name] : [command_permission]."
+  insert-player-name: "[prefix]Insérez le nom du joueur cible."
+  wrong-command: "[prefix]Mauvaise commande."
+  wrong-value: "[prefix]Mauvaise valeur."
+  too-few-arguments: "[prefix]Trop peu d'arguments"
+  player-does-not-exist: "[prefix][player] n'existe pas."
+  player-no-data: "[prefix]Aucune donnée pour [player]."
+  player-not-in-team: "[prefix][player] n'est pas l'équipe."
+  player-already-in-team: "[prefix][player] est déjà dans l'équipe."
+  help:
+    header: "&b====== &cAIDE NODEWAR &b======"
+    line: "&a► &6/[syntax] &8: &r[desc]"
+  team:
+    desc: "Observez, gérez ou créez une équipe"
+    already-exist: "[prefix]Cette équipe existe déjà"
+    does-not-exist: "[prefix]Cette équipe n'existe pas"
+    part-of-no-team: "[prefix]Vous ne faites partie d'aucune équipe"
+    team-full: "[prefix]Cette équipe est complète !"
+    check:
+      desc: "Voir les informations de l'équipe"
+      result:
+        - "[prefix][team_color_short]&r - [team_color_display]&r &8:&r"
+        - "* Couleur &8:&r {[team_color]}[team_color]&r"
+        - "* Votre rang &8:&r [team_player_rank]"
+        - "* Membres &8:&r [team_online_member]/[team_maximum_members] - [team_open]&r"
+        - "[team_result_member_line]"
+        - "* Relations &8:&r (default &8:&r [team_relation_default])"
+        - "[team_result_relation_line]"
+      result-other:
+        - "[prefix][team_display]&r &8:&r"
+        - "* Couleur &8:&r {[team_color]}[team_color]&r"
+        - "* Membres &8:&r [team_online_member] - [team_open]&r"
+        - "[team_result_member_line]"
+        - "* Relations &8:&r (default &8:&r [team_relation_default])"
+        - "[team_result_relation_line]"
+      result-member-line: "   - [team_player_connected][team_player] &8:&r [team_player_rank]"
+      result-relation-line: "   - [team_display] &8:&r [team_relation]&r"
+    list:
+      desc: "Affiche la liste des équipes"
+      result-header: "[prefix]&bListe des équipes &8:"
+      result-line: "&a► [team_color_display]&r"
+    invites:
+      desc: "Gérez les invitations d'équipes."
+      check:
+        desc: "Vérifiez quelle équipe souhaite vous recruter."
+        result-header: "[prefix]&bInvites &8:"
+        result-line: "&a► [team_color_display]&r"
+      open:
+        desc: "Autorisez les invitations de recrutement"
+        result: "[prefix]Vous êtes désormais ouvert au recrutement"
+      close:
+        desc: "Refusez tout recrutement"
+        result: "[prefix]Vous êtes désormais fermé au recrutement"
+    create:
+      desc: "Create a nodewar team"
+      result: "[prefix]Équipe créée"
+      too-short: "[prefix]Sigle d'équipe trop petit pour [name]"
+      too-long: "[prefix]Sigle d'équipe trop grand pour [name]"
+      already-exist: "[prefix]Ce nom ou sigle existe déjà [name]"
+      not-enough-money: "[prefix]&cVous avez besoin de [price] pour créer une équipe."
+    deploy:
+      desc: "Déployez-vous dans l'un de vos territoires"
+      result-territory: "[prefix]Téléportation dans le territoire."
+      result-region: "[prefix]Téléportation à la région du territoire."
+      result-failure-timer: "[prefix]Déploiement impossible avant [timer]"
+      result-failure-territory: "[prefix]Impossible de se déployer dans ce territoire."
+      result-failure-region: "[prefix]Impossible de se déployer dans cette région."
+      cancelled: "[prefix]Déploiement annulé."
+    join:
+      desc: "Rejoindre une équipe"
+      result: "[prefix]Équipe rejointe"
+      result-uninvited: "[prefix]Cette équipe requier une invitation de sa part"
+    manage:
+      desc: "Gérez votre équipe."
+      error-clearance: "Vous n'avez pas un assez haut rang dans votre équipe."
+      result-confirm-name: "Insérez le nom de l'équipe pour confirmer."
+      color:
+        desc: "Éditez la couleur de votre équipe"
+        result: "[prefix]Couleur de l'équipe changée en {[team_color]}[team_color]"
+      open:
+        desc: "Rendre votre équipe rejoignable par tout le monde"
+        result: "[prefix]Votre équipe est désormais ouverte."
+      close:
+        desc: "Rendre votre équipe rejoignable uniquemùent sur invitation"
+        result: "[prefix]Votre équipe est désormais close."
+      invite:
+        desc: "Invitez un joueur à rejoindre votre équipe"
+        result: "[prefix]Invitation envoyée."
+        result-already: "[prefix]Invitation déjà envoyée."
+        result-ignore: "[prefix]Ce joueur ignore les invitations."
+      member:
+        desc: "Gérez les membres de votre équipe"
+        cannot-target-self: "[prefix]Vous ne pouvez pas vous cibler vous-même !"
+        promote:
+          desc: "Promouvez un membre"
+          result: "[prefix]Promotion de [player] au rang de [team_member_rank]."
+          error: "[prefix]Vous ne pouvez pas promouvoir ce membre."
+        demote:
+          desc: "Rétrogradez un membre"
+          result: "[prefix]Rétrogradation de [player] au rang de [team_member_rank]."
+          error: "[prefix]Vous ne pouvez pas rétrograder ce membre."
+        kick:
+          desc: "Virez un membre de l'équipe"
+          result: "[prefix]Membre viré."
+        transfer:
+          desc: "Transférez la propriété de l'équipe à un membre"
+          result: "[prefix]Transfert d'équipe effectué."
+      relation:
+        desc: "Gérez les relations avec les autres équipes"
+        accept:
+          desc: "Acceptez une requête de relation"
+          none: "[prefix]Aucune invitation"
+        open:
+          desc: "Recevez les invitations de relation"
+          result: "[prefix]l'équipe est désormais ouverte aux requêtes de relation"
+        close:
+          desc: "Disable reception of relation invites"
+          result: "[prefix]Team closed to relation invites"
+        request:
+          desc: "Set relation with selected team"
+          result-sent: "[prefix]Relation invite sent successfully."
+          result-effective: "[prefix]Relation set."
+          result-same-team: "[prefix]You can't target your own team."
+          result-unchanged: "[prefix]Same relation. No change."
+          result-already-sent: "[prefix]Already sent the invitation"
+          result-blocked: "[prefix]This team does not receive invites of relation improvements"
+        invites:
+          desc: "Check list of teams relations invites."
+          result-header: "[prefix]&bInvites &8:"
+          result-line: "&a► [team_line_direction]&r [team_color_display] &8: [team_relation] -> [team_relation_invite]&r"
+          result-line-received: "&e<<<"
+          result-line-sent: "&6>>>"
+      disband:
+        desc: "Disband your nodewar team"
+        result: "[prefix]Disbanded team"
+    leave:
+      desc: "Leave your current team"
+      result: "[prefix]Left team"
+      result-failure-owner: "[prefix]You cannot leave the team as the owner !"
+  admin:
+    desc: "Admin commands"
+    team:
+      desc: "Admin team command"
+      create:
+        desc: "Create a new team"
+        result: "[prefix]Succesfully created [team_color_display]."
+      edit:
+        desc: "Edit selected team"
+        color:
+          desc: "Edit selected team current team color"
+          result: "[prefix]Team color set to {[team_color]}[team_color]"
+        open:
+          desc: "Make selected team joinable by anybody"
+          result: "[prefix]Selected team is now open"
+          result-close: "[prefix]Selected team is now close"
+        close:
+          desc: "Make selected team joinable only on invites"
+          result: "[prefix]Selected team is now close"
+        invite:
+          desc: "Invite a player into selected team"
+          result: "[prefix]Invitation sent successfully."
+          result-already: "[prefix]Already sent an invite to this player."
+          result-ignore: "[prefix]This player ignore invitations."
+        member:
+          desc: "manage members of a team"
+          add:
+            desc: "Add a player to team"
+            result: "[prefix]Player [player] added to [team_display]."
+          remove:
+            desc: "Remove a player from team"
+            result: "[prefix]Player [player] removed from [team_display]."
+          promote:
+            desc: "Promote a team member"
+            result: "[prefix]Player [player] promoted to [team_member_rank]."
+          demote:
+            desc: "Demote a team member"
+            result: "[prefix]Player [player] demoted to [team_member_rank]."
+          kick:
+            desc: "Kick a player from selected team"
+            result: "[prefix]Player kicked successfully."
+          transfer:
+            desc: "Transfer ownership of team to player"
+            result: "[prefix]Ownership transferred successfully."
+        relation:
+          desc: "Manage relations with other teams"
+          open:
+            desc: "Enable reception of relation invites"
+            result: "[prefix]Team open to relation invites"
+          close:
+            desc: "Disable reception of relation invites"
+            result: "[prefix]Team closed to relation invites"
+          invites:
+            desc: "Check list of teams relations invites."
+            result-header: "[prefix]&bInvites &8:"
+            result-line: "&a► [team_line_direction]&r [team_color_display] &8: [team_relation] -> [team_relation_invite]&r"
+            result-line-received: "&e<<<"
+            result-line-sent: "&6>>>"
+          request:
+            desc: "Set relation with selected team"
+            result-invite: "[prefix]Relation invite sent successfully."
+            result-weight: "[prefix]Relation set."
+            result-ignore: "[prefix]Target team is not open to requests."
+            result-unchanged: "[prefix]Same relation. No change."
+            result-already: "[prefix]Already sent the invitation."
+          set:
+            desc: "Set immediate relation between selected teams"
+            result: "[prefix]Relation set."
+            result-unchanged: "[prefix]Same relation. No changes"
+        disband:
+          desc: "Disband selected nodewar team"
+          result: "[prefix]Disbanded team"
+    territory:
+      desc: "Edit the selected territory"
+      reload-regions:
+        desc: "Reload regions of a territory"
+        result: "[prefix]Regions of [territory_display] reloaded"
+      team:
+        desc: "Edit owner team of territory"
+        set:
+          desc: "Set owner team of territory"
+          result: "[prefix]Territory owner is now [team_display]"
+        reset:
+          desc: "Remove current owner of territory"
+          result: "[prefix]Territory is now neutral."
+      vulnerable:
+        desc: "Makes the territory vulnerable to player attacks"
+        result: "[prefix][territory_display] is now vulnerable"
+      protect:
+        desc: "Makes the territory immune to player attacks"
+        result: "[prefix][territory_display] is now immune"
+  territory:
+    desc: "Territory commands"
+    check:
+      desc: "Check status of a territory"
+      result:
+        - "[territory_description]"
+        - "[territory_objective_description]"
+        - "[territory_battle_description]"
+      result-not-on-territory: "You are not standing on a territory"
+      result-on-multiple-territory: "You are standing on multiple territories: please select one of them: [territories]"
+  reload:
+    desc: "Reload current Nodewar config."
+    result: "[prefix]Reloaded config."
+  save:
+    desc: "Save instantly all online players data to storage."
+    result: "[prefix]Manually saved data of [amount] players."
+
+player:
+  online: "&aONLINE"
+  offline: "&8OFFLINE"
+
+team:
+  none-display: "None"
+  open: "&aOpen"
+  close: "&cClose"
+  rank:
+    owner: "&6Owner"
+    lieutenant: "&9Lieutenant"
+    captain: "&aCaptain"
+    member: "&dMember"
+    recruit: "&7Recruit"
+  relation:
+    neutral: "&fNeutral"
+    controlled: "&5Controlled"
+    team: "&bTeam"
+    ally: "&aAlly"
+    truce: "&dTruce"
+    enemy: "&cEnemy"
+
+battlefield:
+  open: "OPEN"
+  closed: "CLOSED"
+  announcement:
+    open: "[prefix]The [battlefield_display] battlefield is now open !"
+    open-delay: "[prefix]The [battlefield_display] battlefield will open in [delay]"
+    close: "[prefix]The [battlefield_display] battlefield is now closed !"
+    close-delay: "[prefix]The [battlefield_display] battlefield will close in [delay]"
+
+territory:
+  description:
+    - "&a[territory_id] &7- &6[territory_display]&r&d:"
+    - "&r  &aInfo&d:"
+    - "&c    * &eWorld&d:&r [territory_world]"
+    - "&c    * &eType&d:&r [territory_type]"
+    - "&c    * &eProtected&d:&r [territory_protected]"
+    - "&c    * &eOwner&d:&r {[territory_team_color]}[territory_team_display]"
+  objective:
+    types:
+      none:
+        display: "None"
+        description:
+          - "&a  Objective&d: &7NONE&r"
+      control:
+        description:
+          - "&a  Objective&d: &9CONTROL"
+          - "&c    *  &eAttackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
+      siege:
+        display: "Siege"
+        description:
+          - "&a  Objective&d: &cSIEGE"
+          - "&c    *  &eCapture points&d:"
+          - "[line_capturepoint]"
+        line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
+      koth:
+        display: "King of the Hill"
+        description:
+          - "&a  Objective&d: &6KOTH"
+          - "&c    *  &eCapture points&d:"
+          - "[line_capturepoint]"
+        line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
+  battle:
+    types:
+      none:
+        description:
+          - "&a  Current battle&d:"
+          - "&c    * &eStatus&d:&r [territory_battle_status]"
+          - "&c    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
+          - "&c    * &eTime left&d:&r [territory_battle_time_left]"
+          - "&a  Previous battle&d:"
+          - "&c    * &eWinner&d:&r [territory_battle_winner_color_display]"
+      control:
+        description:
+          - "&a  Current battle&d:"
+          - "&c    * &eStatus&d:&r [territory_battle_status]"
+          - "&c    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
+          - "&c    * &eHealth&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
+          - "&c    * &eTime left&d:&r [territory_battle_time_left]"
+          - "&a  Previous battle&d:"
+          - "&c    * &eWinner&d:&r [territory_battle_winner_color_display]"
+      siege:
+        description:
+          - "&a  Current battle&d:"
+          - "&c    * &eStatus&d:&r [territory_battle_status]"
+          - "&c    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
+          - "&c    * &eHealth&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
+          - "&c    * &eTime left&d:&r [territory_battle_time_left]"
+          - "&a  Previous battle&d:"
+          - "&c    * &eWinner&d:&r [territory_battle_winner_color_display]"
+      koth:
+        description:
+          - "&a  Current battle&d:"
+          - "&c    * &eStatus&d:&r [territory_battle_status]"
+          - "&c    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
+          - "&c    * &eHigh score&d:&r [territory_battle_time] / [territory_objective_time_to_reach]"
+          - "&c    * &eTime left&d:&r [territory_battle_time_left]"
+          - "&a  Previous battle&d:"
+          - "&c    * &eWinner&d:&r [territory_battle_winner_color_display]"
+    status:
+      waiting: "&5Waiting"
+      ongoing: "&eOngoing"
+      ending: "&7Ending"
+      ended: "&8Ended"
+    alert:
+      global:
+        defend:
+          start: "&4[territory_display] is under attack !" # server-wide
+          advantage: "&aYour team is repelling the enemies in [territory_display]" # territory-wide
+          disadvantage: "&cYour team is losing ground in [territory_display]." # territory-wide
+          victory: "&bYour team has defended [territory_display] successfully !" # server-wide
+          defeat: "&4You lose the [territory_display] territory..." # server-wide
+        attack:
+          start: "&eYour team engage a fight in [territory_display] !" # server-wide
+          advantage: "&aYour team is capturing [territory_display]" # territory-wide
+          disadvantage: "&cYour team is getting repelled at [territory_display]" # territory-wide
+          victory: "&bYour team has conquered [territory_display] !" # server-wide
+          defeat: "&4Your team has been repelled at [territory_display]..." # server-wide
+  bossbar:
+    global:
+      wild: "[territory_display] - [territory_battle_status]"
+      occupied: "[territory_display] - {[territory_team_color]}[territory_team_display] - [territory_battle_status]"
+      battle: "[territory_display] - {[territory_team_color]}[territory_team_display]&r {[territory_battle_advantage_color]}[territory_battle_direction]&r {[territory_battle_advantage_color]}[territory_battle_advantage_display]"
+  protected: "&dProtected"
+  vulnerable: "&cVulnerable"

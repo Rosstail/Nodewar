@@ -147,13 +147,7 @@ public class TownTeam implements NwITeam {
 
     @Override
     public boolean hasPlayerEnoughClearance(Player player) {
-        if (!town.hasResident(player)) {
-            return false;
-        }
-
-        // TODO TownTeam#hasPlayerEnoughClearance
-        Resident playerResident = town.getResidents().stream().filter(resident -> resident.getPlayer() == player).findFirst().get();
-        return true;
+        return false;
     }
 
     @Override

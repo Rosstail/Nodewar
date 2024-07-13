@@ -7,6 +7,7 @@ import fr.rosstail.nodewar.permissionmannager.PermissionManager;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.relation.NwTeamRelation;
+import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import fr.rosstail.nodewar.team.teammanagers.NwTeamManager;
 import fr.rosstail.nodewar.team.teammanagers.TownyTeamManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
@@ -201,5 +202,21 @@ public class TeamManager {
 
     public void createRelation(NwITeam originITeam, NwITeam targetITeam, RelationType type) {
         iManager.createRelation(originITeam, targetITeam, type);
+    }
+
+    public NwTeamRelationRequest getTeamRelationRequest(NwITeam sender, NwITeam target) {
+        return iManager.getTeamRelationRequest(sender, target);
+    }
+
+    public Set<NwTeamRelationRequest> getTeamRelationRequestSet() {
+        return  iManager.getTeamRelationRequestSet();
+    }
+
+    public void createRelationRequest(NwITeam sender, NwITeam target, RelationType type) {
+        iManager.createRelationRequest(sender, target, type);
+    }
+
+    public void deleyeRelationRequest(NwITeam sender, NwITeam target) {
+        iManager.deleteRelationRequest(sender, target);
     }
 }
