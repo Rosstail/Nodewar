@@ -3,26 +3,25 @@ package fr.rosstail.nodewar.territory.objective.types;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
-import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
-import fr.rosstail.nodewar.territory.objective.Objective;
+import fr.rosstail.nodewar.territory.objective.NwConquestObjective;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class ObjectiveSiege extends Objective {
+public class ObjectiveSiege extends NwConquestObjective {
 
     private int maxHealth;
 
@@ -70,7 +69,10 @@ public class ObjectiveSiege extends Objective {
 
     }
 
-    public NwITeam checkIAdvantage() {
+    public NwITeam checkAdvantage() {
+        if (territory.getModel().isUnderProtection()) {
+            return territory.getOwnerITeam();
+        }
         NwITeam defenderITeam = territory.getOwnerITeam();
         BattleSiege currentBattle = ((BattleSiege) territory.getCurrentBattle());
 
@@ -175,7 +177,7 @@ public class ObjectiveSiege extends Objective {
     }
 
     @Override
-    public NwITeam checkIWinner() {
+    public NwITeam checkWinner() {
         NwITeam ownerITeam = territory.getOwnerITeam();
         BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
         NwITeam advantagedITeam = currentBattle.getAdvantagedITeam();
@@ -224,18 +226,16 @@ public class ObjectiveSiege extends Objective {
             }
         }
 
-        handleEndRewards(currentBattleSiege, iTeamPositionMap);
+        reward(currentBattleSiege, iTeamPositionMap);
 
-        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerITeam, null);
-        Bukkit.getPluginManager().callEvent(event);
         territory.setupBattle();
     }
 
     @Override
-    public void applyProgress() {
+    public void progress() {
         BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
         NwITeam currentIAdvantage = currentBattle.getAdvantagedITeam();
-        NwITeam newIAdvantage = checkIAdvantage(); //Also apply damage/regen
+        NwITeam newIAdvantage = checkAdvantage(); //Also apply damage/regen
         int currentHealth = currentBattle.getCurrentHealth(); //Also apply damage/regen
         currentBattle.updateTeamContributionPerSecond(controlPointList);
 
@@ -249,13 +249,13 @@ public class ObjectiveSiege extends Objective {
                     AdaptMessage.getAdaptMessage().alertITeam(currentIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
                 }
             }
-            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newIAdvantage, null);
+            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newIAdvantage);
             Bukkit.getPluginManager().callEvent(advantageChangeEvent);
 
             currentBattle.setAdvantageITeam(newIAdvantage);
         }
 
-        NwITeam winnerITeam = checkIWinner();
+        NwITeam winnerITeam = checkWinner();
         if (currentBattle.isBattleStarted() && winnerITeam != null) {
             win(winnerITeam);
         }
@@ -310,7 +310,7 @@ public class ObjectiveSiege extends Objective {
 
     @Override
     public void startObjective() {
-        scheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), this::applyProgress, 20L, 20L);
+        scheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), this::progress, 20L, 20L);
     }
 
     public int getMaxHealth() {

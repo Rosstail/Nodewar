@@ -7,7 +7,7 @@ import org.bukkit.event.Event;
 
 public class TerritoryAdvantageChangeEvent extends TerritoryObjectiveEvent {
 
-    public TerritoryAdvantageChangeEvent(Territory territory, NwITeam nwITeam, Event parentEvent) {
-        super(territory, nwITeam, parentEvent);
+    public TerritoryAdvantageChangeEvent(Territory territory, NwITeam nwITeam) {
+        super(territory, nwITeam);
     }
 }

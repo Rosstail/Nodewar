@@ -1,12 +1,10 @@
 package fr.rosstail.nodewar.territory.battle.types;
 
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
-import fr.rosstail.nodewar.territory.objective.types.ObjectiveControl;
 import fr.rosstail.nodewar.territory.objective.types.ObjectiveKeep;
 import org.bukkit.entity.Player;
 

@@ -67,7 +67,7 @@ public class AdminTerritoryTeamSetCommand extends AdminTerritoryTeamSubCommand {
             return;
         }
 
-        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, team, null);
+        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, team);
         Bukkit.getPluginManager().callEvent(event);
         message = AdaptMessage.getAdaptMessage().adaptTeamMessage(message, team);
         message = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory);

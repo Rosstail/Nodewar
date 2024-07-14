@@ -56,6 +56,7 @@ public class AttackRequirements {
                     ownedTerritoryList.stream().noneMatch(territory1 -> territory1.getAttackRequirements().getTargetTerritoryList().contains(territory))) {
                 return false;
             }
+            return true;
         }
 
         List<Territory> startPointList = ownedTerritoryList.stream().filter(

@@ -47,7 +47,7 @@ public class AdminTerritoryTeamResetCommand extends AdminTerritoryTeamSubCommand
 
         territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(args[2]);
 
-        TerritoryOwnerNeutralizeEvent event = new TerritoryOwnerNeutralizeEvent(territory, null, null);
+        TerritoryOwnerNeutralizeEvent event = new TerritoryOwnerNeutralizeEvent(territory, null);
         Bukkit.getPluginManager().callEvent(event);
 
         message = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory);

@@ -2,7 +2,6 @@ package fr.rosstail.nodewar.territory.objective.types;
 
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
-import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -10,7 +9,7 @@ import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.battle.types.BattleKoth;
-import fr.rosstail.nodewar.territory.objective.Objective;
+import fr.rosstail.nodewar.territory.objective.NwConquestObjective;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
 
@@ -19,7 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class ObjectiveKoth extends Objective {
+public class ObjectiveKoth extends NwConquestObjective {
     private final int timeToReach;
     private final List<Territory> controlPointList = new ArrayList<>();
 
@@ -80,7 +79,7 @@ public class ObjectiveKoth extends Objective {
     }
 
     @Override
-    public NwITeam checkIWinner() {
+    public NwITeam checkWinner() {
         BattleKoth currentBattle = (BattleKoth) territory.getCurrentBattle();
         NwITeam currentIAdvantage = currentBattle.getAdvantagedITeam();
 
@@ -99,7 +98,7 @@ public class ObjectiveKoth extends Objective {
     }
 
     @Override
-    public void applyProgress() {
+    public void progress() {
         BattleKoth currentBattle = (BattleKoth) territory.getCurrentBattle();
         NwITeam currentIAdvantage = currentBattle.getAdvantagedITeam();
         NwITeam newIAdvantage = checkIAdvantage(currentBattle); //also apply scores
@@ -114,13 +113,13 @@ public class ObjectiveKoth extends Objective {
                     AdaptMessage.getAdaptMessage().alertITeam(currentIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
                 }
             }
-            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newIAdvantage, null);
+            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newIAdvantage);
             Bukkit.getPluginManager().callEvent(advantageChangeEvent);
 
             currentBattle.setAdvantageITeam(newIAdvantage);
         }
 
-        NwITeam winnerITeam = checkIWinner();
+        NwITeam winnerITeam = checkWinner();
         if (currentBattle.isBattleStarted() && winnerITeam != null) {
             win(winnerITeam);
         }
@@ -136,6 +135,9 @@ public class ObjectiveKoth extends Objective {
     }
 
     private NwITeam checkIAdvantage(BattleKoth currentBattle) {
+        if (territory.getModel().isUnderProtection()) {
+            return territory.getOwnerITeam();
+        }
         int maxHoldTime = currentBattle.getTeamHoldPointMap().values().stream()
                 .max(Integer::compareTo)
                 .orElse(0);
@@ -215,16 +217,14 @@ public class ObjectiveKoth extends Objective {
             }
         }
 
-        handleEndRewards(currentBattleKoth, teamPositionMap);
+        reward(currentBattleKoth, teamPositionMap);
 
-        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
-        Bukkit.getPluginManager().callEvent(event);
         territory.setupBattle();
     }
 
     @Override
     public void startObjective() {
-        scheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), this::applyProgress, 20L, 20L);
+        scheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), this::progress, 20L, 20L);
     }
 
     public int getTimeToReach() {

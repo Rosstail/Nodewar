@@ -3,22 +3,24 @@ package fr.rosstail.nodewar.territory.objective.types;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
-import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerChangeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
+import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
+import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.battle.types.BattleControl;
-import fr.rosstail.nodewar.territory.objective.Objective;
+import fr.rosstail.nodewar.territory.objective.NwConquestObjective;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ObjectiveControl extends Objective {
+public class ObjectiveControl extends NwConquestObjective {
 
     private final boolean neutralPeriod;
     private float minAttackerRatio;
@@ -62,52 +64,44 @@ public class ObjectiveControl extends Objective {
 
     @Override
     public void startObjective() {
-        scheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), this::applyProgress, 20L, 20L);
+        scheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), this::progress, 20L, 20L);
     }
 
     @Override
-    public void applyProgress() {
+    public void progress() {
+        BattleControl currentBattle = (BattleControl) territory.getCurrentBattle();
+
         teamMemberOnTerritory.clear();
         territory.getNwITeamEffectivePlayerAmountOnTerritory().forEach((nwITeam, memberList) -> {
             if (territory.getAttackRequirements().checkAttackRequirements(nwITeam)) {
                 teamMemberOnTerritory.put(nwITeam, memberList.size());
             }
         });
-        BattleControl currentBattle = (BattleControl) territory.getCurrentBattle();
-        NwITeam currentIAdvantage = currentBattle.getAdvantagedITeam();
-        NwITeam newIAdvantage = checkIAdvantage();
 
-        if (currentIAdvantage != newIAdvantage) {
-            if (currentBattle.isBattleStarted()) {
-                if (newIAdvantage == territory.getOwnerITeam()) {
-                    AdaptMessage.getAdaptMessage().alertITeam(currentIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(newIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
-                } else {
-                    AdaptMessage.getAdaptMessage().alertITeam(newIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(currentIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
+        switch (currentBattle.getBattleStatus()) {
+            case WAITING:
+                if (checkStart()) {
+                    start();
                 }
-            }
-            currentBattle.setAdvantageITeam(newIAdvantage);
-            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newIAdvantage, null);
-            Bukkit.getPluginManager().callEvent(advantageChangeEvent);
-
+                break;
+            case ONGOING:
+                if (checkEnding()) {
+                    ending();
+                } else {
+                    onGoing();
+                }
+                break;
+            case ENDING:
+                if (checkEnd()) {
+                    end();
+                }
+                break;
+            case ENDED:
+                restart();
+                break;
         }
 
-        NwITeam neutralizer = checkNeutralization();
-        NwITeam winnerTeam = checkIWinner();
-        if (neutralizer != null) {
-            neutralize(neutralizer);
-        } else if (winnerTeam != null) {
-            win(winnerTeam);
-        }
         updateHealth();
-
-        determineStart(currentBattle, currentIAdvantage, newIAdvantage);
-
-        if (currentBattle.isBattleStarted()) {
-            currentBattle.handleContribution();
-            currentBattle.handleScore();
-        }
 
         territory.getRelationBossBarMap().forEach((s, bossBar) -> {
             bossBar.setProgress((float) currentBattle.getCurrentHealth() / maxHealth);
@@ -115,7 +109,10 @@ public class ObjectiveControl extends Objective {
     }
 
     @Override
-    public NwITeam checkIAdvantage() {
+    public NwITeam checkAdvantage() {
+        if (territory.getModel().isUnderProtection()) {
+            return territory.getOwnerITeam();
+        }
         NwITeam defenderTeam = territory.getOwnerITeam();
         int greatestAttackerEffective = 0;
         int defenderEffective = 0;
@@ -171,37 +168,35 @@ public class ObjectiveControl extends Objective {
         }
     }
 
-    public void determineStart(BattleControl battleControl, NwTeam currentAdvantage, NwTeam newAdvantage) {
-        super.determineStart(battleControl, currentAdvantage, newAdvantage);
+    @Override
+    public boolean checkStart() {
+        BattleControl battleControl = (BattleControl) territory.getCurrentBattle();
+        NwITeam currentAdvantage = battleControl.getAdvantagedITeam();
+        NwITeam newAdvantage = checkAdvantage();
 
         NwITeam owner = territory.getOwnerITeam();
 
-        if (!battleControl.isBattleWaiting()) {
-            return;
-        }
-
         if (newAdvantage == null) {
             if (battleControl.getCurrentHealth() == 0) {
-                return;
+                return false;
             }
         }
 
         if (newAdvantage == owner) {
             if (battleControl.getCurrentHealth() == maxHealth) {
-                return;
+                return false;
             }
         }
 
         if (currentAdvantage == null || currentAdvantage == owner) {
             if (battleControl.getCurrentHealth() == maxHealth) {
-                return;
+                return false;
             }
         }
 
-        battleControl.setBattleOngoing();
-
         AdaptMessage.getAdaptMessage().alertITeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
         AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
+        return true;
     }
 
     @Override
@@ -221,20 +216,62 @@ public class ObjectiveControl extends Objective {
     }
 
     @Override
-    public NwITeam checkIWinner() {
-        NwITeam owner = territory.getOwnerITeam();
+    public void onGoing() {
+        super.onGoing();
         BattleControl currentBattle = (BattleControl) territory.getCurrentBattle();
-        if (currentBattle.isBattleStarted() && currentBattle.getAdvantagedITeam() != null) {
-            if (currentBattle.getCurrentHealth() >= getMaxHealth() && owner == null) {
-                return currentBattle.getAdvantagedITeam();
-            }
+        NwITeam currentAdvantage = currentBattle.getAdvantagedITeam();
+        NwITeam newAdvantage = checkAdvantage();
+        NwITeam neutralizer = checkNeutralization();
+
+        if (neutralPeriod && neutralizer != null) {
+            neutralize(neutralizer);
         }
-        return null;
+
+        if (currentAdvantage != newAdvantage) {
+            if (currentBattle.isBattleStarted()) {
+                if (newAdvantage == territory.getOwnerITeam()) {
+                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
+                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
+                } else {
+                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
+                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
+                }
+            }
+            currentBattle.setAdvantageITeam(newAdvantage);
+            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantage);
+            Bukkit.getPluginManager().callEvent(advantageChangeEvent);
+
+        }
+
+        currentBattle.handleContribution();
+        currentBattle.handleScore();
     }
 
     @Override
     public void neutralize(NwITeam winnerTeam) {
         super.neutralize(winnerTeam);
+    }
+
+    @Override
+    public boolean checkEnding() {
+        BattleControl currentBattle = (BattleControl) territory.getCurrentBattle();
+        int currentHealth = currentBattle.getCurrentHealth();
+
+        return currentHealth == maxHealth;
+    }
+
+    @Override
+    public NwITeam checkWinner() {
+        return checkAdvantage();
+    }
+
+    @Override
+    public void ending() {
+        territory.getCurrentBattle().setBattleEnding();
+        NwITeam winner = checkWinner();
+        if (winner != null) {
+            win(winner);
+        }
     }
 
     @Override
@@ -248,6 +285,7 @@ public class ObjectiveControl extends Objective {
                 .forEach(nwTeamIntegerEntry -> {
                     AdaptMessage.getAdaptMessage().alertITeam(nwTeamIntegerEntry.getKey(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
                 });
+
         if (winnerTeam == territory.getOwnerITeam()) {
             AdaptMessage.getAdaptMessage().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_VICTORY), territory, true);
             AdaptMessage.getAdaptMessage().alertITeam(winnerTeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
@@ -258,10 +296,7 @@ public class ObjectiveControl extends Objective {
 
         Map<NwITeam, Integer> teamPositionMap = new HashMap<>();
         teamPositionMap.put(winnerTeam, 1);
-        handleEndRewards(currentBattleControl, teamPositionMap);
-
-        TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, winnerTeam, null);
-        Bukkit.getPluginManager().callEvent(event);
+        reward(currentBattleControl, teamPositionMap);
         territory.setupBattle();
     }
 
@@ -272,7 +307,7 @@ public class ObjectiveControl extends Objective {
 
         if (advantagedTeam != null) {
             if (defenderTeam == null || advantagedTeam.equals(defenderTeam)) {
-                currentBattleControl.setCurrentHealth(Math.min(currentBattleControl.getCurrentHealth() + 1,maxHealth));
+                currentBattleControl.setCurrentHealth(Math.min(currentBattleControl.getCurrentHealth() + 1, maxHealth));
             } else {
                 //Avoid it if not enemy
                 currentBattleControl.setCurrentHealth(Math.max(0, currentBattleControl.getCurrentHealth() - 1));

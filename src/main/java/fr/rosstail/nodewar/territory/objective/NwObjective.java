@@ -7,6 +7,7 @@ import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
+import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
 
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Objective {
+public class NwObjective implements NwIObjective {
 
     protected Territory territory;
     protected ObjectiveModel objectiveModel;
@@ -27,7 +28,7 @@ public class Objective {
 
     protected int scheduler;
 
-    public Objective(Territory territory, ObjectiveModel childModel, ObjectiveModel parentModel) {
+    public NwObjective(Territory territory, ObjectiveModel childModel, ObjectiveModel parentModel) {
         if (childModel != null || parentModel != null) {
             ObjectiveModel childObjectiveModel = childModel.clone();
             ObjectiveModel parentObjectiveModel = parentModel.clone();
@@ -41,10 +42,12 @@ public class Objective {
         startObjective();
     }
 
+    @Override
     public Map<String, ObjectiveReward> getStringRewardMap() {
         return stringRewardMap;
     }
 
+    @Override
     public void setStringRewardMap(Map<String, ObjectiveReward> stringRewardMap) {
         this.stringRewardMap = stringRewardMap;
     }
@@ -53,14 +56,12 @@ public class Objective {
         return objectiveModel;
     }
 
+    @Override
     public void setObjectiveModel(ObjectiveModel objectiveModel) {
         this.objectiveModel = objectiveModel;
     }
 
-    public void determineStart(Battle battle, NwITeam currentIAdvantage, NwITeam newIAdvantage) {
-    }
-
-    public NwITeam checkIAdvantage() {
+    public NwITeam checkAdvantage() {
         return null;
     }
 
@@ -69,25 +70,100 @@ public class Objective {
     }
 
     public void neutralize(NwITeam winnerITeam) {
-        TerritoryOwnerNeutralizeEvent event = new TerritoryOwnerNeutralizeEvent(territory, winnerITeam, null);
+        TerritoryOwnerNeutralizeEvent event = new TerritoryOwnerNeutralizeEvent(territory, winnerITeam);
         Bukkit.getPluginManager().callEvent(event);
     }
 
-    public NwITeam checkIWinner() {
+    @Override
+    public void setInitialState() {
+
+    }
+
+    @Override
+    public boolean checkStart() {
+        return false;
+    }
+
+    @Override
+    public void start() {
+        territory.getCurrentBattle().setBattleOngoing();
+    }
+
+    @Override
+    public void onGoing() {
+    }
+
+    @Override
+    public boolean checkEnding() {
+        return false;
+    }
+
+    @Override
+    public NwITeam checkWinner() {
         return null;
     }
 
-    public void applyProgress() {
+    @Override
+    public void ending() {
+        territory.getCurrentBattle().setBattleEnding();
+        NwITeam winner = checkWinner();
+        if (winner != null) {
+            win(winner);
+        }
+    }
+
+    @Override
+    public boolean checkEnd() {
+        return false;
+    }
+
+    @Override
+    public void end() {
+        territory.getCurrentBattle().setBattleEnded();
+    }
+
+    @Override
+    public void restart() {
+        territory.setupBattle();
+    }
+
+    @Override
+    public void progress() {
+        BattleStatus status = territory.getCurrentBattle().getBattleStatus();
+
+        switch (status) {
+            case WAITING:
+                if (checkStart()) {
+                    start();
+                }
+                break;
+            case ONGOING:
+                if (checkEnding()) {
+                    ending();
+                } else {
+                    onGoing();
+                }
+                break;
+            case ENDING:
+                if (checkEnd()) {
+                    end();
+                }
+                break;
+            case ENDED:
+                restart();
+                break;
+        }
     }
 
     public void startObjective() {
-        scheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), this::applyProgress, 0L, 20L);
+        scheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), this::progress, 0L, 20L);
     }
 
     public void stopObjective() {
         Bukkit.getScheduler().cancelTask(scheduler);
     }
 
+    @Override
     public void win(NwITeam winnerITeam) {
         Battle currentBattle = territory.getCurrentBattle();
         currentBattle.setWinnerITeam(winnerITeam);
@@ -96,6 +172,7 @@ public class Objective {
         AdaptMessage.getAdaptMessage().alertITeam(winnerITeam, "congratz, your team is victorious at [territory_name]", territory, false);
     }
 
+    @Override
     public String adaptMessage(String message) {
         message = message.replaceAll("\\[territory_objective_description]", description.stream().map(String::valueOf).collect(Collectors.joining("\n")));
         message = message.replaceAll("\\[territory_objective_name]", getObjectiveModel().getTypeString());
@@ -103,7 +180,8 @@ public class Objective {
         return message;
     }
 
-    public void handleEndRewards(Battle battle, Map<NwITeam, Integer> iTeamPositionMap) {
+    @Override
+    public void reward(Battle battle, Map<NwITeam, Integer> iTeamPositionMap) {
         getStringRewardMap().forEach((s, objectiveReward) -> {
             objectiveReward.handleReward(territory, this, battle, iTeamPositionMap);
         });

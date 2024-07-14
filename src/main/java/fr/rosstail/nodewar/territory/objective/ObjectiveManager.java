@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ObjectiveManager {
-    public static Map<String, Map.Entry<Class<? extends Objective>, Class<? extends ObjectiveModel>>> objectiveEntryMap = new HashMap<>();
+    public static Map<String, Map.Entry<Class<? extends NwObjective>, Class<? extends ObjectiveModel>>> objectiveEntryMap = new HashMap<>();
 
     static {
         objectiveEntryMap.put("control", new AbstractMap.SimpleEntry<>(ObjectiveControl.class, ObjectiveControlModel.class));
@@ -29,7 +29,7 @@ public class ObjectiveManager {
      * @param customObjectiveClass
      * @return
      */
-    public static boolean addCustomObjective(String name, Class<? extends Objective> customObjectiveClass, Class<? extends ObjectiveModel> customObjectiveModelClass) {
+    public static boolean addCustomObjective(String name, Class<? extends NwObjective> customObjectiveClass, Class<? extends ObjectiveModel> customObjectiveModelClass) {
         if (!objectiveEntryMap.containsKey(name)) {
             objectiveEntryMap.put(name, new AbstractMap.SimpleEntry<>(customObjectiveClass, customObjectiveModelClass));
             AdaptMessage.print("[Nodewar] Custom objective " + name + " added to the list !", AdaptMessage.prints.OUT);
@@ -40,7 +40,7 @@ public class ObjectiveManager {
 
     public static void setupObjectiveModelToTerritoryType(TerritoryType territoryType, TerritoryType parentType, String objectiveName, ConfigurationSection objectiveSection) {
         if (objectiveEntryMap.containsKey(objectiveName)) {
-            Map.Entry<Class<? extends Objective>, Class<? extends ObjectiveModel>> entry = objectiveEntryMap.get(objectiveName);
+            Map.Entry<Class<? extends NwObjective>, Class<? extends ObjectiveModel>> entry = objectiveEntryMap.get(objectiveName);
             Class<? extends ObjectiveModel> objectiveModelClass = entry.getValue();
 
             Constructor<? extends ObjectiveModel> objectiveModelConstructor;
@@ -83,11 +83,11 @@ public class ObjectiveManager {
 
     public static void setUpObjectiveToTerritory(Territory territory, ConfigurationSection objectiveSection, String objectiveName) {
         if (objectiveEntryMap.containsKey(objectiveName)) {
-            Map.Entry<Class<? extends Objective>, Class<? extends ObjectiveModel>> entry = objectiveEntryMap.get(objectiveName);
-            Class<? extends Objective> objectiveClass = entry.getKey();
+            Map.Entry<Class<? extends NwObjective>, Class<? extends ObjectiveModel>> entry = objectiveEntryMap.get(objectiveName);
+            Class<? extends NwObjective> objectiveClass = entry.getKey();
             Class<? extends ObjectiveModel> objectiveModelClass = entry.getValue();
 
-            Constructor<? extends Objective> objectiveConstructor;
+            Constructor<? extends NwObjective> objectiveConstructor;
             try {
                 objectiveConstructor = objectiveClass.getDeclaredConstructor(Territory.class, entry.getValue(), entry.getValue());
             } catch (NoSuchMethodException e) {
@@ -111,17 +111,17 @@ public class ObjectiveManager {
             ObjectiveModel objectiveParentModel = objectiveModelClass.cast(territory.getTerritoryType().getObjectiveModel()).clone();
 
             try {
-                Objective objective = objectiveConstructor.newInstance(territory, objectiveChildModel, objectiveParentModel);
+                NwObjective objective = objectiveConstructor.newInstance(territory, objectiveChildModel, objectiveParentModel);
                 territory.setObjective(objective);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            territory.setObjective(new Objective(territory, null, null));
+            territory.setObjective(new NwObjective(territory, null, null));
         }
     }
 
-    public static Map<String, Map.Entry<Class<? extends Objective>, Class<? extends ObjectiveModel>>> getObjectiveEntryMap() {
+    public static Map<String, Map.Entry<Class<? extends NwObjective>, Class<? extends ObjectiveModel>>> getObjectiveEntryMap() {
         return objectiveEntryMap;
     }
 }

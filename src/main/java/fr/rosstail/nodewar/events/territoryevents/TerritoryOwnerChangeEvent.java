@@ -7,7 +7,7 @@ import org.bukkit.event.Event;
 
 public class TerritoryOwnerChangeEvent extends TerritoryObjectiveEvent {
 
-    public TerritoryOwnerChangeEvent(Territory territory, NwITeam nwITeam, Event parentEvent) {
-        super(territory, nwITeam, parentEvent);
+    public TerritoryOwnerChangeEvent(Territory territory, NwITeam nwITeam) {
+        super(territory, nwITeam);
     }
 }

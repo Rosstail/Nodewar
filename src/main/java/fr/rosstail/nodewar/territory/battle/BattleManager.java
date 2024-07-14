@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.territory.battle;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.types.BattleControl;
+import fr.rosstail.nodewar.territory.battle.types.BattleKeep;
 import fr.rosstail.nodewar.territory.battle.types.BattleKoth;
 import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
 import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
@@ -20,6 +21,7 @@ public class BattleManager {
         battleClassMap.put("control", BattleControl.class);
         battleClassMap.put("siege", BattleSiege.class);
         battleClassMap.put("koth", BattleKoth.class);
+        battleClassMap.put("keep", BattleKeep.class);
     }
 
     /**

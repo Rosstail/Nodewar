@@ -1,10 +1,7 @@
 package fr.rosstail.nodewar.events.regionevents;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import fr.rosstail.nodewar.territory.TerritoryManager;
-import fr.rosstail.nodewar.territory.objective.Objective;
 import org.bukkit.World;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 

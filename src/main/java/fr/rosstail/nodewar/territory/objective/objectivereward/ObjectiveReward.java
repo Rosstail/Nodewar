@@ -6,14 +6,12 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamIRelation;
-import fr.rosstail.nodewar.team.relation.NwTeamRelation;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
-import fr.rosstail.nodewar.territory.objective.Objective;
+import fr.rosstail.nodewar.territory.objective.NwObjective;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -103,7 +101,7 @@ public class ObjectiveReward {
         this.shouldTeamWin = shouldTeamWin;
     }
 
-    public void handleReward(Territory territory, Objective objective, Battle battle, Map<NwITeam, Integer> iTeamPositionMap) {
+    public void handleReward(Territory territory, NwObjective objective, Battle battle, Map<NwITeam, Integer> iTeamPositionMap) {
         AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
         for (String command : getRewardModel().getCommandList()) {
             String target = getRewardModel().getTargetName();

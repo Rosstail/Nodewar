@@ -25,7 +25,7 @@ import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBar;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
 import fr.rosstail.nodewar.territory.dynmap.TerritoryDynmap;
 import fr.rosstail.nodewar.territory.dynmap.TerritoryDynmapModel;
-import fr.rosstail.nodewar.territory.objective.Objective;
+import fr.rosstail.nodewar.territory.objective.NwObjective;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommands;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
@@ -53,7 +53,7 @@ public class Territory {
     private TerritoryType territoryType;
 
     private final ConfigurationSection objectiveSection;
-    private Objective objective;
+    private NwObjective objective;
 
     private Battle previousBattle;
     private Battle currentBattle;
@@ -249,11 +249,11 @@ public class Territory {
         return subTerritoryList;
     }
 
-    public Objective getObjective() {
+    public NwObjective getObjective() {
         return objective;
     }
 
-    public void setObjective(Objective objective) {
+    public void setObjective(NwObjective objective) {
         this.objective = objective;
     }
 

@@ -10,12 +10,10 @@ public class TerritoryObjectiveEvent extends Event {
     private static final HandlerList handlerList;
     private final Territory territory;
     private final NwITeam nwITeam;
-    public Event parentEvent;
 
-    TerritoryObjectiveEvent(final Territory territory, final NwITeam nwITeam, final Event parentEvent) {
+    TerritoryObjectiveEvent(final Territory territory, final NwITeam nwITeam) {
         this.territory = territory;
         this.nwITeam = nwITeam;
-        this.parentEvent = parentEvent;
     }
 
     public HandlerList getHandlers() {
@@ -32,10 +30,6 @@ public class TerritoryObjectiveEvent extends Event {
 
     public static HandlerList getHandlerList() {
         return TerritoryObjectiveEvent.handlerList;
-    }
-
-    public Event getParentEvent() {
-        return this.parentEvent;
     }
 
     static {

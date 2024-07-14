@@ -130,7 +130,7 @@ commands:
           none: "[prefix]Aucune invitation"
         open:
           desc: "Recevez les invitations de relation"
-          result: "[prefix]l'équipe est désormais ouverte aux requêtes de relation"
+          result: "[prefix]L'équipe est désormais ouverte aux requêtes de relation"
         close:
           desc: "Disable reception of relation invites"
           result: "[prefix]Team closed to relation invites"

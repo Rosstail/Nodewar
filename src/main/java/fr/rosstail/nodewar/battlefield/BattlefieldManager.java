@@ -81,7 +81,7 @@ public class BattlefieldManager {
     public void openBattlefield(Battlefield battlefield) {
         if (battlefield.getModel().isResetTeam()) {
             battlefield.getTerritoryList().forEach(territory -> {
-                TerritoryOwnerNeutralizeEvent event = new TerritoryOwnerNeutralizeEvent(territory, null, null);
+                TerritoryOwnerNeutralizeEvent event = new TerritoryOwnerNeutralizeEvent(territory, null);
                 Bukkit.getPluginManager().callEvent(event);
             });
         }

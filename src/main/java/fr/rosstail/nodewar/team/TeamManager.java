@@ -140,7 +140,7 @@ public class TeamManager {
         });
 
         TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory -> territory.getOwnerITeam() == team).collect(Collectors.toList()).forEach(territory -> {
-            Bukkit.getServer().getPluginManager().callEvent(new TerritoryOwnerNeutralizeEvent(territory, null, null));
+            Bukkit.getServer().getPluginManager().callEvent(new TerritoryOwnerNeutralizeEvent(territory, null));
         });
 
         PermissionManager.getManager().deleteGroup(teamName);
