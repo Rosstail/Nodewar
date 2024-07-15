@@ -82,7 +82,9 @@ public class ObjectiveKeep extends NwConquestObjective {
                 }
                 break;
             case ENDED:
-                restart();
+                if ((territory.getCurrentBattle().getBattleEndTime() + getGracePeriod() < System.currentTimeMillis())) {
+                    restart();
+                }
                 break;
         }
 
@@ -237,8 +239,6 @@ public class ObjectiveKeep extends NwConquestObjective {
         Map<NwITeam, Integer> teamPositionMap = new HashMap<>();
         teamPositionMap.put(winnerTeam, 1);
         reward(currentBattle, teamPositionMap);
-
-        territory.setupBattle();
     }
 
     @Override

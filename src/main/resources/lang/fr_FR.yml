@@ -132,61 +132,60 @@ commands:
           desc: "Recevez les invitations de relation"
           result: "[prefix]L'équipe est désormais ouverte aux requêtes de relation"
         close:
-          desc: "Disable reception of relation invites"
-          result: "[prefix]Team closed to relation invites"
+          desc: "Empêchez toute invitation de relation"
+          result: "[prefix]L'équipe est désormais fermée aux requêtes de relation"
         request:
-          desc: "Set relation with selected team"
-          result-sent: "[prefix]Relation invite sent successfully."
-          result-effective: "[prefix]Relation set."
-          result-same-team: "[prefix]You can't target your own team."
-          result-unchanged: "[prefix]Same relation. No change."
-          result-already-sent: "[prefix]Already sent the invitation"
-          result-blocked: "[prefix]This team does not receive invites of relation improvements"
+          desc: "Gérez la relation avec les autres équipes"
+          result-sent: "[prefix]Requête de relation envoyée."
+          result-effective: "[prefix]Relation appliquée."
+          result-same-team: "[prefix]Vous ne pouvez pas cibler votre propre équipe."
+          result-unchanged: "[prefix]Relation inchangée."
+          result-already-sent: "[prefix]Requête déjà envoyée."
+          result-blocked: "[prefix]Cette équipe a bloquée les requêtes d'améliorations de relation."
         invites:
-          desc: "Check list of teams relations invites."
-          result-header: "[prefix]&bInvites &8:"
+          desc: "Observez la liste des requêtes de relation de votre équipe."
+          result-header: "[prefix]&bRequêtes &8:"
           result-line: "&a► [team_line_direction]&r [team_color_display] &8: [team_relation] -> [team_relation_invite]&r"
           result-line-received: "&e<<<"
           result-line-sent: "&6>>>"
       disband:
-        desc: "Disband your nodewar team"
-        result: "[prefix]Disbanded team"
+        desc: "Dissolvez votre équipe"
+        result: "[prefix]Équipe dissoute."
     leave:
-      desc: "Leave your current team"
-      result: "[prefix]Left team"
-      result-failure-owner: "[prefix]You cannot leave the team as the owner !"
+      desc: "Quitter votre équipe"
+      result: "[prefix]Équipe quittée."
+      result-failure-owner: "[prefix]Vous ne pouvez pas quitter l'équipe en tant que chef !"
   admin:
-    desc: "Admin commands"
+    desc: "Commandes d'administration"
     team:
-      desc: "Admin team command"
+      desc: "Gestion des équipes"
       create:
-        desc: "Create a new team"
-        result: "[prefix]Succesfully created [team_color_display]."
+        desc: "Créez une nouvelle équipe."
+        result: "[prefix]Équipe [team_color_display] créée."
       edit:
-        desc: "Edit selected team"
+        desc: "Éditez l'équipe sélectionnée."
         color:
-          desc: "Edit selected team current team color"
-          result: "[prefix]Team color set to {[team_color]}[team_color]"
+          desc: "Éditez la couleur de l'équipe."
+          result: "[prefix]La nouvelle couleur d'équipe est {[team_color]}[team_color]"
         open:
-          desc: "Make selected team joinable by anybody"
-          result: "[prefix]Selected team is now open"
-          result-close: "[prefix]Selected team is now close"
+          desc: "Rendez l'équipe rejoignable sans invitation"
+          result: "[prefix]L'équipe sélectionnée est désormais publique"
         close:
-          desc: "Make selected team joinable only on invites"
-          result: "[prefix]Selected team is now close"
+          desc: "Renez l'équipe rejoignable seulement sur invitation"
+          result: "[prefix]L'équipe sélectionnée est désormais fermée."
         invite:
-          desc: "Invite a player into selected team"
-          result: "[prefix]Invitation sent successfully."
-          result-already: "[prefix]Already sent an invite to this player."
-          result-ignore: "[prefix]This player ignore invitations."
+          desc: "Invite un joueur dans l'équipe sélectionnée."
+          result: "[prefix]Invitation envoyée."
+          result-already: "[prefix]Invitation déjà envoyée."
+          result-ignore: "[prefix]Ce joueur ignore les invitations."
         member:
-          desc: "manage members of a team"
+          desc: "Gérez les membres d'une équipe"
           add:
-            desc: "Add a player to team"
-            result: "[prefix]Player [player] added to [team_display]."
+            desc: "Ajoutez un joueur à l'équipe"
+            result: "[prefix]Le joueur [player] a été ajouté à l'équipe [team_display]."
           remove:
-            desc: "Remove a player from team"
-            result: "[prefix]Player [player] removed from [team_display]."
+            desc: "Retirez un joueur de l'équipe"
+            result: "[prefix]Le membre [player] a été retiré de l'équipe [team_display]."
           promote:
             desc: "Promote a team member"
             result: "[prefix]Player [player] promoted to [team_member_rank]."
@@ -264,110 +263,110 @@ commands:
     result: "[prefix]Manually saved data of [amount] players."
 
 player:
-  online: "&aONLINE"
-  offline: "&8OFFLINE"
+  online: "&aEN LIGNE"
+  offline: "&8HORS-LIGNE"
 
 team:
-  none-display: "None"
-  open: "&aOpen"
-  close: "&cClose"
+  none-display: "Aucune"
+  open: "&aPublique"
+  close: "&cFermée"
   rank:
-    owner: "&6Owner"
+    owner: "&6Chef"
     lieutenant: "&9Lieutenant"
-    captain: "&aCaptain"
-    member: "&dMember"
-    recruit: "&7Recruit"
+    captain: "&aCapitaine"
+    member: "&dMembre"
+    recruit: "&7Recrue"
   relation:
-    neutral: "&fNeutral"
-    controlled: "&5Controlled"
-    team: "&bTeam"
-    ally: "&aAlly"
-    truce: "&dTruce"
-    enemy: "&cEnemy"
+    neutral: "&fNeutre"
+    controlled: "&5Controllé"
+    team: "&bÉquipe"
+    ally: "&aAllié"
+    truce: "&dEn paix"
+    enemy: "&cEnnemi"
 
 battlefield:
-  open: "OPEN"
-  closed: "CLOSED"
+  open: "OUVERT"
+  closed: "FERMÉ"
   announcement:
-    open: "[prefix]The [battlefield_display] battlefield is now open !"
-    open-delay: "[prefix]The [battlefield_display] battlefield will open in [delay]"
-    close: "[prefix]The [battlefield_display] battlefield is now closed !"
-    close-delay: "[prefix]The [battlefield_display] battlefield will close in [delay]"
+    open: "[prefix]Le champs de bataille [battlefield_display] est désormais ouvert !"
+    open-delay: "[prefix]Le champs de bataille [battlefield_display] va ouvrir dans [delay]"
+    close: "[prefix]Le champs de bataille [battlefield_display] est désormais fermé !"
+    close-delay: "[prefix]Le champs de bataille [battlefield_display] va fermer dans [delay]"
 
 territory:
   description:
     - "&a[territory_id] &7- &6[territory_display]&r&d:"
     - "&r  &aInfo&d:"
-    - "&c    * &eWorld&d:&r [territory_world]"
+    - "&c    * &eMonde&d:&r [territory_world]"
     - "&c    * &eType&d:&r [territory_type]"
-    - "&c    * &eProtected&d:&r [territory_protected]"
-    - "&c    * &eOwner&d:&r {[territory_team_color]}[territory_team_display]"
+    - "&c    * &eProtégé&d:&r [territory_protected]"
+    - "&c    * &ePropriétaire&d:&r {[territory_team_color]}[territory_team_display]"
   objective:
     types:
       none:
-        display: "None"
+        display: "Aucun"
         description:
-          - "&a  Objective&d: &7NONE&r"
+          - "&a  Objectif&d: &7AUCUN&r"
       control:
         description:
-          - "&a  Objective&d: &9CONTROL"
-          - "&c    *  &eAttackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
+          - "&a  Objectif&d: &9CONTRÔLE"
+          - "&c    *  &eRatio attaquants&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
       siege:
-        display: "Siege"
+        display: "Siège"
         description:
-          - "&a  Objective&d: &cSIEGE"
-          - "&c    *  &eCapture points&d:"
+          - "&a  Objectif&d: &cSIÈGE"
+          - "&c    *  &ePoints de capture&d:"
           - "[line_capturepoint]"
         line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
       koth:
-        display: "King of the Hill"
+        display: "Roi de la Colline"
         description:
-          - "&a  Objective&d: &6KOTH"
-          - "&c    *  &eCapture points&d:"
+          - "&a  Objectif&d: &6RdlC"
+          - "&c    *  &ePoints de capture&d:"
           - "[line_capturepoint]"
         line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
   battle:
     types:
       none:
         description:
-          - "&a  Current battle&d:"
-          - "&c    * &eStatus&d:&r [territory_battle_status]"
-          - "&c    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
-          - "&c    * &eTime left&d:&r [territory_battle_time_left]"
-          - "&a  Previous battle&d:"
-          - "&c    * &eWinner&d:&r [territory_battle_winner_color_display]"
+          - "&a  Bataille actuelle&d:"
+          - "&c    * &eStatut&d:&r [territory_battle_status]"
+          - "&c    * &eAvantage&d:&r [territory_battle_advantage_color_display]"
+          - "&c    * &eTemps restant&d:&r [territory_battle_time_left]"
+          - "&a  Bataille précédente&d:"
+          - "&c    * &eVainqueur&d:&r [territory_battle_winner_color_display]"
       control:
         description:
-          - "&a  Current battle&d:"
-          - "&c    * &eStatus&d:&r [territory_battle_status]"
-          - "&c    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
-          - "&c    * &eHealth&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
-          - "&c    * &eTime left&d:&r [territory_battle_time_left]"
-          - "&a  Previous battle&d:"
-          - "&c    * &eWinner&d:&r [territory_battle_winner_color_display]"
+          - "&a  Bataille actuelle&d:"
+          - "&c    * &eStatut&d:&r [territory_battle_status]"
+          - "&c    * &eAvantage&d:&r [territory_battle_advantage_color_display]"
+          - "&c    * &eSanté&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
+          - "&c    * &eTemps restant&d:&r [territory_battle_time_left]"
+          - "&a  Bataille précédente&d:"
+          - "&c    * &eVainqueur&d:&r [territory_battle_winner_color_display]"
       siege:
         description:
-          - "&a  Current battle&d:"
-          - "&c    * &eStatus&d:&r [territory_battle_status]"
-          - "&c    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
-          - "&c    * &eHealth&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
-          - "&c    * &eTime left&d:&r [territory_battle_time_left]"
-          - "&a  Previous battle&d:"
-          - "&c    * &eWinner&d:&r [territory_battle_winner_color_display]"
+          - "&a  Bataille actuelle&d:"
+          - "&c    * &eStatut&d:&r [territory_battle_status]"
+          - "&c    * &eAvantage&d:&r [territory_battle_advantage_color_display]"
+          - "&c    * &eSanté&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
+          - "&c    * &eTemps restant&d:&r [territory_battle_time_left]"
+          - "&a  Bataille précédente&d:"
+          - "&c    * &eVainqueur&d:&r [territory_battle_winner_color_display]"
       koth:
         description:
-          - "&a  Current battle&d:"
-          - "&c    * &eStatus&d:&r [territory_battle_status]"
-          - "&c    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
-          - "&c    * &eHigh score&d:&r [territory_battle_time] / [territory_objective_time_to_reach]"
-          - "&c    * &eTime left&d:&r [territory_battle_time_left]"
-          - "&a  Previous battle&d:"
-          - "&c    * &eWinner&d:&r [territory_battle_winner_color_display]"
+          - "&a  Bataille actuelle&d:"
+          - "&c    * &eStatut&d:&r [territory_battle_status]"
+          - "&c    * &eAvantage&d:&r [territory_battle_advantage_color_display]"
+          - "&c    * &eHaut score&d:&r [territory_battle_time] / [territory_objective_time_to_reach]"
+          - "&c    * &eTemps restant&d:&r [territory_battle_time_left]"
+          - "&a  Bataille précédente&d:"
+          - "&c    * &eVainqueur&d:&r [territory_battle_winner_color_display]"
     status:
-      waiting: "&5Waiting"
-      ongoing: "&eOngoing"
-      ending: "&7Ending"
-      ended: "&8Ended"
+      waiting: "&5En attente"
+      ongoing: "&eEn cours"
+      ending: "&7Fermeture"
+      ended: "&8Terminé"
     alert:
       global:
         defend:
@@ -387,5 +386,5 @@ territory:
       wild: "[territory_display] - [territory_battle_status]"
       occupied: "[territory_display] - {[territory_team_color]}[territory_team_display] - [territory_battle_status]"
       battle: "[territory_display] - {[territory_team_color]}[territory_team_display]&r {[territory_battle_advantage_color]}[territory_battle_direction]&r {[territory_battle_advantage_color]}[territory_battle_advantage_display]"
-  protected: "&dProtected"
-  vulnerable: "&cVulnerable"
+  protected: "&dProtégé"
+  vulnerable: "&cVulnérable"

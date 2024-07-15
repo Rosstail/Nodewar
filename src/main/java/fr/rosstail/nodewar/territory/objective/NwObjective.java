@@ -21,6 +21,9 @@ public class NwObjective implements NwIObjective {
 
     protected Territory territory;
     protected ObjectiveModel objectiveModel;
+
+    protected int endingPeriod;
+    protected int gracePeriod;
     protected Map<String, ObjectiveReward> stringRewardMap = new HashMap<>();
 
     protected String display;
@@ -39,6 +42,8 @@ public class NwObjective implements NwIObjective {
         this.territory = territory;
         this.display = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.description.none.display");
         this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.description.none.description");
+        this.endingPeriod = objectiveModel.getEndingPeriodString() != null ? Integer.parseInt(objectiveModel.getEndingPeriodString()) * 1000 : 0;
+        this.gracePeriod = objectiveModel.getGracePeriodString() != null ? Integer.parseInt(objectiveModel.getGracePeriodString()) * 1000 : 0;
         startObjective();
     }
 
@@ -59,6 +64,16 @@ public class NwObjective implements NwIObjective {
     @Override
     public void setObjectiveModel(ObjectiveModel objectiveModel) {
         this.objectiveModel = objectiveModel;
+    }
+
+    @Override
+    public int getEndingPeriod() {
+        return endingPeriod;
+    }
+
+    @Override
+    public int getGracePeriod() {
+        return gracePeriod;
     }
 
     public NwITeam checkAdvantage() {
@@ -114,7 +129,7 @@ public class NwObjective implements NwIObjective {
 
     @Override
     public boolean checkEnd() {
-        return false;
+        return (territory.getCurrentBattle().getBattleEndTime() + getEndingPeriod() < System.currentTimeMillis());
     }
 
     @Override
@@ -150,7 +165,10 @@ public class NwObjective implements NwIObjective {
                 }
                 break;
             case ENDED:
-                restart();
+                long battleEndTimeAndGrace = territory.getCurrentBattle().getBattleEndTime() + getGracePeriod();
+                if (battleEndTimeAndGrace < System.currentTimeMillis()) {
+                    restart();
+                }
                 break;
         }
     }

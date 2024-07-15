@@ -14,6 +14,8 @@ public interface NwIObjective {
     void setObjectiveModel(ObjectiveModel objectiveModel);
 
 
+    int getEndingPeriod();
+    int getGracePeriod();
     Map<String, ObjectiveReward> getStringRewardMap();
     void setStringRewardMap(Map<String, ObjectiveReward> stringRewardMap);
 

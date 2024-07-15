@@ -3,6 +3,8 @@ cp:
   world: "world"
   objective:
     type: control
+    ending-period: 1
+    grace-period: 2
     attacker-ratio: 1
     maximum-health: 10
     neutralize: true
@@ -41,6 +43,8 @@ t1:
     y: 64
   objective:
     type: koth
+    ending-period: 5
+    grace-period: 10
     points-to-reach: 300
     rewards:
       player-guaranted-reward:

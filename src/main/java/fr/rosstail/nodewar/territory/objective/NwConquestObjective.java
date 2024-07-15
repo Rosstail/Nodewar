@@ -11,11 +11,6 @@ public class NwConquestObjective extends NwObjective {
     }
 
     @Override
-    public boolean checkEnd() {
-        return (territory.getCurrentBattle().getBattleEndTime() + 5000 < System.currentTimeMillis());
-    }
-
-    @Override
     public void win(NwITeam winnerITeam) {
         super.win(winnerITeam);
 

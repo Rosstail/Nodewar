@@ -97,7 +97,10 @@ public class ObjectiveControl extends NwConquestObjective {
                 }
                 break;
             case ENDED:
-                restart();
+                long battleEndTimeAndGrace = territory.getCurrentBattle().getBattleEndTime() + getGracePeriod();
+                if (battleEndTimeAndGrace < System.currentTimeMillis()) {
+                    restart();
+                }
                 break;
         }
 
@@ -250,6 +253,8 @@ public class ObjectiveControl extends NwConquestObjective {
     @Override
     public void neutralize(NwITeam winnerTeam) {
         super.neutralize(winnerTeam);
+        BattleControl currentBattle = (BattleControl) territory.getCurrentBattle();
+        currentBattle.setCurrentHealth(0);
     }
 
     @Override
@@ -297,7 +302,6 @@ public class ObjectiveControl extends NwConquestObjective {
         Map<NwITeam, Integer> teamPositionMap = new HashMap<>();
         teamPositionMap.put(winnerTeam, 1);
         reward(currentBattleControl, teamPositionMap);
-        territory.setupBattle();
     }
 
     public void updateHealth() {
