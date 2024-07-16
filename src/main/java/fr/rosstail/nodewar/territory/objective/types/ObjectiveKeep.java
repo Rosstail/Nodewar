@@ -181,13 +181,22 @@ public class ObjectiveKeep extends NwConquestObjective {
         NwITeam owner = territory.getOwnerITeam();
         NwITeam newAdvantage = checkAdvantage();
 
-        if (newAdvantage == null || newAdvantage == owner) {
+        if (newAdvantage == owner) {
             return false;
         }
 
         AdaptMessage.getAdaptMessage().alertITeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
         AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
         return true;
+    }
+
+    @Override
+    public boolean checkEnding() {
+        BattleKeep currentBattle = (BattleKeep) territory.getCurrentBattle();
+        NwITeam currentIAdvantage = currentBattle.getAdvantagedITeam();
+        NwITeam newIAdvantage = checkAdvantage();
+
+        return currentIAdvantage == newIAdvantage;
     }
 
     @Override
@@ -246,6 +255,7 @@ public class ObjectiveKeep extends NwConquestObjective {
         message = super.adaptMessage(message);
         message = message.replaceAll("\\[territory_objective_minimum_attacker_ratio]", String.valueOf(minAttackerRatio));
         message = message.replaceAll("\\[territory_objective_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)));
+        message = message.replaceAll("\\[territory_objective_minimum_attackers]", String.valueOf(minAttackerAmount));
 
         return message;
     }
@@ -257,4 +267,6 @@ public class ObjectiveKeep extends NwConquestObjective {
     public int getMinAttackerAmount() {
         return minAttackerAmount;
     }
+
+
 }
