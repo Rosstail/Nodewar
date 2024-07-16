@@ -90,6 +90,7 @@ public class BattleSiege extends Battle {
         if (territory.getOwnerITeam() != null) {
             iTeamImpactPerSecond.put(territory.getOwnerITeam(), 0);
         }
+
         controlPointList.forEach(controlPointTerritory -> {
             NwITeam controlITeam = controlPointTerritory.getOwnerITeam();
             if (controlITeam != null) {

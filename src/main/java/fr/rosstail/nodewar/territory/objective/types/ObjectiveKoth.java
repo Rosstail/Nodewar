@@ -9,6 +9,7 @@ import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.battle.types.BattleKoth;
+import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
 import fr.rosstail.nodewar.territory.objective.NwConquestObjective;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
@@ -79,29 +80,44 @@ public class ObjectiveKoth extends NwConquestObjective {
     }
 
     @Override
-    public NwITeam checkWinner() {
+    public void progress() {
         BattleKoth currentBattle = (BattleKoth) territory.getCurrentBattle();
-        NwITeam currentIAdvantage = currentBattle.getAdvantagedITeam();
 
-        if (currentIAdvantage == null) {
-            return null;
+        switch (currentBattle.getBattleStatus()) {
+            case WAITING:
+                if (checkStart()) {
+                    start();
+                }
+                break;
+            case ONGOING:
+                if (checkEnding()) {
+                    ending();
+                } else {
+                    onGoing();
+                }
+                break;
+            case ENDING:
+                if (checkEnd()) {
+                    end();
+                }
+                break;
+            case ENDED:
+                long battleEndTimeAndGrace = territory.getCurrentBattle().getBattleEndTime() + getGracePeriod();
+                if (battleEndTimeAndGrace < System.currentTimeMillis()) {
+                    restart();
+                }
+                break;
         }
 
-        List<Map.Entry<NwITeam, Integer>> reachTeamList = currentBattle.getTeamHoldPointMap().entrySet().stream().filter(nwTeamIntegerEntry -> (
-                nwTeamIntegerEntry.getValue() >= timeToReach
-                        && nwTeamIntegerEntry.getKey() == currentIAdvantage
-        )).collect(Collectors.toList());
-
-        return reachTeamList.stream().filter(nwTeamIntegerEntry -> (
-                nwTeamIntegerEntry.getKey() == currentIAdvantage
-        )).findFirst().map(Map.Entry::getKey).orElse(null);
+        updateBossBar(currentBattle);
     }
 
     @Override
-    public void progress() {
+    public void onGoing() {
+        super.onGoing();
         BattleKoth currentBattle = (BattleKoth) territory.getCurrentBattle();
         NwITeam currentIAdvantage = currentBattle.getAdvantagedITeam();
-        NwITeam newIAdvantage = checkIAdvantage(currentBattle); //also apply scores
+        NwITeam newIAdvantage = checkAdvantage(); //also apply scores
 
         if (currentIAdvantage != newIAdvantage) {
             if (currentBattle.isBattleStarted()) {
@@ -119,22 +135,24 @@ public class ObjectiveKoth extends NwConquestObjective {
             currentBattle.setAdvantageITeam(newIAdvantage);
         }
 
-        NwITeam winnerITeam = checkWinner();
-        if (currentBattle.isBattleStarted() && winnerITeam != null) {
-            win(winnerITeam);
-        }
-
-        determineStart(currentBattle);
-
-        if (currentBattle.isBattleStarted()) {
-            currentBattle.handleContribution();
-            currentBattle.handleScore();
-        }
-
-        updateBossBar(currentBattle);
+        currentBattle.handleContribution();
+        currentBattle.handleScore();
     }
 
-    private NwITeam checkIAdvantage(BattleKoth currentBattle) {
+    @Override
+    public boolean checkStart() {
+        if (controlPointList.stream().noneMatch(capturePoint -> (capturePoint.getOwnerITeam() != null && capturePoint.getOwnerITeam() != territory.getOwnerITeam() && territory.getAttackRequirements().checkAttackRequirements(capturePoint.getOwnerITeam())))) {
+            return false;
+        }
+        AdaptMessage.getAdaptMessage().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
+        return true;
+    }
+
+
+    @Override
+    public NwITeam checkAdvantage() {
+        BattleKoth currentBattle = (BattleKoth) territory.getCurrentBattle();
+
         if (territory.getModel().isUnderProtection()) {
             return territory.getOwnerITeam();
         }
@@ -158,7 +176,7 @@ public class ObjectiveKoth extends NwConquestObjective {
             Territory capturePoint = entry.getKey();
             int time = entry.getValue();
             NwITeam iOwner = capturePoint.getOwnerITeam();
-            if (iOwner != null && maxHoldTimeTeam.contains(iOwner) && capturePoint.getAttackRequirements().checkAttackRequirements(iOwner) ) {
+            if (iOwner != null && maxHoldTimeTeam.contains(iOwner) && capturePoint.getAttackRequirements().checkAttackRequirements(iOwner)) {
                 iTeamTotalHoldTime.put(iOwner, iTeamTotalHoldTime.getOrDefault(iOwner, 0) + time);
             }
         }
@@ -169,18 +187,33 @@ public class ObjectiveKoth extends NwConquestObjective {
                 .orElse(null);
     }
 
-    private void determineStart(BattleKoth battleKoth) {
-        if (!battleKoth.isBattleWaiting()) {
-            return;
-        }
-        if (controlPointList.stream().noneMatch(capturePoint -> (capturePoint.getOwnerITeam() != null && capturePoint.getOwnerITeam() != territory.getOwnerITeam() && territory.getAttackRequirements().checkAttackRequirements(capturePoint.getOwnerITeam()) ))) {
-            return;
-        }
+    @Override
+    public boolean checkEnding() {
+        BattleKoth currentBattle = (BattleKoth) territory.getCurrentBattle();
 
-        battleKoth.setBattleOngoing();
-        AdaptMessage.getAdaptMessage().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
+        return currentBattle.getTeamHoldPointMap().entrySet().stream().anyMatch(nwTeamIntegerEntry -> (
+                nwTeamIntegerEntry.getValue() >= timeToReach
+        ));
     }
 
+    @Override
+    public NwITeam checkWinner() {
+        BattleKoth currentBattle = (BattleKoth) territory.getCurrentBattle();
+        NwITeam currentIAdvantage = currentBattle.getAdvantagedITeam();
+
+        if (currentIAdvantage == null) {
+            return null;
+        }
+
+        List<Map.Entry<NwITeam, Integer>> reachTeamList = currentBattle.getTeamHoldPointMap().entrySet().stream().filter(nwTeamIntegerEntry -> (
+                nwTeamIntegerEntry.getValue() >= timeToReach
+                        && nwTeamIntegerEntry.getKey() == currentIAdvantage
+        )).collect(Collectors.toList());
+
+        return reachTeamList.stream().filter(nwTeamIntegerEntry -> (
+                nwTeamIntegerEntry.getKey() == currentIAdvantage
+        )).findFirst().map(Map.Entry::getKey).orElse(null);
+    }
 
     @Override
     public void win(NwITeam winnerTeam) {
@@ -218,8 +251,6 @@ public class ObjectiveKoth extends NwConquestObjective {
         }
 
         reward(currentBattleKoth, teamPositionMap);
-
-        territory.setupBattle();
     }
 
     @Override

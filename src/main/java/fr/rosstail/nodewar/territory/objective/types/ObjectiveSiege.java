@@ -14,7 +14,6 @@ import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
 import fr.rosstail.nodewar.territory.objective.NwConquestObjective;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -69,6 +68,7 @@ public class ObjectiveSiege extends NwConquestObjective {
 
     }
 
+    @Override
     public NwITeam checkAdvantage() {
         if (territory.getModel().isUnderProtection()) {
             return territory.getOwnerITeam();
@@ -110,27 +110,31 @@ public class ObjectiveSiege extends NwConquestObjective {
         }
 
         if (greatestAttackerScore == 0 && defenderScore == 0) {
+
+            if (territory.getModel().getName().contains("rong")) {
+                System.out.println("personne se bat");
+            }
             return null;
         }
 
         if (greatestIAttacker.size() > 1) { //Multiple attackers or None
             int totalAttackerScore = 2 * greatestAttackerScore;
             if (totalAttackerScore >= defenderScore) {
-                if (totalAttackerScore > defenderScore) {
-                    currentBattle.setCurrentHealth(Math.max(0, currentBattle.getCurrentHealth() - greatestAttackerScore));
+                if (territory.getModel().getName().contains("rong")) {
+                    System.out.println("Too much attackers");
                 }
                 return null;
             } else {
-                currentBattle.setCurrentHealth(Math.min(currentBattle.getCurrentHealth() + defenderScore, maxHealth));
                 return defenderITeam;
             }
         } else { //One attacker
             if (greatestAttackerScore > defenderScore) {
-                currentBattle.setCurrentHealth(Math.max(0, currentBattle.getCurrentHealth() - greatestAttackerScore));
                 return greatestIAttacker.get(0);
             } else if (defenderScore > greatestAttackerScore) {
-                currentBattle.setCurrentHealth(Math.min(currentBattle.getCurrentHealth() + defenderScore, maxHealth));
                 return defenderITeam;
+            }
+            if (territory.getModel().getName().contains("rong")) {
+                System.out.println("end2");
             }
             return null;
         }
@@ -177,6 +181,110 @@ public class ObjectiveSiege extends NwConquestObjective {
     }
 
     @Override
+    public void progress() {
+        BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
+        currentBattle.updateTeamContributionPerSecond(controlPointList);
+
+        switch (currentBattle.getBattleStatus()) {
+            case WAITING:
+                if (checkStart()) {
+                    start();
+                }
+                break;
+            case ONGOING:
+                if (checkEnding()) {
+                    ending();
+                } else {
+                    onGoing();
+                }
+                break;
+            case ENDING:
+                if (checkEnd()) {
+                    end();
+                }
+                break;
+            case ENDED:
+                long battleEndTimeAndGrace = territory.getCurrentBattle().getBattleEndTime() + getGracePeriod();
+                if (battleEndTimeAndGrace < System.currentTimeMillis()) {
+                    restart();
+                }
+                break;
+        }
+
+        updateHealth();
+
+        territory.getRelationBossBarMap().forEach((s, bossBar) -> {
+            bossBar.setProgress((float) currentBattle.getCurrentHealth() / maxHealth);
+        });
+    }
+
+    @Override
+    public boolean checkStart() {
+        BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
+        NwITeam newAdvantage = checkAdvantage();
+        NwITeam owner = territory.getOwnerITeam();
+        int currentHealth = currentBattle.getCurrentHealth();
+
+        if (newAdvantage == null) {
+            if (currentHealth == 0) {
+                return false;
+            }
+        }
+
+        if (newAdvantage == owner) {
+            if (currentHealth == maxHealth) {
+                return false;
+            }
+        }
+
+        /*if (currentAdvantage == null || currentAdvantage == owner) {
+            if (currentHealth == maxHealth) {
+                return false;
+            }
+        }*/
+
+        AdaptMessage.getAdaptMessage().alertITeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
+        AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
+
+        return true;
+    }
+
+    @Override
+    public void onGoing() {
+        super.onGoing();
+        BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
+        NwITeam currentAdvantage = currentBattle.getAdvantagedITeam();
+        NwITeam newAdvantage = checkAdvantage();
+
+        if (currentAdvantage != newAdvantage) {
+            if (currentBattle.isBattleStarted()) {
+                if (newAdvantage == territory.getOwnerITeam()) {
+                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
+                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
+                } else {
+                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
+                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
+                }
+            }
+            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantage);
+            Bukkit.getPluginManager().callEvent(advantageChangeEvent);
+
+            currentBattle.setAdvantageITeam(newAdvantage);
+        }
+
+        currentBattle.handleContribution();
+        currentBattle.handleScore();
+    }
+
+    @Override
+    public boolean checkEnding() {
+        BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
+        int currentHealth = currentBattle.getCurrentHealth();
+        int value = getCurrentHealthOrDamage();
+        return (currentHealth == 0 && value < 0) || (currentHealth == maxHealth && value > 0);
+    }
+
+    @Override
     public NwITeam checkWinner() {
         NwITeam ownerITeam = territory.getOwnerITeam();
         BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
@@ -192,27 +300,34 @@ public class ObjectiveSiege extends NwConquestObjective {
     }
 
     @Override
-    public void win(NwITeam winnerITeam) {
-        super.win(winnerITeam);
+    public void neutralize(NwITeam winnerITeam) {
+        super.neutralize(winnerITeam);
+        BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
+        currentBattle.setCurrentHealth(maxHealth);
+    }
+
+    @Override
+    public void win(NwITeam winnerTeam) {
+        super.win(winnerTeam);
         Territory territory = super.territory;
         BattleSiege currentBattleSiege = (BattleSiege) territory.getCurrentBattle();
 
         currentBattleSiege.getTeamScoreMap().entrySet().stream()
-                .filter(nwTeamIntegerEntry -> nwTeamIntegerEntry.getKey() != winnerITeam && nwTeamIntegerEntry.getKey() != territory.getOwnerITeam())
+                .filter(nwTeamIntegerEntry -> nwTeamIntegerEntry.getKey() != winnerTeam && nwTeamIntegerEntry.getKey() != territory.getOwnerITeam())
                 .forEach(nwTeamIntegerEntry -> {
                     AdaptMessage.getAdaptMessage().alertITeam(nwTeamIntegerEntry.getKey(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
                 });
-        if (winnerITeam == territory.getOwnerITeam()) {
+        if (winnerTeam == territory.getOwnerITeam()) {
             AdaptMessage.getAdaptMessage().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_VICTORY), territory, true);
-            AdaptMessage.getAdaptMessage().alertITeam(winnerITeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
+            AdaptMessage.getAdaptMessage().alertITeam(winnerTeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
         } else {
-            AdaptMessage.getAdaptMessage().alertITeam(winnerITeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DEFEAT), territory, true);
+            AdaptMessage.getAdaptMessage().alertITeam(winnerTeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DEFEAT), territory, true);
             AdaptMessage.getAdaptMessage().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_VICTORY), territory, true);
         }
 
         Map<NwITeam, Integer> iTeamPositionMap = new HashMap<>();
-        if (winnerITeam != null) {
-            iTeamPositionMap.put(winnerITeam, 1);
+        if (winnerTeam != null) {
+            iTeamPositionMap.put(winnerTeam, 1);
         }
         int position = 2;
         TreeMap<NwITeam, Integer> sortedITeamMap = new TreeMap<>(Comparator.comparing(currentBattleSiege.getTeamScoreMap()::get).reversed());
@@ -220,92 +335,49 @@ public class ObjectiveSiege extends NwConquestObjective {
 
         for (Map.Entry<NwITeam, Integer> entry : sortedITeamMap.entrySet()) {
             NwITeam iTeam = entry.getKey();
-            if (iTeam != winnerITeam) {
+            if (iTeam != winnerTeam) {
                 iTeamPositionMap.put(iTeam, position);
                 position++;
             }
         }
 
         reward(currentBattleSiege, iTeamPositionMap);
-
-        territory.setupBattle();
     }
 
-    @Override
-    public void progress() {
+    private int getCurrentHealthOrDamage() {
         BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
-        NwITeam currentIAdvantage = currentBattle.getAdvantagedITeam();
-        NwITeam newIAdvantage = checkAdvantage(); //Also apply damage/regen
-        int currentHealth = currentBattle.getCurrentHealth(); //Also apply damage/regen
-        currentBattle.updateTeamContributionPerSecond(controlPointList);
+        NwITeam defenderTeam = territory.getOwnerITeam();
+        NwITeam advantagedTeam = currentBattle.getAdvantagedITeam();
 
-        if (currentIAdvantage != newIAdvantage) {
-            if (currentBattle.isBattleStarted()) {
-                if (newIAdvantage == territory.getOwnerITeam()) {
-                    AdaptMessage.getAdaptMessage().alertITeam(currentIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(newIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
-                } else {
-                    AdaptMessage.getAdaptMessage().alertITeam(newIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(currentIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
-                }
-            }
-            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newIAdvantage);
-            Bukkit.getPluginManager().callEvent(advantageChangeEvent);
-
-            currentBattle.setAdvantageITeam(newIAdvantage);
+        if (advantagedTeam == null) {
+            return 0;
         }
-
-        NwITeam winnerITeam = checkWinner();
-        if (currentBattle.isBattleStarted() && winnerITeam != null) {
-            win(winnerITeam);
+        if (advantagedTeam == defenderTeam) {
+            return getCapturePointsRegenPerSecond().entrySet().stream().filter(territoryIntegerEntry -> (
+                    territoryIntegerEntry.getKey().getOwnerITeam() == advantagedTeam
+            )).collect(Collectors.toList()).stream().mapToInt(Map.Entry::getValue).sum();
+        } else {
+            return -getCapturePointsDamagePerSecond().entrySet().stream().filter(territoryIntegerEntry -> (
+                    territoryIntegerEntry.getKey().getOwnerITeam() == advantagedTeam
+            )).collect(Collectors.toList()).stream().mapToInt(Map.Entry::getValue).sum();
         }
-
-        if (currentBattle.isBattleWaiting() && currentHealth < maxHealth) {
-            currentBattle.setBattleOngoing();
-        }
-
-        determineStart(currentBattle, currentIAdvantage, newIAdvantage);
-
-        if (currentBattle.isBattleStarted()) {
-            currentBattle.handleContribution();
-            currentBattle.handleScore();
-        }
-
-        territory.getRelationBossBarMap().forEach((s, bossBar) -> {
-            bossBar.setProgress((float) currentHealth / maxHealth);
-        });
     }
 
-    private void determineStart(BattleSiege battleSiege, NwITeam currentIAdvantage, NwITeam newIAdvantage) {
-        NwITeam iOwner = territory.getOwnerITeam();
-        int currentHealth = battleSiege.getCurrentHealth();
+    public void updateHealth() {
+        BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
+        NwITeam defenderTeam = territory.getOwnerITeam();
+        NwITeam advantagedTeam = territory.getCurrentBattle().getAdvantagedITeam();
+        int value = 0;
 
-        if (!battleSiege.isBattleWaiting()) {
-            return;
-        }
+        if (advantagedTeam != null) {
+            value = getCurrentHealthOrDamage();
 
-        if (newIAdvantage == null) {
-            if (currentHealth == 0) {
-                return;
+            if (defenderTeam == null || advantagedTeam.equals(defenderTeam)) {
+                currentBattle.setCurrentHealth(Math.min(currentBattle.getCurrentHealth() + value, maxHealth));
+            } else {
+                currentBattle.setCurrentHealth(Math.max(0, currentBattle.getCurrentHealth() + value));
             }
         }
-
-        if (newIAdvantage == iOwner) {
-            if (currentHealth == maxHealth) {
-                return;
-            }
-        }
-
-        if (currentIAdvantage == null || currentIAdvantage == iOwner) {
-            if (currentHealth == maxHealth) {
-                return;
-            }
-        }
-
-        battleSiege.setBattleOngoing();
-
-        AdaptMessage.getAdaptMessage().alertITeam(iOwner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
-        AdaptMessage.getAdaptMessage().alertITeam(newIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
     }
 
     @Override

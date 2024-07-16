@@ -12,6 +12,7 @@ import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.battle.types.BattleControl;
+import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
 import fr.rosstail.nodewar.territory.objective.NwConquestObjective;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
@@ -173,26 +174,26 @@ public class ObjectiveControl extends NwConquestObjective {
 
     @Override
     public boolean checkStart() {
-        BattleControl battleControl = (BattleControl) territory.getCurrentBattle();
-        NwITeam currentAdvantage = battleControl.getAdvantagedITeam();
+        BattleControl currentBattle = (BattleControl) territory.getCurrentBattle();
+        NwITeam currentAdvantage = currentBattle.getAdvantagedITeam();
         NwITeam newAdvantage = checkAdvantage();
 
         NwITeam owner = territory.getOwnerITeam();
 
         if (newAdvantage == null) {
-            if (battleControl.getCurrentHealth() == 0) {
+            if (currentBattle.getCurrentHealth() == 0) {
                 return false;
             }
         }
 
         if (newAdvantage == owner) {
-            if (battleControl.getCurrentHealth() == maxHealth) {
+            if (currentBattle.getCurrentHealth() == maxHealth) {
                 return false;
             }
         }
 
         if (currentAdvantage == null || currentAdvantage == owner) {
-            if (battleControl.getCurrentHealth() == maxHealth) {
+            if (currentBattle.getCurrentHealth() == maxHealth) {
                 return false;
             }
         }
@@ -272,7 +273,9 @@ public class ObjectiveControl extends NwConquestObjective {
 
     @Override
     public void ending() {
-        territory.getCurrentBattle().setBattleEnding();
+        BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
+        currentBattle.setBattleEnding();
+        currentBattle.setCurrentHealth(maxHealth);
         NwITeam winner = checkWinner();
         if (winner != null) {
             win(winner);

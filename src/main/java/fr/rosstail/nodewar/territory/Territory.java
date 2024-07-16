@@ -333,12 +333,10 @@ public class Territory {
 
     public void setupBattle() {
         if (currentBattle != null) {
-            currentBattle.setBattleEnded();
             setPreviousBattle(currentBattle);
         }
 
         BattleManager.setUpBattle(this, territoryModel.getObjectiveTypeName());
-
         updateAllBossBar();
     }
 
