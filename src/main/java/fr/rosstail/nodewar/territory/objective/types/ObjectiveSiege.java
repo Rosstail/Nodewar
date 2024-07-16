@@ -237,12 +237,6 @@ public class ObjectiveSiege extends NwConquestObjective {
             }
         }
 
-        /*if (currentAdvantage == null || currentAdvantage == owner) {
-            if (currentHealth == maxHealth) {
-                return false;
-            }
-        }*/
-
         AdaptMessage.getAdaptMessage().alertITeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
         AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
 

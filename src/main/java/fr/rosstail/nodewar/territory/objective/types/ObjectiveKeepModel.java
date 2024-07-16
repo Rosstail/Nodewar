@@ -5,6 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public class ObjectiveKeepModel extends ObjectiveModel {
 
+    private String secondsToHoldStr;
     private String minimumAttackerAmountStr;
     private String attackerRatioStr;
 
@@ -20,6 +21,11 @@ public class ObjectiveKeepModel extends ObjectiveModel {
             if (minimumAttackerAmountStr != null && minimumAttackerAmountStr.matches("\\d+")) {
                 this.minimumAttackerAmountStr = minimumAttackerAmountStr;
             }
+
+            String secondsToHoldStr = section.getString("seconds-to-hold");
+            if (secondsToHoldStr != null && secondsToHoldStr.matches("\\d+")) {
+                this.secondsToHoldStr = secondsToHoldStr;
+            }
         }
     }
 
@@ -28,6 +34,7 @@ public class ObjectiveKeepModel extends ObjectiveModel {
 
         this.attackerRatioStr = childObjectiveModel.getAttackerRatioStr() != null ? childObjectiveModel.getAttackerRatioStr() : parentObjectiveModel.getAttackerRatioStr();
         this.minimumAttackerAmountStr = childObjectiveModel.getMinimumAttackerAmountStr() != null ? childObjectiveModel.getMinimumAttackerAmountStr() : parentObjectiveModel.getMinimumAttackerAmountStr();
+        this.secondsToHoldStr = childObjectiveModel.getSecondsToHoldStr() != null ? childObjectiveModel.getSecondsToHoldStr() : parentObjectiveModel.getSecondsToHoldStr();
     }
 
     public String getAttackerRatioStr() {
@@ -46,12 +53,21 @@ public class ObjectiveKeepModel extends ObjectiveModel {
         this.minimumAttackerAmountStr = minimumAttackerAmountStr;
     }
 
+    public String getSecondsToHoldStr() {
+        return secondsToHoldStr;
+    }
+
+    public void setSecondsToHoldStr(String secondsToHoldStr) {
+        this.secondsToHoldStr = secondsToHoldStr;
+    }
+
     @Override
     public ObjectiveKeepModel clone() {
         ObjectiveKeepModel clone = (ObjectiveKeepModel) super.clone();
 
         clone.setAttackerRatioStr(getAttackerRatioStr());
         clone.setMinimumAttackerAmountStr(getMinimumAttackerAmountStr());
+        clone.setSecondsToHoldStr(getSecondsToHoldStr());
 
         return clone;
     }

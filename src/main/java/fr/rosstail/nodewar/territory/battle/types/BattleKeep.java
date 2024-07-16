@@ -29,6 +29,7 @@ public class BattleKeep extends Battle {
     Map<NwITeam, Integer> teamCaptureAmountMap = new HashMap<>(); // reward per capture
     Map<Player, Integer> playerNeutralizeMap = new HashMap<>(); // reward per neutralization
     Map<NwITeam, Integer> teamNeutralizeMap = new HashMap<>(); // reward per neutralization
+    int holdTime = 0;
 
     public BattleKeep(Territory territory) {
         super(territory);
@@ -224,6 +225,18 @@ public class BattleKeep extends Battle {
 
     public Map<Player, Integer> getPlayerHoldTimeMap() {
         return playerHoldTimeMap;
+    }
+
+    public int getHoldTime() {
+        return holdTime;
+    }
+
+    public void setHoldTime(int holdTime) {
+        this.holdTime = holdTime;
+    }
+
+    public void incrementHoldTime() {
+        this.holdTime++;
     }
 
     @Override

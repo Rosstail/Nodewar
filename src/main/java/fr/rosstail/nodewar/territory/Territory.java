@@ -68,6 +68,7 @@ public class Territory {
     private final Map<RelationType, BossBar> relationBossBarMap = new HashMap<>();
 
     private NwITeam ownerNwITeam;
+    private NwITeam previousNwITeam;
 
     private List<TerritoryCommands> territoryCommandsList = new ArrayList<>();
 
@@ -286,10 +287,19 @@ public class Territory {
     }
 
     public void setOwnerITeam(NwITeam ownerITeam) {
+        setPreviousNwITeam(this.ownerNwITeam);
         this.ownerNwITeam = ownerITeam;
         getModel().setOwnerName(ownerITeam != null ? ownerITeam.getName() : null);
         StorageManager.getManager().updateTerritoryModel(getModel(), true);
         updateTerritoryRegionGroups();
+    }
+
+    public NwITeam getPreviousNwITeam() {
+        return previousNwITeam;
+    }
+
+    public void setPreviousNwITeam(NwITeam previousNwITeam) {
+        this.previousNwITeam = previousNwITeam;
     }
 
     public void updateTerritoryRegionGroups() {

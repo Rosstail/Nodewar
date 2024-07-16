@@ -22,6 +22,9 @@ public class ObjectiveKeep extends NwConquestObjective {
 
     private final int minAttackerAmount;
     private float minAttackerRatio;
+
+    private int secondsToHold;
+
     private final Map<NwITeam, Integer> teamMemberOnTerritory = new HashMap<>();
     ObjectiveKeepModel objectiveKeepModel;
 
@@ -37,6 +40,7 @@ public class ObjectiveKeep extends NwConquestObjective {
 
         this.minAttackerAmount = Integer.parseInt(this.objectiveKeepModel.getMinimumAttackerAmountStr());
         this.minAttackerRatio = Float.parseFloat(this.objectiveKeepModel.getAttackerRatioStr());
+        this.secondsToHold = Integer.parseInt(this.objectiveKeepModel.getSecondsToHoldStr());
         this.display = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.description.keep.display");
         this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.types.keep.description");
     }
@@ -57,6 +61,7 @@ public class ObjectiveKeep extends NwConquestObjective {
     @Override
     public void progress() {
         teamMemberOnTerritory.clear();
+        BattleKeep currentBattle = (BattleKeep) territory.getCurrentBattle();
         territory.getNwITeamEffectivePlayerAmountOnTerritory().forEach((nwITeam, memberList) -> {
             if (territory.getAttackRequirements().checkAttackRequirements(nwITeam)) {
                 teamMemberOnTerritory.put(nwITeam, memberList.size());
@@ -88,6 +93,10 @@ public class ObjectiveKeep extends NwConquestObjective {
                 break;
         }
 
+        territory.getRelationBossBarMap().forEach((s, bossBar) -> {
+            bossBar.setProgress((float) currentBattle.getHoldTime() / secondsToHold);
+        });
+
     }
 
     @Override
@@ -95,6 +104,7 @@ public class ObjectiveKeep extends NwConquestObjective {
         if (territory.getModel().isUnderProtection()) {
             return territory.getOwnerITeam();
         }
+
         NwITeam defenderTeam = territory.getOwnerITeam();
         int greatestAttackerEffective = 0;
         int defenderEffective = 0;
@@ -154,22 +164,28 @@ public class ObjectiveKeep extends NwConquestObjective {
     public void onGoing() {
         super.onGoing();
         BattleKeep currentBattle = (BattleKeep) territory.getCurrentBattle();
-        NwITeam currentIAdvantage = currentBattle.getAdvantagedITeam();
-        NwITeam newIAdvantage = checkAdvantage();
+        NwITeam currentAdvantage = currentBattle.getAdvantagedITeam();
+        NwITeam newAdvantage = checkAdvantage();
 
-        if (currentIAdvantage != newIAdvantage) {
+        if (currentAdvantage != newAdvantage) {
+            if (newAdvantage == null) {
+                neutralize(null);
+            }
+            currentBattle.setHoldTime(0);
             if (currentBattle.isBattleStarted()) {
-                if (newIAdvantage == territory.getOwnerITeam()) {
-                    AdaptMessage.getAdaptMessage().alertITeam(currentIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(newIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
+                if (newAdvantage == territory.getOwnerITeam()) {
+                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
+                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
                 } else {
-                    AdaptMessage.getAdaptMessage().alertITeam(newIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(currentIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
+                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
+                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
                 }
             }
-            currentBattle.setAdvantageITeam(newIAdvantage);
-            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newIAdvantage);
+            currentBattle.setAdvantageITeam(newAdvantage);
+            TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantage);
             Bukkit.getPluginManager().callEvent(advantageChangeEvent);
+        } else if (newAdvantage != null) {
+            currentBattle.incrementHoldTime();
         }
 
         currentBattle.handleContribution();
@@ -179,9 +195,11 @@ public class ObjectiveKeep extends NwConquestObjective {
     @Override
     public boolean checkStart() {
         NwITeam owner = territory.getOwnerITeam();
+        BattleKeep currentBattle = (BattleKeep) territory.getCurrentBattle();
+        NwITeam currentAdvantage = currentBattle.getAdvantagedITeam();
         NwITeam newAdvantage = checkAdvantage();
 
-        if (newAdvantage == owner) {
+        if (newAdvantage == currentAdvantage) {
             return false;
         }
 
@@ -193,10 +211,17 @@ public class ObjectiveKeep extends NwConquestObjective {
     @Override
     public boolean checkEnding() {
         BattleKeep currentBattle = (BattleKeep) territory.getCurrentBattle();
-        NwITeam currentIAdvantage = currentBattle.getAdvantagedITeam();
-        NwITeam newIAdvantage = checkAdvantage();
+        NwITeam currentAdvantage = currentBattle.getAdvantagedITeam();
+        NwITeam newAdvantage = checkAdvantage();
 
-        return currentIAdvantage == newIAdvantage;
+        if (currentAdvantage != newAdvantage) {
+            return false;
+        }
+
+        if (currentBattle.getHoldTime() < secondsToHold) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -211,14 +236,8 @@ public class ObjectiveKeep extends NwConquestObjective {
 
     @Override
     public NwITeam checkWinner() {
-        NwITeam owner = territory.getOwnerITeam();
         BattleKeep currentBattle = (BattleKeep) territory.getCurrentBattle();
-        if (currentBattle.isBattleStarted() && currentBattle.getAdvantagedITeam() != null) {
-            if (owner == null) {
-                return currentBattle.getAdvantagedITeam();
-            }
-        }
-        return null;
+        return currentBattle.getAdvantagedITeam();
     }
 
     @Override
@@ -251,11 +270,22 @@ public class ObjectiveKeep extends NwConquestObjective {
     }
 
     @Override
+    public void restart() {
+        super.restart();
+        territory.getCurrentBattle().setAdvantageITeam(territory.getOwnerITeam());
+    }
+
+    @Override
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
+        BattleKeep currentBattle = (BattleKeep) territory.getCurrentBattle();
+
+        message = message.replaceAll("\\[territory_objective_hold_time]", String.valueOf(currentBattle.getHoldTime()));
+        message = message.replaceAll("\\[territory_objective_seconds_to_hold]", String.valueOf(secondsToHold));
         message = message.replaceAll("\\[territory_objective_minimum_attacker_ratio]", String.valueOf(minAttackerRatio));
         message = message.replaceAll("\\[territory_objective_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)));
         message = message.replaceAll("\\[territory_objective_minimum_attackers]", String.valueOf(minAttackerAmount));
+        message = message.replaceAll("\\[territory_objective_time_left]", AdaptMessage.getAdaptMessage().countdownFormatter(secondsToHold - currentBattle.getHoldTime()));
 
         return message;
     }
