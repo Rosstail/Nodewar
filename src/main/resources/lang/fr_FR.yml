@@ -61,7 +61,7 @@ commands:
       desc: "Gérez les invitations d'équipes."
       check:
         desc: "Vérifiez quelle équipe souhaite vous recruter."
-        result-header: "[prefix]&bInvites &8:"
+        result-header: "[prefix]&bInvitations &8:"
         result-line: "&a► [team_color_display]&r"
       open:
         desc: "Autorisez les invitations de recrutement"

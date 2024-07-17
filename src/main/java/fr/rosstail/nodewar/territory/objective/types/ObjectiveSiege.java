@@ -110,19 +110,12 @@ public class ObjectiveSiege extends NwConquestObjective {
         }
 
         if (greatestAttackerScore == 0 && defenderScore == 0) {
-
-            if (territory.getModel().getName().contains("rong")) {
-                System.out.println("personne se bat");
-            }
             return null;
         }
 
         if (greatestIAttacker.size() > 1) { //Multiple attackers or None
             int totalAttackerScore = 2 * greatestAttackerScore;
             if (totalAttackerScore >= defenderScore) {
-                if (territory.getModel().getName().contains("rong")) {
-                    System.out.println("Too much attackers");
-                }
                 return null;
             } else {
                 return defenderITeam;
@@ -132,9 +125,6 @@ public class ObjectiveSiege extends NwConquestObjective {
                 return greatestIAttacker.get(0);
             } else if (defenderScore > greatestAttackerScore) {
                 return defenderITeam;
-            }
-            if (territory.getModel().getName().contains("rong")) {
-                System.out.println("end2");
             }
             return null;
         }

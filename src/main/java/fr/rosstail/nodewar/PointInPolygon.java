@@ -12,7 +12,7 @@ public class PointInPolygon {
         double[] polygonY = {1.0, 1.0, 4.0, 4.0};
 
         boolean isInside = isPointInsidePolygon(testX, testY, polygonX, polygonY);
-        System.out.println("Le point est à l'intérieur du polygone : " + isInside);
+        //System.out.println("Le point est à l'intérieur du polygone : " + isInside);
     }
 
     public static boolean isPointInsidePolygon(double x, double y, double[] polygonX, double[] polygonY) {
