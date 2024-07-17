@@ -52,11 +52,8 @@ public class AttackRequirements {
         }
 
         if (startPoint) { //Cannot capture another startpoint if not targeted by other territory
-            if (!ownedTerritoryList.isEmpty() &&
-                    ownedTerritoryList.stream().noneMatch(territory1 -> territory1.getAttackRequirements().getTargetTerritoryList().contains(territory))) {
-                return false;
-            }
-            return true;
+            return ownedTerritoryList.isEmpty() ||
+                    ownedTerritoryList.stream().anyMatch(territory1 -> territory1.getAttackRequirements().getTargetTerritoryList().contains(territory));
         }
 
         List<Territory> startPointList = ownedTerritoryList.stream().filter(

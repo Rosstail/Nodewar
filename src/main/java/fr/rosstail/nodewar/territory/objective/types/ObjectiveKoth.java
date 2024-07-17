@@ -141,6 +141,9 @@ public class ObjectiveKoth extends NwConquestObjective {
 
     @Override
     public boolean checkStart() {
+        if (territory.getModel().isUnderProtection()) {
+            return false;
+        }
         if (controlPointList.stream().noneMatch(capturePoint -> (capturePoint.getOwnerITeam() != null && capturePoint.getOwnerITeam() != territory.getOwnerITeam() && territory.getAttackRequirements().checkAttackRequirements(capturePoint.getOwnerITeam())))) {
             return false;
         }
