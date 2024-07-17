@@ -1,0 +1,85 @@
+# CONTROL
+crateria-control:
+  display: Crateria - Control
+  type: cp-t1
+  attack-requirements:
+    startpoint: true
+    targets:
+      - strong-control-a
+      - strong-control-b
+  regions:
+    - nw-crateria-control
+
+# KEEP
+throne-keep:
+  display: Throne - Keep
+  type: keep-t1
+  attack-requirements:
+    startpoint: true
+  regions:
+    - nw-throne-keep
+
+# KOTH
+hill-koth:
+  display: Hill - KotH
+  type: t1
+  subterritories:
+    - hill-keep
+  objective:
+    control-points:
+      hill-keep:
+        points-per-second: 1
+  attack-requirements:
+    startpoint: true
+  regions:
+    - nw-hill-koth
+
+hill-keep:
+  display: Hill - Keep
+  type: keep-t1
+  attack-requirements:
+    startpoint: true
+    targets:
+      - hill-koth
+  regions:
+    - nw-hill-keep
+
+# SIEGE
+strong-siege:
+  display: Strong - Siege
+  type: t2
+  subterritories:
+    - strong-control-a
+    - strong-control-b
+  objective:
+    control-points:
+      strong-control-a:
+        damage-per-second: 1
+        regen-per-second: 1
+      strong-control-b:
+        damage-per-second: 1
+        regen-per-second: 1
+  attack-requirements:
+    startpoint: true
+  regions:
+    - nw-strong-siege
+
+strong-control-a:
+  display: Strong - Control A
+  type: cp-t1
+  attack-requirements:
+    startpoint: true
+    targets:
+      - strong-siege
+  regions:
+    - nw-strong-control-a
+
+strong-control-b:
+  display: Strong - Control B
+  type: cp-t1
+  attack-requirements:
+    startpoint: true
+    targets:
+      - strong-siege
+  regions:
+    - nw-strong-control-b

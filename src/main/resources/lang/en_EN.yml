@@ -257,12 +257,6 @@ commands:
         - "[territory_battle_description]"
       result-not-on-territory: "You are not standing on a territory"
       result-on-multiple-territory: "You are standing on multiple territories: please select one of them: [territories]"
-  reload:
-    desc: "Reload current Nodewar config."
-    result: "[prefix]Reloaded config."
-  save:
-    desc: "Save instantly all online players data to storage."
-    result: "[prefix]Manually saved data of [amount] players."
 
 player:
   online: "&aONLINE"
@@ -313,17 +307,22 @@ territory:
         description:
           - "&a  Objective&d: &9CONTROL"
           - "&c    *  &eAttackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
-      siege:
-        display: "Siege"
+      keep:
         description:
-          - "&a  Objective&d: &cSIEGE"
-          - "&c    *  &eCapture points&d:"
-          - "[line_capturepoint]"
-        line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
+          - "&a  Objective&d: &aKEEP"
+          - "&c    *  &eMinimum attackers&d: &f[territory_objective_minimum_attackers]"
+          - "&c    *  &eAttackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
       koth:
         display: "King of the Hill"
         description:
           - "&a  Objective&d: &6KOTH"
+          - "&c    *  &eCapture points&d:"
+          - "[line_capturepoint]"
+        line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
+      siege:
+        display: "Siege"
+        description:
+          - "&a  Objective&d: &cSIEGE"
           - "&c    *  &eCapture points&d:"
           - "[line_capturepoint]"
         line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
@@ -346,12 +345,11 @@ territory:
           - "&c    * &eTime left&d:&r [territory_battle_time_left]"
           - "&a  Previous battle&d:"
           - "&c    * &eWinner&d:&r [territory_battle_winner_color_display]"
-      siege:
+      keep:
         description:
           - "&a  Current battle&d:"
           - "&c    * &eStatus&d:&r [territory_battle_status]"
           - "&c    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
-          - "&c    * &eHealth&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
           - "&c    * &eTime left&d:&r [territory_battle_time_left]"
           - "&a  Previous battle&d:"
           - "&c    * &eWinner&d:&r [territory_battle_winner_color_display]"
@@ -361,6 +359,15 @@ territory:
           - "&c    * &eStatus&d:&r [territory_battle_status]"
           - "&c    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
           - "&c    * &eHigh score&d:&r [territory_battle_time] / [territory_objective_time_to_reach]"
+          - "&c    * &eTime left&d:&r [territory_battle_time_left]"
+          - "&a  Previous battle&d:"
+          - "&c    * &eWinner&d:&r [territory_battle_winner_color_display]"
+      siege:
+        description:
+          - "&a  Current battle&d:"
+          - "&c    * &eStatus&d:&r [territory_battle_status]"
+          - "&c    * &eAdvantage&d:&r [territory_battle_advantage_color_display]"
+          - "&c    * &eHealth&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
           - "&c    * &eTime left&d:&r [territory_battle_time_left]"
           - "&a  Previous battle&d:"
           - "&c    * &eWinner&d:&r [territory_battle_winner_color_display]"

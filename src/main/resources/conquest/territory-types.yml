@@ -14,8 +14,6 @@ cp:
         should-team-win: true
         commands:
           - "toast [player] -t:task -icon:light_blue_banner [territory_display] capturé !"
-          - "bc [player] %player_x% %player_y% %player_z%"
-          - "playsound minecraft:block.amethyst_block.resonate music [player] %player_x% %player_y% %player_z% 2 1"
   protected: true
   dynmap:
     marker: "Target"
@@ -29,6 +27,31 @@ cp-t2:
 
 cp-t3:
   type: cp
+
+keep:
+  prefix: "🞖"
+  world: "world"
+  objective:
+    type: keep
+    ending-period: 1
+    grace-period: 2
+    minimum-attackers: 1
+    attacker-ratio: 1
+    seconds-to-hold: 10
+    neutralize: true
+  protected: true
+  dynmap:
+    marker: "Target"
+    draw-line: false
+
+keep-t1:
+  type: keep
+
+keep-t2:
+  type: keep
+
+keep-t3:
+  type: keep
 
 t1:
   prefix: "T1⛫"
@@ -208,11 +231,13 @@ t3:
       initial-delay: 3600
       delay: 3600
       commands: []
+      #- "bc Territory command: [territory_display]"
     team-periodic-reward:
       target: "team"
       initial-delay: 3600
       delay: 3600
       commands: []
+      #- "bc Team owning command: [team_display]"
     player-periodic-reward:
       target: "player"
       target-offline-player: true

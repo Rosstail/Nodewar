@@ -70,7 +70,7 @@ commands:
         desc: "Refusez tout recrutement"
         result: "[prefix]Vous êtes désormais fermé au recrutement"
     create:
-      desc: "Create a nodewar team"
+      desc: "Crééz une équipe"
       result: "[prefix]Équipe créée"
       too-short: "[prefix]Sigle d'équipe trop petit pour [name]"
       too-long: "[prefix]Sigle d'équipe trop grand pour [name]"
@@ -187,80 +187,74 @@ commands:
             desc: "Retirez un joueur de l'équipe"
             result: "[prefix]Le membre [player] a été retiré de l'équipe [team_display]."
           promote:
-            desc: "Promote a team member"
-            result: "[prefix]Player [player] promoted to [team_member_rank]."
+            desc: "Promouvez un membre d'équipe"
+            result: "[prefix]Promotion du membre [player] au rang de [team_member_rank]."
           demote:
             desc: "Demote a team member"
-            result: "[prefix]Player [player] demoted to [team_member_rank]."
+            result: "[prefix]Rétrogradation du membre [player] au rang de [team_member_rank]."
           kick:
-            desc: "Kick a player from selected team"
-            result: "[prefix]Player kicked successfully."
+            desc: "Renvoyez un joueur de l'équipe"
+            result: "[prefix]Joueur renvoyé."
           transfer:
-            desc: "Transfer ownership of team to player"
-            result: "[prefix]Ownership transferred successfully."
+            desc: "Transférez la propriété de l'équipe à un membre."
+            result: "[prefix]Transfert de la propriété de l'équipe effectué."
         relation:
-          desc: "Manage relations with other teams"
+          desc: "Gérez les relations avec les autres équipes"
           open:
-            desc: "Enable reception of relation invites"
-            result: "[prefix]Team open to relation invites"
+            desc: "Autorisez la réception de requêtes de relation"
+            result: "[prefix]Équipe ouverte aux requêtes de relation"
           close:
-            desc: "Disable reception of relation invites"
-            result: "[prefix]Team closed to relation invites"
+            desc: "Interdisez les requêtes de relation"
+            result: "[prefix]Équipe fermée aux requêtes de relation"
           invites:
-            desc: "Check list of teams relations invites."
-            result-header: "[prefix]&bInvites &8:"
+            desc: "Regardez la liste des requêtes de relation."
+            result-header: "[prefix]&bRequêtes &8:"
             result-line: "&a► [team_line_direction]&r [team_color_display] &8: [team_relation] -> [team_relation_invite]&r"
             result-line-received: "&e<<<"
             result-line-sent: "&6>>>"
           request:
-            desc: "Set relation with selected team"
-            result-invite: "[prefix]Relation invite sent successfully."
-            result-weight: "[prefix]Relation set."
-            result-ignore: "[prefix]Target team is not open to requests."
-            result-unchanged: "[prefix]Same relation. No change."
-            result-already: "[prefix]Already sent the invitation."
+            desc: "Effectuez une requête de relation envers une autre équipe"
+            result-invite: "[prefix]Requête de relation envoyée."
+            result-weight: "[prefix]Relation appliquée."
+            result-ignore: "[prefix]L'équipe ciblée n'est pas ouverte aux requêtes."
+            result-unchanged: "[prefix]Aucun changement."
+            result-already: "[prefix]Requête déjà envoyée."
           set:
-            desc: "Set immediate relation between selected teams"
-            result: "[prefix]Relation set."
-            result-unchanged: "[prefix]Same relation. No changes"
+            desc: " Appliquez immédiatement une relation entre deux équipes"
+            result: "[prefix]Relation appliquée."
+            result-unchanged: "[prefix]Aucun changement"
         disband:
-          desc: "Disband selected nodewar team"
-          result: "[prefix]Disbanded team"
+          desc: "Dissolvez l'équipe ciblée"
+          result: "[prefix]Équipe dissoute"
     territory:
-      desc: "Edit the selected territory"
+      desc: "Éditez le territoire selectionné"
       reload-regions:
-        desc: "Reload regions of a territory"
-        result: "[prefix]Regions of [territory_display] reloaded"
+        desc: "Recharger les régions d'un territoire"
+        result: "[prefix]Les régions du territoire [territory_display] sont rechargées."
       team:
-        desc: "Edit owner team of territory"
+        desc: "Changez le propriétaire d'un territoire"
         set:
-          desc: "Set owner team of territory"
-          result: "[prefix]Territory owner is now [team_display]"
+          desc: "Choisissez le propriétaire du territoire"
+          result: "[prefix]Le propriétaire du territoire est désormais [team_display]"
         reset:
-          desc: "Remove current owner of territory"
-          result: "[prefix]Territory is now neutral."
+          desc: "Rendez le territoire neutre"
+          result: "[prefix]Le territoire est désormais neutre."
       vulnerable:
-        desc: "Makes the territory vulnerable to player attacks"
-        result: "[prefix][territory_display] is now vulnerable"
+        desc: "Rendez le territoire vulnérable aux attaques"
+        result: "[prefix][territory_display] est désormais vulnérable"
       protect:
-        desc: "Makes the territory immune to player attacks"
-        result: "[prefix][territory_display] is now immune"
+        desc: "Protégez le territoire des attaques"
+        result: "[prefix][territory_display] est désormais protégé"
   territory:
-    desc: "Territory commands"
+    desc: "Commandes de territoire"
     check:
-      desc: "Check status of a territory"
+      desc: "Observez l'état d'un territoire"
       result:
         - "[territory_description]"
         - "[territory_objective_description]"
         - "[territory_battle_description]"
-      result-not-on-territory: "You are not standing on a territory"
-      result-on-multiple-territory: "You are standing on multiple territories: please select one of them: [territories]"
-  reload:
-    desc: "Reload current Nodewar config."
-    result: "[prefix]Reloaded config."
-  save:
-    desc: "Save instantly all online players data to storage."
-    result: "[prefix]Manually saved data of [amount] players."
+      result-not-on-territory: "Vous ne vous tenez pas sur un territoire"
+      result-on-multiple-territory: "Vous vous tenez sur plusieurs territoires à la fois. Veuillez en sélectionner un: [territories]"
 
 player:
   online: "&aEN LIGNE"
@@ -311,17 +305,22 @@ territory:
         description:
           - "&a  Objectif&d: &9CONTRÔLE"
           - "&c    *  &eRatio attaquants&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
-      siege:
-        display: "Siège"
+      keep:
         description:
-          - "&a  Objectif&d: &cSIÈGE"
-          - "&c    *  &ePoints de capture&d:"
-          - "[line_capturepoint]"
-        line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
+          - "&a  Objectif&d: &aGARDE"
+          - "&c    *  &eAttaquants minimum&d: &f[territory_objective_minimum_attackers]"
+          - "&c    *  &eRatio attaquants&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
       koth:
         display: "Roi de la Colline"
         description:
           - "&a  Objectif&d: &6RdlC"
+          - "&c    *  &ePoints de capture&d:"
+          - "[line_capturepoint]"
+        line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
+      siege:
+        display: "Siège"
+        description:
+          - "&a  Objectif&d: &cSIÈGE"
           - "&c    *  &ePoints de capture&d:"
           - "[line_capturepoint]"
         line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
@@ -344,12 +343,11 @@ territory:
           - "&c    * &eTemps restant&d:&r [territory_battle_time_left]"
           - "&a  Bataille précédente&d:"
           - "&c    * &eVainqueur&d:&r [territory_battle_winner_color_display]"
-      siege:
+      keep:
         description:
           - "&a  Bataille actuelle&d:"
           - "&c    * &eStatut&d:&r [territory_battle_status]"
           - "&c    * &eAvantage&d:&r [territory_battle_advantage_color_display]"
-          - "&c    * &eSanté&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
           - "&c    * &eTemps restant&d:&r [territory_battle_time_left]"
           - "&a  Bataille précédente&d:"
           - "&c    * &eVainqueur&d:&r [territory_battle_winner_color_display]"
@@ -359,6 +357,15 @@ territory:
           - "&c    * &eStatut&d:&r [territory_battle_status]"
           - "&c    * &eAvantage&d:&r [territory_battle_advantage_color_display]"
           - "&c    * &eHaut score&d:&r [territory_battle_time] / [territory_objective_time_to_reach]"
+          - "&c    * &eTemps restant&d:&r [territory_battle_time_left]"
+          - "&a  Bataille précédente&d:"
+          - "&c    * &eVainqueur&d:&r [territory_battle_winner_color_display]"
+      siege:
+        description:
+          - "&a  Bataille actuelle&d:"
+          - "&c    * &eStatut&d:&r [territory_battle_status]"
+          - "&c    * &eAvantage&d:&r [territory_battle_advantage_color_display]"
+          - "&c    * &eSanté&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
           - "&c    * &eTemps restant&d:&r [territory_battle_time_left]"
           - "&a  Bataille précédente&d:"
           - "&c    * &eVainqueur&d:&r [territory_battle_winner_color_display]"
