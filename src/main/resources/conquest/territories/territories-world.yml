@@ -31,6 +31,10 @@ hill-koth:
         points-per-second: 1
   attack-requirements:
     startpoint: true
+    targets:
+      - strong-control-a
+      - strong-control-b
+      - strong-siege
   regions:
     - nw-hill-koth
 
@@ -61,6 +65,9 @@ strong-siege:
         regen-per-second: 1
   attack-requirements:
     startpoint: true
+    targets:
+      - hill-keep
+      - hill-koth
   regions:
     - nw-strong-siege
 
@@ -71,6 +78,7 @@ strong-control-a:
     startpoint: true
     targets:
       - strong-siege
+      - strong-control-b
   regions:
     - nw-strong-control-a
 
@@ -81,5 +89,6 @@ strong-control-b:
     startpoint: true
     targets:
       - strong-siege
+      - strong-control-a
   regions:
     - nw-strong-control-b
