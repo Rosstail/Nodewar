@@ -9,7 +9,6 @@ import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.battle.types.BattleKoth;
-import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
 import fr.rosstail.nodewar.territory.objective.NwConquestObjective;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
@@ -222,19 +221,6 @@ public class ObjectiveKoth extends NwConquestObjective {
     public void win(NwITeam winnerTeam) {
         super.win(winnerTeam);
         BattleKoth currentBattleKoth = (BattleKoth) territory.getCurrentBattle();
-
-        currentBattleKoth.getTeamHoldPointMap().entrySet().stream()
-                .filter(nwTeamIntegerEntry -> nwTeamIntegerEntry.getKey() != winnerTeam && nwTeamIntegerEntry.getKey() != territory.getOwnerITeam())
-                .forEach(nwTeamIntegerEntry -> {
-                    AdaptMessage.getAdaptMessage().alertITeam(nwTeamIntegerEntry.getKey(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
-                });
-        if (winnerTeam == territory.getOwnerITeam()) {
-            AdaptMessage.getAdaptMessage().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_VICTORY), territory, true);
-            AdaptMessage.getAdaptMessage().alertITeam(winnerTeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
-        } else {
-            AdaptMessage.getAdaptMessage().alertITeam(winnerTeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DEFEAT), territory, true);
-            AdaptMessage.getAdaptMessage().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_VICTORY), territory, true);
-        }
 
         Map<NwITeam, Integer> teamPositionMap = new HashMap<>();
         if (winnerTeam != null) {
