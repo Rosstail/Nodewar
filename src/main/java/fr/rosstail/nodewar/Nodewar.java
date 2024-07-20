@@ -44,7 +44,6 @@ public class Nodewar extends JavaPlugin implements Listener {
     private MinecraftEventHandler minecraftEventHandler;
     private WorldguardEventHandler worldguardEventHandler;
     private NodewarEventHandler nodewarEventHandler;
-    private TownyEventHandler townyEventHandler;
 
     public void onLoad() {
     }
@@ -132,11 +131,6 @@ public class Nodewar extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(minecraftEventHandler, this);
         Bukkit.getPluginManager().registerEvents(worldguardEventHandler, this);
         Bukkit.getPluginManager().registerEvents(nodewarEventHandler, this);
-
-        if (TeamManager.getManager().getUsedSystem().equalsIgnoreCase("Towny")) {
-            townyEventHandler = new TownyEventHandler();
-            Bukkit.getPluginManager().registerEvents(townyEventHandler, this);
-        }
 
         this.getCommand(getName().toLowerCase()).setExecutor(new CommandManager());
 

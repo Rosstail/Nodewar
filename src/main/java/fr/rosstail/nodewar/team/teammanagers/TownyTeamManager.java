@@ -3,10 +3,13 @@ package fr.rosstail.nodewar.team.teammanagers;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.events.TownyEventHandler;
 import fr.rosstail.nodewar.permissionmannager.PermissionManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import fr.rosstail.nodewar.team.type.TownTeam;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,6 +18,13 @@ import java.util.*;
 public class TownyTeamManager implements NwITeamManager {
     private final Map<String, TownTeam> stringTeamMap = new HashMap<>();
     private final TownyAPI townyAPI = TownyAPI.getInstance();
+    private TownyEventHandler townyEventHandler;
+
+
+    TownyTeamManager() {
+        townyEventHandler = new TownyEventHandler();
+        Bukkit.getPluginManager().registerEvents(townyEventHandler, Nodewar.getInstance());
+    }
 
     @Override
     public void loadTeams() {
