@@ -377,17 +377,17 @@ territory:
     alert:
       global:
         defend:
-          start: "&4[territory_display] is under attack !" # server-wide
-          advantage: "&aYour team is repelling the enemies in [territory_display]" # territory-wide
-          disadvantage: "&cYour team is losing ground in [territory_display]." # territory-wide
-          victory: "&bYour team has defended [territory_display] successfully !" # server-wide
-          defeat: "&4You lose the [territory_display] territory..." # server-wide
+          start: "&4[territory_display] est attaqué !" # server-wide
+          advantage: "&aVotre équipe est en train de repousser l'ennemi à [territory_display]" # territory-wide
+          disadvantage: "&cVotre équipe perd l'avantage à [territory_display]." # territory-wide
+          victory: "&bVotre équipe a défendu [territory_display] avec succès !" # server-wide
+          defeat: "&4Votre équipe a perdu le territoire [territory_display]..." # server-wide
         attack:
-          start: "&eYour team engage a fight in [territory_display] !" # server-wide
-          advantage: "&aYour team is capturing [territory_display]" # territory-wide
-          disadvantage: "&cYour team is getting repelled at [territory_display]" # territory-wide
-          victory: "&bYour team has conquered [territory_display] !" # server-wide
-          defeat: "&4Your team has been repelled at [territory_display]..." # server-wide
+          start: "&eVotre équipe attaque le territoire [territory_display] !" # server-wide
+          advantage: "&aVotre équipe est en train de capturer [territory_display]" # territory-wide
+          disadvantage: "&cVotre équipe se fait repousser à [territory_display]" # territory-wide
+          victory: "&bVotre équipe a capturé [territory_display] !" # server-wide
+          defeat: "&4Votre équipe s'est fait repousser à [territory_display]..." # server-wide
   bossbar:
     global:
       wild: "[territory_display] - [territory_battle_status]"

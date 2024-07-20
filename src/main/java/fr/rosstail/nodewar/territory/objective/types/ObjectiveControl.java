@@ -8,11 +8,8 @@ import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.RelationType;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
-import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.battle.types.BattleControl;
-import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
 import fr.rosstail.nodewar.territory.objective.NwConquestObjective;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
@@ -273,38 +270,20 @@ public class ObjectiveControl extends NwConquestObjective {
 
     @Override
     public void ending() {
-        BattleSiege currentBattle = (BattleSiege) territory.getCurrentBattle();
-        currentBattle.setBattleEnding();
+        super.ending();
+        BattleControl currentBattle = (BattleControl) territory.getCurrentBattle();
         currentBattle.setCurrentHealth(maxHealth);
-        NwITeam winner = checkWinner();
-        if (winner != null) {
-            win(winner);
-        }
     }
 
     @Override
     public void win(NwITeam winnerTeam) {
         super.win(winnerTeam);
         Territory territory = super.territory;
-        BattleControl currentBattleControl = (BattleControl) territory.getCurrentBattle();
-
-        currentBattleControl.getTeamScoreMap().entrySet().stream()
-                .filter(nwTeamIntegerEntry -> nwTeamIntegerEntry.getKey() != winnerTeam && nwTeamIntegerEntry.getKey() != territory.getOwnerITeam())
-                .forEach(nwTeamIntegerEntry -> {
-                    AdaptMessage.getAdaptMessage().alertITeam(nwTeamIntegerEntry.getKey(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
-                });
-
-        if (winnerTeam == territory.getOwnerITeam()) {
-            AdaptMessage.getAdaptMessage().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_VICTORY), territory, true);
-            AdaptMessage.getAdaptMessage().alertITeam(winnerTeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
-        } else {
-            AdaptMessage.getAdaptMessage().alertITeam(winnerTeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DEFEAT), territory, true);
-            AdaptMessage.getAdaptMessage().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_VICTORY), territory, true);
-        }
+        BattleControl currentBattle = (BattleControl) territory.getCurrentBattle();
 
         Map<NwITeam, Integer> teamPositionMap = new HashMap<>();
         teamPositionMap.put(winnerTeam, 1);
-        reward(currentBattleControl, teamPositionMap);
+        reward(currentBattle, teamPositionMap);
     }
 
     public void updateHealth() {

@@ -3,6 +3,9 @@ package fr.rosstail.nodewar.events;
 import fr.rosstail.nodewar.events.playerevents.PlayerDeployEvent;
 import fr.rosstail.nodewar.events.playerevents.PlayerInitDeployEvent;
 import fr.rosstail.nodewar.events.territoryevents.*;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwITeam;
@@ -48,7 +51,12 @@ public class NodewarEventHandler implements Listener {
     @EventHandler
     public void OnTerritoryOwnerNeutralizeEvent(final TerritoryOwnerNeutralizeEvent event) {
         Territory territory = event.getTerritory();
+        NwITeam currentOwner = territory.getOwnerITeam();
         NwITeam iTeam = event.getNwITeam();
+
+        if (currentOwner != null) {
+            AdaptMessage.getAdaptMessage().alertITeam(currentOwner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_VICTORY), territory, true);
+        }
 
         territory.setOwnerITeam(null);
 

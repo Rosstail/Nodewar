@@ -172,15 +172,6 @@ public class ObjectiveKeep extends NwConquestObjective {
                 neutralize(null);
             }
             currentBattle.setHoldTime(0);
-            if (currentBattle.isBattleStarted()) {
-                if (newAdvantage == territory.getOwnerITeam()) {
-                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
-                } else {
-                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
-                }
-            }
             currentBattle.setAdvantageITeam(newAdvantage);
             TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantage);
             Bukkit.getPluginManager().callEvent(advantageChangeEvent);

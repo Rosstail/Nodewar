@@ -186,8 +186,6 @@ public class NwObjective implements NwIObjective {
         Battle currentBattle = territory.getCurrentBattle();
         currentBattle.setWinnerITeam(winnerITeam);
         currentBattle.setBattleEnding();
-
-        AdaptMessage.getAdaptMessage().alertITeam(winnerITeam, "congratz, your team is victorious at [territory_name]", territory, false);
     }
 
     @Override
