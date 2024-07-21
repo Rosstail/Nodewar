@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.territory.battle;
 
+import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.types.BattleControl;
@@ -15,7 +16,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BattleManager {
+    public static BattleManager battleManager;
     public static Map<String, Class<? extends Battle>> battleClassMap = new HashMap<>();
+    private Nodewar plugin;
+
+    public BattleManager(Nodewar plugin) {
+        this.plugin = plugin;
+    }
+
+    public static void init(Nodewar plugin) {
+        if (battleManager == null) {
+            battleManager = new BattleManager(plugin);
+        }
+    }
 
     static {
         battleClassMap.put("control", BattleControl.class);
@@ -24,22 +37,22 @@ public class BattleManager {
         battleClassMap.put("keep", BattleKeep.class);
     }
 
+    public boolean canAddCustomBattle(String name) {
+        return !battleClassMap.containsKey(name);
+    }
+
     /**
      * Add custom battle from add-ons
      * @param name
      * @param customBattleClass
      * @return
      */
-    public static boolean addCustomBattle(String name, Class<? extends Battle> customBattleClass) {
-        if (!battleClassMap.containsKey(name)) {
-            battleClassMap.put(name, customBattleClass);
-            AdaptMessage.print("[Nodewar] Custom battle " + name + " added to the list !", AdaptMessage.prints.OUT);
-            return true;
-        }
-        return false;
+    public void addCustomBattle(String name, Class<? extends Battle> customBattleClass) {
+        battleClassMap.put(name, customBattleClass);
+        AdaptMessage.print("[Nodewar] Custom battle " + name + " added to the list !", AdaptMessage.prints.OUT);
     }
 
-    public static void setUpBattle(Territory territory, String objectiveName) {
+    public void setUpBattle(Territory territory, String objectiveName) {
         if (battleClassMap.containsKey(objectiveName)) {
             Class<? extends Battle> battleClass = battleClassMap.get(objectiveName);
 
@@ -64,5 +77,9 @@ public class BattleManager {
 
     public static Map<String, Class<? extends Battle>> getBattleClassMap() {
         return battleClassMap;
+    }
+
+    public static BattleManager getBattleManager() {
+        return battleManager;
     }
 }

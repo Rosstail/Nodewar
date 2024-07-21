@@ -338,7 +338,7 @@ public class Territory {
     }
 
     public void setupObjective() {
-        ObjectiveManager.setUpObjectiveToTerritory(this, objectiveSection, territoryModel.getObjectiveTypeName());
+        ObjectiveManager.getObjectiveManager().setUpObjectiveToTerritory(this, objectiveSection, territoryModel.getObjectiveTypeName());
     }
 
     public void setupBattle() {
@@ -346,7 +346,7 @@ public class Territory {
             setPreviousBattle(currentBattle);
         }
 
-        BattleManager.setUpBattle(this, territoryModel.getObjectiveTypeName());
+        BattleManager.getBattleManager().setUpBattle(this, territoryModel.getObjectiveTypeName());
         updateAllBossBar();
     }
 
