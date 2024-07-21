@@ -36,7 +36,7 @@ public class ObjectiveManager {
         objectiveEntryMap.put("keep", new AbstractMap.SimpleEntry<>(ObjectiveKeep.class, ObjectiveKeepModel.class));
     }
 
-    public boolean canAddCustomObjective(String name) {
+    public static boolean canAddCustomObjective(String name) {
         return !objectiveEntryMap.containsKey(name);
     }
 
@@ -47,7 +47,7 @@ public class ObjectiveManager {
      * @param customObjectiveClass
      * @return
      */
-    public void addCustomObjective(String name, Class<? extends NwObjective> customObjectiveClass, Class<? extends ObjectiveModel> customObjectiveModelClass) {
+    public static void addCustomObjective(String name, Class<? extends NwObjective> customObjectiveClass, Class<? extends ObjectiveModel> customObjectiveModelClass) {
         objectiveEntryMap.put(name, new AbstractMap.SimpleEntry<>(customObjectiveClass, customObjectiveModelClass));
         AdaptMessage.print("[Nodewar] Custom objective " + name + " added to the list !", AdaptMessage.prints.OUT);
     }

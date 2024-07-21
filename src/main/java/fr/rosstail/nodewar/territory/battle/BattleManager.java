@@ -37,7 +37,7 @@ public class BattleManager {
         battleClassMap.put("keep", BattleKeep.class);
     }
 
-    public boolean canAddCustomBattle(String name) {
+    public static boolean canAddCustomBattle(String name) {
         return !battleClassMap.containsKey(name);
     }
 
@@ -47,7 +47,7 @@ public class BattleManager {
      * @param customBattleClass
      * @return
      */
-    public void addCustomBattle(String name, Class<? extends Battle> customBattleClass) {
+    public static void addCustomBattle(String name, Class<? extends Battle> customBattleClass) {
         battleClassMap.put(name, customBattleClass);
         AdaptMessage.print("[Nodewar] Custom battle " + name + " added to the list !", AdaptMessage.prints.OUT);
     }

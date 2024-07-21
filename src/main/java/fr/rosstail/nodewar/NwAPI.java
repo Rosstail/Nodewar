@@ -23,14 +23,12 @@ public class NwAPI implements NwIAPI {
      */
     @Override
     public boolean addCustomObjective(String name, Class<? extends NwObjective> nwObjectiveClass, Class<? extends ObjectiveModel> objectiveModelClass, Class<? extends Battle> battleClass) {
-        ObjectiveManager objectiveManager = ObjectiveManager.getObjectiveManager();
-        BattleManager battleManager = BattleManager.getBattleManager();
-        boolean setupObjective = objectiveManager.canAddCustomObjective(name);
-        boolean setupBattle = battleManager.canAddCustomBattle(name);
+        boolean setupObjective = ObjectiveManager.canAddCustomObjective(name);
+        boolean setupBattle = BattleManager.canAddCustomBattle(name);
 
         if (setupObjective && setupBattle) {
-            objectiveManager.addCustomObjective(name, nwObjectiveClass, objectiveModelClass);
-            battleManager.addCustomBattle(name, battleClass);
+            ObjectiveManager.addCustomObjective(name, nwObjectiveClass, objectiveModelClass);
+            BattleManager.addCustomBattle(name, battleClass);
         }
 
         return setupObjective && setupBattle;
@@ -45,10 +43,10 @@ public class NwAPI implements NwIAPI {
      */
     @Override
     public boolean addCustomPermissionManager(String name, Class<? extends NwIPermissionManagerHandler> customPermissionHandlerClass) {
-        boolean canAddCustomManager = PermissionManager.getManager().canAddCustomManager(name);
+        boolean canAddCustomManager = PermissionManager.canAddCustomManager(name);
 
         if (canAddCustomManager) {
-            PermissionManager.getManager().addCustomManager(name, customPermissionHandlerClass);
+            PermissionManager.addCustomManager(name, customPermissionHandlerClass);
         }
 
         return canAddCustomManager;

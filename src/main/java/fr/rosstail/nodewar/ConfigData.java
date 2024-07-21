@@ -87,7 +87,7 @@ public class ConfigData {
             configFile = config;
 
             configVersion = (float) config.getDouble("general.config-version", 1.0F);
-            defaultPermissionPlugin = config.getString("general.permission-plugin", "auto");
+            defaultPermissionPlugin = config.getString("general.permission-plugin", "luckperms");
         }
     }
 

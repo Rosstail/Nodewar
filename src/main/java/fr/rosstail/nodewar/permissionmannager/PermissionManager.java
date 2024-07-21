@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.permissionmannager;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.permissionmannager.types.NwLuckPermsHandler;
 import fr.rosstail.nodewar.team.NwITeam;
@@ -21,7 +22,7 @@ public class PermissionManager {
         iPermissionManagerMap.put("luckperms", NwLuckPermsHandler.class);
     }
 
-    public boolean canAddCustomManager(String name) {
+    public static boolean canAddCustomManager(String name) {
         return (!iPermissionManagerMap.containsKey(name));
     }
 
@@ -32,7 +33,7 @@ public class PermissionManager {
      * @param customPermisionHandlerClass
      * @return
      */
-    public void addCustomManager(String name, Class<? extends NwIPermissionManagerHandler> customPermisionHandlerClass) {
+    public static void addCustomManager(String name, Class<? extends NwIPermissionManagerHandler> customPermisionHandlerClass) {
         iPermissionManagerMap.put(name, customPermisionHandlerClass);
         AdaptMessage.print("[Nodewar] Custom permissionmanager " + name + " added to the list !", AdaptMessage.prints.OUT);
     }
@@ -44,7 +45,7 @@ public class PermissionManager {
     }
 
     public String getUsedSystem() {
-        String system = "luckperms";
+        String system = ConfigData.getConfigData().general.defaultPermissionPlugin;
         if (iPermissionManagerMap.containsKey(system) && Bukkit.getServer().getPluginManager().getPlugin(system) != null) {
             return system;
         }
@@ -62,7 +63,7 @@ public class PermissionManager {
             try {
                 managerConstructor = managerClass.getDeclaredConstructor();
                 iPermissionManager = managerConstructor.newInstance();
-                AdaptMessage.print("[Nodewar] Using " + system + " team", AdaptMessage.prints.OUT);
+                AdaptMessage.print("[Nodewar] Using " + system + " perm", AdaptMessage.prints.OUT);
             } catch (NoSuchMethodException e) {
                 throw new IllegalArgumentException("Missing appropriate constructor in TeamManager class.", e);
             } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
