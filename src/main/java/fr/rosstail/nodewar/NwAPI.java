@@ -13,22 +13,22 @@ public class NwAPI implements NwIAPI {
     /**
      * Adds a custom objective to Nodewar. Use it while onLoad()
      *
-     * @param name           The identifier of the objective and battle
-     * @param nwObjective    The Objective class.
-     * @param objectiveModel The Objective model class that structure what can be set on territories(& types) configs
-     * @param battle         The Battle class that structure custom comportment of a battle
+     * @param name           The identifier of the objective and battleClass
+     * @param nwObjectiveClass    The Objective class.
+     * @param objectiveModelClass The Objective model class that structure what can be set on territories(& types) configs
+     * @param battleClass         The Battle class that structure custom comportment of a battleClass
      * @return if the objective and battle classes have been successfully added.
      */
     @Override
-    public boolean addCustomObjective(String name, Class<NwObjective> nwObjective, Class<ObjectiveModel> objectiveModel, Class<Battle> battle) {
+    public boolean addCustomObjective(String name, Class<? extends NwObjective> nwObjectiveClass, Class<? extends ObjectiveModel> objectiveModelClass, Class<? extends Battle> battleClass) {
         ObjectiveManager objectiveManager = ObjectiveManager.getObjectiveManager();
         BattleManager battleManager = BattleManager.getBattleManager();
         boolean setupObjective = objectiveManager.canAddCustomObjective(name);
         boolean setupBattle = battleManager.canAddCustomBattle(name);
 
         if (setupObjective && setupBattle) {
-            objectiveManager.addCustomObjective(name, nwObjective, objectiveModel);
-            battleManager.addCustomBattle(name, battle);
+            objectiveManager.addCustomObjective(name, nwObjectiveClass, objectiveModelClass);
+            battleManager.addCustomBattle(name, battleClass);
         }
 
         return setupObjective && setupBattle;
