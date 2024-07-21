@@ -91,6 +91,7 @@ public class Territory {
         territoryModel.getSubTerritoryList().addAll(section.getStringList("subterritories"));
 
         territoryModel.setWorldName(section.getString("world", territoryType.getWorldName()));
+
         territoryModel.setPrefix(section.getString("prefix", territoryType.getPrefix()));
         territoryModel.setSuffix(section.getString("suffix", territoryType.getSuffix()));
         territoryModel.setUnderProtection(section.getBoolean("protected", territoryType.isUnderProtection()));
@@ -178,8 +179,6 @@ public class Territory {
                 });
             }
             updateAllBossBar();
-        } else {
-            AdaptMessage.print(getModel().getDisplay() + " ", AdaptMessage.prints.WARNING);
         }
     }
 
