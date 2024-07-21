@@ -226,9 +226,9 @@ public class DynmapHandler {
                 if (worldsToProcess == null) {
                     worldsToProcess = new ArrayList<>();
                     wgWorldsToProcess = new ArrayList<>();
-                    for (org.bukkit.World wrld : worldList) {
-                        wgWorldsToProcess.add(WorldGuard.getInstance().getPlatform().getMatcher().getWorldByName(wrld.getName()));
-                        worldsToProcess.add(wrld);
+                    for (org.bukkit.World world : worldList) {
+                        wgWorldsToProcess.add(WorldGuard.getInstance().getPlatform().getMatcher().getWorldByName(world.getName()));
+                        worldsToProcess.add(world);
                     }
                 }
                 while (regionsToProcess == null) {  // No pending regions for world

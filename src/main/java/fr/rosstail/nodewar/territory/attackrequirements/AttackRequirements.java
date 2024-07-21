@@ -32,7 +32,7 @@ public class AttackRequirements {
             this.attackRequirementsModel.getTargetNameList().forEach(s -> {
                 Optional<Territory> first = territoryManager.getTerritoryMap().values().stream().filter(territory1 -> (
                         territory1.getModel().getName().equalsIgnoreCase(s) &&
-                                territory1.getWorld().equals(territory.getWorld())
+                                territory1.getWorld() == territory.getWorld()
                 )).findFirst();
                 first.ifPresent(targetTerritoryList::add);
                 first.ifPresent(territory1 -> territory1.getAttackRequirements().getDefendAgainstTerritoryList().add(this.territory));
