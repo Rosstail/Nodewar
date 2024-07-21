@@ -58,7 +58,7 @@ public class TerritoryType {
 
         ConfigurationSection objectiveSection = section.getConfigurationSection("objective");
 
-        ObjectiveManager.setupObjectiveModelToTerritoryType(this, parentType, getObjectiveTypeName(), objectiveSection);
+        ObjectiveManager.getObjectiveManager().setupObjectiveModelToTerritoryType(this, parentType, getObjectiveTypeName(), objectiveSection);
 
         if (parentType != null) {
             attackRequirementsModel = new AttackRequirementsModel(new AttackRequirementsModel(section.getConfigurationSection("attack-requirements")), parentType.attackRequirementsModel);

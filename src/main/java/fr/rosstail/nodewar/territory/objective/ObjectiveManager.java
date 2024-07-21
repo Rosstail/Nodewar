@@ -1,8 +1,10 @@
 package fr.rosstail.nodewar.territory.objective;
 
+import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryType;
+import fr.rosstail.nodewar.territory.battle.BattleManager;
 import fr.rosstail.nodewar.territory.objective.types.*;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -13,13 +15,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ObjectiveManager {
+    private static ObjectiveManager objectiveManager;
     public static Map<String, Map.Entry<Class<? extends NwObjective>, Class<? extends ObjectiveModel>>> objectiveEntryMap = new HashMap<>();
+    private Nodewar plugin;
+
+    public ObjectiveManager(Nodewar plugin) {
+        this.plugin = plugin;
+    }
+
+    public static void init(Nodewar plugin) {
+        if (objectiveManager == null) {
+            objectiveManager = new ObjectiveManager(plugin);
+        }
+    }
 
     static {
         objectiveEntryMap.put("control", new AbstractMap.SimpleEntry<>(ObjectiveControl.class, ObjectiveControlModel.class));
         objectiveEntryMap.put("siege", new AbstractMap.SimpleEntry<>(ObjectiveSiege.class, ObjectiveSiegeModel.class));
         objectiveEntryMap.put("koth", new AbstractMap.SimpleEntry<>(ObjectiveKoth.class, ObjectiveKothModel.class));
         objectiveEntryMap.put("keep", new AbstractMap.SimpleEntry<>(ObjectiveKeep.class, ObjectiveKeepModel.class));
+    }
+
+    public static boolean canAddCustomObjective(String name) {
+        return !objectiveEntryMap.containsKey(name);
     }
 
     /**
@@ -29,16 +47,12 @@ public class ObjectiveManager {
      * @param customObjectiveClass
      * @return
      */
-    public static boolean addCustomObjective(String name, Class<? extends NwObjective> customObjectiveClass, Class<? extends ObjectiveModel> customObjectiveModelClass) {
-        if (!objectiveEntryMap.containsKey(name)) {
-            objectiveEntryMap.put(name, new AbstractMap.SimpleEntry<>(customObjectiveClass, customObjectiveModelClass));
-            AdaptMessage.print("[Nodewar] Custom objective " + name + " added to the list !", AdaptMessage.prints.OUT);
-            return true;
-        }
-        return false;
+    public static void addCustomObjective(String name, Class<? extends NwObjective> customObjectiveClass, Class<? extends ObjectiveModel> customObjectiveModelClass) {
+        objectiveEntryMap.put(name, new AbstractMap.SimpleEntry<>(customObjectiveClass, customObjectiveModelClass));
+        AdaptMessage.print("[Nodewar] Custom objective " + name + " added to the list !", AdaptMessage.prints.OUT);
     }
 
-    public static void setupObjectiveModelToTerritoryType(TerritoryType territoryType, TerritoryType parentType, String objectiveName, ConfigurationSection objectiveSection) {
+    public void setupObjectiveModelToTerritoryType(TerritoryType territoryType, TerritoryType parentType, String objectiveName, ConfigurationSection objectiveSection) {
         if (objectiveEntryMap.containsKey(objectiveName)) {
             Map.Entry<Class<? extends NwObjective>, Class<? extends ObjectiveModel>> entry = objectiveEntryMap.get(objectiveName);
             Class<? extends ObjectiveModel> objectiveModelClass = entry.getValue();
@@ -81,7 +95,7 @@ public class ObjectiveManager {
         }
     }
 
-    public static void setUpObjectiveToTerritory(Territory territory, ConfigurationSection objectiveSection, String objectiveName) {
+    public void setUpObjectiveToTerritory(Territory territory, ConfigurationSection objectiveSection, String objectiveName) {
         if (objectiveEntryMap.containsKey(objectiveName)) {
             Map.Entry<Class<? extends NwObjective>, Class<? extends ObjectiveModel>> entry = objectiveEntryMap.get(objectiveName);
             Class<? extends NwObjective> objectiveClass = entry.getKey();
@@ -123,5 +137,9 @@ public class ObjectiveManager {
 
     public static Map<String, Map.Entry<Class<? extends NwObjective>, Class<? extends ObjectiveModel>>> getObjectiveEntryMap() {
         return objectiveEntryMap;
+    }
+
+    public static ObjectiveManager getObjectiveManager() {
+        return objectiveManager;
     }
 }

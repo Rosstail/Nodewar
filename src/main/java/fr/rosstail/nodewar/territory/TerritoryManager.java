@@ -9,6 +9,7 @@ import com.sk89q.worldguard.protection.regions.RegionQuery;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.regionevents.RegionEnteredEvent;
 import fr.rosstail.nodewar.events.regionevents.RegionLeftEvent;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
@@ -179,12 +180,12 @@ public class TerritoryManager {
     }
 
     public void addRegionToTerritory(String worldName, ProtectedRegion region) {
-        System.out.println(territoryMap.entrySet().stream()
+        AdaptMessage.print(String.valueOf(territoryMap.entrySet().stream()
                 .filter(
                         x -> x.getValue().getModel().getRegionStringList().contains(region.getId())
                 ).filter(
                         x -> x.getValue().getModel().getWorldName().equalsIgnoreCase(worldName)
-                ).count());
+                ).count()), AdaptMessage.prints.OUT);
     }
 
     public void playerRegionPresenceManager(Player player, Location newLocation) {

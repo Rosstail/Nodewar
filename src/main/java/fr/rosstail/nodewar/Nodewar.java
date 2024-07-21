@@ -4,20 +4,21 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.apis.PAPIExpansion;
 import fr.rosstail.nodewar.battlefield.BattlefieldManager;
 import fr.rosstail.nodewar.commands.CommandManager;
+import fr.rosstail.nodewar.events.MinecraftEventHandler;
 import fr.rosstail.nodewar.events.NodewarEventHandler;
-import fr.rosstail.nodewar.events.TownyEventHandler;
 import fr.rosstail.nodewar.events.WorldguardEventHandler;
+import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.permissionmannager.PermissionManager;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.events.MinecraftEventHandler;
-import fr.rosstail.nodewar.lang.AdaptMessage;
-import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
+import fr.rosstail.nodewar.territory.battle.BattleManager;
 import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -55,7 +56,7 @@ public class Nodewar extends JavaPlugin implements Listener {
     public void loadCustomConfig() {
         File fileConfig = new File("plugins/" + getName() + "/config.yml");
         if (!(fileConfig.exists())) {
-            AdaptMessage.print("Preparing default config.yml", AdaptMessage.prints.OUT);
+            AdaptMessage.print("[" + this.getName() + "] Preparing default config.yml", AdaptMessage.prints.OUT);
             this.saveDefaultConfig();
         }
         config = YamlConfiguration.loadConfiguration(fileConfig);
@@ -86,6 +87,8 @@ public class Nodewar extends JavaPlugin implements Listener {
         AdaptMessage.initAdaptMessage(this);
         TeamManager.init();
         TerritoryManager.init(this);
+        ObjectiveManager.init(this);
+        BattleManager.init(this);
         DynmapHandler.init(this);
         BattlefieldManager.init(this);
 
@@ -94,7 +97,7 @@ public class Nodewar extends JavaPlugin implements Listener {
         PermissionManager.getManager().loadManager();
 
         if (PermissionManager.getManager() == null) {
-            AdaptMessage.print("No permission plugin available. Disabling", AdaptMessage.prints.ERROR);
+            AdaptMessage.print("[" + this.getName() + "] No permission plugin available. Disabling", AdaptMessage.prints.ERROR);
             this.onDisable();
         }
 
@@ -104,9 +107,9 @@ public class Nodewar extends JavaPlugin implements Listener {
 
         WorldGuardPlugin wgPlugin = this.getWGPlugin();
         if (wgPlugin != null) {
-            AdaptMessage.print("Worldguard has been detected", AdaptMessage.prints.OUT);
+            AdaptMessage.print("[" + this.getName() + "] Worldguard has been detected", AdaptMessage.prints.OUT);
         } else {
-            AdaptMessage.print("Worldguard has not been found.", AdaptMessage.prints.ERROR);
+            AdaptMessage.print("[" + this.getName() + "] Worldguard has not been found.", AdaptMessage.prints.ERROR);
             this.onDisable();
         }
         this.initDefaultConfigs();
@@ -118,7 +121,7 @@ public class Nodewar extends JavaPlugin implements Listener {
 
         if (setupEconomy()) {
             AdaptMessage.print("[" + this.getName() + "] Hooked with Vault !", AdaptMessage.prints.OUT);
-            setupPermissions();
+            //setupPermissions();
         } else {
             log.severe(String.format("[" + this.getName() + "] Didn't found Vault.", this.getDescription().getName()));
         }
@@ -160,7 +163,6 @@ public class Nodewar extends JavaPlugin implements Listener {
         try {
             FileResourcesUtils.generateYamlFile("conquest", this);
             FileResourcesUtils.generateYamlFile("conquest/territories", this);
-            FileResourcesUtils.generateYamlFile("gui", this);
             FileResourcesUtils.generateYamlFile("lang", this);
         } catch (IOException e) {
             e.printStackTrace();
@@ -214,11 +216,11 @@ public class Nodewar extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean setupPermissions() {
+    /*private boolean setupPermissions() {
         final RegisteredServiceProvider<Permission> rsp = this.getServer().getServicesManager().getRegistration(Permission.class);
         perms = rsp.getProvider();
         return true;
-    }
+    }*/
 
     public static Economy getEconomy() {
         return econ;
