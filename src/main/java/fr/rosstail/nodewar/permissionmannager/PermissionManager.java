@@ -3,10 +3,8 @@ package fr.rosstail.nodewar.permissionmannager;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.permissionmannager.types.NwLuckPermsHandler;
 import fr.rosstail.nodewar.team.NwITeam;
-import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -14,14 +12,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PermissionManager {
-
     private static String permissionPlugin;
-    public static Map<String, Class<? extends NwIPermissionManagerHandler>> iPermissionMannagerMap = new HashMap<>();
+    public static Map<String, Class<? extends NwIPermissionManagerHandler>> iPermissionManagerMap = new HashMap<>();
     private NwIPermissionManagerHandler iPermissionManager = null;
     private static PermissionManager manager;
 
     static {
-        iPermissionMannagerMap.put("luckperms", NwLuckPermsHandler.class);
+        iPermissionManagerMap.put("luckperms", NwLuckPermsHandler.class);
+    }
+
+    public boolean canAddCustomManager(String name) {
+        return (!iPermissionManagerMap.containsKey(name));
     }
 
     /**
@@ -31,13 +32,9 @@ public class PermissionManager {
      * @param customPermisionHandlerClass
      * @return
      */
-    public static boolean addCustomManager(String name, Class<? extends NwIPermissionManagerHandler> customPermisionHandlerClass) {
-        if (!iPermissionMannagerMap.containsKey(name)) {
-            iPermissionMannagerMap.put(name, customPermisionHandlerClass);
-            AdaptMessage.print("[Nodewar] Custom permissionmanager " + name + " added to the list !", AdaptMessage.prints.OUT);
-            return true;
-        }
-        return false;
+    public void addCustomManager(String name, Class<? extends NwIPermissionManagerHandler> customPermisionHandlerClass) {
+        iPermissionManagerMap.put(name, customPermisionHandlerClass);
+        AdaptMessage.print("[Nodewar] Custom permissionmanager " + name + " added to the list !", AdaptMessage.prints.OUT);
     }
 
     public static void init() {
@@ -48,7 +45,7 @@ public class PermissionManager {
 
     public String getUsedSystem() {
         String system = "luckperms";
-        if (iPermissionMannagerMap.containsKey(system) && Bukkit.getServer().getPluginManager().getPlugin(system) != null) {
+        if (iPermissionManagerMap.containsKey(system) && Bukkit.getServer().getPluginManager().getPlugin(system) != null) {
             return system;
         }
 
@@ -59,7 +56,7 @@ public class PermissionManager {
         String system = "luckperms";
 
         if (getUsedSystem() != null) {
-            Class<? extends NwIPermissionManagerHandler> managerClass = iPermissionMannagerMap.get(system);
+            Class<? extends NwIPermissionManagerHandler> managerClass = iPermissionManagerMap.get(system);
             Constructor<? extends NwIPermissionManagerHandler> managerConstructor;
 
             try {
