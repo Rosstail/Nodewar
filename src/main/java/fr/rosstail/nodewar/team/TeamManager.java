@@ -10,6 +10,7 @@ import fr.rosstail.nodewar.team.relation.NwTeamRelation;
 import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import fr.rosstail.nodewar.team.teammanagers.NwTeamManager;
 import fr.rosstail.nodewar.team.teammanagers.TownyTeamManager;
+import fr.rosstail.nodewar.team.teammanagers.UcTeamManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
 import org.bukkit.Bukkit;
@@ -31,6 +32,7 @@ public class TeamManager {
     static {
         iTeamManagerMap.put("nodewar", NwTeamManager.class);
         iTeamManagerMap.put("Towny", TownyTeamManager.class);
+        iTeamManagerMap.put("UltimateClans", UcTeamManager.class);
     }
 
     /**

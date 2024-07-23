@@ -14,9 +14,9 @@ import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
+import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.team.TeamIRelation;
 import fr.rosstail.nodewar.team.type.NwTeam;
-import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.battle.Battle;
@@ -356,16 +356,18 @@ public class Territory {
     }
 
 
+    public Set<Player> getEffectivePlayers() {
+        return getPlayers().stream().filter(player ->
+                (player.getGameMode().equals(GameMode.SURVIVAL) || player.getGameMode().equals(GameMode.ADVENTURE))).collect(Collectors.toSet());
+    }
+
     public Map<NwITeam, Set<Player>> getNwITeamEffectivePlayerAmountOnTerritory() {
         Map<NwITeam, Set<Player>> iTeamPlayerMap = new HashMap<>();
         if (getOwnerITeam() != null) {
             iTeamPlayerMap.put(getOwnerITeam(), new HashSet<>()); //guarantee
         }
 
-        List<Player> availablePlayerList = getPlayers().stream().filter(player ->
-                (player.getGameMode().equals(GameMode.SURVIVAL) || player.getGameMode().equals(GameMode.ADVENTURE))).collect(Collectors.toList());
-
-        for (Player player : availablePlayerList) {
+        for (Player player : getEffectivePlayers()) {
             PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
             NwITeam playerNwTeam = playerData.getTeam();
 

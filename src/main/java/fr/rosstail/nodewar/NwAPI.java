@@ -2,11 +2,15 @@ package fr.rosstail.nodewar;
 
 import fr.rosstail.nodewar.permissionmannager.NwIPermissionManagerHandler;
 import fr.rosstail.nodewar.permissionmannager.PermissionManager;
+import fr.rosstail.nodewar.player.PlayerData;
+import fr.rosstail.nodewar.player.PlayerDataManager;
+import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.battle.BattleManager;
 import fr.rosstail.nodewar.territory.objective.NwObjective;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
+import org.bukkit.entity.Player;
 
 public class NwAPI implements NwIAPI {
 
@@ -50,6 +54,19 @@ public class NwAPI implements NwIAPI {
         }
 
         return canAddCustomManager;
+    }
+
+    /**
+     * @return The loaded properties from the config.yml
+     */
+    @Override
+    public ConfigData getConfigData() {
+        return ConfigData.getConfigData();
+    }
+
+    @Override
+    public NwITeam getPlayerTeam(Player player) {
+        return PlayerDataManager.getPlayerDataFromMap(player).getTeam();
     }
 
     public static NwAPI getNwAPI() {
