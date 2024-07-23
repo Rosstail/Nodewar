@@ -22,7 +22,7 @@ public class UcTeamManager implements NwITeamManager {
     private final ClanAPIManager clanAPI;
 
 
-    UcTeamManager() {
+    public UcTeamManager() {
         final Plugin plugin = Nodewar.getInstance().getServer().getPluginManager().getPlugin("UltimateClans");
         if (!(plugin instanceof Clans)) {
             throw new Error("Ultimate Clans is not in the server.");

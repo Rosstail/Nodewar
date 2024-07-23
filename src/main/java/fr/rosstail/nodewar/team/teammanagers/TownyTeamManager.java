@@ -21,7 +21,7 @@ public class TownyTeamManager implements NwITeamManager {
     private TownyEventHandler townyEventHandler;
 
 
-    TownyTeamManager() {
+    public TownyTeamManager() {
         townyEventHandler = new TownyEventHandler();
         Bukkit.getPluginManager().registerEvents(townyEventHandler, Nodewar.getInstance());
     }
