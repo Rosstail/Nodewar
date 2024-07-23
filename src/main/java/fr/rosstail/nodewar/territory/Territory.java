@@ -175,6 +175,8 @@ public class Territory {
                 getModel().getRegionStringList().forEach(s -> {
                     if (regions.hasRegion(s)) {
                         protectedRegionList.add(regions.getRegion(s));
+                    } else {
+                        System.err.println(s);
                     }
                 });
             }
