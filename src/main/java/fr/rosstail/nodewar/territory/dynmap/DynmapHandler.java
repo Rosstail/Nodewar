@@ -27,7 +27,10 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.dynmap.DynmapAPI;
-import org.dynmap.markers.*;
+import org.dynmap.markers.AreaMarker;
+import org.dynmap.markers.MarkerAPI;
+import org.dynmap.markers.MarkerSet;
+import org.dynmap.markers.PolyLineMarker;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -86,6 +89,7 @@ public class DynmapHandler {
             if (territory.getModel().isUnderProtection()) {
                 strokeColor = "#50C878";
             }
+
             label = ChatColor.stripColor(territory.getModel().getDisplay());
         }
     }
@@ -173,10 +177,10 @@ public class DynmapHandler {
         } else {  /* Unsupported type */
             return;
         }
-        String markerid = world.getName() + "_" + id + "_" + "zone";
-        AreaMarker m = resAreas.remove(markerid); /* Existing area? */
+        String markerID = world.getName() + "_" + id + "_" + "zone";
+        AreaMarker m = resAreas.remove(markerID); /* Existing area? */
         if (m == null) {
-            m = set.createAreaMarker(markerid, name, false, world.getName(), x, z, false);
+            m = set.createAreaMarker(markerID, name, false, world.getName(), x, z, false);
             if (m == null)
                 return;
         } else {
@@ -205,86 +209,101 @@ public class DynmapHandler {
         m.setDescription(desc); /* Set popup */
 
         /* Add to map */
-        newmap.put(markerid, m);
+        newmap.put(markerID, m);
     }
 
     private class UpdateJob implements Runnable {
         Map<String, AreaMarker> newMap = new HashMap<>(); /* Build new map */
         ArrayList<org.bukkit.World> worldsToProcess;
         ArrayList<World> wgWorldsToProcess;
-        List<ProtectedRegion> regionsToProcess = null;
-        World curWGWorld = null;
-        org.bukkit.World curWorld = null;
+
+        List<Map.Entry<ProtectedRegion, World>> regionsToProcess = null;
+
+        private void prime() {
+            List<org.bukkit.World> worldList = TerritoryManager.getTerritoryManager().getUsedWorldList();
+            if (worldsToProcess == null) {
+                worldsToProcess = new ArrayList<>();
+                wgWorldsToProcess = new ArrayList<>();
+                for (org.bukkit.World world : worldList) {
+                    wgWorldsToProcess.add(WorldGuard.getInstance().getPlatform().getMatcher().getWorldByName(world.getName()));
+                    worldsToProcess.add(world);
+                }
+            }
+        }
+
+        private void onEmpty() {
+            /* Now, review old map - anything left is gone */
+            for (AreaMarker oldm : resAreas.values()) {
+                oldm.deleteMarker();
+            }
+            /* And replace with new map */
+            resAreas = newMap;
+            // Set up for next update (new job)
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new UpdateJob(), updatePeriod);
+        }
+
+        private void processWorld(org.bukkit.World world) {
+
+            List<Territory> worldTerritoryList = TerritoryManager.getTerritoryManager().getTerritoryListPerWorld(world);
+
+
+            List<Map.Entry<ProtectedRegion, World>> regionWorldEntryList = worldTerritoryList.stream()
+                    .flatMap(territory -> territory.getProtectedRegionList()
+                            .stream().map(protectedRegion -> new AbstractMap.SimpleEntry<>(protectedRegion, BukkitAdapter.adapt(territory.getWorld()))))
+                    .sorted(Comparator.comparingInt(entry -> entry.getKey().getMinimumPoint().getY()))
+                    .collect(Collectors.toList());
+
+            worldTerritoryList.forEach((territory) -> {
+                territoryAreaStyleMap.put(territory, new AreaStyle(territory));
+            });
+
+            regionsToProcess.addAll(regionWorldEntryList);
+        }
+
+        private void processLimit() {
+            for (int i = 0; i < updatesPerTick; i++) {
+                if (regionsToProcess.isEmpty()) {
+                    regionsToProcess = null;
+                    pauseRender();
+                    break;
+                }
+
+                Map.Entry<ProtectedRegion, World> regionWorldEntry = regionsToProcess.remove(regionsToProcess.size() - 1);
+                ProtectedRegion region = regionWorldEntry.getKey();
+                int depth = 1;
+                while (region.getParent() != null) {
+                    depth++;
+                    region = region.getParent();
+                }
+                if (depth > maxDepth)
+                    continue;
+                handleRegion(regionWorldEntry.getValue(), region, newMap);
+            }
+        }
 
         public void run() {
-            List<org.bukkit.World> worldList = TerritoryManager.getTerritoryManager().getUsedWorldList();
             if (stop) {
                 return;
             }
             if (!pause) {
                 // If worlds list isn't primed, prime it
-                if (worldsToProcess == null) {
-                    worldsToProcess = new ArrayList<>();
-                    wgWorldsToProcess = new ArrayList<>();
-                    for (org.bukkit.World world : worldList) {
-                        wgWorldsToProcess.add(WorldGuard.getInstance().getPlatform().getMatcher().getWorldByName(world.getName()));
-                        worldsToProcess.add(world);
-                    }
-                }
+                prime();
                 while (regionsToProcess == null) {  // No pending regions for world
                     if (worldsToProcess.isEmpty()) { // No more worlds?
-                        /* Now, review old map - anything left is gone */
-                        for (AreaMarker oldm : resAreas.values()) {
-                            oldm.deleteMarker();
-                        }
-                        /* And replace with new map */
-                        resAreas = newMap;
-                        // Set up for next update (new job)
-                        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new UpdateJob(), updatePeriod);
+                        onEmpty();
                         return;
                     } else {
-                        curWorld = worldsToProcess.get(0);
-                        curWGWorld = wgWorldsToProcess.get(0);
-
                         regionsToProcess = new ArrayList<>();
-
                         territoryAreaStyleMap = new HashMap<>();
-
-                        List<Territory> worldTerritoryList = TerritoryManager.getTerritoryManager().getTerritoryListPerWorld(curWorld);
-
-
-                        List<ProtectedRegion> worldRegionList = worldTerritoryList.stream()
-                                .flatMap(territory -> territory.getProtectedRegionList().stream())
-                                .sorted(Comparator.comparingInt(protectedRegion -> protectedRegion.getMinimumPoint().getBlockY()))
-                                .collect(Collectors.toList());
-
-                        worldTerritoryList.forEach((territory) -> {
-                            territoryAreaStyleMap.put(territory, new AreaStyle(territory));
-                        });
-                        regionsToProcess.addAll(worldRegionList);
-
-                        worldsToProcess.remove(0);
-                        wgWorldsToProcess.remove(0);
+                        for (org.bukkit.World world : worldsToProcess) {
+                            processWorld(world);
+                        }
                     }
                 }
                 /* Now, process up to limit regions */
-                for (int i = 0; i < updatesPerTick; i++) {
-                    if (regionsToProcess.isEmpty()) {
-                        regionsToProcess = null;
-                        pauseRender();
-                        break;
-                    }
-                    ProtectedRegion pr = regionsToProcess.remove(regionsToProcess.size() - 1);
-                    int depth = 1;
-                    ProtectedRegion p = pr;
-                    while (p.getParent() != null) {
-                        depth++;
-                        p = p.getParent();
-                    }
-                    if (depth > maxDepth)
-                        continue;
-                    handleRegion(curWGWorld, pr, newMap);
-                }
+                processLimit();
+                worldsToProcess.clear();
+                wgWorldsToProcess.clear();
             }
             // Tick next step in the job
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this, 1);
