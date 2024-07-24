@@ -4,6 +4,7 @@ import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.permissionmannager.types.NwLuckPermsHandler;
 import fr.rosstail.nodewar.team.NwITeam;
+import fr.rosstail.nodewar.team.NwITeamManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -19,7 +20,7 @@ public class PermissionManager {
     private static PermissionManager manager;
 
     static {
-        iPermissionManagerMap.put("luckperms", NwLuckPermsHandler.class);
+        iPermissionManagerMap.put("luckperms", NwLuckPermsHandler.class); // end failsafe on AUTO
     }
 
     public static boolean canAddCustomManager(String name) {
@@ -48,22 +49,29 @@ public class PermissionManager {
         String system = ConfigData.getConfigData().general.defaultPermissionPlugin;
         if (iPermissionManagerMap.containsKey(system) && Bukkit.getServer().getPluginManager().getPlugin(system) != null) {
             return system;
+        } else if (system.equalsIgnoreCase("auto")) {
+            for (Map.Entry<String, Class<? extends NwIPermissionManagerHandler>> entry : iPermissionManagerMap.entrySet()) {
+                String s = entry.getKey();
+                if (Bukkit.getServer().getPluginManager().getPlugin(s) != null) {
+                    return s;
+                }
+            }
         }
 
         return null;
     }
 
     public void loadManager() {
-        String system = "luckperms";
+        String usedSystem = getUsedSystem();
 
-        if (getUsedSystem() != null) {
-            Class<? extends NwIPermissionManagerHandler> managerClass = iPermissionManagerMap.get(system);
+        if (usedSystem != null) {
+            Class<? extends NwIPermissionManagerHandler> managerClass = iPermissionManagerMap.get(usedSystem);
             Constructor<? extends NwIPermissionManagerHandler> managerConstructor;
 
             try {
                 managerConstructor = managerClass.getDeclaredConstructor();
                 iPermissionManager = managerConstructor.newInstance();
-                AdaptMessage.print("[Nodewar] Using " + system + " perm", AdaptMessage.prints.OUT);
+                AdaptMessage.print("[Nodewar] Using " + usedSystem + " perm", AdaptMessage.prints.OUT);
             } catch (NoSuchMethodException e) {
                 throw new IllegalArgumentException("Missing appropriate constructor in TeamManager class.", e);
             } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
@@ -71,6 +79,7 @@ public class PermissionManager {
             }
         } else {
             iPermissionManager = new NwLuckPermsHandler();
+            AdaptMessage.print("[Nodewar] Using default " + usedSystem + " perm", AdaptMessage.prints.OUT);
         }
     }
 
