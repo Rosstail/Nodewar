@@ -358,6 +358,7 @@ public class Territory {
 
     public Set<Player> getEffectivePlayers() {
         return getPlayers().stream().filter(player ->
+                !player.isSleeping() &&
                 (player.getGameMode().equals(GameMode.SURVIVAL) || player.getGameMode().equals(GameMode.ADVENTURE))).collect(Collectors.toSet());
     }
 
