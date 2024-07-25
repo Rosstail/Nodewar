@@ -9,7 +9,7 @@ storage:
 
 general:
   debug-messages: true
-  permission-plugin: auto # luckperms only. Ask dev to add others
+  permission-plugin: auto # luckperms and "auto". Ask dev to add others
 
 locale:
   lang: en_EN
