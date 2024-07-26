@@ -87,7 +87,7 @@ public class ConfigData {
             configFile = config;
 
             configVersion = (float) config.getDouble("general.config-version", 1.0F);
-            defaultPermissionPlugin = config.getString("general.permission-plugin", "luckperms");
+            defaultPermissionPlugin = config.getString("general.permission-plugin", "auto");
         }
     }
 
@@ -111,7 +111,7 @@ public class ConfigData {
         ConfigTeam(FileConfiguration config) {
             configFile = config;
 
-            system = config.getString("team.system", "Nodewar");
+            system = config.getString("team.system", "auto");
             creationCost = config.getDouble("team.creation-cost");
             String relationTypeStr = config.getString("team.default-relation", "neutral");
             defaultRelation = RelationType.valueOf(relationTypeStr.toUpperCase());

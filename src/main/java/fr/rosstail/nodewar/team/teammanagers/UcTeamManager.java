@@ -1,61 +1,60 @@
 package fr.rosstail.nodewar.team.teammanagers;
 
-import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.Town;
 import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.events.TownyEventHandler;
 import fr.rosstail.nodewar.permissionmannager.PermissionManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
-import fr.rosstail.nodewar.team.type.TownTeam;
+import fr.rosstail.nodewar.team.type.UcTeam;
+import me.ulrich.clans.Clans;
+import me.ulrich.clans.api.ClanAPIManager;
+import me.ulrich.clans.data.ClanData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class TownyTeamManager implements NwITeamManager {
-    private final Map<String, TownTeam> stringTeamMap = new HashMap<>();
-    private final TownyAPI townyAPI = TownyAPI.getInstance();
-    private TownyEventHandler townyEventHandler;
+public class UcTeamManager implements NwITeamManager {
+    private final Map<String, UcTeam> stringTeamMap = new HashMap<>();
+
+    private final Clans clans;
+    private final ClanAPIManager clanAPI;
 
 
-    public TownyTeamManager() {
-        townyEventHandler = new TownyEventHandler();
-        Bukkit.getPluginManager().registerEvents(townyEventHandler, Nodewar.getInstance());
+    public UcTeamManager() {
+        final Plugin plugin = Nodewar.getInstance().getServer().getPluginManager().getPlugin("UltimateClans");
+        if (!(plugin instanceof Clans)) {
+            throw new Error("Ultimate Clans is not in the server.");
+        }
+        clans = (Clans) plugin;
+        clanAPI = clans.getClanAPI();
     }
 
     @Override
     public void loadTeams() {
-        townyAPI.getTowns().forEach(town -> {
-
-            TownTeam townTeam = new TownTeam(town);
-            stringTeamMap.put(townTeam.getName(), townTeam);
+        clanAPI.getAllClansData().forEach(clanData -> {
+            UcTeam ucTeam = new UcTeam(clanData);
+            stringTeamMap.put(ucTeam.getName(), ucTeam);
         });
     }
 
     @Override
     public NwITeam getPlayerTeam(Player player) {
-        Resident resident = townyAPI.getResident(player.getUniqueId());
-        Town playerTown;
-        TownTeam townTeam;
-        if (resident == null) {
+        ClanData playerClanData =  clanAPI.getAllClansData().stream().filter(clanData -> clanData.getMembers().contains(player.getUniqueId())).findFirst().orElse(null);
+        UcTeam ucTeam;
+
+        if (playerClanData == null) {
             return null;
         }
 
-        playerTown = resident.getTownOrNull();
-        if (playerTown == null) {
-            return null;
+        if (stringTeamMap.values().stream().noneMatch(elementUcTeam -> (elementUcTeam.getClanData() == playerClanData))) {
+            ucTeam = new UcTeam(playerClanData);
+            stringTeamMap.put(ucTeam.getName(), ucTeam);
+            return ucTeam;
         }
 
-        if (stringTeamMap.values().stream().noneMatch(elementTownTeam -> (elementTownTeam.getTown() == playerTown))) {
-            townTeam = new TownTeam(playerTown);
-            stringTeamMap.put(townTeam.getName(), townTeam);
-            return townTeam;
-        }
-
-        return stringTeamMap.values().stream().filter(elementTownTeam -> (elementTownTeam.getTown() == playerTown)).findFirst().get();
+        return stringTeamMap.values().stream().filter(elementUcTeam -> (elementUcTeam.getClanData() == playerClanData)).findFirst().get();
     }
 
     @Override
@@ -70,15 +69,15 @@ public class TownyTeamManager implements NwITeamManager {
 
     @Override
     public void addITeam(String name, NwITeam team) {
-        TownTeam townTeam = (TownTeam) team;
-        stringTeamMap.put(name, townTeam);
+        UcTeam ucTeam = (UcTeam) team;
+        stringTeamMap.put(name, ucTeam);
 
         PermissionManager.getManager().createGroup(name);
 
         Player player;
-        if (((TownTeam) team).getTown().getMayor() != null) {
-            player = ((TownTeam) team).getTown().getMayor().getPlayer();
-            PermissionManager.getManager().setPlayerGroup(player, townTeam);
+        if (((UcTeam) team).getClanData().getLeader() != null) {
+            player = Bukkit.getPlayer(((UcTeam) team).getClanData().getLeader());
+            PermissionManager.getManager().setPlayerGroup(player, ucTeam);
         }
     }
 
@@ -137,54 +136,52 @@ public class TownyTeamManager implements NwITeamManager {
 
     @Override
     public void createRelation(NwITeam originITeam, NwITeam targetITeam, RelationType type) {
-        TownTeam originTownTeam = (TownTeam) originITeam;
-        Town originTown = originTownTeam.getTown();
-        TownTeam targetTownTeam = (TownTeam) targetITeam;
-        Town targetTown = targetTownTeam.getTown();
+        UcTeam originUcTeam = (UcTeam) originITeam;
+        ClanData originClan = originUcTeam.getClanData();
+        UcTeam targetUcTeam = (UcTeam) targetITeam;
+        ClanData targetClan = targetUcTeam.getClanData();
         switch (type) {
             case ALLY:
-                originTown.addAlly(targetTown);
+                clanAPI.allyAdd(originClan.getId(), targetClan.getId());
                 break;
             case TRUCE:
-                originTown.addTrustedTown(targetTown);
-                break;
             case NEUTRAL:
-                deleteRelation(originITeam, targetITeam);
+                clanAPI.allyRemove(originClan.getId(), targetClan.getId());
+                clanAPI.rivalRemove(originClan.getId(), targetClan.getId());
                 break;
             case ENEMY:
-                originTown.addEnemy(targetTown);
+                clanAPI.rivalAdd(originClan.getId(), targetClan.getId());
                 break;
         }
     }
 
     @Override
     public void deleteRelation(NwITeam originITeam, NwITeam targetITeam) {
-        TownTeam originTownTeam = (TownTeam) originITeam;
-        Town originTown = originTownTeam.getTown();
-        TownTeam targetTownTeam = (TownTeam) targetITeam;
-        Town targetTown = targetTownTeam.getTown();
-        originTown.removeAlly(targetTown);
-        originTown.removeTrustedTown(targetTown);
-        originTown.removeEnemy(targetTown);
+        UcTeam originUcTeam = (UcTeam) originITeam;
+        ClanData originClan = originUcTeam.getClanData();
+        UcTeam targetUcTeam = (UcTeam) targetITeam;
+        ClanData targetClan = targetUcTeam.getClanData();
+        clanAPI.allyRemove(originClan.getId(), targetClan.getId());
+        clanAPI.rivalRemove(originClan.getId(), targetClan.getId());
     }
 
     @Override
     public NwTeamRelationRequest getTeamRelationRequest(NwITeam firstTeam, NwITeam secondTeam) {
-        throw new RuntimeException("Towny shoud use its own relation request system");
+        throw new RuntimeException("UltimateClans shoud use its own relation request system");
     }
 
     @Override
     public Set<NwTeamRelationRequest> getTeamRelationRequestSet() {
-        throw new RuntimeException("Towny shoud use its own relation request system");
+        throw new RuntimeException("UltimateClans shoud use its own relation request system");
     }
 
     @Override
     public void createRelationRequest(NwITeam originITeam, NwITeam targetITeam, RelationType type) {
-        throw new RuntimeException("Towny shoud use its own relation request system");
+        throw new RuntimeException("UltimateClans shoud use its own relation request system");
     }
 
     @Override
     public void deleteRelationRequest(NwITeam originTeam, NwITeam targetITeam) {
-        throw new RuntimeException("Towny shoud use its own relation request system");
+        throw new RuntimeException("UltimateClans shoud use its own relation request system");
     }
 }

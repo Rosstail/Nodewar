@@ -1,9 +1,12 @@
 package fr.rosstail.nodewar;
 
 import fr.rosstail.nodewar.permissionmannager.NwIPermissionManagerHandler;
+import fr.rosstail.nodewar.player.PlayerData;
+import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.objective.NwObjective;
 import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
+import org.bukkit.entity.Player;
 
 public interface NwIAPI {
 
@@ -24,4 +27,17 @@ public interface NwIAPI {
      * @return if the compatibility has been added
      */
     boolean addCustomPermissionManager(String name, Class<? extends NwIPermissionManagerHandler> customPermissionHandlerClass);
+
+    /**
+     *
+     * @return The loaded properties from the config.yml
+     */
+    ConfigData getConfigData();
+
+    /**
+     *
+     * @param player Specify the player to get the team from
+     * @return the team of the player
+     */
+    NwITeam getPlayerTeam(Player player);
 }

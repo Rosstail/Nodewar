@@ -27,7 +27,7 @@ public class NwTeamManager implements NwITeamManager {
     private final HashSet<NwTeamInvite> teamInviteHashSet = new HashSet<>();
     private final Set<NwTeamRelationRequest> relationRequestHashSet = new HashSet<>();
 
-    void NwITeamManager() {
+    public NwTeamManager() {
         startInviteExpirationHandler();
     }
 

@@ -10,6 +10,7 @@ import fr.rosstail.nodewar.team.relation.NwTeamRelation;
 import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import fr.rosstail.nodewar.team.teammanagers.NwTeamManager;
 import fr.rosstail.nodewar.team.teammanagers.TownyTeamManager;
+import fr.rosstail.nodewar.team.teammanagers.UcTeamManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
 import org.bukkit.Bukkit;
@@ -29,8 +30,9 @@ public class TeamManager {
     private NwITeamManager iManager = null;
 
     static {
-        iTeamManagerMap.put("nodewar", NwTeamManager.class);
         iTeamManagerMap.put("Towny", TownyTeamManager.class);
+        iTeamManagerMap.put("UltimateClans", UcTeamManager.class);
+        iTeamManagerMap.put("nodewar", NwTeamManager.class); // last, failsafe for AUTO
     }
 
     /**
@@ -66,28 +68,36 @@ public class TeamManager {
         String system = ConfigData.getConfigData().team.system;
         if (iTeamManagerMap.containsKey(system) && Bukkit.getServer().getPluginManager().getPlugin(system) != null) {
             return system;
+        } else if (system.equalsIgnoreCase("auto")) {
+            for (Map.Entry<String, Class<? extends NwITeamManager>> entry : iTeamManagerMap.entrySet()) {
+                String s = entry.getKey();
+                if (Bukkit.getServer().getPluginManager().getPlugin(s) != null) {
+                    return s;
+                }
+            }
         }
 
         return null;
     }
 
     public void loadTeams() {
-        String system = ConfigData.getConfigData().team.system;
+        String usedSystem = getUsedSystem();
 
-        if (getUsedSystem() != null) {
-            Class<? extends NwITeamManager> managerClass = iTeamManagerMap.get(system);
+        if (usedSystem != null) {
+            Class<? extends NwITeamManager> managerClass = iTeamManagerMap.get(usedSystem);
             Constructor<? extends NwITeamManager> managerConstructor;
 
             try {
                 managerConstructor = managerClass.getDeclaredConstructor();
                 iManager = managerConstructor.newInstance();
-                AdaptMessage.print("[Nodewar] Using " + system + " team", AdaptMessage.prints.OUT);
+                AdaptMessage.print("[Nodewar] Using " + usedSystem + " team", AdaptMessage.prints.OUT);
             } catch (NoSuchMethodException e) {
                 throw new IllegalArgumentException("Missing appropriate constructor in TeamManager class.", e);
             } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         } else {
+            AdaptMessage.print("[Nodewar] Using default " + usedSystem + " team", AdaptMessage.prints.OUT);
             iManager = new NwTeamManager();
         }
 

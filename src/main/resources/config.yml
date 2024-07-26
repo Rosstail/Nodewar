@@ -9,7 +9,7 @@ storage:
 
 general:
   debug-messages: true
-  permission-plugin: auto # luckperms only. Ask dev to add others
+  permission-plugin: auto # luckperms and "auto". Ask dev to add others
 
 locale:
   lang: en_EN
@@ -20,7 +20,7 @@ locale:
     fade-out: 2
 
 team:
-  system: "Nodewar" # Nodewar, Towny
+  system: "auto" # "Towny", "UltimateClans", "nodewar" OR "auto"
   creation-cost: 0
   default-relation: neutral
   none-color: "#4C4C4C"

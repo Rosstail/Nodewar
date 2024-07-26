@@ -231,7 +231,7 @@ public class AdaptMessage {
         message = message.replaceAll("\\[now]", String.valueOf(System.currentTimeMillis()));
 
         message = ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(null, message));
-        if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1].replaceAll("\\)", "")) >= 16) {
+        if (getVersionNumbers().get(1) >= 16) {
             message = colorFormat(hexPattern, message);
         }
         message = colorFormat(colorPattern, message);
@@ -443,6 +443,18 @@ public class AdaptMessage {
         }
     }
 
+    private List<Integer> getVersionNumbers() {
+        ArrayList<Integer> versionNumbers = new ArrayList<>();
+        Pattern pattern = Pattern.compile("(\\d+)\\.(\\d+)");
+        String version = Bukkit.getVersion();
+        Matcher matcher = pattern.matcher(version);
+        if (matcher.find()) {
+            for (int i = 1; i <= matcher.groupCount(); i++) {
+                versionNumbers.add(Integer.valueOf(matcher.group(i)));
+            }
+        }
+        return versionNumbers;
+    }
 
     public String getChatColoHexValue(String teamColor) {
         switch (teamColor) {
