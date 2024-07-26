@@ -1,16 +1,17 @@
 package fr.rosstail.nodewar.team.type;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.TeamIRelation;
-import fr.rosstail.nodewar.team.TeamModel;
+import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
+import fr.rosstail.nodewar.team.relation.TownyTeamRelation;
 import me.ulrich.clans.data.ClanData;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class UcTeam implements NwITeam {
@@ -44,7 +45,7 @@ public class UcTeam implements NwITeam {
 
     @Override
     public String getShortName() {
-        return clanData.getTag();
+        return clanData.getTag().substring(0,Math.min(clanData.getTag().length(), ConfigData.getConfigData().team.maximumShortNameLength));
     }
 
     @Override
@@ -59,22 +60,22 @@ public class UcTeam implements NwITeam {
 
     @Override
     public boolean isOpen() {
-        return clanData.isFf();
+        return false;
     }
 
     @Override
     public void setOpen(boolean value) {
-        clanData.setFf(value);
+
     }
 
     @Override
     public boolean isPermanent() {
-        return clanData.isVerified();
+        return false;
     }
 
     @Override
     public void setPermanent(boolean value) {
-        clanData.setVerified(value);
+
     }
 
     @Override
@@ -134,22 +135,26 @@ public class UcTeam implements NwITeam {
 
     @Override
     public Map<NwITeam, TeamIRelation> getRelations() {
-        return null;
+        Map<NwITeam, TeamIRelation> clanRelationMap = new HashMap<>();
+        clanRelationMap.putAll(getAllies());
+        clanRelationMap.putAll(getEnemies());
+        clanRelationMap.putAll(getTruce());
+        return clanRelationMap;
     }
 
     @Override
     public Map<NwITeam, TeamIRelation> getAllies() {
-        return null;
+        return new HashMap<>();
     }
 
     @Override
     public Map<NwITeam, TeamIRelation> getTruce() {
-        return null;
+        return new HashMap<>();
     }
 
     @Override
     public Map<NwITeam, TeamIRelation> getEnemies() {
-        return null;
+        return new HashMap<>();
     }
 
     @Override

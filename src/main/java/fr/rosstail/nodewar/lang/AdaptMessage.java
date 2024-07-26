@@ -448,8 +448,10 @@ public class AdaptMessage {
         Pattern pattern = Pattern.compile("(\\d+)\\.(\\d+)");
         String version = Bukkit.getVersion();
         Matcher matcher = pattern.matcher(version);
-        for (int i = 1; i <= matcher.groupCount(); i++) {
-            versionNumbers.add(Integer.valueOf(matcher.group(i)));
+        if (matcher.find()) {
+            for (int i = 1; i <= matcher.groupCount(); i++) {
+                versionNumbers.add(Integer.valueOf(matcher.group(i)));
+            }
         }
         return versionNumbers;
     }
