@@ -1,4 +1,4 @@
-package fr.rosstail.nodewar.territory.dynmap;
+package fr.rosstail.nodewar.webmap;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector2;
