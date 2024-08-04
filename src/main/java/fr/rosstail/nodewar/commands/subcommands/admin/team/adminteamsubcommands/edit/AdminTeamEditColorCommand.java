@@ -6,9 +6,8 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.TeamManager;
-import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import fr.rosstail.nodewar.webmap.OldDynmapHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -99,7 +98,7 @@ public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
                 AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_COLOR_RESULT), targetTeam, null)
         );
 
-        DynmapHandler.getDynmapHandler().resumeRender();
+        OldDynmapHandler.getDynmapHandler().resumeRender();
     }
 
     @Override

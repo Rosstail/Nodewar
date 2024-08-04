@@ -2,7 +2,7 @@ package fr.rosstail.nodewar.territory;
 
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
-import fr.rosstail.nodewar.territory.dynmap.TerritoryDynmapModel;
+import fr.rosstail.nodewar.webmap.TerritoryDynmapModel;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
 
 import java.util.ArrayList;

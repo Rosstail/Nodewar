@@ -6,9 +6,8 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.TeamManager;
-import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import fr.rosstail.nodewar.webmap.OldDynmapHandler;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -75,7 +74,7 @@ public class AdminTeamEditDisbandCommand extends AdminTeamEditSubCommand {
         TeamManager.getManager().deleteTeam(targetTeam.getName());
 
         sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_DISBAND_RESULT));
-        DynmapHandler.getDynmapHandler().resumeRender();
+        OldDynmapHandler.getDynmapHandler().resumeRender();
     }
 
     @Override

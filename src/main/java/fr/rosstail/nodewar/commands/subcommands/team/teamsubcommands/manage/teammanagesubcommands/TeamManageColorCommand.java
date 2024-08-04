@@ -9,8 +9,7 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.rank.NwTeamRank;
-import fr.rosstail.nodewar.team.type.NwTeam;
-import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import fr.rosstail.nodewar.webmap.OldDynmapHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -112,7 +111,7 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
         );
 
         StorageManager.getManager().updateTeamModel(playerNwITeam);
-        DynmapHandler.getDynmapHandler().resumeRender();
+        OldDynmapHandler.getDynmapHandler().resumeRender();
     }
 
     @Override

@@ -35,15 +35,15 @@ import org.dynmap.markers.PolyLineMarker;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DynmapHandler {
-    private static DynmapHandler dynmapHandler;
+public class OldDynmapHandler {
+    private static OldDynmapHandler oldDynmapHandler;
     private final Nodewar plugin;
     private Plugin dynmap;
     private DynmapAPI dynmapAPI;
     private MarkerAPI markerAPI;
     private int updatesPerTick = 1; //1-20
 
-    MarkerSet set;
+    MarkerSet markerSet;
     long updatePeriod;
     boolean use3d;
     String infoWindow;
@@ -52,17 +52,17 @@ public class DynmapHandler {
     boolean stop;
     int maxDepth;
 
-    public DynmapHandler(Nodewar plugin) {
+    public OldDynmapHandler(Nodewar plugin) {
         this.plugin = plugin;
     }
 
-    public static DynmapHandler getDynmapHandler() {
-        return dynmapHandler;
+    public static OldDynmapHandler getDynmapHandler() {
+        return oldDynmapHandler;
     }
 
     public static void init(Nodewar plugin) {
-        if (dynmapHandler == null) {
-            dynmapHandler = new DynmapHandler(plugin);
+        if (oldDynmapHandler == null) {
+            oldDynmapHandler = new OldDynmapHandler(plugin);
         }
     }
 
@@ -180,7 +180,7 @@ public class DynmapHandler {
         String markerID = world.getName() + "_" + id + "_" + "zone";
         AreaMarker m = resAreas.remove(markerID); /* Existing area? */
         if (m == null) {
-            m = set.createAreaMarker(markerID, name, false, world.getName(), x, z, false);
+            m = markerSet.createAreaMarker(markerID, name, false, world.getName(), x, z, false);
             if (m == null)
                 return;
         } else {
@@ -371,20 +371,20 @@ public class DynmapHandler {
         ConfigData.ConfigDynmap configDynmap = ConfigData.getConfigData().dynmap;
 
         /* Now, add marker set for mobs (make it transient) */
-        set = markerAPI.getMarkerSet("nodewar.markerset");
-        if (set == null)
-            set = markerAPI.createMarkerSet("nodewar.markerset", LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL), null, false);
+        markerSet = markerAPI.getMarkerSet("nodewar.markerset");
+        if (markerSet == null)
+            markerSet = markerAPI.createMarkerSet("nodewar.markerset", LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL), null, false);
         else
-            set.setMarkerSetLabel(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL));
-        if (set == null) {
+            markerSet.setMarkerSetLabel(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL));
+        if (markerSet == null) {
             AdaptMessage.print("Error creating marker set", AdaptMessage.prints.WARNING);
             return;
         }
         int minZoom = configDynmap.minimumZoom;
         if (minZoom > 0)
-            set.setMinZoom(minZoom);
-        set.setLayerPriority(configDynmap.layerPriority);
-        set.setHideByDefault(configDynmap.hideByDefault);
+            markerSet.setMinZoom(minZoom);
+        markerSet.setLayerPriority(configDynmap.layerPriority);
+        markerSet.setHideByDefault(configDynmap.hideByDefault);
         use3d = configDynmap.use3DRegions;
         infoWindow = configDynmap.infoWindow;
         maxDepth = configDynmap.maximumDepth;
@@ -421,9 +421,9 @@ public class DynmapHandler {
     }
 
     public void disable() {
-        if (set != null) {
-            set.deleteMarkerSet();
-            set = null;
+        if (markerSet != null) {
+            markerSet.deleteMarkerSet();
+            markerSet = null;
         }
         resAreas.clear();
         stop = true;
@@ -447,19 +447,19 @@ public class DynmapHandler {
         }
 
         /* Now, add marker set for mobs (make it transient) */
-        set = markerAPI.getMarkerSet("nodewar.markerset");
-        if (set == null)
-            set = markerAPI.createMarkerSet("nodewar.markerset", LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL), null, false);
+        markerSet = markerAPI.getMarkerSet("nodewar.markerset");
+        if (markerSet == null)
+            markerSet = markerAPI.createMarkerSet("nodewar.markerset", LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL), null, false);
         else
-            set.setMarkerSetLabel(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL));
-        if (set == null) {
+            markerSet.setMarkerSetLabel(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL));
+        if (markerSet == null) {
             AdaptMessage.print("Error creating marker set", AdaptMessage.prints.WARNING);
             return;
         }
 
         Location territoryCenter = territory.getCenter();
 
-        set.createMarker(null, ChatColor.stripColor(territory.getModel().getDisplay()), territoryCenter.getWorld().getName(),
+        markerSet.createMarker(null, ChatColor.stripColor(territory.getModel().getDisplay()), territoryCenter.getWorld().getName(),
                 territoryCenter.getX(), territoryCenter.getY(), territoryCenter.getZ(), dynmapAPI.getMarkerAPI().getMarkerIcon(territory.getDynmapInfo().getTerritoryDynmapModel().getMarker()), false);
     }
 
@@ -482,12 +482,12 @@ public class DynmapHandler {
         }
 
         /* Now, add marker set for mobs (make it transient) */
-        set = markerAPI.getMarkerSet("nodewar.markerset");
-        if (set == null)
-            set = markerAPI.createMarkerSet("nodewar.markerset", LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL), null, false);
+        markerSet = markerAPI.getMarkerSet("nodewar.markerset");
+        if (markerSet == null)
+            markerSet = markerAPI.createMarkerSet("nodewar.markerset", LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL), null, false);
         else
-            set.setMarkerSetLabel(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL));
-        if (set == null) {
+            markerSet.setMarkerSetLabel(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL));
+        if (markerSet == null) {
             AdaptMessage.print("Error creating marker set", AdaptMessage.prints.WARNING);
             return;
         }
@@ -510,13 +510,13 @@ public class DynmapHandler {
         int thickness = ConfigData.getConfigData().dynmap.lineThickness;
 
         if (!ConfigData.getConfigData().dynmap.simpleLine) {
-            PolyLineMarker aroundLineMarker = set.createPolyLineMarker(null, ChatColor.stripColor(territory.getModel().getDisplay() + " -> " + targetTerritory.getModel().getDisplay()), true, territory.getModel().getWorldName(), x, aroundY, z, false);
+            PolyLineMarker aroundLineMarker = markerSet.createPolyLineMarker(null, ChatColor.stripColor(territory.getModel().getDisplay() + " -> " + targetTerritory.getModel().getDisplay()), true, territory.getModel().getWorldName(), x, aroundY, z, false);
             if (aroundLineMarker != null) {
                 aroundLineMarker.setLineStyle(thickness + 3, 0.5f, 0x000000);
             }
         }
 
-        PolyLineMarker lineMarker = set.createPolyLineMarker(null, ChatColor.stripColor(territory.getModel().getDisplay() + " -> " + targetTerritory.getModel().getDisplay()), true, territory.getModel().getWorldName(), x, y, z, false);
+        PolyLineMarker lineMarker = markerSet.createPolyLineMarker(null, ChatColor.stripColor(territory.getModel().getDisplay() + " -> " + targetTerritory.getModel().getDisplay()), true, territory.getModel().getWorldName(), x, y, z, false);
 
         if (lineMarker != null) {
             NwITeam nwTeam = territory.getOwnerITeam();

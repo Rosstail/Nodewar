@@ -4,7 +4,7 @@ package fr.rosstail.nodewar.territory;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
-import fr.rosstail.nodewar.territory.dynmap.TerritoryDynmapModel;
+import fr.rosstail.nodewar.webmap.TerritoryDynmapModel;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;

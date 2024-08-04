@@ -7,7 +7,7 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import fr.rosstail.nodewar.webmap.OldDynmapHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -96,7 +96,7 @@ public class BattlefieldManager {
 
         StorageManager.getManager().updateBattlefieldModel(battlefield.getModel(), true);
 
-        DynmapHandler.getDynmapHandler().resumeRender();
+        OldDynmapHandler.getDynmapHandler().resumeRender();
     }
 
     public void closeBattlefield(Battlefield battlefield) {
@@ -127,7 +127,7 @@ public class BattlefieldManager {
 
         StorageManager.getManager().updateBattlefieldModel(battlefield.getModel(), true);
 
-        DynmapHandler.getDynmapHandler().resumeRender();
+        OldDynmapHandler.getDynmapHandler().resumeRender();
     }
 
     public long getNextDayTime(DayOfWeek day, int hour, int minute) {
@@ -197,7 +197,7 @@ public class BattlefieldManager {
             battlefieldListToClose.forEach(this::closeBattlefield);
             battlefieldListToOpen.forEach(this::openBattlefield);
 
-            DynmapHandler.getDynmapHandler().resumeRender();
+            OldDynmapHandler.getDynmapHandler().resumeRender();
         }
     }
 

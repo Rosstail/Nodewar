@@ -42,6 +42,7 @@ bossbar:
     enemy: RED
 
 dynmap:
+  type: "auto" # Dynmap, Squaremap
   simple-line: false
   line-thickness: 3
   hide-by-default: false

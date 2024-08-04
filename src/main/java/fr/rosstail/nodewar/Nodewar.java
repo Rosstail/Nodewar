@@ -17,8 +17,9 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.battle.BattleManager;
-import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import fr.rosstail.nodewar.webmap.OldDynmapHandler;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
+import fr.rosstail.nodewar.webmap.WebmapManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -89,12 +90,16 @@ public class Nodewar extends JavaPlugin implements Listener {
         TerritoryManager.init(this);
         ObjectiveManager.init(this);
         BattleManager.init(this);
-        DynmapHandler.init(this);
+        OldDynmapHandler.init(this);
         BattlefieldManager.init(this);
+
 
         loadCustomConfig();
         PermissionManager.init();
         PermissionManager.getManager().loadManager();
+
+        WebmapManager.init(this);
+        WebmapManager.getManager().loadManager();
 
         if (PermissionManager.getManager() == null) {
             AdaptMessage.print("[" + this.getName() + "] No permission plugin available. Disabling", AdaptMessage.prints.ERROR);
@@ -154,9 +159,9 @@ public class Nodewar extends JavaPlugin implements Listener {
         PlayerDataManager.startDeployHandler();
         BattlefieldManager.getBattlefieldManager().startBattlefieldDispatcher();
 
-        DynmapHandler dynmapHandler = DynmapHandler.getDynmapHandler();
-        dynmapHandler.enable();
-        dynmapHandler.resumeRender();
+        OldDynmapHandler oldDynmapHandler = OldDynmapHandler.getDynmapHandler();
+        oldDynmapHandler.enable();
+        oldDynmapHandler.resumeRender();
     }
 
     private void initDefaultConfigs() {
@@ -186,8 +191,8 @@ public class Nodewar extends JavaPlugin implements Listener {
     }
 
     public void onDisable() {
-        if (DynmapHandler.getDynmapHandler() != null) {
-            DynmapHandler.getDynmapHandler().disable();
+        if (OldDynmapHandler.getDynmapHandler() != null) {
+            OldDynmapHandler.getDynmapHandler().disable();
         }
         minecraftEventHandler.setClosing(true);
         worldguardEventHandler.setClosing(true);

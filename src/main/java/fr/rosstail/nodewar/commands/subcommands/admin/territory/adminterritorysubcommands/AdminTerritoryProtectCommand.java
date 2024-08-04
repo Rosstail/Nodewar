@@ -6,7 +6,7 @@ import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
-import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import fr.rosstail.nodewar.webmap.OldDynmapHandler;
 import org.bukkit.command.CommandSender;
 
 public class AdminTerritoryProtectCommand extends AdminTerritorySubCommand {
@@ -47,7 +47,7 @@ public class AdminTerritoryProtectCommand extends AdminTerritorySubCommand {
         territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(args[2]);
         territory.getModel().setUnderProtection(true);
 
-        DynmapHandler.getDynmapHandler().resumeRender();
+        OldDynmapHandler.getDynmapHandler().resumeRender();
 
         message = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory);
         sender.sendMessage(message);
