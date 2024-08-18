@@ -17,7 +17,6 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.battle.BattleManager;
-import fr.rosstail.nodewar.webmap.OldDynmapHandler;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.webmap.WebmapManager;
 import net.milkbowl.vault.chat.Chat;
@@ -32,6 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -90,7 +90,6 @@ public class Nodewar extends JavaPlugin implements Listener {
         TerritoryManager.init(this);
         ObjectiveManager.init(this);
         BattleManager.init(this);
-        OldDynmapHandler.init(this);
         BattlefieldManager.init(this);
 
 
@@ -156,12 +155,13 @@ public class Nodewar extends JavaPlugin implements Listener {
         territoryManager.setupTerritoriesAttackRequirements();
         territoryManager.setupTerritoriesRewardScheduler();
 
+        WebmapManager webmapManager = WebmapManager.getManager();
+        webmapManager.createMarkerSet();
+
+        webmapManager.addTerritorySetToDraw(new HashSet<>(territoryManager.getTerritoryMap().values()));
+
         PlayerDataManager.startDeployHandler();
         BattlefieldManager.getBattlefieldManager().startBattlefieldDispatcher();
-
-        OldDynmapHandler oldDynmapHandler = OldDynmapHandler.getDynmapHandler();
-        oldDynmapHandler.enable();
-        oldDynmapHandler.resumeRender();
     }
 
     private void initDefaultConfigs() {
@@ -191,9 +191,6 @@ public class Nodewar extends JavaPlugin implements Listener {
     }
 
     public void onDisable() {
-        if (OldDynmapHandler.getDynmapHandler() != null) {
-            OldDynmapHandler.getDynmapHandler().disable();
-        }
         minecraftEventHandler.setClosing(true);
         worldguardEventHandler.setClosing(true);
         nodewarEventHandler.setClosing(true);

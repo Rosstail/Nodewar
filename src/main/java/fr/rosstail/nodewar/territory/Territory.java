@@ -392,8 +392,10 @@ public class Territory {
 
     public Location getCenter() {
         if (protectedRegionList.isEmpty()) {
+            System.err.println("SuuS " + getModel().getName());
             return null;
         }
+
         ProtectedRegion firstRegion = protectedRegionList.get(0);
 
         BlockVector3 min = firstRegion.getMinimumPoint();

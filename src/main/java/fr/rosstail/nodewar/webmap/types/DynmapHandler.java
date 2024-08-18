@@ -4,13 +4,15 @@ import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.RegionType;
-import de.bluecolored.bluemap.api.marker.LineMarker;
 import fr.rosstail.nodewar.ConfigData;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.webmap.NwIWebmapHandler;
+import fr.rosstail.nodewar.webmap.WebmapManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
@@ -33,35 +35,53 @@ public class DynmapHandler implements NwIWebmapHandler {
     Map<Territory, List<AreaMarker>> territoryAreaMarkerListMap = new HashMap<>();
     Map<Map.Entry<Territory, Territory>, PolyLineMarker> lineMarkerBetweenTerritoriesMap = new HashMap<>();
 
+    public DynmapHandler() {
+        this.dynmapPlugin = Bukkit.getServer().getPluginManager().getPlugin("dynmap");
+        this.dynmapAPI = (DynmapAPI) dynmapPlugin;
+        this.markerAPI = dynmapAPI.getMarkerAPI();
+    }
+
     @Override
     public void createMarkerSet() {
-        MarkerSet markerSet = markerAPI.getMarkerSet("nodewar.markerset");
-        if (markerSet == null)
-            this.markerSet = markerAPI.createMarkerSet("nodewar.markerset", LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL), null, false);
-        else
-            this.markerSet.setMarkerSetLabel(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL));
+        MarkerSet markerSet = markerAPI.getMarkerSet("nw.set");
+        if (markerSet == null) {
+            this.markerSet = markerAPI.createMarkerSet("nw.set", LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL), null, false);
+            System.out.println("CREATE !!!");
+
+        }
     }
 
     @Override
     public void drawTerritoryMarker(Territory territory) {
         Location territoryCenter = territory.getCenter();
+
+        if (territoryCenter == null) {
+            return;
+        }
         if (territory.getDynmapInfo().getTerritoryDynmapModel().getMarker() == null) {
             return;
         }
 
-        Marker marker = markerSet.createMarker(null, ChatColor.stripColor(territory.getModel().getDisplay()), territoryCenter.getWorld().getName(),
+        Marker marker = markerSet.createMarker("nw.marker." + territory.getModel().getWorldName() + "." + territory.getModel().getName(), ChatColor.stripColor(territory.getModel().getDisplay()), territoryCenter.getWorld().getName(),
                 territoryCenter.getX(), territoryCenter.getY(), territoryCenter.getZ(), dynmapAPI.getMarkerAPI().getMarkerIcon(territory.getDynmapInfo().getTerritoryDynmapModel().getMarker()), false);
 
+        System.out.println("ID " + "nw.marker." + territory.getModel().getWorldName() + "." + territory.getModel().getName());
         territoryMarkerMap.put(territory, marker);
     }
 
     @Override
     public void editTerritoryMarker(Territory territory) {
+        String markerID = territory.getModel().getWorldName() + "." + territory.getModel().getName();
         Marker marker = territoryMarkerMap.get(territory);
-        marker.setMarkerIcon(null);
+        if (marker == null) {
+            return;
+        }
+        MarkerIcon markerIcon = dynmapAPI.getMarkerAPI().getMarkerIcon("nw.marker." + markerID);
+        if (markerIcon != null) {
+            marker.setMarkerIcon(markerIcon);
+        }
         marker.setLabel(ChatColor.stripColor(territory.getModel().getDisplay()));
-        marker.setDescription(null);
-        marker.setLocation("", 0, 0, 0);
+        marker.setLocation(territory.getWorld().getName(), territory.getDynmapInfo().getX(), territory.getDynmapInfo().getY(), territory.getDynmapInfo().getZ());
     }
 
     @Override
@@ -72,7 +92,8 @@ public class DynmapHandler implements NwIWebmapHandler {
             double[] x;
             double[] z;
             RegionType regionType = protectedRegion.getType();
-            String markerId = worldName + "_" + protectedRegion.getId() + "_" + "area";;
+            String markerId = "nw.area." + worldName + "." + protectedRegion.getId();
+
             String name = ChatColor.stripColor(territory.getModel().getDisplay());
             BlockVector3 l0 = protectedRegion.getMinimumPoint();
             BlockVector3 l1 = protectedRegion.getMaximumPoint();
@@ -102,27 +123,54 @@ public class DynmapHandler implements NwIWebmapHandler {
                 return;
             }
             AreaMarker areaMarker = markerSet.createAreaMarker(markerId, name, false, worldName, x, z, false);
+            colorize(areaMarker, territory);
+            describe(areaMarker, territory);
             areaMarkerList.add(areaMarker);
 
         });
         territoryAreaMarkerListMap.put(territory, areaMarkerList);
     }
 
+    private void colorize(AreaMarker areaMarker, Territory territory) {
+        float opacity = ConfigData.getConfigData().webmap.fillOpacity;
+        NwITeam nwITeam = territory.getOwnerITeam();
+        String territoryColor = nwITeam != null ? nwITeam.getTeamColor() : ConfigData.getConfigData().team.noneColor;
+        boolean isProtected = territory.getModel().isUnderProtection();
+        String strLineColor = isProtected ? "00AA00" : "AA0000";
+        int lineColor = Integer.parseInt(strLineColor, 16);
+
+        areaMarker.setFillStyle(opacity, Integer.parseInt(territoryColor.substring(1), 16));
+        areaMarker.setLineStyle(3, opacity, lineColor);
+    }
+
+    private void describe(AreaMarker areaMarker, Territory territory) {
+        areaMarker.setLabel(ChatColor.stripColor(territory.getModel().getDisplay()));
+        String description = AdaptMessage.getAdaptMessage()
+                .adaptTerritoryMessage(LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_CHECK_RESULT), territory);
+        description = WebmapManager.getManager().convertYamlToHtml(description.split("\n"));
+        areaMarker.setDescription(description);
+    }
+
     @Override
     public void editTerritorySurface(Territory territory) {
         List<AreaMarker> areaMarkerList = territoryAreaMarkerListMap.get(territory);
+        if (areaMarkerList == null) {
+            return;
+        }
         String name = ChatColor.stripColor(territory.getModel().getDisplay());
         areaMarkerList.forEach(areaMarker -> {
             areaMarker.setLabel(name);
-            areaMarker.setFillStyle(1,1);
-            areaMarker.setLineStyle(1,1, 1);
+            colorize(areaMarker, territory);
+            describe(areaMarker, territory);
             areaMarker.setBoostFlag(false);
-            areaMarker.setDescription(null);
         });
     }
 
     @Override
     public void drawLineBetweenTerritories(Territory startTerritory, Territory endTerritory) {
+        if (startTerritory.getCenter() == null || endTerritory.getCenter() == null) {
+            return;
+        }
         double[] x = new double[2];
         double[] y = new double[2];
         double[] z = new double[2];
@@ -138,9 +186,9 @@ public class DynmapHandler implements NwIWebmapHandler {
         aroundY[0] = y[0] - 0.1F;
         aroundY[1] = y[1] - 0.1F;
 
-        int thickness = ConfigData.getConfigData().dynmap.lineThickness;
+        int thickness = ConfigData.getConfigData().webmap.lineThickness;
 
-        if (!ConfigData.getConfigData().dynmap.simpleLine) {
+        if (!ConfigData.getConfigData().webmap.simpleLine) {
             PolyLineMarker aroundLineMarker = markerSet.createPolyLineMarker(null, ChatColor.stripColor(startTerritory.getModel().getDisplay() + " -> " + endTerritory.getModel().getDisplay()), true, startTerritory.getModel().getWorldName(), x, aroundY, z, false);
             if (aroundLineMarker != null) {
                 aroundLineMarker.setLineStyle(thickness + 3, 0.5f, 0x000000);
@@ -163,6 +211,12 @@ public class DynmapHandler implements NwIWebmapHandler {
     public void editLineBetweenTerritories(Territory startTerritory, Territory endTerritory) {
         // TODO
         System.err.println("Not available yet");
+        lineMarkerBetweenTerritoriesMap.entrySet().stream().filter(entryPolyLineMarkerEntry ->
+                (entryPolyLineMarkerEntry.getKey().getKey() == startTerritory
+                        && entryPolyLineMarkerEntry.getKey().getValue() == endTerritory)
+        ).forEach(entryPolyLineMarkerEntry -> {
+            
+        });
     }
 
     @Override
@@ -193,7 +247,7 @@ public class DynmapHandler implements NwIWebmapHandler {
     }
 
     public static int hexToDecimal(String hex) {
-        hex = hex.replace("#", "");
+        hex = hex.split("#")[1];
 
         int red = Integer.parseInt(hex.substring(0, 2), 16);
         int green = Integer.parseInt(hex.substring(2, 4), 16);

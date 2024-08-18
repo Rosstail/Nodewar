@@ -282,10 +282,10 @@ battlefield:
   open: "OUVERT"
   closed: "FERMÉ"
   announcement:
-    open: "[prefix]Le champs de bataille [battlefield_display] est désormais ouvert !"
-    open-delay: "[prefix]Le champs de bataille [battlefield_display] va ouvrir dans [delay]"
-    close: "[prefix]Le champs de bataille [battlefield_display] est désormais fermé !"
-    close-delay: "[prefix]Le champs de bataille [battlefield_display] va fermer dans [delay]"
+    open: "[prefix]Le champ de bataille [battlefield_display] est désormais ouvert !"
+    open-delay: "[prefix]Le champ de bataille [battlefield_display] va ouvrir dans [delay]"
+    close: "[prefix]Le champ de bataille [battlefield_display] est désormais fermé !"
+    close-delay: "[prefix]Le champ de bataille [battlefield_display] va fermer dans [delay]"
 
 territory:
   description:

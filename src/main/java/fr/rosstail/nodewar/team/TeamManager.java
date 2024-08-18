@@ -12,7 +12,7 @@ import fr.rosstail.nodewar.team.teammanagers.NwTeamManager;
 import fr.rosstail.nodewar.team.teammanagers.TownyTeamManager;
 import fr.rosstail.nodewar.team.teammanagers.UcTeamManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
-import fr.rosstail.nodewar.webmap.OldDynmapHandler;
+import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -132,7 +132,11 @@ public class TeamManager {
         // remove group after to avoid WG instant repercussions
         iManager.removeITeam(oldName);
 
-        OldDynmapHandler.getDynmapHandler().resumeRender();
+        TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory -> (
+            territory.getOwnerITeam() == team
+        )).forEach(territory -> {
+            WebmapManager.getManager().addTerritoryToEdit(territory);
+        });
     }
 
     public void deleteTeam(String teamName) {

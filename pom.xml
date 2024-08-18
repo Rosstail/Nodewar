@@ -115,6 +115,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>xyz.jpenilla</groupId>
+            <artifactId>squaremap-api</artifactId>
+            <version>1.2.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.github.BlueMap-Minecraft</groupId>
             <artifactId>BlueMapAPI</artifactId>
             <version>v1.7.0</version>

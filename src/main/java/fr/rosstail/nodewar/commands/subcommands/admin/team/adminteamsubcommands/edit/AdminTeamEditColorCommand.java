@@ -7,7 +7,8 @@ import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
-import fr.rosstail.nodewar.webmap.OldDynmapHandler;
+import fr.rosstail.nodewar.territory.TerritoryManager;
+import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -23,10 +24,7 @@ public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
     private static final Pattern hexPattern = Pattern.compile("#[a-fA-F0-9]{6}");
 
     public AdminTeamEditColorCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
-                LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
-                        .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_COLOR_DESC))
-                        .replaceAll("\\[syntax]", getSyntax()));
+        help = AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE).replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_COLOR_DESC)).replaceAll("\\[syntax]", getSyntax()));
     }
 
     @Override
@@ -94,11 +92,11 @@ public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
 
         targetTeam.setTeamColor(colorValue);
 
-        sender.sendMessage(
-                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_COLOR_RESULT), targetTeam, null)
-        );
+        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_COLOR_RESULT), targetTeam, null));
 
-        OldDynmapHandler.getDynmapHandler().resumeRender();
+        TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory -> territory.getOwnerITeam() == targetTeam).forEach(territory -> {
+            WebmapManager.getManager().addTerritoryToEdit(territory);
+        });
     }
 
     @Override

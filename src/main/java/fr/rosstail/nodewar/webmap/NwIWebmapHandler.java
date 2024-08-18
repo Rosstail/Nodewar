@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.webmap;
 
+import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.Territory;
 
 public interface NwIWebmapHandler {
@@ -10,6 +11,8 @@ public interface NwIWebmapHandler {
     void editTerritoryMarker(Territory territory);
 
     void drawTerritorySurface(Territory territory);
+
+
 
     void editTerritorySurface(Territory territory);
 

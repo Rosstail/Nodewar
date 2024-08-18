@@ -14,7 +14,6 @@ import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.type.NwTeam;
-import fr.rosstail.nodewar.webmap.OldDynmapHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -141,8 +140,6 @@ public class TeamCreateCommand extends TeamSubCommand {
         teamManager.addNewTeam(playerNwTeam);
         playerNwTeam.getModel().getTeamMemberModelMap().put(teamMemberModel.getId(), teamMemberModel);
         playerNwTeam.getOnlineMemberMap().put(senderPlayer, teamMember);
-
-        OldDynmapHandler.getDynmapHandler().resumeRender();
     }
 
     @Override

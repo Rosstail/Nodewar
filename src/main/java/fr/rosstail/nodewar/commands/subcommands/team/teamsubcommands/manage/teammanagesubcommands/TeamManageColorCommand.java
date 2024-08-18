@@ -9,7 +9,8 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.rank.NwTeamRank;
-import fr.rosstail.nodewar.webmap.OldDynmapHandler;
+import fr.rosstail.nodewar.territory.TerritoryManager;
+import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -111,7 +112,9 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
         );
 
         StorageManager.getManager().updateTeamModel(playerNwITeam);
-        OldDynmapHandler.getDynmapHandler().resumeRender();
+        TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory -> territory.getOwnerITeam() == playerNwITeam).forEach(territory -> {
+            WebmapManager.getManager().addTerritoryToEdit(territory);
+        });
     }
 
     @Override

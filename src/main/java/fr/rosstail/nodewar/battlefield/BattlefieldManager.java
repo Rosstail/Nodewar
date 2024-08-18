@@ -7,7 +7,7 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.webmap.OldDynmapHandler;
+import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -83,6 +83,7 @@ public class BattlefieldManager {
             battlefield.getTerritoryList().forEach(territory -> {
                 TerritoryOwnerNeutralizeEvent event = new TerritoryOwnerNeutralizeEvent(territory, null);
                 Bukkit.getPluginManager().callEvent(event);
+                WebmapManager.getManager().addTerritoryToEdit(territory);
             });
         }
         if (battlefield.getModel().isAnnouncement()) {
@@ -92,11 +93,10 @@ public class BattlefieldManager {
         battlefield.getModel().setOpen(true);
         battlefield.getTerritoryList().forEach(territory -> {
             territory.getModel().setUnderProtection(false);
+            WebmapManager.getManager().addTerritoryToEdit(territory);
         });
 
         StorageManager.getManager().updateBattlefieldModel(battlefield.getModel(), true);
-
-        OldDynmapHandler.getDynmapHandler().resumeRender();
     }
 
     public void closeBattlefield(Battlefield battlefield) {
@@ -117,6 +117,7 @@ public class BattlefieldManager {
                     }
                 }
                 territory.getModel().setUnderProtection(true);
+                WebmapManager.getManager().addTerritoryToEdit(territory);
             });
         }
         String[] startTimeStr = battlefield.getModel().getFromTimeStr().split(":");
@@ -127,7 +128,6 @@ public class BattlefieldManager {
 
         StorageManager.getManager().updateBattlefieldModel(battlefield.getModel(), true);
 
-        OldDynmapHandler.getDynmapHandler().resumeRender();
     }
 
     public long getNextDayTime(DayOfWeek day, int hour, int minute) {
@@ -197,7 +197,13 @@ public class BattlefieldManager {
             battlefieldListToClose.forEach(this::closeBattlefield);
             battlefieldListToOpen.forEach(this::openBattlefield);
 
-            OldDynmapHandler.getDynmapHandler().resumeRender();
+            battlefieldListToOpen.forEach(battlefield -> battlefield.getTerritoryList().forEach(territory -> {
+                WebmapManager.getManager().addTerritoryToEdit(territory);
+            }));
+
+            battlefieldListToClose.forEach(battlefield -> battlefield.getTerritoryList().forEach(territory -> {
+                WebmapManager.getManager().addTerritoryToEdit(territory);
+            }));
         }
     }
 

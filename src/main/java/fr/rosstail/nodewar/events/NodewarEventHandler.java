@@ -10,7 +10,7 @@ import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.Territory;
-import fr.rosstail.nodewar.webmap.OldDynmapHandler;
+import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -65,7 +65,7 @@ public class NodewarEventHandler implements Listener {
         });
 
         territory.updateAllBossBar();
-        OldDynmapHandler.getDynmapHandler().resumeRender();
+        WebmapManager.getManager().addTerritoryToEdit(territory);
     }
 
     @EventHandler
@@ -83,7 +83,7 @@ public class NodewarEventHandler implements Listener {
         territory.setOwnerITeam(iTeam);
         territory.updateAllBossBar();
         territory.resetCommandsDelay();
-        OldDynmapHandler.getDynmapHandler().resumeRender();
+        WebmapManager.getManager().addTerritoryToEdit(territory);
     }
 
     @EventHandler
