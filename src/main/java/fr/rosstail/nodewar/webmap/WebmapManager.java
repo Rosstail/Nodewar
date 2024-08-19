@@ -47,15 +47,21 @@ public class WebmapManager {
                 editTerritoryMarker(territory);
                 editTerritorySurface(territory);
                 // TODO
-                editLineBetweenTerritories(territory, territory);
+                territory.getAttackRequirements().getTargetTerritoryList().forEach(targetTerritory -> {
+                    editLineBetweenTerritories(territory, targetTerritory);
+                });
             });
             territoryToEditSet.clear();
 
             territoryToDrawSet.forEach(territory -> {
                 drawTerritoryMarker(territory);
                 drawTerritorySurface(territory);
-                // TODO
-                drawLineBetweenTerritories(territory, territory);
+                if (territory.getDynmapInfo().isDrawLine()) {
+                    territory.getAttackRequirements().getTargetTerritoryList().stream().filter(targetTerritory -> (
+                            targetTerritory.getDynmapInfo().isDrawLine())).forEach(targetTerritory -> {
+                        drawLineBetweenTerritories(territory, targetTerritory);
+                    });
+                }
             });
             territoryToDrawSet.clear();
         }
@@ -288,37 +294,45 @@ public class WebmapManager {
     private String convertColorCodeToHtml(String code) {
         switch (code.charAt(1)) {
             case '0':
-                return "<span style=\"color:#000000\">";
+                return "<span style=\"color:#000000;\">";
             case '1':
-                return "<span style=\"color:#0000AA\">";
+                return "<span style=\"color:#0000AA;\">";
             case '2':
-                return "<span style=\"color:#00AA00\">";
+                return "<span style=\"color:#00AA00;\">";
             case '3':
-                return "<span style=\"color:#00AAAA\">";
+                return "<span style=\"color:#00AAAA;\">";
             case '4':
-                return "<span style=\"color:#AA0000\">";
+                return "<span style=\"color:#AA0000;\">";
             case '5':
-                return "<span style=\"color:#AA00AA\">";
+                return "<span style=\"color:#AA00AA;\">";
             case '6':
-                return "<span style=\"color:#FFAA00\">";
+                return "<span style=\"color:#FFAA00;\">";
             case '7':
-                return "<span style=\"color:#AAAAAA\">";
+                return "<span style=\"color:#AAAAAA;\">";
             case '8':
-                return "<span style=\"color:#555555\">";
+                return "<span style=\"color:#555555;\">";
             case '9':
-                return "<span style=\"color:#5555FF\">";
+                return "<span style=\"color:#5555FF;\">";
             case 'a':
-                return "<span style=\"color:#55FF55\">";
+                return "<span style=\"color:#55FF55;\">";
             case 'b':
-                return "<span style=\"color:#55FFFF\">";
+                return "<span style=\"color:#55FFFF;\">";
             case 'c':
-                return "<span style=\"color:#FF5555\">";
+                return "<span style=\"color:#FF5555;\">";
             case 'd':
-                return "<span style=\"color:#FF55FF\">";
+                return "<span style=\"color:#FF55FF;\">";
             case 'e':
-                return "<span style=\"color:#FFFF55\">";
+                return "<span style=\"color:#FFFF55;\">";
             case 'f':
-                return "<span style=\"color:#FFFFFF\">";
+                return "<span style=\"color:#FFFFFF;\">";
+            // Missing K (Random)
+            case 'l':
+                return "<span style=\"font-weight:900;\">";
+            // Missing M (Strike)
+            case 'n':
+                return "<span style=\"text-decoration:underline;\">";
+            case 'o':
+                return "<span style=\"font-weight:italic;\">";
             case 'r':
                 return "</span>";
             default:

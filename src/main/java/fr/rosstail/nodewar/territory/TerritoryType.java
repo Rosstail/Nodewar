@@ -25,7 +25,7 @@ public class TerritoryType {
         this.suffix = "su.";
         this.underProtection = false;
         this.objectiveTypeName = "none";
-        this.description = "";
+        this.description = "-";
     }
 
     private final String name;

@@ -296,6 +296,7 @@ territory:
     - "&c    * &eWorld&d:&r [territory_world]"
     - "&c    * &eType&d:&r [territory_type]"
     - "&c    * &eProtected&d:&r [territory_protected]"
+    - "&c    * &eLine:&r [territory_desc_line]"
     - "&c    * &eOwner&d:&r {[territory_team_color]}[territory_team_display]"
   objective:
     types:

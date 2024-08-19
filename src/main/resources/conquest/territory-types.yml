@@ -1,6 +1,7 @@
 cp:
   prefix: "🞖"
   world: "world"
+  description: "A point to capture in order to gain advantages on greater territories."
   objective:
     type: control
     ending-period: 1
@@ -20,17 +21,24 @@ cp:
     draw-line: false
 
 cp-t1:
+  description: "A point to capture in order to gain advantages on greater territories.
+  \nTier 1"
   type: cp
 
 cp-t2:
+  description: "A point to capture in order to gain advantages on greater territories.
+  \nTier 2"
   type: cp
 
 cp-t3:
+  description: "A point to capture in order to gain advantages on greater territories.
+  \nTier 3"
   type: cp
 
 keep:
   prefix: "🞖"
   world: "world"
+  description: "Stay on the point to capture and maintain your claim."
   objective:
     type: keep
     ending-period: 1
@@ -46,16 +54,23 @@ keep:
 
 keep-t1:
   type: keep
+  description: "Stay on the point to capture and maintain your claim.
+  \nTier 1"
 
 keep-t2:
   type: keep
+  description: "Stay on the point to capture and maintain your claim.
+  \nTier 2"
 
 keep-t3:
   type: keep
+  description: "Stay on the point to capture and maintain your claim.
+  \nTier 3"
 
 t1:
   prefix: "T1⛫"
   world: "world"
+  description: "Basic territory. The first team to reach score by controlling control points wins."
   attack-requirements:
     startpoint: true
   protected: true
@@ -126,6 +141,7 @@ t2:
   prefix: "T2"
   world: "world"
   protected: true
+  description: "Mid-tier territory. Deplete the territory health by capturing points to conquer it."
   bossbar:
     style: "SEGMENTED_12"
   dynmap:
@@ -191,6 +207,7 @@ t3:
   prefix: "T3"
   world: "world"
   protected: true
+  description: "High-tier territory. Deplete the territory health by capturing points to conquer it."
   bossbar:
     style: "SEGMENTED_20"
   dynmap:

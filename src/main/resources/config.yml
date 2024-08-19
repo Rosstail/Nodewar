@@ -55,6 +55,7 @@ webmap:
   tick-per-update: 20
   many-update-delay: 1
   fill-opacity: 80
+  line-opacity: 90
 
 battlefield:
   alerts:

@@ -185,6 +185,7 @@ public class ConfigData {
         public final int mapUpdateDelay;
 
         public final float fillOpacity;
+        public final float lineOpacity;
 
         ConfigWebmap(FileConfiguration config) {
             configFile = config;
@@ -193,7 +194,8 @@ public class ConfigData {
             backgroundColor = configFile.getString("webmap.background-color", "#FFFFFF");
             tickPerUpdate = Math.max(1, configFile.getInt("webmap.tick-per-update", 20));
             mapUpdateDelay = Math.max(1, configFile.getInt("webmap.many-update-delay", 1));
-            fillOpacity = Math.max(0f, (float) configFile.getInt("webmap.fill-opacity", 50) / 100);
+            fillOpacity = Math.max(0f, (float) configFile.getInt("webmap.fill-opacity", 100) / 100);
+            lineOpacity = Math.max(0f, (float) configFile.getInt("webmap.line-opacity", 100) / 100);
             simpleLine = config.getBoolean("webmap.simple-line", false);
             lineThickness = Math.max(config.getInt("webmap.line-thickness", 4), 1);
             pluginList.addAll(config.getStringList("webmap.plugins"));

@@ -38,6 +38,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 public class Territory {
@@ -432,6 +433,8 @@ public class Territory {
 
     public String adaptMessage(String message) {
         message = message.replaceAll("\\[territory_description]", LangManager.getMessage(LangMessage.TERRITORY_DESCRIPTION));
+
+        message = message.replaceAll("\\[territory_desc_line]", Matcher.quoteReplacement(territoryModel.getDescription()));
         message = message.replaceAll("\\[territory_id]", String.valueOf(territoryModel.getId()));
         message = message.replaceAll("\\[territory_prefix]", territoryModel.getPrefix());
         message = message.replaceAll("\\[territory_suffix]", territoryModel.getSuffix());
