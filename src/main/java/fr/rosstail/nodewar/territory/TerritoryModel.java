@@ -19,7 +19,7 @@ public class TerritoryModel {
     private String display;
     private String prefix;
     private String suffix;
-    private String description;
+    private List<String> description = new ArrayList<>();
     private String ownerName;
     private boolean underProtection;
     private final List<String> regionStringList = new ArrayList<>();
@@ -86,11 +86,11 @@ public class TerritoryModel {
         this.suffix = suffix;
     }
 
-    public String getDescription() {
+    public List<String> getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(List<String> description) {
         this.description = description;
     }
 

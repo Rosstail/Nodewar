@@ -25,13 +25,13 @@ public class TerritoryType {
         this.suffix = "su.";
         this.underProtection = false;
         this.objectiveTypeName = "none";
-        this.description = "-";
+        this.description = new ArrayList<>();
     }
 
     private final String name;
     private String parentTypeString;
 
-    private String description;
+    private List<String> description = new ArrayList<>();
     private String worldName;
     private String prefix;
     private String suffix;
@@ -52,7 +52,11 @@ public class TerritoryType {
         this.worldName = section.getString("world", parentType != null ? parentType.getWorldName() : null);
         this.prefix = section.getString("prefix", parentType != null ? parentType.getPrefix() : null);
         this.suffix = section.getString("suffix", parentType != null ? parentType.getSuffix() : null);
-        this.description = section.getString("description", parentType != null ? parentType.getDescription() : "");
+        if (!section.getStringList("description").isEmpty()) {
+            this.description.addAll(section.getStringList("description"));
+        } else if (parentType != null) {
+            this.description.addAll(parentType.getDescription());
+        }
         this.underProtection = section.getBoolean("protected", parentType != null && parentType.isUnderProtection());
         this.objectiveTypeName = section.getString("objective.type", parentType != null ? parentType.getObjectiveTypeName() : null);
 
@@ -139,11 +143,11 @@ public class TerritoryType {
         this.suffix = suffix;
     }
 
-    public String getDescription() {
+    public List<String> getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(List<String> description) {
         this.description = description;
     }
 

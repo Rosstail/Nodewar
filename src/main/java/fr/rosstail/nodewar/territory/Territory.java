@@ -87,7 +87,11 @@ public class Territory {
         Set everything into model, including type
          */
         territoryModel.setDisplay(section.getString("display", territoryModel.getName()));
-        territoryModel.setDescription(section.getString("description", territoryType.getDescription()));
+        if (!section.getStringList("description").isEmpty()) {
+            territoryModel.setDescription(section.getStringList("description"));
+        } else {
+            territoryModel.setDescription(territoryType.getDescription());
+        }
         territoryModel.getRegionStringList().addAll(section.getStringList("regions"));
         territoryModel.getSubTerritoryList().addAll(section.getStringList("subterritories"));
 
@@ -393,7 +397,6 @@ public class Territory {
 
     public Location getCenter() {
         if (protectedRegionList.isEmpty()) {
-            System.err.println("SuuS " + getModel().getName());
             return null;
         }
 
@@ -434,7 +437,7 @@ public class Territory {
     public String adaptMessage(String message) {
         message = message.replaceAll("\\[territory_description]", LangManager.getMessage(LangMessage.TERRITORY_DESCRIPTION));
 
-        message = message.replaceAll("\\[territory_desc_line]", Matcher.quoteReplacement(territoryModel.getDescription()));
+        message = message.replaceAll("\\[territory_desc_line]", Matcher.quoteReplacement(String.join("\n", territoryModel.getDescription())));
         message = message.replaceAll("\\[territory_id]", String.valueOf(territoryModel.getId()));
         message = message.replaceAll("\\[territory_prefix]", territoryModel.getPrefix());
         message = message.replaceAll("\\[territory_suffix]", territoryModel.getSuffix());

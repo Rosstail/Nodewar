@@ -205,7 +205,6 @@ public class DynmapHandler implements NwIWebmapHandler {
             colorize(lineMarker, startTerritory);
         }
         lineMarkerBetweenTerritoriesMap.put(new AbstractMap.SimpleEntry<>(startTerritory, endTerritory), lineMarker);
-        System.out.println(startTerritory.getModel().getName() + " " + endTerritory.getModel().getName());
     }
 
     private void colorize(PolyLineMarker polyLineMarker, Territory territory) {
