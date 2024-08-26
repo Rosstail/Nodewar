@@ -399,7 +399,6 @@ public class Territory {
         if (protectedRegionList.isEmpty()) {
             return null;
         }
-
         ProtectedRegion firstRegion = protectedRegionList.get(0);
 
         BlockVector3 min = firstRegion.getMinimumPoint();

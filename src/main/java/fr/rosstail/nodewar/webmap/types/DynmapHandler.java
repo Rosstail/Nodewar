@@ -189,8 +189,9 @@ public class DynmapHandler implements NwIWebmapHandler {
             PolyLineMarker aroundLineMarker = markerSet.createPolyLineMarker("nw.thick-line." + markerId, ChatColor.stripColor(startTerritory.getModel().getDisplay() + " -> " + endTerritory.getModel().getDisplay()), true, startTerritory.getModel().getWorldName(), x, aroundY, z, false);
             if (aroundLineMarker != null) {
                 aroundLineMarker.setLineStyle(thickness + 3, 0.5f, 0x000000);
+                lineMarkerBetweenTerritoriesMap.put(new AbstractMap.SimpleEntry<>(startTerritory, endTerritory), aroundLineMarker);
+
             }
-            lineMarkerBetweenTerritoriesMap.put(new AbstractMap.SimpleEntry<>(startTerritory, endTerritory), aroundLineMarker);
         }
 
         PolyLineMarker lineMarker = markerSet.createPolyLineMarker("nw.line." + markerId, ChatColor.stripColor(startTerritory.getModel().getDisplay() + " -> " + endTerritory.getModel().getDisplay()), true, startTerritory.getModel().getWorldName(), x, y, z, false);
@@ -203,8 +204,8 @@ public class DynmapHandler implements NwIWebmapHandler {
                 lineMarker.setLineStyle(thickness, 1f, hexToDecimal(ConfigData.getConfigData().team.noneColor));
             }
             colorize(lineMarker, startTerritory);
+            lineMarkerBetweenTerritoriesMap.put(new AbstractMap.SimpleEntry<>(startTerritory, endTerritory), lineMarker);
         }
-        lineMarkerBetweenTerritoriesMap.put(new AbstractMap.SimpleEntry<>(startTerritory, endTerritory), lineMarker);
     }
 
     private void colorize(PolyLineMarker polyLineMarker, Territory territory) {
