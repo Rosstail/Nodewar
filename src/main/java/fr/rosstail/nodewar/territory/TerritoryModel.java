@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class TerritoryModel {
     private String typeName;
+    private String typeDisplay;
     private String worldName;
 
     private long id;
@@ -37,6 +38,13 @@ public class TerritoryModel {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+    public String getTypeDisplay() {
+        return typeDisplay;
+    }
+
+    public void setTypeDisplay(String typeDisplay) {
+        this.typeDisplay = typeDisplay;
     }
 
     public long getId() {

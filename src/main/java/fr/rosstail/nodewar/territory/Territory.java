@@ -83,6 +83,7 @@ public class Territory {
         territoryModel.setTypeName(section.getString("type", "default"));
         setTerritoryType(TerritoryManager.getTerritoryManager().getTerritoryTypeFromMap(territoryModel.getTypeName()));
 
+        territoryModel.setTypeDisplay(section.getString("type-display", territoryType.getDisplay()));
         /*
         Set everything into model, including type
          */
@@ -444,6 +445,7 @@ public class Territory {
         message = message.replaceAll("\\[territory_display]", territoryModel.getDisplay());
         message = message.replaceAll("\\[territory_world]", territoryModel.getWorldName());
         message = message.replaceAll("\\[territory_type]", territoryModel.getTypeName());
+        message = message.replaceAll("\\[territory_type_display]", territoryModel.getTypeDisplay());
         boolean isProtected = territoryModel.isUnderProtection();
         if (isProtected) {
             message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_PROTECTED));

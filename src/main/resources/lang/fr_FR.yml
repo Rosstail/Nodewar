@@ -292,7 +292,7 @@ territory:
     - "&2[territory_id] &7- &6[territory_display]&r&d:"
     - "&r  &2Info&d:"
     - "&c    * &6Monde&d:&r [territory_world]"
-    - "&c    * &6Type&d:&r [territory_type]"
+    - "&c    * &6Type&d:&r [territory_type_display]"
     - "&c    * &6Descriptif:&r [territory_desc_line]"
     - "&c    * &6Protégé&d:&r [territory_protected]"
     - "&c    * &6Propriétaire&d:&r {[territory_team_color]}[territory_team_display]"

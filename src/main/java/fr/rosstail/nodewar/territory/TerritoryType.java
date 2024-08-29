@@ -20,6 +20,7 @@ public class TerritoryType {
 
     public TerritoryType() {
         this.name = "default";
+        this.display = "Default";
         this.worldName = "world";
         this.prefix = "pr.";
         this.suffix = "su.";
@@ -31,6 +32,7 @@ public class TerritoryType {
     private final String name;
     private String parentTypeString;
 
+    private String display;
     private List<String> description = new ArrayList<>();
     private String worldName;
     private String prefix;
@@ -49,6 +51,7 @@ public class TerritoryType {
         this.parentTypeString = section.getString("type");
         TerritoryType parentType = TerritoryManager.getTerritoryManager().getTerritoryTypeMap().get(this.parentTypeString);
 
+        this.display = section.getString("type-display", parentType != null ? parentType.getDisplay() : this.name.toUpperCase());
         this.worldName = section.getString("world", parentType != null ? parentType.getWorldName() : null);
         this.prefix = section.getString("prefix", parentType != null ? parentType.getPrefix() : null);
         this.suffix = section.getString("suffix", parentType != null ? parentType.getSuffix() : null);
@@ -117,6 +120,14 @@ public class TerritoryType {
 
     public String getName() {
         return name;
+    }
+
+    public String getDisplay() {
+        return display;
+    }
+
+    public void setDisplay(String display) {
+        this.display = display;
     }
 
     public String getWorldName() {
