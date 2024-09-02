@@ -29,6 +29,7 @@ import fr.rosstail.nodewar.territory.objective.NwObjective;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommands;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
+import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -181,8 +182,13 @@ public class Territory {
                 getModel().getRegionStringList().forEach(s -> {
                     if (regions.hasRegion(s)) {
                         protectedRegionList.add(regions.getRegion(s));
+                        WebmapManager.getManager().eraseTerritoryMarker(this);
+                        WebmapManager.getManager().eraseTerritorySurface(this);
+                        WebmapManager.getManager().eraseLineBetweenTerritories(this, this);
+                        WebmapManager.getManager().eraseTerritoryMarker(this);
+                        WebmapManager.getManager().drawTerritoryMarker(this);
                     } else {
-                        System.err.println(s);
+                        System.err.println("The region " + s + " does not exists for " + this.getModel().getName() + " yet");
                     }
                 });
             }

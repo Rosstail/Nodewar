@@ -30,7 +30,7 @@ public class DynmapHandler implements NwIWebmapHandler {
 
     Map<Territory, Marker> territoryMarkerMap = new HashMap<>();
     Map<Territory, List<AreaMarker>> territoryAreaMarkerListMap = new HashMap<>();
-    Map<Map.Entry<Territory, Territory>, PolyLineMarker> lineMarkerBetweenTerritoriesMap = new HashMap<>();
+    Map<Map.Entry<Territory, Territory>, PolyLineMarker> polyLineMarkerBetweenTerritoriesMap = new HashMap<>();
 
     public DynmapHandler() {
         this.dynmapPlugin = Bukkit.getServer().getPluginManager().getPlugin("dynmap");
@@ -43,6 +43,8 @@ public class DynmapHandler implements NwIWebmapHandler {
         MarkerSet markerSet = markerAPI.getMarkerSet("nw.set");
         if (markerSet == null) {
             this.markerSet = markerAPI.createMarkerSet("nw.set", LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL), null, false);
+        } else {
+            this.markerSet = markerSet;
         }
     }
 
@@ -189,7 +191,7 @@ public class DynmapHandler implements NwIWebmapHandler {
             PolyLineMarker aroundLineMarker = markerSet.createPolyLineMarker("nw.thick-line." + markerId, ChatColor.stripColor(startTerritory.getModel().getDisplay() + " -> " + endTerritory.getModel().getDisplay()), true, startTerritory.getModel().getWorldName(), x, aroundY, z, false);
             if (aroundLineMarker != null) {
                 aroundLineMarker.setLineStyle(thickness + 3, 0.5f, 0x000000);
-                lineMarkerBetweenTerritoriesMap.put(new AbstractMap.SimpleEntry<>(startTerritory, endTerritory), aroundLineMarker);
+                polyLineMarkerBetweenTerritoriesMap.put(new AbstractMap.SimpleEntry<>(startTerritory, endTerritory), aroundLineMarker);
 
             }
         }
@@ -204,7 +206,7 @@ public class DynmapHandler implements NwIWebmapHandler {
                 lineMarker.setLineStyle(thickness, 1f, hexToDecimal(ConfigData.getConfigData().team.noneColor));
             }
             colorize(lineMarker, startTerritory);
-            lineMarkerBetweenTerritoriesMap.put(new AbstractMap.SimpleEntry<>(startTerritory, endTerritory), lineMarker);
+            polyLineMarkerBetweenTerritoriesMap.put(new AbstractMap.SimpleEntry<>(startTerritory, endTerritory), lineMarker);
         }
     }
 
@@ -223,7 +225,7 @@ public class DynmapHandler implements NwIWebmapHandler {
 
     @Override
     public void editLineBetweenTerritories(Territory startTerritory, Territory endTerritory) {
-        lineMarkerBetweenTerritoriesMap.entrySet().stream().filter(entryPolyLineMarkerEntry ->
+        polyLineMarkerBetweenTerritoriesMap.entrySet().stream().filter(entryPolyLineMarkerEntry ->
                 (entryPolyLineMarkerEntry.getKey().getKey() == startTerritory
                         && entryPolyLineMarkerEntry.getKey().getValue() == endTerritory)
         ).forEach(entryPolyLineMarkerEntry -> {
@@ -235,26 +237,30 @@ public class DynmapHandler implements NwIWebmapHandler {
     @Override
     public void eraseTerritoryMarker(Territory territory) {
         Marker removedMarker = territoryMarkerMap.remove(territory);
-        removedMarker.deleteMarker();
+        if (removedMarker != null) {
+            removedMarker.deleteMarker();
+        }
     }
 
     @Override
     public void eraseTerritorySurface(Territory territory) {
         List<AreaMarker> removedMarkerList = territoryAreaMarkerListMap.remove(territory);
-        removedMarkerList.forEach(GenericMarker::deleteMarker);
+        if (removedMarkerList != null) {
+            removedMarkerList.forEach(GenericMarker::deleteMarker);
+        }
     }
 
     @Override
     public void eraseLineBetweenTerritories(Territory territory, Territory endTerritory) {
         Map.Entry<Map.Entry<Territory, Territory>, PolyLineMarker> removedLineMarkerEntry =
-                lineMarkerBetweenTerritoriesMap.entrySet().stream().filter(entryLineMarkerEntry ->
+                polyLineMarkerBetweenTerritoriesMap.entrySet().stream().filter(entryLineMarkerEntry ->
                         (
                                 entryLineMarkerEntry.getKey().getKey() == territory
                                         && entryLineMarkerEntry.getKey().getValue() == endTerritory
                         )).findFirst().orElse(null);
 
         if (removedLineMarkerEntry != null) {
-            lineMarkerBetweenTerritoriesMap.remove(removedLineMarkerEntry);
+            polyLineMarkerBetweenTerritoriesMap.remove(removedLineMarkerEntry);
             removedLineMarkerEntry.getValue().deleteMarker();
         }
     }

@@ -163,6 +163,7 @@ public class WebmapManager {
                     AdaptMessage.print("[Nodewar] Failed webmap hook with " + s + ".", AdaptMessage.prints.ERROR);
                 }
             });
+            createMarkerSet();
             plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new WebmapJob(), updatePeriod, updatePeriod);
         } else {
             AdaptMessage.print("[Nodewar] Using no webmap", AdaptMessage.prints.OUT);

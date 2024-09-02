@@ -156,8 +156,6 @@ public class Nodewar extends JavaPlugin implements Listener {
         territoryManager.setupTerritoriesRewardScheduler();
 
         WebmapManager webmapManager = WebmapManager.getManager();
-        webmapManager.createMarkerSet();
-
         webmapManager.addTerritorySetToDraw(new HashSet<>(territoryManager.getTerritoryMap().values()));
 
         PlayerDataManager.startDeployHandler();
