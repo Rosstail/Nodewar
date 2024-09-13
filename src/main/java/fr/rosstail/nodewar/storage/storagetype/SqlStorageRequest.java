@@ -24,6 +24,7 @@ public class SqlStorageRequest implements StorageRequest {
     protected String username;
     protected String password;
     private Connection connection;
+    private final Object connectionLock = new Object();
 
     protected String playerTableName;
     protected String teamTableName;
@@ -727,28 +728,50 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     public Connection openConnection() {
-        try {
-            if (connection != null && !connection.isClosed() && connection.isValid(1)) {
-                return connection;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            if (driver != null) {
-                Class.forName(driver);
+        synchronized (connectionLock) {
+            if (connection != null) {
+                try {
+                    if (!connection.isClosed() && connection.isValid(1)) {
+                        return connection;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
 
-            if (username != null) {
-                connection = DriverManager.getConnection(url, username, password);
-            } else {
-                connection = DriverManager.getConnection(url);
-            }
+            int attempts = 0;
+            while (attempts < 3) {
+                attempts++;
+                try {
+                    if (driver != null) {
+                        Class.forName(driver);
+                    }
 
-            return connection;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+                    if (username != null) {
+                        connection = DriverManager.getConnection(url, username, password);
+                    } else {
+                        connection = DriverManager.getConnection(url);
+                    }
+
+                    System.out.println("Connection to the database established successfully.");
+                    return connection;
+
+                } catch (Exception e) {
+                    System.err.println("Failed to connect to the database (Attempt " + attempts + " of 3)");
+                    if (attempts < 3) {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException ie) {
+                            Thread.currentThread().interrupt();
+                        }
+                    } else {
+                        System.err.println("All attempts to connect to the database have failed.");
+                        e.printStackTrace();
+                        throw new RuntimeException("Unable to establish database connection after multiple attempts", e);
+                    }
+                }
+            }
+            return null;
         }
     }
 

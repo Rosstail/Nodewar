@@ -88,7 +88,7 @@ public class DynmapHandler implements NwIWebmapHandler {
             double[] x;
             double[] z;
             RegionType regionType = protectedRegion.getType();
-            String markerId = "nw.area." + worldName + "." + protectedRegion.getId();
+            String markerId = "nw.area." + worldName + "." + territory.getModel().getName() + "." + protectedRegion.getId();
 
             String name = ChatColor.stripColor(territory.getModel().getDisplay());
             BlockVector3 l0 = protectedRegion.getMinimumPoint();

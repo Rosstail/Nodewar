@@ -292,86 +292,86 @@ battlefield:
 territory:
   description:
     - "&2[territory_id] &7- &6[territory_display]&r&d:"
-    - "&r  &2Info&d:"
-    - "&c    * &6World&d:&r [territory_world]"
-    - "&c    * &6Type&d:&r [territory_type_display]"
-    - "&c    * &6Protected&d:&r [territory_protected]"
-    - "&c    * &6Line:&r [territory_desc_line]"
-    - "&c    * &6Owner&d:&r {[territory_team_color]}[territory_team_display]"
+    - "  &r&9Info&d:"
+    - "    &c* &6World&d:&r [territory_world]"
+    - "    &c* &6Type&d:&r [territory_type_display]"
+    - "    &c* &6Protected&d:&r [territory_protected]"
+    - "    &c* &6Line:&r [territory_desc_line]"
+    - "    &c* &6Owner&d:&r {[territory_team_color]}[territory_team_display]"
   objective:
     types:
       none:
         display: "None"
         description:
-          - "&2  Objective&d: &7NONE&r"
+          - "  &9Objective&d: &7NONE&r"
       control:
         description:
-          - "&2  Objective&d: &9CONTROL"
-          - "&c    *  &6Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
+          - "  &9Objective&d: &9CONTROL"
+          - "    &c*  &6Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
       keep:
         description:
-          - "&2  Objective&d: &2KEEP"
-          - "&c    *  &6Minimum attackers&d: &f[territory_objective_minimum_attackers]"
-          - "&c    *  &6Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
+          - "  &9Objective&d: &2KEEP"
+          - "    &c*  &6Minimum attackers&d: &f[territory_objective_minimum_attackers]"
+          - "    &c*  &6Attackers ratio&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
       koth:
         display: "King of the Hill"
         description:
-          - "&2  Objective&d: &6KOTH"
-          - "&c    *  &6Capture points&d:"
+          - "  &9Objective&d: &6KOTH"
+          - "    &c*  &6Capture points&d:"
           - "[line_capturepoint]"
-        line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
+        line-capturepoint: "      &5- &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
       siege:
         display: "Siege"
         description:
-          - "&2  Objective&d: &cSIEGE"
-          - "&c    *  &6Capture points&d:"
+          - "  &9Objective&d: &cSIEGE"
+          - "    &c*  &6Capture points&d:"
           - "[line_capturepoint]"
-        line-capturepoint: "&5      - &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
+        line-capturepoint: "      &5- &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
   battle:
     types:
       none:
         description:
-          - "&2  Current battle&d:"
-          - "&c    * &6Status&d:&r [territory_battle_status]"
-          - "&c    * &6Advantage&d:&r [territory_battle_advantage_color_display]"
-          - "&c    * &6Time left&d:&r [territory_battle_time_left]"
-          - "&2  Previous battle&d:"
-          - "&c    * &6Winner&d:&r [territory_battle_winner_color_display]"
+          - "  &9Current battle&d:"
+          - "    &c* &6Status&d:&r [territory_battle_status]"
+          - "    &c* &6Advantage&d:&r [territory_battle_advantage_color_display]"
+          - "    &c* &6Time left&d:&r [territory_battle_time_left]"
+          - "  &9Previous battle&d:"
+          - "    &c* &6Winner&d:&r [territory_battle_winner_color_display]"
       control:
         description:
-          - "&2  Current battle&d:"
-          - "&c    * &6Status&d:&r [territory_battle_status]"
-          - "&c    * &6Advantage&d:&r [territory_battle_advantage_color_display]"
-          - "&c    * &6Health&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
-          - "&c    * &6Time left&d:&r [territory_battle_time_left]"
-          - "&2  Previous battle&d:"
-          - "&c    * &6Winner&d:&r [territory_battle_winner_color_display]"
+          - "  &9Current battle&d:"
+          - "    &c* &6Status&d:&r [territory_battle_status]"
+          - "    &c* &6Advantage&d:&r [territory_battle_advantage_color_display]"
+          - "    &c* &6Health&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
+          - "    &c* &6Time left&d:&r [territory_battle_time_left]"
+          - "  &9Previous battle&d:"
+          - "    &c* &6Winner&d:&r [territory_battle_winner_color_display]"
       keep:
         description:
-          - "&2  Current battle&d:"
-          - "&c    * &6Status&d:&r [territory_battle_status]"
-          - "&c    * &6Advantage&d:&r [territory_battle_advantage_color_display]"
-          - "&c    * &6Time left&d:&r [territory_battle_time_left]"
-          - "&2  Previous battle&d:"
-          - "&c    * &6Winner&d:&r [territory_battle_winner_color_display]"
+          - "  &9Current battle&d:"
+          - "    &c* &6Status&d:&r [territory_battle_status]"
+          - "    &c* &6Advantage&d:&r [territory_battle_advantage_color_display]"
+          - "    &c* &6Time left&d:&r [territory_battle_time_left]"
+          - "  &9Previous battle&d:"
+          - "    &c* &6Winner&d:&r [territory_battle_winner_color_display]"
       koth:
         description:
-          - "&2  Current battle&d:"
-          - "&c    * &6Status&d:&r [territory_battle_status]"
-          - "&c    * &6Advantage&d:&r [territory_battle_advantage_color_display]"
-          - "&c    * &6High score&d:&r [territory_battle_time] / [territory_objective_time_to_reach]"
-          - "&c    * &6Time left&d:&r [territory_battle_time_left]"
-          - "&2  Previous battle&d:"
-          - "&c    * &6Winner&d:&r [territory_battle_winner_color_display]"
+          - "  &9Current battle&d:"
+          - "    &c* &6Status&d:&r [territory_battle_status]"
+          - "    &c* &6Advantage&d:&r [territory_battle_advantage_color_display]"
+          - "    &c* &6High score&d:&r [territory_battle_time] / [territory_objective_time_to_reach]"
+          - "    &c* &6Time left&d:&r [territory_battle_time_left]"
+          - "  &9Previous battle&d:"
+          - "    &c* &6Winner&d:&r [territory_battle_winner_color_display]"
       siege:
         description:
-          - "&2  Current battle&d:"
-          - "&c    * &6Status&d:&r [territory_battle_status]"
-          - "&c    * &6Advantage&d:&r [territory_battle_advantage_color_display]"
-          - "&c    * &6Health&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
-          - "&c    * &6Time left&d:&r [territory_battle_time_left]"
-          - "&2  Previous battle&d:"
-          - "&c    * &6Winner&d:&r [territory_battle_winner_color_display]"
+          - "  &9Current battle&d:"
+          - "    &c* &6Status&d:&r [territory_battle_status]"
+          - "    &c* &6Advantage&d:&r [territory_battle_advantage_color_display]"
+          - "    &c* &6Health&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
+          - "    &c* &6Time left&d:&r [territory_battle_time_left]"
+          - "  &9Previous battle&d:"
+          - "    &c* &6Winner&d:&r [territory_battle_winner_color_display]"
     status:
       waiting: "&5Waiting"
       ongoing: "&6Ongoing"

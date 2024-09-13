@@ -71,13 +71,14 @@ public class SquaremapHandler implements NwIWebmapHandler {
                     .showControls(true)
                     .build();
             provider.addMarker(key, marker);
+            System.out.println("SquaremapHandler.drawTerritoryMarker addMarker " + territory.getModel().getName());
         });
         territoryMarkerMap.put(territory, marker);
     }
 
     @Override
     public void editTerritoryMarker(Territory territory) {
-        Location territoryCenter = territory.getCenter();
+        /*Location territoryCenter = territory.getCenter();
         Marker marker = territoryMarkerMap.get(territory);
         if (marker == null) {
             return;
@@ -87,24 +88,24 @@ public class SquaremapHandler implements NwIWebmapHandler {
             marker.setMarkerIcon(markerIcon);
         }
         marker.setLabel(ChatColor.stripColor(territory.getModel().getDisplay()));
-        marker.setLocation(territory.getWorld().getName(), territoryCenter.getX(), territoryCenter.getY(), territoryCenter.getZ());
+        marker.setLocation(territory.getWorld().getName(), territoryCenter.getX(), territoryCenter.getY(), territoryCenter.getZ());*/
     }
 
     @Override
     public void drawTerritorySurface(Territory territory) {
-        String worldName = territory.getWorld().getName();
+        World world = territory.getWorld();
         List<Marker> areaMarkerList = new ArrayList<>();
         territory.getProtectedRegionList().forEach(protectedRegion -> {
             double[] x;
             double[] z;
             RegionType regionType = protectedRegion.getType();
-            String markerId = "nw.area." + worldName + "." + protectedRegion.getId();
+            String markerId = "nw.area." + world.getName() + "." + territory.getModel().getName() + "." + protectedRegion.getId();
+            Key key = Key.of(markerId);
 
             String name = ChatColor.stripColor(territory.getModel().getDisplay());
             BlockVector3 l0 = protectedRegion.getMinimumPoint();
             BlockVector3 l1 = protectedRegion.getMaximumPoint();
             if (regionType == RegionType.CUBOID) {
-                /* Make outline */
                 x = new double[4];
                 z = new double[4];
                 x[0] = l0.getX();
@@ -125,10 +126,26 @@ public class SquaremapHandler implements NwIWebmapHandler {
                     x[i] = pt.getX() + 0.5f;
                     z[i] = pt.getZ() + 0.5f;
                 }
-            } else {  /* Unsupported type */
+            } else {
                 return;
             }
-            Marker areaMarker = markerSet.createAreaMarker(markerId, name, false, worldName, x, z, false);
+            List<Point> points = new ArrayList<>();
+
+            for (int i = 0; i < x.length; i++) {
+                Point point = Point.of(x[i], z[i]);
+                points.add(point);
+            }
+
+            Marker areaMarker = Marker.polygon(points);
+
+            MapWorld mapWorld = squaremapApi.getWorldIfEnabled(BukkitAdapter.worldIdentifier(world)).orElse(null);
+            squaremapApi.getWorldIfEnabled(mapWorld.identifier()).ifPresent(smMapWorld -> {
+                SimpleLayerProvider provider = SimpleLayerProvider.builder(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL) + "TEST")
+                        .showControls(true)
+                        .build();
+                provider.addMarker(key, areaMarker);
+                System.out.println("SquaremapHandler.drawTerritoryMarker addMarker " + territory.getModel().getName());
+            });
 
             colorize(areaMarker, territory);
             describe(areaMarker, territory);
@@ -138,7 +155,7 @@ public class SquaremapHandler implements NwIWebmapHandler {
         territoryAreaMarkerListMap.put(territory, areaMarkerList);
     }
     private void colorize(Marker areaMarker, Territory territory) {
-        float opacity = ConfigData.getConfigData().webmap.fillOpacity;
+        /*float opacity = ConfigData.getConfigData().webmap.fillOpacity;
         NwITeam nwITeam = territory.getOwnerITeam();
         String territoryColor = nwITeam != null ? nwITeam.getTeamColor() : ConfigData.getConfigData().team.noneColor;
         boolean isProtected = territory.getModel().isUnderProtection();
@@ -146,20 +163,21 @@ public class SquaremapHandler implements NwIWebmapHandler {
         int lineColor = Integer.parseInt(strLineColor, 16);
 
         areaMarker.setFillStyle(opacity, Integer.parseInt(territoryColor.substring(1), 16));
-        areaMarker.setLineStyle(3, opacity, lineColor);
+        areaMarker.setLineStyle(3, opacity, lineColor);*/
     }
 
     private void describe(Marker areaMarker, Territory territory) {
-        areaMarker.setLabel(ChatColor.stripColor(territory.getModel().getDisplay()));
+        /*areaMarker.setLabel(ChatColor.stripColor(territory.getModel().getDisplay()));
         String description = AdaptMessage.getAdaptMessage()
                 .adaptTerritoryMessage(LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_CHECK_RESULT), territory);
         description = WebmapManager.getManager().convertYamlToHtml(description.split("\n"));
         areaMarker.setDescription(description);
+        */
     }
 
     @Override
     public void editTerritorySurface(Territory territory) {
-        List<Marker> areaMarkerList = territoryAreaMarkerListMap.get(territory);
+        /*List<Marker> areaMarkerList = territoryAreaMarkerListMap.get(territory);
         if (areaMarkerList == null) {
             return;
         }
@@ -170,11 +188,13 @@ public class SquaremapHandler implements NwIWebmapHandler {
             describe(areaMarker, territory);
             areaMarker.setBoostFlag(false);
         });
+
+         */
     }
 
     @Override
     public void drawLineBetweenTerritories(Territory startTerritory, Territory endTerritory) {
-        String worldName = startTerritory.getWorld().getName();
+        /*String worldName = startTerritory.getWorld().getName();
         String markerId = worldName + "." + startTerritory.getModel().getName() + "_" + endTerritory.getModel().getName();
         if (startTerritory.getCenter() == null || endTerritory.getCenter() == null) {
             return;
@@ -216,10 +236,10 @@ public class SquaremapHandler implements NwIWebmapHandler {
             }
             colorize(lineMarker, startTerritory);
             polyLineMarkerBetweenTerritoriesMap.put(new AbstractMap.SimpleEntry<>(startTerritory, endTerritory), lineMarker);
-        }
+        }*/
     }
     private void colorize(Polyline polyLineMarker, Territory territory) {
-        float opacity = ConfigData.getConfigData().webmap.lineOpacity;
+        /*float opacity = ConfigData.getConfigData().webmap.lineOpacity;
         String color = ConfigData.getConfigData().team.noneColor;
         if (territory != null) {
             NwITeam nwITeam = territory.getOwnerITeam();
@@ -229,10 +249,13 @@ public class SquaremapHandler implements NwIWebmapHandler {
         }
 
         polyLineMarker.setLineStyle(3, opacity, Integer.parseInt(color.substring(1), 16));
+
+         */
     }
 
     @Override
     public void editLineBetweenTerritories(Territory startTerritory, Territory endTerritory) {
+        /*
         polyLineMarkerBetweenTerritoriesMap.entrySet().stream().filter(entryPolyLineMarkerEntry ->
                 (entryPolyLineMarkerEntry.getKey().getKey() == startTerritory
                         && entryPolyLineMarkerEntry.getKey().getValue() == endTerritory)
@@ -240,26 +263,34 @@ public class SquaremapHandler implements NwIWebmapHandler {
             Polyline polyLineMarker = entryPolyLineMarkerEntry.getValue();
             colorize(polyLineMarker, startTerritory);
         });
+         */
     }
 
     @Override
     public void eraseTerritoryMarker(Territory territory) {
+        /*
         Marker removedMarker = territoryMarkerMap.remove(territory);
         if (removedMarker != null) {
             removedMarker.deleteMarker();
         }
+
+         */
     }
 
     @Override
     public void eraseTerritorySurface(Territory territory) {
+        /*
         List<Marker> removedMarkerList = territoryAreaMarkerListMap.remove(territory);
         if (removedMarkerList != null) {
             removedMarkerList.forEach(Marker::deleteMarker);
         }
+
+         */
     }
 
     @Override
     public void eraseLineBetweenTerritories(Territory territory, Territory endTerritory) {
+        /*
         Map.Entry<Map.Entry<Territory, Territory>, Polyline> removedLineMarkerEntry =
                 polyLineMarkerBetweenTerritoriesMap.entrySet().stream().filter(entryLineMarkerEntry ->
                         (
@@ -271,6 +302,8 @@ public class SquaremapHandler implements NwIWebmapHandler {
             polyLineMarkerBetweenTerritoriesMap.remove(removedLineMarkerEntry);
             removedLineMarkerEntry.getValue().deleteMarker();
         }
+
+         */
     }
 
     public static int hexToDecimal(String hex) {
