@@ -46,6 +46,7 @@ webmap:
     - "auto"
     # - "dynmap"
     # - "Squaremap"
+    # - "bluemap"
   background-color: "#FFFFFF"
   simple-line: false
   line-thickness: 3

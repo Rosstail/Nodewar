@@ -11,6 +11,8 @@ softdepend:
   - Dynmap
   - DynmapAPI
   - Luckperms
+  - BlueMap
+  - BlueMapAPI
 main: fr.rosstail.nodewar.Nodewar
 commands:
   nodewar:

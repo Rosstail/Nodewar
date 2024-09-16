@@ -4,6 +4,7 @@ import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.Territory;
+import fr.rosstail.nodewar.webmap.types.BluemapHandler;
 import fr.rosstail.nodewar.webmap.types.DynmapHandler;
 import fr.rosstail.nodewar.webmap.types.SquaremapHandler;
 import org.bukkit.Bukkit;
@@ -86,6 +87,7 @@ public class WebmapManager {
     private final Set<Territory> territoryToEditSet = new HashSet<>();
 
     static {
+        iWebmapManagerMap.put("BlueMap", BluemapHandler.class);
         iWebmapManagerMap.put("dynmap", DynmapHandler.class);
         iWebmapManagerMap.put("squaremap", SquaremapHandler.class);
     }

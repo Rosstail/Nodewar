@@ -92,6 +92,19 @@ public class Nodewar extends JavaPlugin implements Listener {
         BattleManager.init(this);
         BattlefieldManager.init(this);
 
+        if (Bukkit.getServer().getPluginManager().getPlugin("BlueMap") != null) {
+            System.out.println("BlueMap OK");
+        }
+
+        if (Bukkit.getServer().getPluginManager().getPlugin("bluemap") != null) {
+            System.out.println("bluemap OK");
+        }
+
+        if (Bukkit.getServer().getPluginManager().getPlugin("Bluemap") != null) {
+            System.out.println("Bluemap OK");
+        }
+
+
 
         loadCustomConfig();
         PermissionManager.init();

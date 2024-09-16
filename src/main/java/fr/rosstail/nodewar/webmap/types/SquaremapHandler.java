@@ -88,7 +88,7 @@ public class SquaremapHandler implements NwIWebmapHandler {
             marker.setMarkerIcon(markerIcon);
         }
         marker.setLabel(ChatColor.stripColor(territory.getModel().getDisplay()));
-        marker.setLocation(territory.getWorld().getName(), territoryCenter.getX(), territoryCenter.getY(), territoryCenter.getZ());*/
+        marker.setLocation(territory.getWorld().getName(), territoryCenter.x(), territoryCenter.getY(), territoryCenter.z());*/
     }
 
     @Override
@@ -204,12 +204,12 @@ public class SquaremapHandler implements NwIWebmapHandler {
         double[] z = new double[2];
         double[] aroundY = new double[2];
 
-        x[0] = startTerritory.getCenter().getX();
-        x[1] = endTerritory.getCenter().getX();
+        x[0] = startTerritory.getCenter().x();
+        x[1] = endTerritory.getCenter().x();
         y[0] = startTerritory.getCenter().getY() + 3;
         y[1] = endTerritory.getCenter().getY() - 3;
-        z[0] = startTerritory.getCenter().getZ();
-        z[1] = endTerritory.getCenter().getZ();
+        z[0] = startTerritory.getCenter().z();
+        z[1] = endTerritory.getCenter().z();
 
         aroundY[0] = y[0] - 0.1F;
         aroundY[1] = y[1] - 0.1F;
