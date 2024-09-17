@@ -7,9 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ConfigData {
     private final Nodewar plugin = Nodewar.getInstance();
@@ -24,7 +22,7 @@ public class ConfigData {
 
     public final ConfigBossBar bossbar;
 
-    public final ConfigDynmap dynmap;
+    public final ConfigWebmap webmap;
 
     public class ConfigStorage {
         public final FileConfiguration configFile;
@@ -170,16 +168,16 @@ public class ConfigData {
         }
     }
 
-    public class ConfigDynmap {
+    public class ConfigWebmap {
         public FileConfiguration configFile;
+        public final Set<String> pluginList = new HashSet<>();
 
         public final int layerPriority = 20;
         public final boolean simpleLine;
         public final int lineThickness;
         public final boolean hideByDefault;
         public final boolean use3DRegions;
-
-        public final String infoWindow;
+        public final String backgroundColor;
         public final int minimumZoom = 0;
         public final int maximumDepth = 16;
         public final int tickPerUpdate;
@@ -187,23 +185,20 @@ public class ConfigData {
         public final int mapUpdateDelay;
 
         public final float fillOpacity;
+        public final float lineOpacity;
 
-        ConfigDynmap(FileConfiguration config) {
+        ConfigWebmap(FileConfiguration config) {
             configFile = config;
-            hideByDefault = configFile.getBoolean("dynmap.hide-by-default", false);
-            use3DRegions = configFile.getBoolean("dynmap.use-3d-region", false);
-            infoWindow = configFile.getString("dynmap-info-window",
-                    "<div class=\"infowindow\">" +
-                            "<span style=\"font-size:120%;\">%regionname%</span>" +
-                            "<br /> Team <span style=\"font-weight:bold;\">%groupmembers%</span>" +
-                            "<br /> Flags<br />" +
-                            "<span style=\"font-weight:bold;\">  > %flags%</span>" +
-                            "</div>");
-            tickPerUpdate = Math.max(1, configFile.getInt("dynmap.tick-per-update", 20));
-            mapUpdateDelay = Math.max(1, configFile.getInt("dynmap.many-update-delay", 1));
-            fillOpacity = Math.max(0f, (float) configFile.getInt("dynmap.fill-opacity", 50) / 100);
-            simpleLine = config.getBoolean("dynmap.simple-line", false);
-            lineThickness = Math.max(config.getInt("dynmap.line-thickness", 4), 1);
+            hideByDefault = configFile.getBoolean("webmap.hide-by-default", false);
+            use3DRegions = configFile.getBoolean("webmap.use-3d-region", false);
+            backgroundColor = configFile.getString("webmap.background-color", "#FFFFFF");
+            tickPerUpdate = Math.max(1, configFile.getInt("webmap.tick-per-update", 20));
+            mapUpdateDelay = Math.max(1, configFile.getInt("webmap.many-update-delay", 1));
+            fillOpacity = Math.max(0f, (float) configFile.getInt("webmap.fill-opacity", 100) / 100);
+            lineOpacity = Math.max(0f, (float) configFile.getInt("webmap.line-opacity", 100) / 100);
+            simpleLine = config.getBoolean("webmap.simple-line", false);
+            lineThickness = Math.max(config.getInt("webmap.line-thickness", 4), 1);
+            pluginList.addAll(config.getStringList("webmap.plugins"));
         }
     }
 
@@ -218,7 +213,7 @@ public class ConfigData {
         this.team = new ConfigTeam(readConfig(config, "team"));
         this.battlefield = new ConfigBattlefield(readConfig(config, "battlefield"));
         this.bossbar = new ConfigBossBar(readConfig(config, "bossbar"));
-        this.dynmap = new ConfigDynmap(readConfig(config, "dynmap"));
+        this.webmap = new ConfigWebmap(readConfig(readConfig(config, "webmap"), "dynmap"));
     }
 
     private FileConfiguration readConfig(FileConfiguration baseConfig, String item) {

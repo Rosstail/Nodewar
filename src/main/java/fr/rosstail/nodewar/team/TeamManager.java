@@ -12,7 +12,7 @@ import fr.rosstail.nodewar.team.teammanagers.NwTeamManager;
 import fr.rosstail.nodewar.team.teammanagers.TownyTeamManager;
 import fr.rosstail.nodewar.team.teammanagers.UcTeamManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
-import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -132,7 +132,11 @@ public class TeamManager {
         // remove group after to avoid WG instant repercussions
         iManager.removeITeam(oldName);
 
-        DynmapHandler.getDynmapHandler().resumeRender();
+        TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory -> (
+            territory.getOwnerITeam() == team
+        )).forEach(territory -> {
+            WebmapManager.getManager().addTerritoryToEdit(territory);
+        });
     }
 
     public void deleteTeam(String teamName) {
@@ -194,8 +198,7 @@ public class TeamManager {
         StringBuilder randomHexColor;
         List<ChatColor> colorList = Arrays.stream(ChatColor.values()).filter(ChatColor::isColor).collect(Collectors.toList());
 
-        if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1]) < 16) {
-
+        if (AdaptMessage.getAdaptMessage().getVersionNumbers().get(1) < 16) {
             return colorList.get((int) (Math.random() * colorList.size())).name();
         } else {
             randomHexColor = new StringBuilder("#");

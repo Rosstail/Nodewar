@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TeamListCommand extends TeamSubCommand {
 
@@ -36,7 +37,7 @@ public class TeamListCommand extends TeamSubCommand {
 
     @Override
     public String getSyntax() {
-        return "nodewar team list";
+        return "nodewar team list (page)";
     }
 
     @Override
@@ -52,14 +53,32 @@ public class TeamListCommand extends TeamSubCommand {
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         StringBuilder message = new StringBuilder(LangManager.getMessage(LangMessage.COMMANDS_TEAM_LIST_RESULT_HEADER));
+        int page = 0;
+        Map<String, NwITeam> stringNwITeamMap = TeamManager.getManager().getStringTeamMap();
+        List<String> strList = TeamManager.getManager().getStringTeamMap().keySet().stream().sorted().collect(Collectors.toList());
+        int size = strList.size();
+        int maxPage = size / 10;
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
 
-        for (Map.Entry<String, NwITeam> entry : TeamManager.getManager().getStringTeamMap().entrySet()) {
-            String s = entry.getKey();
-            NwITeam nwTeam = entry.getValue();
-            message.append("\n").append(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_LIST_RESULT_LINE), nwTeam));
+        if (args.length >= 3) {
+            page = Integer.parseInt(args[2]);
+        }
+
+        if (page < 0 || page > maxPage) {
+            return;
+        }
+
+        if (size > 0) {
+            for (int i = page * 10; i < Math.min(size, page * 10 + 10); i++) {
+                String s = strList.get(i);
+                NwITeam nwTeam = stringNwITeamMap.get(s);
+                message.append("\n").append(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_LIST_RESULT_LINE), nwTeam));
+            }
+            message.append("\nP." + (page + 1) + "/" + (maxPage + 1));
+        } else {
+            message.append("\n&rP.0/0");
         }
         sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message.toString()));
     }

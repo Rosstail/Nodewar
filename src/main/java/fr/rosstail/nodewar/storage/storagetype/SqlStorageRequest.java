@@ -5,10 +5,11 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.battlefield.BattlefieldModel;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
-import fr.rosstail.nodewar.team.*;
+import fr.rosstail.nodewar.team.NwITeam;
+import fr.rosstail.nodewar.team.TeamManager;
+import fr.rosstail.nodewar.team.TeamModel;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,6 +25,7 @@ public class SqlStorageRequest implements StorageRequest {
     protected String username;
     protected String password;
     private Connection connection;
+    private final Object connectionLock = new Object();
 
     protected String playerTableName;
     protected String teamTableName;
@@ -48,6 +50,7 @@ public class SqlStorageRequest implements StorageRequest {
         createNodewarTeamTable();
         createNodewarTeamMemberTable();
         createNodewarTeamRelationTable();
+        alterTerritoryTable();
         createNodewarTerritoryTable();
         createNodewarBattlefieldTable();
     }
@@ -107,11 +110,28 @@ public class SqlStorageRequest implements StorageRequest {
         executeSQL(query);
     }
 
+    public void alterTerritoryTable() {
+        String checkColumnQuery = "SELECT COUNT(*) FROM information_schema.columns " +
+                "WHERE table_schema = DATABASE() " +
+                "AND table_name = ? " +
+                "AND column_name = ?";
+
+        String dropColumnQuery = "ALTER TABLE " + territoryTableName + " DROP COLUMN world";
+
+        ResultSet select = executeSQLQuery(openConnection(), checkColumnQuery, territoryTableName, "world");
+        try {
+            if (select.next() && select.getInt(1) > 0) {
+                executeSQL(dropColumnQuery);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void createNodewarTerritoryTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + territoryTableName + " ( " +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " name varchar(40) UNIQUE NOT NULL," +
-                " world varchar(40) NOT NULL," +
                 " owner_team_id INTEGER" +
                 " REFERENCES " + teamTableName + " (id)" +
                 " ON DELETE SET NULL," +
@@ -214,12 +234,13 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public boolean insertTerritoryModel(TerritoryModel model) {
-        String query = "INSERT INTO " + territoryTableName + " (name, world)"
-                + " VALUES (?, ?);";
+        String query = "INSERT INTO " + territoryTableName + " (name)"
+                + " VALUES (?);";
         String territoryName = model.getName();
-        String worldName = model.getWorldName();
+
+
         try {
-            int id = executeSQLUpdate(query, territoryName, worldName);
+            int id = executeSQLUpdate(query, territoryName);
             if (id != 0) {
                 model.setId(id);
                 return true;
@@ -464,7 +485,7 @@ public class SqlStorageRequest implements StorageRequest {
 
     public List<TerritoryModel> selectAllTerritoryModel() {
         List<TerritoryModel> territoryModelList = new ArrayList<>();
-        String query = "SELECT ttr.id, ttr.name, ttr.world, t.name\n" +
+        String query = "SELECT ttr.id, ttr.name, t.name\n" +
                 "FROM " + territoryTableName + " AS ttr\n" +
                 "LEFT JOIN " + teamTableName + " AS t ON ttr.owner_team_id = t.id";
         try {
@@ -474,8 +495,7 @@ public class SqlStorageRequest implements StorageRequest {
 
                 territoryModel.setId(result.getInt(1));
                 territoryModel.setName(result.getString(2));
-                territoryModel.setWorldName(result.getString(3));
-                territoryModel.setOwnerName(result.getString(4));
+                territoryModel.setOwnerName(result.getString(3));
 
                 territoryModelList.add(territoryModel);
             }
@@ -720,6 +740,7 @@ public class SqlStorageRequest implements StorageRequest {
                 statement.setObject(i + 1, params[i]);
             }
             execute = statement.execute();
+            statement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -727,28 +748,50 @@ public class SqlStorageRequest implements StorageRequest {
     }
 
     public Connection openConnection() {
-        try {
-            if (connection != null && !connection.isClosed() && connection.isValid(1)) {
-                return connection;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            if (driver != null) {
-                Class.forName(driver);
+        synchronized (connectionLock) {
+            if (connection != null) {
+                try {
+                    if (!connection.isClosed() && connection.isValid(1)) {
+                        return connection;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
 
-            if (username != null) {
-                connection = DriverManager.getConnection(url, username, password);
-            } else {
-                connection = DriverManager.getConnection(url);
-            }
+            int attempts = 0;
+            while (attempts < 3) {
+                attempts++;
+                try {
+                    if (driver != null) {
+                        Class.forName(driver);
+                    }
 
-            return connection;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+                    if (username != null) {
+                        connection = DriverManager.getConnection(url, username, password);
+                    } else {
+                        connection = DriverManager.getConnection(url);
+                    }
+
+                    System.out.println("Connection to the database established successfully.");
+                    return connection;
+
+                } catch (Exception e) {
+                    System.err.println("Failed to connect to the database (Attempt " + attempts + " of 3)");
+                    if (attempts < 3) {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException ie) {
+                            Thread.currentThread().interrupt();
+                        }
+                    } else {
+                        System.err.println("All attempts to connect to the database have failed.");
+                        e.printStackTrace();
+                        throw new RuntimeException("Unable to establish database connection after multiple attempts", e);
+                    }
+                }
+            }
+            return null;
         }
     }
 

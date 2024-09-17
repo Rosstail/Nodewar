@@ -41,15 +41,21 @@ bossbar:
     truce: PURPLE
     enemy: RED
 
-dynmap:
+webmap:
+  plugins: # "auto" to add use any compatible webmap plugin. add "!" before each line to remove the selected plugin.
+    - "auto"
+    # - "dynmap"
+    # - "Squaremap"
+    # - "bluemap"
+  background-color: "#FFFFFF"
   simple-line: false
   line-thickness: 3
   hide-by-default: false
   use-3d-region: false
-  dynmap-info-window: false
   tick-per-update: 20
   many-update-delay: 1
   fill-opacity: 80
+  line-opacity: 90
 
 battlefield:
   alerts:

@@ -23,12 +23,13 @@ import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.battle.BattleManager;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBar;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
-import fr.rosstail.nodewar.territory.dynmap.TerritoryDynmap;
-import fr.rosstail.nodewar.territory.dynmap.TerritoryDynmapModel;
 import fr.rosstail.nodewar.territory.objective.NwObjective;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommands;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
+import fr.rosstail.nodewar.webmap.TerritoryWebmap;
+import fr.rosstail.nodewar.webmap.TerritoryWebmapModel;
+import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -38,6 +39,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 public class Territory {
@@ -61,7 +63,7 @@ public class Territory {
     private final TerritoryBossBar territoryBossBar;
 
     private AttackRequirements attackRequirements;
-    private final TerritoryDynmap dynmapInfo;
+    private final TerritoryWebmap webmapInfo;
 
     private final List<Player> players = new ArrayList<>();
 
@@ -82,11 +84,16 @@ public class Territory {
         territoryModel.setTypeName(section.getString("type", "default"));
         setTerritoryType(TerritoryManager.getTerritoryManager().getTerritoryTypeFromMap(territoryModel.getTypeName()));
 
+        territoryModel.setTypeDisplay(section.getString("type-display", territoryType.getDisplay()));
         /*
         Set everything into model, including type
          */
         territoryModel.setDisplay(section.getString("display", territoryModel.getName()));
-        territoryModel.setDescription(section.getString("description", territoryType.getDescription()));
+        if (!section.getStringList("description").isEmpty()) {
+            territoryModel.setDescription(section.getStringList("description"));
+        } else {
+            territoryModel.setDescription(territoryType.getDescription());
+        }
         territoryModel.getRegionStringList().addAll(section.getStringList("regions"));
         territoryModel.getSubTerritoryList().addAll(section.getStringList("subterritories"));
 
@@ -109,11 +116,12 @@ public class Territory {
 
         attackRequirements = new AttackRequirements(this, sectionAttackRequirementsModel, territoryType.getAttackRequirementsModel());
 
-        ConfigurationSection dynmapSection = section.getConfigurationSection("dynmap");
-        TerritoryDynmapModel territoryDynmapModel = new TerritoryDynmapModel(dynmapSection);
-        territoryModel.setDynmapModel(territoryDynmapModel);
+        ConfigurationSection webmapSection = section.isConfigurationSection("webmap") ?
+                section.getConfigurationSection("webmap") : section.getConfigurationSection("dynmap");
+        TerritoryWebmapModel territoryWebmapModel = new TerritoryWebmapModel(webmapSection);
+        territoryModel.setDynmapModel(territoryWebmapModel);
 
-        dynmapInfo = new TerritoryDynmap(this, territoryDynmapModel, territoryType.getTerritoryDynmapModel());
+        webmapInfo = new TerritoryWebmap(this, territoryWebmapModel, territoryType.getTerritoryWebmapModel());
 
         updateRegionList();
 
@@ -175,8 +183,13 @@ public class Territory {
                 getModel().getRegionStringList().forEach(s -> {
                     if (regions.hasRegion(s)) {
                         protectedRegionList.add(regions.getRegion(s));
+                        WebmapManager.getManager().eraseTerritoryMarker(this);
+                        WebmapManager.getManager().eraseTerritorySurface(this);
+                        WebmapManager.getManager().eraseLineBetweenTerritories(this, this);
+                        WebmapManager.getManager().eraseTerritoryMarker(this);
+                        WebmapManager.getManager().drawTerritoryMarker(this);
                     } else {
-                        System.err.println(s);
+                        System.err.println("The region " + s + " does not exists for " + this.getModel().getName() + " yet");
                     }
                 });
             }
@@ -359,7 +372,7 @@ public class Territory {
     public Set<Player> getEffectivePlayers() {
         return getPlayers().stream().filter(player ->
                 !player.isSleeping() &&
-                (player.getGameMode().equals(GameMode.SURVIVAL) || player.getGameMode().equals(GameMode.ADVENTURE))).collect(Collectors.toSet());
+                        (player.getGameMode().equals(GameMode.SURVIVAL) || player.getGameMode().equals(GameMode.ADVENTURE))).collect(Collectors.toSet());
     }
 
     public Map<NwITeam, Set<Player>> getNwITeamEffectivePlayerAmountOnTerritory() {
@@ -401,22 +414,22 @@ public class Territory {
 
         double centerX;
 
-        if (dynmapInfo.isxSet()) {
-            centerX = dynmapInfo.getX();
+        if (webmapInfo.isxSet()) {
+            centerX = webmapInfo.getX();
         } else {
             centerX = (min.getX() + max.getX()) / 2.0;
         }
         double centerY;
 
-        if (dynmapInfo.isySet()) {
-            centerY = dynmapInfo.getY();
+        if (webmapInfo.isySet()) {
+            centerY = webmapInfo.getY();
         } else {
             centerY = (min.getY() + max.getY()) / 2.0;
         }
         double centerZ;
 
-        if (dynmapInfo.iszSet()) {
-            centerZ = dynmapInfo.getZ();
+        if (webmapInfo.iszSet()) {
+            centerZ = webmapInfo.getZ();
         } else {
             centerZ = (min.getZ() + max.getZ()) / 2.0;
         }
@@ -424,12 +437,14 @@ public class Territory {
         return new Location(world, centerX, centerY, centerZ);
     }
 
-    public TerritoryDynmap getDynmapInfo() {
-        return dynmapInfo;
+    public TerritoryWebmap getWebmapInfo() {
+        return webmapInfo;
     }
 
     public String adaptMessage(String message) {
         message = message.replaceAll("\\[territory_description]", LangManager.getMessage(LangMessage.TERRITORY_DESCRIPTION));
+
+        message = message.replaceAll("\\[territory_desc_line]", Matcher.quoteReplacement(String.join("\n", territoryModel.getDescription())));
         message = message.replaceAll("\\[territory_id]", String.valueOf(territoryModel.getId()));
         message = message.replaceAll("\\[territory_prefix]", territoryModel.getPrefix());
         message = message.replaceAll("\\[territory_suffix]", territoryModel.getSuffix());
@@ -437,6 +452,7 @@ public class Territory {
         message = message.replaceAll("\\[territory_display]", territoryModel.getDisplay());
         message = message.replaceAll("\\[territory_world]", territoryModel.getWorldName());
         message = message.replaceAll("\\[territory_type]", territoryModel.getTypeName());
+        message = message.replaceAll("\\[territory_type_display]", territoryModel.getTypeDisplay());
         boolean isProtected = territoryModel.isUnderProtection();
         if (isProtected) {
             message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_PROTECTED));

@@ -1,8 +1,10 @@
 package fr.rosstail.nodewar.storage.storagetype.sql;
 
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.storagetype.SqlStorageRequest;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class MySqlStorageRequest extends SqlStorageRequest {
@@ -53,7 +55,6 @@ public class MySqlStorageRequest extends SqlStorageRequest {
         String query = "CREATE TABLE IF NOT EXISTS " + territoryTableName + " ( " +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " name varchar(40) UNIQUE NOT NULL," +
-                " world varchar(40) NOT NULL," +
                 " owner_team_id INTEGER," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 " FOREIGN KEY (owner_team_id) REFERENCES " + teamTableName + "(id) ON DELETE SET NULL" +

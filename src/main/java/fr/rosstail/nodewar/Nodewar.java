@@ -17,8 +17,8 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.battle.BattleManager;
-import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
+import fr.rosstail.nodewar.webmap.WebmapManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -31,6 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -89,12 +90,14 @@ public class Nodewar extends JavaPlugin implements Listener {
         TerritoryManager.init(this);
         ObjectiveManager.init(this);
         BattleManager.init(this);
-        DynmapHandler.init(this);
         BattlefieldManager.init(this);
 
         loadCustomConfig();
         PermissionManager.init();
         PermissionManager.getManager().loadManager();
+
+        WebmapManager.init(this);
+        WebmapManager.getManager().loadManager();
 
         if (PermissionManager.getManager() == null) {
             AdaptMessage.print("[" + this.getName() + "] No permission plugin available. Disabling", AdaptMessage.prints.ERROR);
@@ -151,12 +154,11 @@ public class Nodewar extends JavaPlugin implements Listener {
         territoryManager.setupTerritoriesAttackRequirements();
         territoryManager.setupTerritoriesRewardScheduler();
 
+        WebmapManager webmapManager = WebmapManager.getManager();
+        webmapManager.addTerritorySetToDraw(new HashSet<>(territoryManager.getTerritoryMap().values()));
+
         PlayerDataManager.startDeployHandler();
         BattlefieldManager.getBattlefieldManager().startBattlefieldDispatcher();
-
-        DynmapHandler dynmapHandler = DynmapHandler.getDynmapHandler();
-        dynmapHandler.enable();
-        dynmapHandler.resumeRender();
     }
 
     private void initDefaultConfigs() {
@@ -186,9 +188,6 @@ public class Nodewar extends JavaPlugin implements Listener {
     }
 
     public void onDisable() {
-        if (DynmapHandler.getDynmapHandler() != null) {
-            DynmapHandler.getDynmapHandler().disable();
-        }
         minecraftEventHandler.setClosing(true);
         worldguardEventHandler.setClosing(true);
         nodewarEventHandler.setClosing(true);
