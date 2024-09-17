@@ -28,7 +28,7 @@ import org.bukkit.Location;
 import java.util.*;
 
 public class BluemapHandler implements NwIWebmapHandler {
-    private BlueMapAPI blueMapAPI = null;
+    private BlueMapAPI blueMapAPI;
     MarkerSet markerSet = null;
 
     Map<Territory, POIMarker> territoryMarkerMap = new HashMap<>();

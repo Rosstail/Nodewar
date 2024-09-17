@@ -73,7 +73,7 @@ public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
 
         if (colorValue.startsWith("#")) {
             if (hexPattern.matcher(colorValue).find()) {
-                if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1]) < 16) {
+                if (AdaptMessage.getAdaptMessage().getVersionNumbers().get(1) < 16) {
                     sender.sendMessage("you cannot use HEX values on 1.13 and lower.");
                     return;
                 }
@@ -102,7 +102,7 @@ public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
         List<String> list = new ArrayList<>();
-        if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1]) >= 16) {
+        if (AdaptMessage.getAdaptMessage().getVersionNumbers().get(1) >= 16) {
             list.add("#");
         }
         Arrays.stream(ChatColor.values()).filter(ChatColor::isColor).forEach(chatColor -> {

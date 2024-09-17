@@ -198,8 +198,7 @@ public class TeamManager {
         StringBuilder randomHexColor;
         List<ChatColor> colorList = Arrays.stream(ChatColor.values()).filter(ChatColor::isColor).collect(Collectors.toList());
 
-        if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1]) < 16) {
-
+        if (AdaptMessage.getAdaptMessage().getVersionNumbers().get(1) < 16) {
             return colorList.get((int) (Math.random() * colorList.size())).name();
         } else {
             randomHexColor = new StringBuilder("#");

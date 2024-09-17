@@ -443,7 +443,7 @@ public class AdaptMessage {
         }
     }
 
-    private List<Integer> getVersionNumbers() {
+    public List<Integer> getVersionNumbers() {
         ArrayList<Integer> versionNumbers = new ArrayList<>();
         Pattern pattern = Pattern.compile("(\\d+)\\.(\\d+)");
         String version = Bukkit.getVersion();

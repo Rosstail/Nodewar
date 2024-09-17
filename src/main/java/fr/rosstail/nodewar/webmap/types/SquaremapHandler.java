@@ -71,7 +71,6 @@ public class SquaremapHandler implements NwIWebmapHandler {
                     .showControls(true)
                     .build();
             provider.addMarker(key, marker);
-            System.out.println("SquaremapHandler.drawTerritoryMarker addMarker " + territory.getModel().getName());
         });
         territoryMarkerMap.put(territory, marker);
     }
@@ -144,7 +143,6 @@ public class SquaremapHandler implements NwIWebmapHandler {
                         .showControls(true)
                         .build();
                 provider.addMarker(key, areaMarker);
-                System.out.println("SquaremapHandler.drawTerritoryMarker addMarker " + territory.getModel().getName());
             });
 
             colorize(areaMarker, territory);
