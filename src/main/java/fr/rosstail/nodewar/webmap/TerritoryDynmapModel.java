@@ -1,4 +1,4 @@
-package fr.rosstail.nodewar.territory.dynmap;
+package fr.rosstail.nodewar.webmap;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;

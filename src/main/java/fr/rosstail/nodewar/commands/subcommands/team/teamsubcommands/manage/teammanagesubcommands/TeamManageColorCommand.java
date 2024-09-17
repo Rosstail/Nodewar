@@ -9,8 +9,8 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.rank.NwTeamRank;
-import fr.rosstail.nodewar.team.type.NwTeam;
-import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import fr.rosstail.nodewar.territory.TerritoryManager;
+import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -91,7 +91,7 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
 
         if (colorValue.startsWith("#")) {
             if (hexPattern.matcher(colorValue).find()) {
-                if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1]) < 16) {
+                if (AdaptMessage.getAdaptMessage().getVersionNumbers().get(1) < 16) {
                     sender.sendMessage("you cannot use HEX values on 1.13 and lower.");
                     return;
                 }
@@ -112,13 +112,15 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
         );
 
         StorageManager.getManager().updateTeamModel(playerNwITeam);
-        DynmapHandler.getDynmapHandler().resumeRender();
+        TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory -> territory.getOwnerITeam() == playerNwITeam).forEach(territory -> {
+            WebmapManager.getManager().addTerritoryToEdit(territory);
+        });
     }
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
         List<String> list = new ArrayList<>();
-        if (Integer.parseInt(Bukkit.getVersion().split("\\.")[1]) >= 16) {
+        if (AdaptMessage.getAdaptMessage().getVersionNumbers().get(1) >= 16) {
             list.add("#");
         }
         Arrays.stream(ChatColor.values()).filter(ChatColor::isColor).forEach(chatColor -> {

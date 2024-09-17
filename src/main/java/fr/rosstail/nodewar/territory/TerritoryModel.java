@@ -2,7 +2,7 @@ package fr.rosstail.nodewar.territory;
 
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
-import fr.rosstail.nodewar.territory.dynmap.TerritoryDynmapModel;
+import fr.rosstail.nodewar.webmap.TerritoryDynmapModel;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
 
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class TerritoryModel {
     private String typeName;
+    private String typeDisplay;
     private String worldName;
 
     private long id;
@@ -19,7 +20,7 @@ public class TerritoryModel {
     private String display;
     private String prefix;
     private String suffix;
-    private String description;
+    private List<String> description = new ArrayList<>();
     private String ownerName;
     private boolean underProtection;
     private final List<String> regionStringList = new ArrayList<>();
@@ -37,6 +38,13 @@ public class TerritoryModel {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+    public String getTypeDisplay() {
+        return typeDisplay;
+    }
+
+    public void setTypeDisplay(String typeDisplay) {
+        this.typeDisplay = typeDisplay;
     }
 
     public long getId() {
@@ -86,11 +94,11 @@ public class TerritoryModel {
         this.suffix = suffix;
     }
 
-    public String getDescription() {
+    public List<String> getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(List<String> description) {
         this.description = description;
     }
 

@@ -4,7 +4,7 @@ package fr.rosstail.nodewar.territory;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
-import fr.rosstail.nodewar.territory.dynmap.TerritoryDynmapModel;
+import fr.rosstail.nodewar.webmap.TerritoryDynmapModel;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
@@ -20,18 +20,20 @@ public class TerritoryType {
 
     public TerritoryType() {
         this.name = "default";
+        this.display = "Default";
         this.worldName = "world";
         this.prefix = "pr.";
         this.suffix = "su.";
         this.underProtection = false;
         this.objectiveTypeName = "none";
-        this.description = "";
+        this.description = new ArrayList<>();
     }
 
     private final String name;
     private String parentTypeString;
 
-    private String description;
+    private String display;
+    private List<String> description = new ArrayList<>();
     private String worldName;
     private String prefix;
     private String suffix;
@@ -49,10 +51,15 @@ public class TerritoryType {
         this.parentTypeString = section.getString("type");
         TerritoryType parentType = TerritoryManager.getTerritoryManager().getTerritoryTypeMap().get(this.parentTypeString);
 
+        this.display = section.getString("type-display", parentType != null ? parentType.getDisplay() : this.name.toUpperCase());
         this.worldName = section.getString("world", parentType != null ? parentType.getWorldName() : null);
         this.prefix = section.getString("prefix", parentType != null ? parentType.getPrefix() : null);
         this.suffix = section.getString("suffix", parentType != null ? parentType.getSuffix() : null);
-        this.description = section.getString("description", parentType != null ? parentType.getDescription() : "");
+        if (!section.getStringList("description").isEmpty()) {
+            this.description.addAll(section.getStringList("description"));
+        } else if (parentType != null) {
+            this.description.addAll(parentType.getDescription());
+        }
         this.underProtection = section.getBoolean("protected", parentType != null && parentType.isUnderProtection());
         this.objectiveTypeName = section.getString("objective.type", parentType != null ? parentType.getObjectiveTypeName() : null);
 
@@ -115,6 +122,14 @@ public class TerritoryType {
         return name;
     }
 
+    public String getDisplay() {
+        return display;
+    }
+
+    public void setDisplay(String display) {
+        this.display = display;
+    }
+
     public String getWorldName() {
         return worldName;
     }
@@ -139,11 +154,11 @@ public class TerritoryType {
         this.suffix = suffix;
     }
 
-    public String getDescription() {
+    public List<String> getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(List<String> description) {
         this.description = description;
     }
 

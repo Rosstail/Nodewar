@@ -23,12 +23,13 @@ import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.battle.BattleManager;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBar;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
-import fr.rosstail.nodewar.territory.dynmap.TerritoryDynmap;
-import fr.rosstail.nodewar.territory.dynmap.TerritoryDynmapModel;
+import fr.rosstail.nodewar.webmap.TerritoryDynmap;
+import fr.rosstail.nodewar.webmap.TerritoryDynmapModel;
 import fr.rosstail.nodewar.territory.objective.NwObjective;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommands;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
+import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -38,6 +39,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 public class Territory {
@@ -82,11 +84,16 @@ public class Territory {
         territoryModel.setTypeName(section.getString("type", "default"));
         setTerritoryType(TerritoryManager.getTerritoryManager().getTerritoryTypeFromMap(territoryModel.getTypeName()));
 
+        territoryModel.setTypeDisplay(section.getString("type-display", territoryType.getDisplay()));
         /*
         Set everything into model, including type
          */
         territoryModel.setDisplay(section.getString("display", territoryModel.getName()));
-        territoryModel.setDescription(section.getString("description", territoryType.getDescription()));
+        if (!section.getStringList("description").isEmpty()) {
+            territoryModel.setDescription(section.getStringList("description"));
+        } else {
+            territoryModel.setDescription(territoryType.getDescription());
+        }
         territoryModel.getRegionStringList().addAll(section.getStringList("regions"));
         territoryModel.getSubTerritoryList().addAll(section.getStringList("subterritories"));
 
@@ -175,8 +182,13 @@ public class Territory {
                 getModel().getRegionStringList().forEach(s -> {
                     if (regions.hasRegion(s)) {
                         protectedRegionList.add(regions.getRegion(s));
+                        WebmapManager.getManager().eraseTerritoryMarker(this);
+                        WebmapManager.getManager().eraseTerritorySurface(this);
+                        WebmapManager.getManager().eraseLineBetweenTerritories(this, this);
+                        WebmapManager.getManager().eraseTerritoryMarker(this);
+                        WebmapManager.getManager().drawTerritoryMarker(this);
                     } else {
-                        System.err.println(s);
+                        System.err.println("The region " + s + " does not exists for " + this.getModel().getName() + " yet");
                     }
                 });
             }
@@ -430,6 +442,8 @@ public class Territory {
 
     public String adaptMessage(String message) {
         message = message.replaceAll("\\[territory_description]", LangManager.getMessage(LangMessage.TERRITORY_DESCRIPTION));
+
+        message = message.replaceAll("\\[territory_desc_line]", Matcher.quoteReplacement(String.join("\n", territoryModel.getDescription())));
         message = message.replaceAll("\\[territory_id]", String.valueOf(territoryModel.getId()));
         message = message.replaceAll("\\[territory_prefix]", territoryModel.getPrefix());
         message = message.replaceAll("\\[territory_suffix]", territoryModel.getSuffix());
@@ -437,6 +451,7 @@ public class Territory {
         message = message.replaceAll("\\[territory_display]", territoryModel.getDisplay());
         message = message.replaceAll("\\[territory_world]", territoryModel.getWorldName());
         message = message.replaceAll("\\[territory_type]", territoryModel.getTypeName());
+        message = message.replaceAll("\\[territory_type_display]", territoryModel.getTypeDisplay());
         boolean isProtected = territoryModel.isUnderProtection();
         if (isProtected) {
             message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_PROTECTED));

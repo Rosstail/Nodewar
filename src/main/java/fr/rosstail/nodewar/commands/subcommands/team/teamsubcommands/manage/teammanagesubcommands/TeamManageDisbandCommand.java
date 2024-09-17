@@ -8,7 +8,8 @@ import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.rank.NwTeamRank;
-import fr.rosstail.nodewar.territory.dynmap.DynmapHandler;
+import fr.rosstail.nodewar.territory.TerritoryManager;
+import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -79,9 +80,7 @@ public class TeamManageDisbandCommand extends TeamManageSubCommand {
             }
 
             TeamManager.getManager().deleteTeam(playerNwITeam.getName());
-
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_DISBAND_RESULT));
-            DynmapHandler.getDynmapHandler().resumeRender();
         }
     }
 

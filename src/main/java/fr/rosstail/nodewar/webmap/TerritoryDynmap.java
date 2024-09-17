@@ -1,4 +1,4 @@
-package fr.rosstail.nodewar.territory.dynmap;
+package fr.rosstail.nodewar.webmap;
 
 import fr.rosstail.nodewar.territory.Territory;
 
