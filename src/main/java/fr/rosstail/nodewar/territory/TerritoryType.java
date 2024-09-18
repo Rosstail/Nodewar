@@ -4,7 +4,7 @@ package fr.rosstail.nodewar.territory;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
-import fr.rosstail.nodewar.webmap.TerritoryDynmapModel;
+import fr.rosstail.nodewar.webmap.TerritoryWebmapModel;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
@@ -42,7 +42,7 @@ public class TerritoryType {
     private ObjectiveModel objectiveModel;
     private TerritoryBossBarModel territoryBossBarModel;
     private AttackRequirementsModel attackRequirementsModel;
-    private TerritoryDynmapModel territoryDynmapModel;
+    private TerritoryWebmapModel territoryWebmapModel;
 
     private List<TerritoryCommandsModel> territoryCommandsModelList = new ArrayList<>();
 
@@ -74,9 +74,16 @@ public class TerritoryType {
         }
 
         if (parentType != null) {
-            territoryDynmapModel = new TerritoryDynmapModel(new TerritoryDynmapModel(section.getConfigurationSection("dynmap")), parentType.territoryDynmapModel);
+            territoryWebmapModel = new TerritoryWebmapModel(new TerritoryWebmapModel(
+                    section.isConfigurationSection("webmap") ?
+                    section.getConfigurationSection("webmap")
+                            : section.getConfigurationSection("dynmap")
+            ), parentType.territoryWebmapModel);
         } else {
-            territoryDynmapModel = new TerritoryDynmapModel(section.getConfigurationSection("dynmap"));
+            territoryWebmapModel = new TerritoryWebmapModel(
+                    section.isConfigurationSection("webmap") ?
+                            section.getConfigurationSection("webmap")
+                            : section.getConfigurationSection("dynmap"));
         }
 
         if (parentType != null) {
@@ -202,12 +209,12 @@ public class TerritoryType {
         this.attackRequirementsModel = attackRequirementsModel;
     }
 
-    public TerritoryDynmapModel getTerritoryDynmapModel() {
-        return territoryDynmapModel;
+    public TerritoryWebmapModel getTerritoryWebmapModel() {
+        return territoryWebmapModel;
     }
 
-    public void setTerritoryDynmapModel(TerritoryDynmapModel territoryDynmapModel) {
-        this.territoryDynmapModel = territoryDynmapModel;
+    public void setTerritoryWebmapModel(TerritoryWebmapModel territoryWebmapModel) {
+        this.territoryWebmapModel = territoryWebmapModel;
     }
 
     public List<TerritoryCommandsModel> getTerritoryCommandsModelList() {

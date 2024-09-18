@@ -15,6 +15,7 @@ import de.bluecolored.bluemap.api.math.Color;
 import de.bluecolored.bluemap.api.math.Line;
 import de.bluecolored.bluemap.api.math.Shape;
 import fr.rosstail.nodewar.ConfigData;
+import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -22,12 +23,20 @@ import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.webmap.NwIWebmapHandler;
 import fr.rosstail.nodewar.webmap.WebmapManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
-public class BluemapHandler implements NwIWebmapHandler {
+public class BluemapHandler implements NwIWebmapHandler, Listener {
+    private Nodewar plugin;
+    private JavaPlugin blueMap;
     private BlueMapAPI blueMapAPI;
     MarkerSet markerSet = null;
 
@@ -35,14 +44,37 @@ public class BluemapHandler implements NwIWebmapHandler {
     Map<Territory, List<ShapeMarker>> territoryShapeMarkerListMap = new HashMap<>();
     Map<Map.Entry<Territory, Territory>, LineMarker> LineMarkerBetweenTerritoriesMap = new HashMap<>();
 
-    public BluemapHandler() {
+    public BluemapHandler(Nodewar plugin) {
+        this.plugin = plugin;
+        this.blueMap = (JavaPlugin) Bukkit.getServer().getPluginManager().getPlugin("bluemap");
+        if (blueMap.isEnabled()) {
+            initialize(blueMap);
+        }
+    }
+
+    @EventHandler
+    public void onPluginEnable(PluginEnableEvent event) {
+        Plugin eventPlugin = event.getPlugin();
+        if (eventPlugin.getName().equals("BlueMap")) {
+            initialize((JavaPlugin) eventPlugin);
+        }
+    }
+
+    @Override
+    public void initialize(JavaPlugin plugin) {
         this.blueMapAPI = BlueMapAPI.getInstance().get();
+        createMarkerSet();
+    }
+
+    @Override
+    public boolean isReady() {
+        return blueMap.isEnabled();
     }
 
     @Override
     public void createMarkerSet() {
         MarkerSet markerSet = MarkerSet.builder()
-                .label(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL))
+                .label(LangManager.getMessage(LangMessage.WEBMAP_MARKER_SET_LABEL))
                 .build();
         this.markerSet = markerSet;
 
@@ -58,7 +90,7 @@ public class BluemapHandler implements NwIWebmapHandler {
         if (territoryCenter == null) {
             return;
         }
-        if (territory.getDynmapInfo().getTerritoryDynmapModel().getMarker() == null) {
+        if (territory.getWebmapInfo().getTerritoryDynmapModel().getMarker() == null) {
             return;
         }
         POIMarker marker = POIMarker.builder()
@@ -81,7 +113,7 @@ public class BluemapHandler implements NwIWebmapHandler {
             return;
         }
 
-        marker.setIcon(territory.getDynmapInfo().getTerritoryDynmapModel().getMarker(), (int) territoryCenter.getX(), (int) territoryCenter.getZ());
+        marker.setIcon(territory.getWebmapInfo().getTerritoryDynmapModel().getMarker(), (int) territoryCenter.getX(), (int) territoryCenter.getZ());
         marker.setLabel(ChatColor.stripColor(territory.getModel().getDisplay()));
         marker.setPosition(territoryCenter.getX(), territoryCenter.getY(), territoryCenter.getZ());
     }

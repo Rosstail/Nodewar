@@ -23,12 +23,12 @@ import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.battle.BattleManager;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBar;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
-import fr.rosstail.nodewar.webmap.TerritoryDynmap;
-import fr.rosstail.nodewar.webmap.TerritoryDynmapModel;
 import fr.rosstail.nodewar.territory.objective.NwObjective;
 import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommands;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
+import fr.rosstail.nodewar.webmap.TerritoryDynmap;
+import fr.rosstail.nodewar.webmap.TerritoryWebmapModel;
 import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -63,7 +63,7 @@ public class Territory {
     private final TerritoryBossBar territoryBossBar;
 
     private AttackRequirements attackRequirements;
-    private final TerritoryDynmap dynmapInfo;
+    private final TerritoryDynmap webmapInfo;
 
     private final List<Player> players = new ArrayList<>();
 
@@ -116,11 +116,12 @@ public class Territory {
 
         attackRequirements = new AttackRequirements(this, sectionAttackRequirementsModel, territoryType.getAttackRequirementsModel());
 
-        ConfigurationSection dynmapSection = section.getConfigurationSection("dynmap");
-        TerritoryDynmapModel territoryDynmapModel = new TerritoryDynmapModel(dynmapSection);
-        territoryModel.setDynmapModel(territoryDynmapModel);
+        ConfigurationSection webmapSection = section.isConfigurationSection("webmap") ?
+                section.getConfigurationSection("webmap") : section.getConfigurationSection("dynmap");
+        TerritoryWebmapModel territoryWebmapModel = new TerritoryWebmapModel(webmapSection);
+        territoryModel.setDynmapModel(territoryWebmapModel);
 
-        dynmapInfo = new TerritoryDynmap(this, territoryDynmapModel, territoryType.getTerritoryDynmapModel());
+        webmapInfo = new TerritoryDynmap(this, territoryWebmapModel, territoryType.getTerritoryWebmapModel());
 
         updateRegionList();
 
@@ -371,7 +372,7 @@ public class Territory {
     public Set<Player> getEffectivePlayers() {
         return getPlayers().stream().filter(player ->
                 !player.isSleeping() &&
-                (player.getGameMode().equals(GameMode.SURVIVAL) || player.getGameMode().equals(GameMode.ADVENTURE))).collect(Collectors.toSet());
+                        (player.getGameMode().equals(GameMode.SURVIVAL) || player.getGameMode().equals(GameMode.ADVENTURE))).collect(Collectors.toSet());
     }
 
     public Map<NwITeam, Set<Player>> getNwITeamEffectivePlayerAmountOnTerritory() {
@@ -413,22 +414,22 @@ public class Territory {
 
         double centerX;
 
-        if (dynmapInfo.isxSet()) {
-            centerX = dynmapInfo.getX();
+        if (webmapInfo.isxSet()) {
+            centerX = webmapInfo.getX();
         } else {
             centerX = (min.getX() + max.getX()) / 2.0;
         }
         double centerY;
 
-        if (dynmapInfo.isySet()) {
-            centerY = dynmapInfo.getY();
+        if (webmapInfo.isySet()) {
+            centerY = webmapInfo.getY();
         } else {
             centerY = (min.getY() + max.getY()) / 2.0;
         }
         double centerZ;
 
-        if (dynmapInfo.iszSet()) {
-            centerZ = dynmapInfo.getZ();
+        if (webmapInfo.iszSet()) {
+            centerZ = webmapInfo.getZ();
         } else {
             centerZ = (min.getZ() + max.getZ()) / 2.0;
         }
@@ -436,8 +437,8 @@ public class Territory {
         return new Location(world, centerX, centerY, centerZ);
     }
 
-    public TerritoryDynmap getDynmapInfo() {
-        return dynmapInfo;
+    public TerritoryDynmap getWebmapInfo() {
+        return webmapInfo;
     }
 
     public String adaptMessage(String message) {

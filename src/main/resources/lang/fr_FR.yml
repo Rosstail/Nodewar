@@ -8,11 +8,8 @@ format:
 storage:
   type: "[prefix]Utilisation du stockage [type]."
 
-map:
-  dynmap:
-    marker-label: "Territoires"
-  bluemap:
-    marker-label: "Territoires"
+webmap:
+  marker-set-label: "Territories"
 
 commands:
   by-player-only: "[prefix]Cette commande doit être envoyée par un joueur."

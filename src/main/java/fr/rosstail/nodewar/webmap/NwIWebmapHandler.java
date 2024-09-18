@@ -1,10 +1,13 @@
 package fr.rosstail.nodewar.webmap;
 
-import fr.rosstail.nodewar.team.NwITeam;
+import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.territory.Territory;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public interface NwIWebmapHandler {
 
+    void initialize(JavaPlugin plugin);
+    boolean isReady();
     void createMarkerSet();
     void drawTerritoryMarker(Territory territory);
 

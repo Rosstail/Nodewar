@@ -5,6 +5,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.RegionType;
 import fr.rosstail.nodewar.ConfigData;
+import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -15,14 +16,19 @@ import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.*;
 
 import java.util.*;
 
-public class DynmapHandler implements NwIWebmapHandler {
+public class DynmapHandler implements NwIWebmapHandler, Listener {
 
+    private final Nodewar plugin;
     private Plugin dynmapPlugin;
     private DynmapAPI dynmapAPI;
     private MarkerAPI markerAPI;
@@ -32,17 +38,38 @@ public class DynmapHandler implements NwIWebmapHandler {
     Map<Territory, List<AreaMarker>> territoryAreaMarkerListMap = new HashMap<>();
     Map<Map.Entry<Territory, Territory>, PolyLineMarker> polyLineMarkerBetweenTerritoriesMap = new HashMap<>();
 
-    public DynmapHandler() {
+    public DynmapHandler(Nodewar plugin) {
+        this.plugin = plugin;
         this.dynmapPlugin = Bukkit.getServer().getPluginManager().getPlugin("dynmap");
+        if (dynmapPlugin.isEnabled()) {
+            initialize((JavaPlugin) dynmapPlugin);
+        }
+    }
+
+    public void initialize(JavaPlugin plugin) {
         this.dynmapAPI = (DynmapAPI) dynmapPlugin;
         this.markerAPI = dynmapAPI.getMarkerAPI();
+        createMarkerSet();
+    }
+
+    @EventHandler
+    public void onPluginEnable(PluginEnableEvent event) {
+        JavaPlugin plugin = (JavaPlugin) event.getPlugin();
+        if (plugin.getName().equals("dynmap")) {
+            initialize(plugin);
+        }
+    }
+
+    @Override
+    public boolean isReady() {
+        return dynmapAPI != null && markerAPI != null;
     }
 
     @Override
     public void createMarkerSet() {
         MarkerSet markerSet = markerAPI.getMarkerSet("nw.set");
         if (markerSet == null) {
-            this.markerSet = markerAPI.createMarkerSet("nw.set", LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL), null, false);
+            this.markerSet = markerAPI.createMarkerSet("nw.set", LangManager.getMessage(LangMessage.WEBMAP_MARKER_SET_LABEL), null, false);
         } else {
             this.markerSet = markerSet;
         }
@@ -55,12 +82,12 @@ public class DynmapHandler implements NwIWebmapHandler {
         if (territoryCenter == null) {
             return;
         }
-        if (territory.getDynmapInfo().getTerritoryDynmapModel().getMarker() == null) {
+        if (territory.getWebmapInfo().getTerritoryDynmapModel().getMarker() == null) {
             return;
         }
 
         Marker marker = markerSet.createMarker("nw.marker." + territory.getModel().getWorldName() + "." + territory.getModel().getName(), ChatColor.stripColor(territory.getModel().getDisplay()), territoryCenter.getWorld().getName(),
-                territoryCenter.getX(), territoryCenter.getY(), territoryCenter.getZ(), dynmapAPI.getMarkerAPI().getMarkerIcon(territory.getDynmapInfo().getTerritoryDynmapModel().getMarker()), false);
+                territoryCenter.getX(), territoryCenter.getY(), territoryCenter.getZ(), dynmapAPI.getMarkerAPI().getMarkerIcon(territory.getWebmapInfo().getTerritoryDynmapModel().getMarker()), false);
 
         territoryMarkerMap.put(territory, marker);
     }
@@ -72,7 +99,7 @@ public class DynmapHandler implements NwIWebmapHandler {
         if (marker == null) {
             return;
         }
-        MarkerIcon markerIcon = dynmapAPI.getMarkerAPI().getMarkerIcon(territory.getDynmapInfo().getTerritoryDynmapModel().getMarker());
+        MarkerIcon markerIcon = dynmapAPI.getMarkerAPI().getMarkerIcon(territory.getWebmapInfo().getTerritoryDynmapModel().getMarker());
         if (markerIcon != null) {
             marker.setMarkerIcon(markerIcon);
         }

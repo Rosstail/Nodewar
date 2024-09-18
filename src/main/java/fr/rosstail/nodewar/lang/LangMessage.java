@@ -219,8 +219,7 @@ public enum LangMessage {
     TERRITORY_PROTECTED("territory.protected", false, false),
     TERRITORY_VULNERABLE("territory.vulnerable", false, false),
 
-    MAP_DYNMAP_MARKER_LABEL("map.dynmap.marker-label", false, false),
-    MAP_BLUEMAP_MARKER_LABEL("map.bluemap.marker-label", false, false),
+    WEBMAP_MARKER_SET_LABEL("webmap.marker-set-label", false, false),
 
 
     ;

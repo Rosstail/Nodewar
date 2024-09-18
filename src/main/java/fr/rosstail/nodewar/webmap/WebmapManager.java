@@ -8,6 +8,8 @@ import fr.rosstail.nodewar.webmap.types.BluemapHandler;
 import fr.rosstail.nodewar.webmap.types.DynmapHandler;
 import fr.rosstail.nodewar.webmap.types.SquaremapHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -20,6 +22,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class WebmapManager {
+
+    private final Nodewar plugin;
 
     private class WebmapJob implements Runnable {
 
@@ -57,9 +61,9 @@ public class WebmapManager {
             territoryToDrawSet.forEach(territory -> {
                 drawTerritoryMarker(territory);
                 drawTerritorySurface(territory);
-                if (territory.getDynmapInfo().isDrawLine()) {
+                if (territory.getWebmapInfo().isDrawLine()) {
                     territory.getAttackRequirements().getTargetTerritoryList().stream().filter(targetTerritory -> (
-                            targetTerritory.getDynmapInfo().isDrawLine())).forEach(targetTerritory -> {
+                            targetTerritory.getWebmapInfo().isDrawLine())).forEach(targetTerritory -> {
                         drawLineBetweenTerritories(territory, targetTerritory);
                     });
                 }
@@ -67,17 +71,7 @@ public class WebmapManager {
             territoryToDrawSet.clear();
         }
     }
-
-    private int updatesPerTick = 1; //1-20
     long updatePeriod;
-    boolean use3d;
-    String infoWindow;
-    boolean pause;
-    boolean stop;
-    int maxDepth;
-    Nodewar plugin;
-
-    private static String webmapPlugin;
     public static Map<String, Class<? extends NwIWebmapHandler>> iWebmapManagerMap = new HashMap<>();
     private final Set<NwIWebmapHandler> iWebmapHandlerSet = new HashSet<>();
     private static WebmapManager manager;
@@ -118,7 +112,7 @@ public class WebmapManager {
         }
     }
 
-    public Set<String> getUsedSystems() {
+    private Set<String> getUsedSystems() {
         Set<String> systems = ConfigData.getConfigData().webmap.pluginList;
         Set<String> compatibleSystems = new HashSet<>();
         if (systems.contains("auto")) {
@@ -154,18 +148,26 @@ public class WebmapManager {
                 try {
                     Class<? extends NwIWebmapHandler> managerClass = iWebmapManagerMap.get(s);
                     Constructor<? extends NwIWebmapHandler> managerConstructor;
-                    managerConstructor = managerClass.getDeclaredConstructor();
-                    iWebmapHandlerSet.add(managerConstructor.newInstance());
+                    managerConstructor = managerClass.getDeclaredConstructor(Nodewar.class);
+
+                    NwIWebmapHandler handlerInstance = managerConstructor.newInstance(plugin);
+                    iWebmapHandlerSet.add(handlerInstance);
+
+                    if (handlerInstance instanceof Listener) {
+                        Bukkit.getPluginManager().registerEvents((Listener) handlerInstance, plugin);
+                    }
+
                     AdaptMessage.print("[Nodewar] Using " + s + " webmap", AdaptMessage.prints.OUT);
                 } catch (NoSuchMethodException e) {
-                    throw new IllegalArgumentException("Missing appropriate constructor in WebmapHandler class.", e);
+                    AdaptMessage.print("Missing appropriate constructor in WebmapHandler class " + s + ".", AdaptMessage.prints.ERROR);
                 } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-                    throw new RuntimeException(e);
+                    AdaptMessage.print("[Nodewar] Failed webmap hook (Invocation/Instantiation/IllegalAccess) with " + s + ".", AdaptMessage.prints.ERROR);
+                    AdaptMessage.print(e.toString(), AdaptMessage.prints.ERROR);
                 } catch (Exception e) {
                     AdaptMessage.print("[Nodewar] Failed webmap hook with " + s + ".", AdaptMessage.prints.ERROR);
                 }
             });
-            createMarkerSet();
+
             plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new WebmapJob(), updatePeriod, updatePeriod);
         } else {
             AdaptMessage.print("[Nodewar] Using no webmap", AdaptMessage.prints.OUT);
@@ -201,59 +203,59 @@ public class WebmapManager {
     }
 
     public void createMarkerSet() {
-        iWebmapHandlerSet.forEach(NwIWebmapHandler::createMarkerSet);
+        iWebmapHandlerSet.stream().filter(NwIWebmapHandler::isReady).forEach(NwIWebmapHandler::createMarkerSet);
     }
 
     public void drawTerritoryMarker(Territory territory) {
-        iWebmapHandlerSet.forEach(nwIWebmapHandler -> {
+        iWebmapHandlerSet.stream().filter(NwIWebmapHandler::isReady).forEach(nwIWebmapHandler -> {
             nwIWebmapHandler.drawTerritoryMarker(territory);
         });
     }
 
     public void editTerritoryMarker(Territory territory) {
-        iWebmapHandlerSet.forEach(nwIWebmapHandler -> {
+        iWebmapHandlerSet.stream().filter(NwIWebmapHandler::isReady).forEach(nwIWebmapHandler -> {
             nwIWebmapHandler.editTerritoryMarker(territory);
         });
     }
 
     public void drawTerritorySurface(Territory territory) {
-        iWebmapHandlerSet.forEach(nwIWebmapHandler -> {
+        iWebmapHandlerSet.stream().filter(NwIWebmapHandler::isReady).forEach(nwIWebmapHandler -> {
             nwIWebmapHandler.drawTerritorySurface(territory);
         });
     }
 
     void editTerritorySurface(Territory territory) {
-        iWebmapHandlerSet.forEach(nwIWebmapHandler -> {
+        iWebmapHandlerSet.stream().filter(NwIWebmapHandler::isReady).forEach(nwIWebmapHandler -> {
             nwIWebmapHandler.editTerritorySurface(territory);
         });
     }
 
     public void drawLineBetweenTerritories(Territory startTerritory, Territory endTerritory) {
-        iWebmapHandlerSet.forEach(nwIWebmapHandler -> {
+        iWebmapHandlerSet.stream().filter(NwIWebmapHandler::isReady).forEach(nwIWebmapHandler -> {
             nwIWebmapHandler.drawLineBetweenTerritories(startTerritory, endTerritory);
         });
     }
 
     public void editLineBetweenTerritories(Territory startTerritory, Territory endTerritory) {
-        iWebmapHandlerSet.forEach(nwIWebmapHandler -> {
+        iWebmapHandlerSet.stream().filter(NwIWebmapHandler::isReady).forEach(nwIWebmapHandler -> {
             nwIWebmapHandler.editLineBetweenTerritories(startTerritory, endTerritory);
         });
     }
 
     public void eraseTerritoryMarker(Territory territory) {
-        iWebmapHandlerSet.forEach(nwIWebmapHandler -> {
+        iWebmapHandlerSet.stream().filter(NwIWebmapHandler::isReady).forEach(nwIWebmapHandler -> {
             nwIWebmapHandler.eraseTerritoryMarker(territory);
         });
     }
 
     public void eraseTerritorySurface(Territory territory) {
-        iWebmapHandlerSet.forEach(nwIWebmapHandler -> {
+        iWebmapHandlerSet.stream().filter(NwIWebmapHandler::isReady).forEach(nwIWebmapHandler -> {
             nwIWebmapHandler.eraseTerritorySurface(territory);
         });
     }
 
     public void eraseLineBetweenTerritories(Territory territory, Territory otherTerritory) {
-        iWebmapHandlerSet.forEach(nwIWebmapHandler -> {
+        iWebmapHandlerSet.stream().filter(NwIWebmapHandler::isReady).forEach(nwIWebmapHandler -> {
             nwIWebmapHandler.eraseLineBetweenTerritories(territory, otherTerritory);
         });
     }

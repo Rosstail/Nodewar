@@ -5,6 +5,7 @@ import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
+import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
@@ -91,6 +92,7 @@ public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
         }
 
         targetTeam.setTeamColor(colorValue);
+        StorageManager.getManager().updateTeamModel(targetTeam);
 
         sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_COLOR_RESULT), targetTeam, null));
 

@@ -7,12 +7,15 @@ website: https://www.spigotmc.org/resources/nodewar.98373/
 depend:
   - WorldGuard
 softdepend:
+  - Vault
   - PlaceholderAPI
-  - Dynmap
-  - DynmapAPI
   - Luckperms
   - BlueMap
   - BlueMapAPI
+  - SquareMap
+  - SquareMapAPI
+  - Dynmap
+  - DynmapAPI
 main: fr.rosstail.nodewar.Nodewar
 commands:
   nodewar:

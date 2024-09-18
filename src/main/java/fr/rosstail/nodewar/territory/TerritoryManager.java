@@ -88,17 +88,16 @@ public class TerritoryManager {
 
     public void setupTerritoriesOwner() {
         Map<String, NwITeam> stringTeamMap = TeamManager.getManager().getStringTeamMap();
-        List<TerritoryModel> territoryOwnerMap = StorageManager.getManager().selectAllTerritoryModel();
-        getTerritoryMap().forEach((s, territory) -> {
-            List<TerritoryModel> models = territoryOwnerMap.stream().filter(model ->
-                    model.getWorldName().equalsIgnoreCase(territory.getModel().getWorldName())
-            ).filter(model ->
-                    model.getName().equalsIgnoreCase(territory.getModel().getName())
-            ).collect(Collectors.toList());
+        List<TerritoryModel> storedTerritoryModelList = StorageManager.getManager().selectAllTerritoryModel();
 
-            if (!models.isEmpty()) {
-                String ownerName = models.get(0).getOwnerName();
-                long territoryID = models.get(0).getId();
+        getTerritoryMap().forEach((s, territory) -> {
+            TerritoryModel storedTerritoryModel = storedTerritoryModelList.stream().filter(model ->
+                    model.getName().equalsIgnoreCase(territory.getModel().getName())
+            ).findFirst().orElse(null);
+
+            if (storedTerritoryModel != null) {
+                String ownerName = storedTerritoryModel.getOwnerName();
+                long territoryID = storedTerritoryModel.getId();
                 territory.getModel().setId(territoryID);
                 if (ownerName != null && stringTeamMap.containsKey(ownerName)) {
                     territory.setOwnerITeam(stringTeamMap.get(ownerName));

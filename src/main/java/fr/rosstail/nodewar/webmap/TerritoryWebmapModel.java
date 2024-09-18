@@ -3,7 +3,7 @@ package fr.rosstail.nodewar.webmap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
-public class TerritoryDynmapModel implements Cloneable {
+public class TerritoryWebmapModel implements Cloneable {
 
     private String marker;
     private String drawLineStr;
@@ -11,7 +11,7 @@ public class TerritoryDynmapModel implements Cloneable {
     private String yString;
     private String zString;
 
-    public TerritoryDynmapModel(ConfigurationSection section) {
+    public TerritoryWebmapModel(ConfigurationSection section) {
         if (section != null) {
             this.marker = section.getString("marker");
             this.drawLineStr = section.getString("draw-line");
@@ -21,7 +21,7 @@ public class TerritoryDynmapModel implements Cloneable {
         }
     }
 
-    public TerritoryDynmapModel(TerritoryDynmapModel childObjectiveModel, @NotNull TerritoryDynmapModel parentObjectiveModel) {
+    public TerritoryWebmapModel(TerritoryWebmapModel childObjectiveModel, @NotNull TerritoryWebmapModel parentObjectiveModel) {
         if (childObjectiveModel.getMarker() != null) {
             this.marker = childObjectiveModel.getMarker();
         } else {
@@ -90,9 +90,9 @@ public class TerritoryDynmapModel implements Cloneable {
     }
 
     @Override
-    public TerritoryDynmapModel clone() {
+    public TerritoryWebmapModel clone() {
         try {
-            TerritoryDynmapModel clone = (TerritoryDynmapModel) super.clone();
+            TerritoryWebmapModel clone = (TerritoryWebmapModel) super.clone();
             clone.setMarker(getMarker());
             clone.setDrawLineStr(getDrawLineStr());
             clone.setxString(getxString());

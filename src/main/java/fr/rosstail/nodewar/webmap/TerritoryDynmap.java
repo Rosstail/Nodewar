@@ -5,7 +5,7 @@ import fr.rosstail.nodewar.territory.Territory;
 public class TerritoryDynmap {
 
     protected Territory territory;
-    private final TerritoryDynmapModel territoryDynmapModel;
+    private final TerritoryWebmapModel territoryWebmapModel;
 
     private boolean drawLine = true;
 
@@ -16,25 +16,25 @@ public class TerritoryDynmap {
     private boolean zSet = false;
     private float z;
 
-    public TerritoryDynmap(Territory territory, TerritoryDynmapModel childModel, TerritoryDynmapModel parentModel) {
+    public TerritoryDynmap(Territory territory, TerritoryWebmapModel childModel, TerritoryWebmapModel parentModel) {
         this.territory = territory;
-        TerritoryDynmapModel clonedChildModel = childModel.clone();
-        TerritoryDynmapModel clonedParentModel = parentModel.clone();
-        this.territoryDynmapModel = new TerritoryDynmapModel(clonedChildModel, clonedParentModel);
+        TerritoryWebmapModel clonedChildModel = childModel.clone();
+        TerritoryWebmapModel clonedParentModel = parentModel.clone();
+        this.territoryWebmapModel = new TerritoryWebmapModel(clonedChildModel, clonedParentModel);
 
-        if (territoryDynmapModel.getDrawLineStr() != null) {
-            drawLine = Boolean.parseBoolean(territoryDynmapModel.getDrawLineStr());
+        if (territoryWebmapModel.getDrawLineStr() != null) {
+            drawLine = Boolean.parseBoolean(territoryWebmapModel.getDrawLineStr());
         }
-        if (territoryDynmapModel.getxString() != null) {
-            x = Float.parseFloat(territoryDynmapModel.getxString());
+        if (territoryWebmapModel.getxString() != null) {
+            x = Float.parseFloat(territoryWebmapModel.getxString());
             xSet = true;
         }
-        if (territoryDynmapModel.getyString() != null) {
-            y = Float.parseFloat(territoryDynmapModel.getyString());
+        if (territoryWebmapModel.getyString() != null) {
+            y = Float.parseFloat(territoryWebmapModel.getyString());
             ySet = true;
         }
-        if (territoryDynmapModel.getzString() != null) {
-            z = Float.parseFloat(territoryDynmapModel.getzString());
+        if (territoryWebmapModel.getzString() != null) {
+            z = Float.parseFloat(territoryWebmapModel.getzString());
             zSet = true;
         }
     }
@@ -43,8 +43,8 @@ public class TerritoryDynmap {
         return territory;
     }
 
-    public TerritoryDynmapModel getTerritoryDynmapModel() {
-        return territoryDynmapModel;
+    public TerritoryWebmapModel getTerritoryDynmapModel() {
+        return territoryWebmapModel;
     }
 
     public boolean isDrawLine() {

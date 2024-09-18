@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.storage.storagetype;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.battlefield.BattlefieldModel;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.*;
@@ -112,12 +113,16 @@ public class SqlStorageRequest implements StorageRequest {
         String query = "CREATE TABLE IF NOT EXISTS " + territoryTableName + " ( " +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " name varchar(40) UNIQUE NOT NULL," +
-                " world varchar(40) NOT NULL," +
                 " owner_team_id INTEGER" +
                 " REFERENCES " + teamTableName + " (id)" +
                 " ON DELETE SET NULL," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP) CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
         executeSQL(query);
+        try {
+            String dropTableQuery = "ALTER TABLE " + territoryTableName + " DROP COLUMN `world`;";
+            executeSQLUpdate(dropTableQuery);
+            AdaptMessage.print("DROPPED THE USELESS COLUMN world ON " + territoryTableName + " COLUMN.", AdaptMessage.prints.OUT);
+        } catch (SQLException ignored) {}
     }
 
     public void createNodewarBattlefieldTable() {
@@ -215,12 +220,13 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public boolean insertTerritoryModel(TerritoryModel model) {
-        String query = "INSERT INTO " + territoryTableName + " (name, world)"
-                + " VALUES (?, ?);";
+        String query = "INSERT INTO " + territoryTableName + " (name)"
+                + " VALUES (?);";
         String territoryName = model.getName();
-        String worldName = model.getWorldName();
+
+
         try {
-            int id = executeSQLUpdate(query, territoryName, worldName);
+            int id = executeSQLUpdate(query, territoryName);
             if (id != 0) {
                 model.setId(id);
                 return true;
@@ -465,7 +471,7 @@ public class SqlStorageRequest implements StorageRequest {
 
     public List<TerritoryModel> selectAllTerritoryModel() {
         List<TerritoryModel> territoryModelList = new ArrayList<>();
-        String query = "SELECT ttr.id, ttr.name, ttr.world, t.name\n" +
+        String query = "SELECT ttr.id, ttr.name, t.name\n" +
                 "FROM " + territoryTableName + " AS ttr\n" +
                 "LEFT JOIN " + teamTableName + " AS t ON ttr.owner_team_id = t.id";
         try {
@@ -475,8 +481,7 @@ public class SqlStorageRequest implements StorageRequest {
 
                 territoryModel.setId(result.getInt(1));
                 territoryModel.setName(result.getString(2));
-                territoryModel.setWorldName(result.getString(3));
-                territoryModel.setOwnerName(result.getString(4));
+                territoryModel.setOwnerName(result.getString(3));
 
                 territoryModelList.add(territoryModel);
             }

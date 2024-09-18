@@ -4,31 +4,48 @@ import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.RegionType;
-import fr.rosstail.nodewar.ConfigData;
-import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
-import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.webmap.NwIWebmapHandler;
-import fr.rosstail.nodewar.webmap.WebmapManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.dynmap.DynmapAPI;
 import xyz.jpenilla.squaremap.api.*;
-import xyz.jpenilla.squaremap.api.marker.Icon;
 import xyz.jpenilla.squaremap.api.marker.Marker;
 import xyz.jpenilla.squaremap.api.marker.Polyline;
 
 import java.util.*;
 
-public class SquaremapHandler implements NwIWebmapHandler {
+public class SquaremapHandler implements NwIWebmapHandler, Listener {
 
+    private final Nodewar plugin;
+    private JavaPlugin squaremapPlugin;
     private Squaremap squaremapApi;
 
-    public SquaremapHandler() {
-        squaremapApi = SquaremapProvider.get();
+    public SquaremapHandler(Nodewar plugin) {
+        this.plugin = plugin;
+        this.squaremapPlugin = (JavaPlugin) Bukkit.getServer().getPluginManager().getPlugin("SquareMap");
+        if (squaremapPlugin.isEnabled()) {
+            initialize(squaremapPlugin);
+        }
+    }
+
+    @EventHandler
+    public void onPluginEnable(PluginEnableEvent event) {
+        Plugin eventPlugin = event.getPlugin();
+        if (eventPlugin.getName().equals("SquareMap")) {
+            initialize((JavaPlugin) eventPlugin);
+        }
     }
 
     Map<Territory, Marker> territoryMarkerMap = new HashMap<>();
@@ -36,12 +53,23 @@ public class SquaremapHandler implements NwIWebmapHandler {
     Map<Map.Entry<Territory, Territory>, Polyline> polyLineMarkerBetweenTerritoriesMap = new HashMap<>();
 
     @Override
+    public void initialize(JavaPlugin plugin) {
+        squaremapApi = SquaremapProvider.get();
+        createMarkerSet();
+    }
+
+    @Override
+    public boolean isReady() {
+        return squaremapPlugin.isEnabled();
+    }
+
+    @Override
     public void createMarkerSet() {
         TerritoryManager.getTerritoryManager().getUsedWorldList().forEach(world -> {
             MapWorld mapWorld = squaremapApi.getWorldIfEnabled(BukkitAdapter.worldIdentifier(world)).orElse(null);
             squaremapApi.getWorldIfEnabled(mapWorld.identifier()).ifPresent(smMapWorld -> {
                 Key key = Key.of("nw.set." + world.getName());
-                SimpleLayerProvider provider = SimpleLayerProvider.builder(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL))
+                SimpleLayerProvider provider = SimpleLayerProvider.builder(LangManager.getMessage(LangMessage.WEBMAP_MARKER_SET_LABEL))
                         .showControls(true)
                         .build();
                 smMapWorld.layerRegistry().register(key, provider);
@@ -57,7 +85,7 @@ public class SquaremapHandler implements NwIWebmapHandler {
         if (territoryCenter == null) {
             return;
         }
-        if (territory.getDynmapInfo().getTerritoryDynmapModel().getMarker() == null) {
+        if (territory.getWebmapInfo().getTerritoryDynmapModel().getMarker() == null) {
             return;
         }
         Key key = Key.of("nw.marker." + world.getName() + "." + territory.getModel().getName());
@@ -67,7 +95,7 @@ public class SquaremapHandler implements NwIWebmapHandler {
 
         MapWorld mapWorld = squaremapApi.getWorldIfEnabled(BukkitAdapter.worldIdentifier(world)).orElse(null);
         squaremapApi.getWorldIfEnabled(mapWorld.identifier()).ifPresent(smMapWorld -> {
-            SimpleLayerProvider provider = SimpleLayerProvider.builder(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL))
+            SimpleLayerProvider provider = SimpleLayerProvider.builder(LangManager.getMessage(LangMessage.WEBMAP_MARKER_SET_LABEL))
                     .showControls(true)
                     .build();
             provider.addMarker(key, marker);
@@ -139,7 +167,7 @@ public class SquaremapHandler implements NwIWebmapHandler {
 
             MapWorld mapWorld = squaremapApi.getWorldIfEnabled(BukkitAdapter.worldIdentifier(world)).orElse(null);
             squaremapApi.getWorldIfEnabled(mapWorld.identifier()).ifPresent(smMapWorld -> {
-                SimpleLayerProvider provider = SimpleLayerProvider.builder(LangManager.getMessage(LangMessage.MAP_DYNMAP_MARKER_LABEL) + "TEST")
+                SimpleLayerProvider provider = SimpleLayerProvider.builder(LangManager.getMessage(LangMessage.WEBMAP_MARKER_SET_LABEL) + "TEST")
                         .showControls(true)
                         .build();
                 provider.addMarker(key, areaMarker);

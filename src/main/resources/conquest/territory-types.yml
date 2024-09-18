@@ -18,7 +18,7 @@ cp:
         commands:
           - "toast [player] -t:task -icon:light_blue_banner [territory_display] capturé !"
   protected: true
-  dynmap:
+  webmap:
     marker: "Target"
     draw-line: false
 
@@ -58,7 +58,7 @@ keep:
     seconds-to-hold: 10
     neutralize: true
   protected: true
-  dynmap:
+  webmap:
     marker: "Target"
     draw-line: false
 
@@ -94,7 +94,7 @@ t1:
   protected: true
   bossbar:
     style: "SEGMENTED_6"
-  dynmap:
+  webmap:
     marker: "greenflag"
     y: 64
   objective:
@@ -164,7 +164,7 @@ t2:
     - "Mid-tier territory. Deplete the territory health by capturing points to conquer it."
   bossbar:
     style: "SEGMENTED_12"
-  dynmap:
+  webmap:
     marker: "blueflag"
     y: 64
   objective:
@@ -232,7 +232,7 @@ t3:
     - "High-tier territory. Deplete the territory health by capturing points to conquer it."
   bossbar:
     style: "SEGMENTED_20"
-  dynmap:
+  webmap:
     marker: "yellowflag"
     y: 64
   objective:

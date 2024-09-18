@@ -1,8 +1,11 @@
 package fr.rosstail.nodewar.storage.storagetype.sql;
 
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.storage.storagetype.SqlStorageRequest;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+
+import java.sql.SQLException;
 
 public class LiteSqlStorageRequest extends SqlStorageRequest {
 
@@ -90,12 +93,16 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
         String query = "CREATE TABLE IF NOT EXISTS " + getTerritoryTableName() + " ( " +
                 " id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " name varchar(40) UNIQUE NOT NULL," +
-                " world varchar(40) NOT NULL," +
                 " owner_team_id INTEGER " +
                     " REFERENCES " + getTeamTableName() + " (id)" +
                     " ON DELETE SET NULL," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
         executeSQL(query);
+        try {
+            String dropTableQuery = "ALTER TABLE " + territoryTableName + " DROP COLUMN `world`;";
+            executeSQLUpdate(dropTableQuery);
+            AdaptMessage.print("DROPPED THE USELESS COLUMN world ON " + territoryTableName + " COLUMN.", AdaptMessage.prints.OUT);
+        } catch (SQLException ignored) {}
     }
 
     @Override

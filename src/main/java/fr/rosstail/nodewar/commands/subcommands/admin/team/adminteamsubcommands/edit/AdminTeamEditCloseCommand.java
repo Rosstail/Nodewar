@@ -5,6 +5,7 @@ import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
+import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.TeamManager;
@@ -56,6 +57,7 @@ public class AdminTeamEditCloseCommand extends AdminTeamEditSubCommand {
         }
 
         targetTeam.setOpen(false);
+        StorageManager.getManager().updateTeamModel(targetTeam);
 
         sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_CLOSE_RESULT));
     }

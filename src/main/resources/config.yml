@@ -52,7 +52,6 @@ webmap:
   line-thickness: 3
   hide-by-default: false
   use-3d-region: false
-  dynmap-info-window: false
   tick-per-update: 20
   many-update-delay: 1
   fill-opacity: 80
