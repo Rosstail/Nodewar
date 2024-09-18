@@ -1,10 +1,9 @@
 package fr.rosstail.nodewar.storage.storagetype.sql;
 
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.storage.storagetype.SqlStorageRequest;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LiteSqlStorageRequest extends SqlStorageRequest {
@@ -22,6 +21,7 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
         createNodewarTeamTable();
         createNodewarTeamMemberTable();
         createNodewarTeamRelationTable();
+        alterTerritoryTable();
         createNodewarTerritoryTable();
         createNodewarBattlefieldTable();
     }
@@ -63,29 +63,90 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
         String query = "CREATE TABLE IF NOT EXISTS " + getTeamMemberTableName() + " (" +
                 " id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " player_id INTEGER NOT NULL" +
-                    " REFERENCES " + getPlayerTableName() + " (id)" +
-                    " ON DELETE CASCADE," +
+                " REFERENCES " + getPlayerTableName() + " (id)" +
+                " ON DELETE CASCADE," +
                 " team_id INTEGER NOT NULL" +
-                    " REFERENCES " + getTeamTableName() + " (id)" +
-                    " ON DELETE CASCADE," +
+                " REFERENCES " + getTeamTableName() + " (id)" +
+                " ON DELETE CASCADE," +
                 " player_rank INTEGER NOT NULL DEFAULT 5," +
                 " join_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
 
         executeSQL(query);
     }
+
     @Override
     public void createNodewarTeamRelationTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + getTeamRelationTableName() + " (" +
                 " id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " first_team_id INTEGER NOT NULL" +
-                    " REFERENCES " + getTeamTableName() + " (id)" +
-                    " ON DELETE CASCADE," +
+                " REFERENCES " + getTeamTableName() + " (id)" +
+                " ON DELETE CASCADE," +
                 " second_team_id INTEGER NOT NULL" +
-                    " REFERENCES " + getTeamTableName() + " (id)" +
-                    " ON DELETE CASCADE," +
+                " REFERENCES " + getTeamTableName() + " (id)" +
+                " ON DELETE CASCADE," +
                 " relation_type INTEGER NOT NULL," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
         executeSQL(query);
+    }
+
+    @Override
+    public void alterTerritoryTable() {
+        String oldTableName = getTerritoryTableName();
+        String newTableName = oldTableName + "_new";
+
+        String checkColumnQuery = "PRAGMA table_info(" + oldTableName + ");";
+
+        boolean hasWorldColumn = false;
+        ResultSet rs = null;
+
+        try {
+            rs = super.executeSQLQuery(openConnection(), checkColumnQuery);
+
+            while (rs.next()) {
+                String columnName = rs.getString("name");
+                if ("world".equalsIgnoreCase(columnName)) {
+                    hasWorldColumn = true;
+                    break;
+                }
+            }
+            rs.close();
+
+            if (!hasWorldColumn) {
+                return;
+            }
+
+            String createNewTableQuery = "CREATE TABLE IF NOT EXISTS " + newTableName + " ( " +
+                    " id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " name varchar(40) UNIQUE NOT NULL," +
+                    " owner_team_id INTEGER REFERENCES " + getTeamTableName() + " (id) ON DELETE SET NULL," +
+                    " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
+
+            String copyDataQuery = "INSERT INTO " + newTableName + " (id, name, owner_team_id, last_update) " +
+                    "SELECT id, name, owner_team_id, last_update FROM " + oldTableName + ";";
+
+            String dropOldTableQuery = "DROP TABLE IF EXISTS " + oldTableName + ";";
+
+            String renameTableQuery = "ALTER TABLE " + newTableName + " RENAME TO " + oldTableName + ";";
+
+            executeSQL(createNewTableQuery);
+            executeSQL(copyDataQuery);
+            executeSQL(dropOldTableQuery);
+            executeSQL(renameTableQuery);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                try {
+                    if (!rs.isClosed()) {
+                        rs.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
@@ -94,15 +155,10 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
                 " id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " name varchar(40) UNIQUE NOT NULL," +
                 " owner_team_id INTEGER " +
-                    " REFERENCES " + getTeamTableName() + " (id)" +
-                    " ON DELETE SET NULL," +
+                " REFERENCES " + getTeamTableName() + " (id)" +
+                " ON DELETE SET NULL," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
         executeSQL(query);
-        try {
-            String dropTableQuery = "ALTER TABLE " + territoryTableName + " DROP COLUMN `world`;";
-            executeSQLUpdate(dropTableQuery);
-            AdaptMessage.print("DROPPED THE USELESS COLUMN world ON " + territoryTableName + " COLUMN.", AdaptMessage.prints.OUT);
-        } catch (SQLException ignored) {}
     }
 
     @Override

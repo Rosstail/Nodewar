@@ -60,11 +60,6 @@ public class MySqlStorageRequest extends SqlStorageRequest {
                 " FOREIGN KEY (owner_team_id) REFERENCES " + teamTableName + "(id) ON DELETE SET NULL" +
                 ") CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
         executeSQL(query);
-        try {
-            String dropTableQuery = "ALTER TABLE " + territoryTableName + " DROP COLUMN `world`;";
-            executeSQLUpdate(dropTableQuery);
-            AdaptMessage.print("DROPPED THE USELESS COLUMN world ON " + territoryTableName + " COLUMN.", AdaptMessage.prints.OUT);
-        } catch (SQLException ignored) {}
     }
 
     @Override

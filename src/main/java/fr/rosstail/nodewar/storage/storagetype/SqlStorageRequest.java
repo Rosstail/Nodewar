@@ -3,13 +3,13 @@ package fr.rosstail.nodewar.storage.storagetype;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.battlefield.BattlefieldModel;
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
-import fr.rosstail.nodewar.team.*;
+import fr.rosstail.nodewar.team.NwITeam;
+import fr.rosstail.nodewar.team.TeamManager;
+import fr.rosstail.nodewar.team.TeamModel;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,6 +50,7 @@ public class SqlStorageRequest implements StorageRequest {
         createNodewarTeamTable();
         createNodewarTeamMemberTable();
         createNodewarTeamRelationTable();
+        alterTerritoryTable();
         createNodewarTerritoryTable();
         createNodewarBattlefieldTable();
     }
@@ -109,6 +110,24 @@ public class SqlStorageRequest implements StorageRequest {
         executeSQL(query);
     }
 
+    public void alterTerritoryTable() {
+        String checkColumnQuery = "SELECT COUNT(*) FROM information_schema.columns " +
+                "WHERE table_schema = DATABASE() " +
+                "AND table_name = ? " +
+                "AND column_name = ?";
+
+        String dropColumnQuery = "ALTER TABLE " + territoryTableName + " DROP COLUMN world";
+
+        ResultSet select = executeSQLQuery(openConnection(), checkColumnQuery, territoryTableName, "world");
+        try {
+            if (select.next() && select.getInt(1) > 0) {
+                executeSQL(dropColumnQuery);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void createNodewarTerritoryTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + territoryTableName + " ( " +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
@@ -118,11 +137,6 @@ public class SqlStorageRequest implements StorageRequest {
                 " ON DELETE SET NULL," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP) CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
         executeSQL(query);
-        try {
-            String dropTableQuery = "ALTER TABLE " + territoryTableName + " DROP COLUMN `world`;";
-            executeSQLUpdate(dropTableQuery);
-            AdaptMessage.print("DROPPED THE USELESS COLUMN world ON " + territoryTableName + " COLUMN.", AdaptMessage.prints.OUT);
-        } catch (SQLException ignored) {}
     }
 
     public void createNodewarBattlefieldTable() {
@@ -726,6 +740,7 @@ public class SqlStorageRequest implements StorageRequest {
                 statement.setObject(i + 1, params[i]);
             }
             execute = statement.execute();
+            statement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
