@@ -14,6 +14,7 @@ import java.util.List;
 
 public class AdminTeamEditMemberCommand extends AdminTeamEditMemberSubCommand {
     public List<AdminTeamEditMemberSubCommand> subCommands = new ArrayList<>();
+
     public AdminTeamEditMemberCommand() {
         help = AdaptMessage.getAdaptMessage().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
@@ -61,11 +62,9 @@ public class AdminTeamEditMemberCommand extends AdminTeamEditMemberSubCommand {
             return;
         }
 
-        for (AdminTeamEditMemberSubCommand subCommand : subCommands) {
-            if (subCommand.getName().equalsIgnoreCase(args[4])) {
-                subCommand.perform(sender, args, arguments);
-            }
-        }
+        subCommands.stream()
+                .filter(subCommand -> subCommand.getName().equalsIgnoreCase(args[5]))
+                .findFirst().ifPresent(subCommand -> subCommand.perform(sender, args, arguments));
     }
 
     @Override

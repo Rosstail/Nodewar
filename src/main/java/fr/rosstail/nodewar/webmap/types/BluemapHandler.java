@@ -35,8 +35,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.*;
 
 public class BluemapHandler implements NwIWebmapHandler, Listener {
-    private Nodewar plugin;
-    private JavaPlugin blueMap;
+    private final Nodewar plugin;
+    private final JavaPlugin blueMap;
     private BlueMapAPI blueMapAPI;
     MarkerSet markerSet = null;
 

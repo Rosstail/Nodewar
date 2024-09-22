@@ -1,5 +1,7 @@
 package fr.rosstail.nodewar.team;
 
+import fr.rosstail.nodewar.team.member.TeamMember;
+import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -24,8 +26,12 @@ public interface NwITeamManager {
     void addTeamInvite(NwITeam nwITeam, Player sender, @NotNull Player receiver);
     void removeTeamInvite(List<NwTeamInvite> inviteList);
 
-    void addTeamMember(NwITeam nwITeam, Player player);
-    void deleteTeamMember(NwITeam nwITeam, Player player, boolean disband);
+    TeamMember addOnlineTeamMember(NwITeam nwITeam, Player player);
+
+    TeamMemberModel addTeamMember(NwITeam nwITeam, String playerName);
+    void deleteOnlineTeamMember(NwITeam nwITeam, Player player, boolean disband);
+
+    void deleteTeamMember(NwITeam nwITeam, String playerName, boolean disband);
 
     TeamIRelation getRelation(NwITeam firstTeam, NwITeam secondTeam);
     Map<NwITeam, TeamIRelation> getRelationMap(NwITeam nwITeam);

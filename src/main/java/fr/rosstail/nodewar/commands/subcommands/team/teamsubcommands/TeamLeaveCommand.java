@@ -7,7 +7,6 @@ import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
-import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.rank.NwTeamRank;
@@ -54,7 +53,7 @@ public class TeamLeaveCommand extends TeamSubCommand {
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         Player senderPlayer;
-        NwITeam nwTeam;
+        NwTeam nwTeam;
         PlayerData playerData;
         TeamMember teamMember;
         if (!CommandManager.canLaunchCommand(sender, this)) {
@@ -67,7 +66,7 @@ public class TeamLeaveCommand extends TeamSubCommand {
         }
         senderPlayer = ((Player) sender).getPlayer();
         playerData = PlayerDataManager.getPlayerDataMap().get(senderPlayer.getName());
-        nwTeam = playerData.getTeam();
+        nwTeam = (NwTeam) playerData.getTeam();
 
         if (nwTeam == null) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM));
@@ -81,8 +80,7 @@ public class TeamLeaveCommand extends TeamSubCommand {
             return;
         }
 
-        StorageManager.getManager().deleteTeamMemberModel(teamMember.getModel().getId());
-        nwTeam.getOnlineMemberMap().remove(senderPlayer);
+        TeamManager.getManager().deleteOnlineTeamMember(nwTeam, senderPlayer, false);
         sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_LEAVE_RESULT), nwTeam, senderPlayer) );
     }
 

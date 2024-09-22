@@ -46,12 +46,9 @@ public class AdminTeamCommand extends AdminTeamSubCommand {
             return;
         }
 
-        for (AdminTeamSubCommand subCommand : subCommands) {
-            if (subCommand.getName().equalsIgnoreCase(subCommandArg)) {
-                subCommand.perform(sender, args, arguments);
-                break;
-            }
-        }
+        subCommands.stream()
+                .filter(subCommand -> subCommand.getName().equalsIgnoreCase(subCommandArg))
+                .findFirst().ifPresent(subCommand -> subCommand.perform(sender, args, arguments));
 
     }
 

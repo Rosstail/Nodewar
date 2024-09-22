@@ -48,12 +48,10 @@ public class CommandManager implements CommandExecutor, TabExecutor {
         String[] arguments = getCommandArguments(args);
         args = removeFoundArgumentsFromCommand(args, arguments);
 
-        for (int index = 0; index < getSubCommands().size(); index++) {
-            if (args[0].equalsIgnoreCase(getSubCommands().get(index).getName())) {
-                getSubCommands().get(index).perform(sender, args, arguments);
-                return true;
-            }
-        }
+        @NotNull String[] finalArgs = args;
+        subCommands.stream()
+                .filter(subCommand -> subCommand.getName().equalsIgnoreCase(finalArgs[0]))
+                .findFirst().ifPresent(subCommand -> subCommand.perform(sender, finalArgs, arguments));
 
         return true;
     }

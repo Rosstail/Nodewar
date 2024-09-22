@@ -55,12 +55,9 @@ public class TeamCommand extends TeamSubCommand {
             return;
         }
 
-        for (TeamSubCommand subCommand : subCommands) {
-            if (subCommand.getName().equalsIgnoreCase(args[1])) {
-                subCommand.perform(sender, args, arguments);
-            }
-        }
-
+        subCommands.stream()
+                .filter(subCommand -> subCommand.getName().equalsIgnoreCase(args[1]))
+                .findFirst().ifPresent(subCommand -> subCommand.perform(sender, args, arguments));
     }
 
     @Override

@@ -39,7 +39,7 @@ public class Nodewar extends JavaPlugin implements Listener {
     private YamlConfiguration config;
     private static final Logger log;
     private static Economy econ;
-    private static Permission perms;
+    private static final Permission perms;
     private static final Chat chat;
     private static Nodewar instance;
     private static String dimName;

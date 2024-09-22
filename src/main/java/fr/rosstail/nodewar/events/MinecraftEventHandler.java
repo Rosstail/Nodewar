@@ -27,6 +27,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class MinecraftEventHandler implements Listener {
@@ -54,8 +55,7 @@ public class MinecraftEventHandler implements Listener {
 
     private void checkEntityPassengersMovement(Entity entity) {
         entity.getPassengers().forEach(passenger -> {
-            if (passenger instanceof Player) {
-                Player player = (Player) passenger;
+            if (passenger instanceof Player player) {
                 checkPlayerPosition(player, player.getLocation());
             } else if (!passenger.getPassengers().isEmpty()) {
                 checkEntityPassengersMovement(passenger);
@@ -66,6 +66,8 @@ public class MinecraftEventHandler implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        String playerName = player.getName();
+        UUID playerUUID = player.getUniqueId();
         PlayerModel playerModel = StorageManager.getManager().selectPlayerModel(player.getUniqueId().toString());
         PlayerData playerData;
         if (playerModel == null) {
@@ -77,19 +79,18 @@ public class MinecraftEventHandler implements Listener {
 
         PlayerDataManager.initPlayerDataToMap(playerData);
         NwITeam playerNwITeam = TeamManager.getManager().getPlayerTeam(player);
-        if (playerNwITeam instanceof NwTeam) {
-            NwTeam playerNWTeam = (NwTeam) playerNwITeam;
+        if (playerNwITeam instanceof NwTeam playerNWTeam) {
             TeamMemberModel teamMemberModel = playerNWTeam.getModel().getTeamMemberModelMap().values().stream().filter(
                     model -> model.getPlayerId() == playerData.getId()).findFirst().get();
-            teamMemberModel.setUsername(player.getName());
+            teamMemberModel.setUsername(playerName);
             playerNWTeam.getOnlineMemberMap().put(player, new TeamMember(player, playerNWTeam, teamMemberModel));
         }
 
         if (playerNwITeam != null) {
-            PermissionManager.getManager().removePlayerGroup(player, "nw_" + playerNwITeam.getName());
-            PermissionManager.getManager().setPlayerGroup(player, playerNwITeam);
+            PermissionManager.getManager().removePlayerGroup(playerName, playerUUID, "nw_" + playerNwITeam.getName());
+            PermissionManager.getManager().setPlayerGroup(playerName, playerUUID, playerNwITeam);
         } else {
-            PermissionManager.getManager().removePlayerGroup(player, null);
+            PermissionManager.getManager().removePlayerGroup(playerName, playerUUID, null);
         }
 
         checkPlayerPosition(player, player.getLocation());
@@ -106,8 +107,7 @@ public class MinecraftEventHandler implements Listener {
                 territory.getPlayers().contains(player)).forEach(territory -> {
             territory.getPlayers().remove(player);
         });
-        if (playerNwITeam instanceof NwTeam) {
-            NwTeam playerNWTeam = (NwTeam) playerNwITeam;
+        if (playerNwITeam instanceof NwTeam playerNWTeam) {
             playerNWTeam.getOnlineMemberMap().remove(player);
         }
         PlayerDataManager.cancelPlayerDeploy(player);

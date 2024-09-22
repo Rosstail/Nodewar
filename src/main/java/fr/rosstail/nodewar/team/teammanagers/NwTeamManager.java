@@ -4,6 +4,7 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.permissionmannager.PermissionManager;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
+import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
@@ -94,7 +95,7 @@ public class NwTeamManager implements NwITeamManager {
 
         if (team.getOnlineMemberMap().entrySet().stream().anyMatch(teamMember -> teamMember.getValue().getRank() == NwTeamRank.OWNER)) {
             player = team.getOnlineMemberMap().entrySet().stream().filter(playerTeamMemberEntry -> playerTeamMemberEntry.getValue().getRank() == NwTeamRank.OWNER).findFirst().get().getKey();
-            PermissionManager.getManager().setPlayerGroup(player, team);
+            PermissionManager.getManager().setPlayerGroup(player.getName(), player.getUniqueId(), team);
         }
     }
 
@@ -103,7 +104,7 @@ public class NwTeamManager implements NwITeamManager {
         NwITeam nwITeam = stringTeamMap.get(name);
 
         nwITeam.getOnlineMemberMap().forEach((player, teamMember) -> {
-            PermissionManager.getManager().removePlayerGroup(player, null);
+            PermissionManager.getManager().removePlayerGroup(player.getName(), player.getUniqueId(), null);
         });
         stringTeamMap.remove(name);
     }
@@ -124,24 +125,41 @@ public class NwTeamManager implements NwITeamManager {
     }
 
     @Override
-    public void addTeamMember(NwITeam nwITeam, Player player) {
-        PlayerData playerData = PlayerDataManager.getPlayerDataFromMap(player);
-        TeamMemberModel teamMemberModel = new TeamMemberModel(nwITeam.getID(), playerData.getId(), 1, new Timestamp(System.currentTimeMillis()), player.getName());
+    public TeamMember addOnlineTeamMember(NwITeam nwITeam, Player player) {
+        TeamMemberModel teamMemberModel = addTeamMember(nwITeam, player.getName());
         TeamMember teamMember = new TeamMember(player, nwITeam, teamMemberModel);
-        StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
         nwITeam.getOnlineMemberMap().put(player, teamMember);
-        PermissionManager.getManager().setPlayerGroup(player, nwITeam);
+        return teamMember;
     }
 
     @Override
-    public void deleteTeamMember(NwITeam nwITeam, Player player, boolean disband) {
-        PlayerData playerData = PlayerDataManager.getPlayerDataFromMap(player);
-        nwITeam.getOnlineMemberMap().remove(player);
-        nwITeam.getMemberMap().remove(player.getName());
+    public TeamMemberModel addTeamMember(NwITeam nwITeam, String playerName) {
+        NwTeam nwTeam = (NwTeam) nwITeam;
+        String playerUUID = PlayerDataManager.getPlayerUUIDFromName(playerName);
+        PlayerModel playerModel = StorageManager.getManager().selectPlayerModel(playerUUID);
+        TeamMemberModel teamMemberModel = new TeamMemberModel(nwTeam.getID(), playerModel.getId(), 1, new Timestamp(System.currentTimeMillis()), playerName);
+        StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
+        nwTeam.getModel().getTeamMemberModelMap().put(teamMemberModel.getId(), teamMemberModel);
+        PermissionManager.getManager().setPlayerGroup(playerName, UUID.fromString(playerUUID), nwTeam);
+        return teamMemberModel;
+    }
+
+    @Override
+    public void deleteOnlineTeamMember(NwITeam nwITeam, Player player, boolean disband) {
+        NwTeam nwTeam = (NwTeam) nwITeam;
+        deleteTeamMember(nwITeam, player.getName(), disband);
+        nwTeam.getOnlineMemberMap().remove(player);
+    }
+
+    @Override
+    public void deleteTeamMember(NwITeam nwITeam, String playerName, boolean disband) {
+        NwTeam nwTeam = (NwTeam) nwITeam;
+        int teamMemberModelID = nwITeam.getMemberMap().get(playerName).getModel().getId();
+        nwTeam.getModel().getTeamMemberModelMap().remove(teamMemberModelID);
         if (!disband) {
-            StorageManager.getManager().deleteTeamMemberModel(playerData.getId());
+            StorageManager.getManager().deleteTeamMemberModel(teamMemberModelID);
         }
-        PermissionManager.getManager().removePlayerGroup(player, null);
+        PermissionManager.getManager().removePlayerGroup(playerName, null, null);
     }
 
     @Override
@@ -185,7 +203,7 @@ public class NwTeamManager implements NwITeamManager {
     public NwTeamRelationRequest getTeamRelationRequest(NwITeam firstTeam, NwITeam secondTeam) {
         return relationRequestHashSet.stream().filter(relationRequest -> (
                 relationRequest.getSenderTeam() == firstTeam && relationRequest.getTargetTeam() == secondTeam
-                )).findFirst().orElse(null);
+        )).findFirst().orElse(null);
     }
 
     @Override
@@ -202,8 +220,8 @@ public class NwTeamManager implements NwITeamManager {
     @Override
     public void deleteRelationRequest(NwITeam originTeam, NwITeam targetITeam) {
         relationRequestHashSet.removeIf(relationRequest -> (
-                relationRequest.getSenderTeam() == originTeam &&
-                        relationRequest.getTargetTeam() == targetITeam
+                        relationRequest.getSenderTeam() == originTeam &&
+                                relationRequest.getTargetTeam() == targetITeam
                 )
         );
     }

@@ -110,7 +110,6 @@ public class AdaptMessage {
         if (team == null) {
             message = message.replaceAll("\\[team_name]", "NONE-TEST");
             message = message.replaceAll("\\[team_display]", LangManager.getMessage(LangMessage.TEAM_NONE_DISPLAY));
-            message = message.replaceAll("\\[team_display]", LangManager.getMessage(LangMessage.TEAM_NONE_DISPLAY));
             message = message.replaceAll("\\[team_color_display]", "{" + ConfigData.getConfigData().team.noneColor + "}" + LangManager.getMessage(LangMessage.TEAM_NONE_DISPLAY));
             message = message.replaceAll("\\[team_short]", "");
             message = message.replaceAll("\\[team_color_short]", "{" + ConfigData.getConfigData().team.noneColor + "}");

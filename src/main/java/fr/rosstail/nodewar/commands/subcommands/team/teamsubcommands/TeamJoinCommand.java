@@ -8,18 +8,13 @@ import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
-import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.NwITeamManager;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.NwTeamInvite;
 import fr.rosstail.nodewar.team.TeamManager;
-import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -114,8 +109,7 @@ public class TeamJoinCommand extends TeamSubCommand {
         }
 
         sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_JOIN_RESULT));
-
-        TeamManager.getManager().createTeamMember(nwTeam, senderPlayer);
+        TeamManager.getManager().createOnlineTeamMember(nwTeam, senderPlayer);
     }
 
     @Override

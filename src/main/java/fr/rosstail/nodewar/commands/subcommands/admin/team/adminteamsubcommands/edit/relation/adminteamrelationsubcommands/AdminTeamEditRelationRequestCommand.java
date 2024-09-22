@@ -117,8 +117,7 @@ public class AdminTeamEditRelationRequestCommand extends AdminTeamEditRelationSu
         } else { // explicit relation
             if (newRelationType.getWeight() != currentIRelation.getType().getWeight()) {
                 if (newRelationType.getWeight() > currentIRelation.getType().getWeight()) {
-                    if (currentIRelation instanceof NwTeamRelation) {
-                        NwTeamRelation currentNwTeamRelation = (NwTeamRelation) currentIRelation;
+                    if (currentIRelation instanceof NwTeamRelation currentNwTeamRelation) {
                         StorageManager.getManager().deleteTeamRelationModel(currentNwTeamRelation.getID());
                     }
                     baseTeam.getRelations().remove(targetTeam);

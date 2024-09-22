@@ -145,7 +145,7 @@ public class TeamManager {
 
         PlayerDataManager.getPlayerDataMap().values().stream().filter(playerData ->
                 (playerData.getTeam() == team)).forEach(playerData -> {
-            TeamManager.getManager().deleteTeamMember(team, Bukkit.getPlayer(playerData.getUsername()), true);
+            TeamManager.getManager().deleteOnlineTeamMember(team, Bukkit.getPlayer(playerData.getUsername()), true);
         });
 
         team.getRelations().forEach((nwITeam, teamIRelation) -> {
@@ -161,13 +161,20 @@ public class TeamManager {
         StorageManager.getManager().deleteTeamModel(team.getID());
     }
 
-    public void createTeamMember(NwITeam nwITeam, Player player) {
-        iManager.addTeamMember(nwITeam, player);
+    public void createOnlineTeamMember(NwITeam nwITeam, Player player) {
+        iManager.addOnlineTeamMember(nwITeam, player);
     }
 
-    public void deleteTeamMember(NwITeam nwITeam, Player player, boolean disband) {
-        iManager.deleteTeamMember(nwITeam, player, disband);
+    public void createTeamMember(NwITeam nwITeam, String playerName) {
+        iManager.addTeamMember(nwITeam, playerName);
+    }
 
+    public void deleteOnlineTeamMember(NwITeam nwITeam, Player player, boolean disband) {
+        iManager.deleteOnlineTeamMember(nwITeam, player, disband);
+    }
+
+    public void deleteTeamMember(NwITeam nwITeam, String playerName, boolean disband) {
+        iManager.deleteTeamMember(nwITeam, playerName, disband);
     }
 
     public Map<String, NwITeam> getStringTeamMap() {

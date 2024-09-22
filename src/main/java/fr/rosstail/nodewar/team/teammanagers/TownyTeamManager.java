@@ -7,6 +7,8 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.TownyEventHandler;
 import fr.rosstail.nodewar.permissionmannager.PermissionManager;
 import fr.rosstail.nodewar.team.*;
+import fr.rosstail.nodewar.team.member.TeamMember;
+import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import fr.rosstail.nodewar.team.type.TownTeam;
 import org.bukkit.Bukkit;
@@ -18,7 +20,7 @@ import java.util.*;
 public class TownyTeamManager implements NwITeamManager {
     private final Map<String, TownTeam> stringTeamMap = new HashMap<>();
     private final TownyAPI townyAPI = TownyAPI.getInstance();
-    private TownyEventHandler townyEventHandler;
+    private final TownyEventHandler townyEventHandler;
 
 
     public TownyTeamManager() {
@@ -78,7 +80,7 @@ public class TownyTeamManager implements NwITeamManager {
         Player player;
         if (((TownTeam) team).getTown().getMayor() != null) {
             player = ((TownTeam) team).getTown().getMayor().getPlayer();
-            PermissionManager.getManager().setPlayerGroup(player, townTeam);
+            PermissionManager.getManager().setPlayerGroup(player.getName(), player.getUniqueId(), townTeam);
         }
     }
 
@@ -90,7 +92,7 @@ public class TownyTeamManager implements NwITeamManager {
         nwITeamToDelete.getOnlineMemberMap().forEach((player, teamMember) -> {
             NwITeam currentPlayerTeam = TeamManager.getManager().getPlayerTeam(player);
 
-            PermissionManager.getManager().removePlayerGroup(player,
+            PermissionManager.getManager().removePlayerGroup(player.getName(), player.getUniqueId(),
                     currentPlayerTeam != null
                             ? "nw_" + currentPlayerTeam.getName()
                             : null
@@ -113,13 +115,24 @@ public class TownyTeamManager implements NwITeamManager {
     }
 
     @Override
-    public void addTeamMember(NwITeam nwITeam, Player player) {
-        PermissionManager.getManager().setPlayerGroup(player, nwITeam);
+    public TeamMember addOnlineTeamMember(NwITeam nwITeam, Player player) {
+        return null;
     }
 
     @Override
-    public void deleteTeamMember(NwITeam nwITeam, Player player, boolean disband) {
-        PermissionManager.getManager().removePlayerGroup(player, null);
+    public TeamMemberModel addTeamMember(NwITeam nwITeam, String playerName) {
+        PermissionManager.getManager().setPlayerGroup(playerName, null, nwITeam);
+        return null;
+    }
+
+    @Override
+    public void deleteOnlineTeamMember(NwITeam nwITeam, Player player, boolean disband) {
+        deleteTeamMember(nwITeam, player.getName(), disband);
+    }
+
+    @Override
+    public void deleteTeamMember(NwITeam nwITeam, String playerName, boolean disband) {
+        PermissionManager.getManager().removePlayerGroup(playerName, null, null);
     }
 
     @Override

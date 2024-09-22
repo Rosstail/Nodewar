@@ -12,6 +12,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class PermissionManager {
     private static String permissionPlugin;
@@ -91,12 +92,21 @@ public class PermissionManager {
         iPermissionManager.deleteGroup("nw_" + teamName);
     }
 
-    public void setPlayerGroup(final Player player, final NwITeam nwTeam) {
-        iPermissionManager.setPlayerGroup("nw_" + nwTeam.getName(), player);
+    public void setPlayerGroup(final String playerName, final UUID playerUUID, final NwITeam nwTeam) {
+        iPermissionManager.setPlayerGroup("nw_" + nwTeam.getName(), playerName, playerUUID);
     }
 
+    public void removePlayerGroup(final String playerName, final UUID playerUUID, String exceptionGroupName) {
+        iPermissionManager.removePlayerGroup(playerName, playerUUID, exceptionGroupName);
+    }
+    @Deprecated
+    public void setPlayerGroup(final Player player, final NwITeam nwTeam) {
+        iPermissionManager.setPlayerGroup("nw_" + nwTeam.getName(), player.getName(), player.getUniqueId());
+    }
+
+    @Deprecated
     public void removePlayerGroup(final Player player, String exceptionGroupName) {
-        iPermissionManager.removePlayerGroup(player, exceptionGroupName);
+        iPermissionManager.removePlayerGroup(player.getName(), player.getUniqueId(), exceptionGroupName);
     }
 
     public static PermissionManager getManager() {

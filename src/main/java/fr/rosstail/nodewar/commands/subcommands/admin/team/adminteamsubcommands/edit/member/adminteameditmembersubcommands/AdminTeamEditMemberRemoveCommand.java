@@ -7,11 +7,10 @@ import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
+import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.TeamManager;
-import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -77,15 +76,24 @@ public class AdminTeamEditMemberRemoveCommand extends AdminTeamEditMemberSubComm
         targetPlayerName = args[6];
 
         if (targetTeam.getMemberMap().values().stream()
-                .noneMatch(teamMember -> teamMember.getModel().getUsername().equalsIgnoreCase(targetTeamName))) {
+                .noneMatch(teamMember -> teamMember.getModel().getUsername().equalsIgnoreCase(targetPlayerName))) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM));
             return;
         }
 
         targetPlayer = Bukkit.getPlayer(targetPlayerName);
-        if (targetPlayer != null) {
-            TeamManager.getManager().deleteTeamMember(targetTeam, targetPlayer, false);
+
+        if (targetPlayer == null) {
+            PlayerModel playerModel = StorageManager.getManager().selectPlayerModel(PlayerDataManager.getPlayerUUIDFromName(targetPlayerName));
+            if (playerModel == null) {
+                sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_DOES_NOT_EXIST));
+                return;
+            }
+            TeamManager.getManager().deleteTeamMember(targetTeam, targetPlayerName, false);
+        } else {
+            TeamManager.getManager().deleteOnlineTeamMember(targetTeam, targetPlayer, false);
         }
+
         sender.sendMessage(
                 AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_REMOVE_RESULT), targetTeam, targetPlayer)
         );
