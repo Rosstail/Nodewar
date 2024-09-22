@@ -655,6 +655,7 @@ public class SqlStorageRequest implements StorageRequest {
     public void deleteTeamMemberModel(int playerId) {
         String query = "DELETE FROM " + teamMemberTableName +
                 " WHERE player_id = ?";
+
         try {
             executeSQLUpdate(query, playerId);
         } catch (SQLException e) {

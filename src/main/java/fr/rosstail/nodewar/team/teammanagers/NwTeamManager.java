@@ -154,10 +154,13 @@ public class NwTeamManager implements NwITeamManager {
     @Override
     public void deleteTeamMember(NwITeam nwITeam, String playerName, boolean disband) {
         NwTeam nwTeam = (NwTeam) nwITeam;
+        String playerUuid = PlayerDataManager.getPlayerUUIDFromName(playerName);
+        int playerModelId = StorageManager.getManager().selectPlayerModel(playerUuid).getId();
         int teamMemberModelID = nwITeam.getMemberMap().get(playerName).getModel().getId();
+
         nwTeam.getModel().getTeamMemberModelMap().remove(teamMemberModelID);
         if (!disband) {
-            StorageManager.getManager().deleteTeamMemberModel(teamMemberModelID);
+            StorageManager.getManager().deleteTeamMemberModel(playerModelId);
         }
         PermissionManager.getManager().removePlayerGroup(playerName, null, null);
     }
