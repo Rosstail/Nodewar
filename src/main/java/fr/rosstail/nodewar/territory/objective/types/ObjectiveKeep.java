@@ -23,7 +23,7 @@ public class ObjectiveKeep extends NwConquestObjective {
     private final int minAttackerAmount;
     private float minAttackerRatio;
 
-    private int secondsToHold;
+    private final int secondsToHold;
 
     private final Map<NwITeam, Integer> teamMemberOnTerritory = new HashMap<>();
     ObjectiveKeepModel objectiveKeepModel;
@@ -209,10 +209,7 @@ public class ObjectiveKeep extends NwConquestObjective {
             return false;
         }
 
-        if (currentBattle.getHoldTime() < secondsToHold) {
-            return false;
-        }
-        return true;
+        return currentBattle.getHoldTime() >= secondsToHold;
     }
 
     @Override

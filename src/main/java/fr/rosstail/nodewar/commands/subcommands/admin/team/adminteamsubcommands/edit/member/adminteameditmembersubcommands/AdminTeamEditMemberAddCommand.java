@@ -10,16 +10,12 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.TeamModel;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.member.TeamMember;
-import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 public class AdminTeamEditMemberAddCommand extends AdminTeamEditMemberSubCommand {
@@ -57,8 +53,6 @@ public class AdminTeamEditMemberAddCommand extends AdminTeamEditMemberSubCommand
         String targetPlayerName;
         NwITeam targetTeam;
         Player targetPlayer;
-        PlayerData targetData;
-        int playerDataId;
 
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
@@ -86,32 +80,19 @@ public class AdminTeamEditMemberAddCommand extends AdminTeamEditMemberSubCommand
         }
 
         targetPlayer = Bukkit.getPlayer(targetPlayerName);
-        if (targetPlayer != null) {
-            playerDataId = PlayerDataManager.getPlayerDataFromMap(targetPlayer).getId();
-        } else {
+        if (targetPlayer == null) {
             PlayerModel playerModel = StorageManager.getManager().selectPlayerModel(PlayerDataManager.getPlayerUUIDFromName(targetPlayerName));
             if (playerModel == null) {
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_DOES_NOT_EXIST));
                 return;
             }
-            playerDataId = playerModel.getId();
-        }
-
-        TeamMemberModel teamMemberModel =
-                new TeamMemberModel(targetTeam.getID(), playerDataId, 1, new Timestamp(System.currentTimeMillis()), targetPlayerName);
-
-        StorageManager.getManager().insertTeamMemberModel(teamMemberModel);
-
-        if (targetPlayer != null) {
-            TeamMember teamMember = new TeamMember(targetPlayer, targetTeam, teamMemberModel);
-            targetTeam.getOnlineMemberMap().put(targetPlayer, teamMember);
-            targetData = PlayerDataManager.getPlayerDataFromMap(targetPlayer);
+            TeamManager.getManager().createTeamMember(targetTeam, targetPlayerName);
+        } else {
+            TeamManager.getManager().createOnlineTeamMember(targetTeam, targetPlayer);
         }
         sender.sendMessage(
                 AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_ADD_RESULT), targetTeam, targetPlayer)
         );
-
-        StorageManager.getManager().updateTeamModel(targetTeam);
     }
 
     @Override

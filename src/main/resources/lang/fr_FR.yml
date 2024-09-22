@@ -20,7 +20,7 @@ commands:
   too-few-arguments: "[prefix]Trop peu d'arguments"
   player-does-not-exist: "[prefix][player] n'existe pas."
   player-no-data: "[prefix]Aucune donnée pour [player]."
-  player-not-in-team: "[prefix][player] n'est pas l'équipe."
+  player-not-in-team: "[prefix][player] n'est pas dans l'équipe."
   player-already-in-team: "[prefix][player] est déjà dans l'équipe."
   help:
     header: "&b====== &cAIDE NODEWAR &b======"

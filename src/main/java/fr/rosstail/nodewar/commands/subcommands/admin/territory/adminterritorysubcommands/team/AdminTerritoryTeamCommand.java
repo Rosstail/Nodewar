@@ -47,11 +47,9 @@ public class AdminTerritoryTeamCommand extends AdminTerritoryTeamSubCommand {
             return;
         }
 
-        for (AdminTerritorySubCommand subCommand : subCommands) {
-            if (subCommand.getName().equalsIgnoreCase(args[4])) {
-                subCommand.perform(sender, args, arguments);
-            }
-        }
+        subCommands.stream()
+                .filter(subCommand -> subCommand.getName().equalsIgnoreCase(args[4]))
+                .findFirst().ifPresent(subCommand -> subCommand.perform(sender, args, arguments));
     }
 
     @Override

@@ -18,7 +18,7 @@ import java.util.Map;
 public class BattleManager {
     public static BattleManager battleManager;
     public static Map<String, Class<? extends Battle>> battleClassMap = new HashMap<>();
-    private Nodewar plugin;
+    private final Nodewar plugin;
 
     public BattleManager(Nodewar plugin) {
         this.plugin = plugin;

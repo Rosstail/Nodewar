@@ -62,11 +62,9 @@ public class AdminTeamEditRelationCommand extends AdminTeamEditRelationSubComman
             return;
         }
 
-        for (AdminTeamSubCommand subCommand : subCommands) {
-            if (subCommand.getName().equalsIgnoreCase(args[5])) {
-                subCommand.perform(sender, args, arguments);
-            }
-        }
+        subCommands.stream()
+                .filter(subCommand -> subCommand.getName().equalsIgnoreCase(args[5]))
+                .findFirst().ifPresent(subCommand -> subCommand.perform(sender, args, arguments));
     }
 
     @Override

@@ -17,7 +17,7 @@ import java.util.Map;
 public class ObjectiveManager {
     private static ObjectiveManager objectiveManager;
     public static Map<String, Map.Entry<Class<? extends NwObjective>, Class<? extends ObjectiveModel>>> objectiveEntryMap = new HashMap<>();
-    private Nodewar plugin;
+    private final Nodewar plugin;
 
     public ObjectiveManager(Nodewar plugin) {
         this.plugin = plugin;

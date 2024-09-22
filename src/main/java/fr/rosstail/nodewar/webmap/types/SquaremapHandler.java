@@ -28,7 +28,7 @@ import java.util.*;
 public class SquaremapHandler implements NwIWebmapHandler, Listener {
 
     private final Nodewar plugin;
-    private JavaPlugin squaremapPlugin;
+    private final JavaPlugin squaremapPlugin;
     private Squaremap squaremapApi;
 
     public SquaremapHandler(Nodewar plugin) {

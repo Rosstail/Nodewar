@@ -29,7 +29,7 @@ import java.util.*;
 public class DynmapHandler implements NwIWebmapHandler, Listener {
 
     private final Nodewar plugin;
-    private Plugin dynmapPlugin;
+    private final Plugin dynmapPlugin;
     private DynmapAPI dynmapAPI;
     private MarkerAPI markerAPI;
     MarkerSet markerSet = null;

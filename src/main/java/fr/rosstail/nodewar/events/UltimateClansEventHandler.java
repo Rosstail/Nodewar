@@ -38,7 +38,7 @@ public class UltimateClansEventHandler implements Listener {
         NwITeam nwITeam = TeamManager.getManager().getTeam(event.getTown().getName());
         Player player = event.getResident().getPlayer();
         if (player != null) {
-            TeamManager.getManager().deleteTeamMember(nwITeam, player,false);
+            TeamManager.getManager().deleteOnlineTeamMember(nwITeam, player,false);
         }
     }
 

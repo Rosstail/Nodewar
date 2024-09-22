@@ -42,12 +42,9 @@ public class TerritoryCommand extends TerritorySubCommand {
             return;
         }
 
-        for (TerritorySubCommand subCommand : subCommands) {
-            if (subCommand.getName().equalsIgnoreCase(args[1])) {
-                subCommand.perform(sender, args, arguments);
-            }
-        }
-
+        subCommands.stream()
+                .filter(subCommand -> subCommand.getName().equalsIgnoreCase(args[1]))
+                .findFirst().ifPresent(subCommand -> subCommand.perform(sender, args, arguments));
     }
 
     @Override

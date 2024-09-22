@@ -60,12 +60,9 @@ public class AdminTerritoryCommand extends AdminTerritorySubCommand {
             return;
         }
 
-        for (AdminTerritorySubCommand subCommand : subCommands) {
-            if (subCommand.getName().equalsIgnoreCase(subCommandArg)) {
-                subCommand.perform(sender, args, arguments);
-                break;
-            }
-        }
+        subCommands.stream()
+                .filter(subCommand -> subCommand.getName().equalsIgnoreCase(subCommandArg))
+                .findFirst().ifPresent(subCommand -> subCommand.perform(sender, args, arguments));
 
     }
 

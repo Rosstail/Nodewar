@@ -61,11 +61,9 @@ public class TeamManageMemberCommand extends TeamManageMemberSubCommand {
             return;
         }
 
-        for (TeamManageSubCommand subCommand : subCommands) {
-            if (subCommand.getName().equalsIgnoreCase(args[3])) {
-                subCommand.perform(sender, args, arguments);
-            }
-        }
+        subCommands.stream()
+                .filter(subCommand -> subCommand.getName().equalsIgnoreCase(args[3]))
+                .findFirst().ifPresent(subCommand -> subCommand.perform(sender, args, arguments));
     }
 
     @Override
