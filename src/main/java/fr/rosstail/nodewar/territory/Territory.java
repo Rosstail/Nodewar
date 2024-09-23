@@ -229,11 +229,10 @@ public class Territory {
 
         if (territoryUsedTeam != null) {
             type = ConfigData.getConfigData().team.defaultRelation;
-            String ownerTeamName = territoryUsedTeam.getName();
             if (playerTeam != null) {
                 if (territoryUsedTeam == playerTeam) {
                     type = RelationType.TEAM;
-                } else if (playerTeam.getRelations().containsKey(ownerTeamName)) {
+                } else if (playerTeam.getRelations().containsKey(territoryUsedTeam)) {
                     TeamIRelation relation = playerTeam.getIRelation(ownerNwITeam);
                     type = relation.getType();
                 } else { // controlled point

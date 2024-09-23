@@ -204,8 +204,8 @@ public class DynmapHandler implements NwIWebmapHandler, Listener {
 
         x[0] = startTerritory.getCenter().getX();
         x[1] = endTerritory.getCenter().getX();
-        y[0] = startTerritory.getCenter().getY() + 3;
-        y[1] = endTerritory.getCenter().getY() - 3;
+        y[0] = startTerritory.getCenter().getY() + 8;
+        y[1] = endTerritory.getCenter().getY() - 8;
         z[0] = startTerritory.getCenter().getZ();
         z[1] = endTerritory.getCenter().getZ();
 

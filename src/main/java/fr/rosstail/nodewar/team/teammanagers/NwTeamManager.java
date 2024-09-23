@@ -61,6 +61,7 @@ public class NwTeamManager implements NwITeamManager {
             NwTeamRelation iRelation = new NwTeamRelation(originTeam, targetTeam, type, model);
 
             originTeam.addRelation(targetTeam, iRelation);
+            targetTeam.addRelation(originTeam, iRelation);
 
         });
     }

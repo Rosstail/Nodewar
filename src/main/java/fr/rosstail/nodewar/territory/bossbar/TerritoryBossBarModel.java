@@ -10,7 +10,7 @@ public class TerritoryBossBarModel implements Cloneable {
         if (section == null) {
             return;
         }
-        this.style = section.getString("style");
+        this.style = section.getString("style", "SEGMENTED_6");
     }
 
     public TerritoryBossBarModel(TerritoryBossBarModel childModel, TerritoryBossBarModel parentModel) {
