@@ -327,13 +327,7 @@ territory:
   battle:
     types:
       none:
-        description:
-          - "  &9Current battle&d:"
-          - "    &c* &6Status&d:&r [territory_battle_status]"
-          - "    &c* &6Advantage&d:&r [territory_battle_advantage_color_display]"
-          - "    &c* &6Time left&d:&r [territory_battle_time_left]"
-          - "  &9Previous battle&d:"
-          - "    &c* &6Winner&d:&r [territory_battle_winner_color_display]"
+        description: []
       control:
         description:
           - "  &9Current battle&d:"

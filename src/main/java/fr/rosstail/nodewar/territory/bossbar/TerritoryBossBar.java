@@ -16,7 +16,7 @@ public class TerritoryBossBar {
         String styleString = this.territoryBossBarModel.getStyle();
         if (styleString != null) {
             try {
-                this.barStyle = BarStyle.valueOf(this.territoryBossBarModel.getStyle());
+                this.barStyle = BarStyle.valueOf(styleString.toUpperCase());
             } catch (IllegalArgumentException e) {
                 AdaptMessage.print(
                         "the style " + this.territoryBossBarModel.getStyle() +

@@ -174,7 +174,6 @@ public class ObjectiveControl extends NwConquestObjective {
         BattleControl currentBattle = (BattleControl) territory.getCurrentBattle();
         NwITeam currentAdvantage = currentBattle.getAdvantagedITeam();
         NwITeam newAdvantage = checkAdvantage();
-
         NwITeam owner = territory.getOwnerITeam();
 
         if (newAdvantage == null) {
@@ -189,7 +188,7 @@ public class ObjectiveControl extends NwConquestObjective {
             }
         }
 
-        if (currentAdvantage == null || currentAdvantage == owner) {
+        if (newAdvantage == null && (currentAdvantage == null || currentAdvantage == owner)) {
             if (currentBattle.getCurrentHealth() == maxHealth) {
                 return false;
             }
@@ -258,7 +257,17 @@ public class ObjectiveControl extends NwConquestObjective {
     @Override
     public boolean checkEnding() {
         BattleControl currentBattle = (BattleControl) territory.getCurrentBattle();
+        NwITeam ownerTeam = territory.getOwnerITeam();
+        NwITeam advantagedTeam = currentBattle.getAdvantagedITeam();
         int currentHealth = currentBattle.getCurrentHealth();
+
+        if (advantagedTeam == null) {
+            return false;
+        }
+
+        if (ownerTeam != null && ownerTeam != advantagedTeam && currentHealth == maxHealth) {
+            return false;
+        }
 
         return currentHealth == maxHealth;
     }
