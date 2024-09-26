@@ -1,7 +1,7 @@
 package fr.rosstail.nodewar.territory.attackrequirements;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 
@@ -56,15 +56,25 @@ public class AttackRequirements {
                     ownedTerritoryList.stream().anyMatch(territory1 -> territory1.getAttackRequirements().getTargetTerritoryList().contains(territory));
         }
 
+        // if a territory that can target self territory is already under attack, check if this territory can be counter-attacked
+        if (
+                ownedTerritoryList.stream()
+                        .filter(attackerTerritory -> attackerTerritory.getAttackRequirements().getTargetTerritoryList().contains(territory))
+                        .noneMatch(attackerTerritory -> attackerTerritory.getCurrentBattle().isBattleStarted() || ConfigData.getConfigData().general.canCounterAttack)
+        ) {
+            return false;
+        }
+
         List<Territory> startPointList = ownedTerritoryList.stream().filter(
                 territory1 -> (territory1.getAttackRequirements().isStartPoint())
         ).collect(Collectors.toList());
 
         for (Territory startPoint : startPointList) {
-            if(checkAttackRequirements(nwITeam, startPoint, new ArrayList<>(), territory)) {
+            if (checkAttackRequirements(nwITeam, startPoint, new ArrayList<>(), territory)) {
                 return true;
             }
         }
+
         return false;
     }
 

@@ -459,7 +459,6 @@ public class Territory {
             message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_VULNERABLE));
         }
 
-
         message = message.replaceAll("\\[territory_team", "[team");
         message = AdaptMessage.getAdaptMessage().adaptTeamMessage(message, getOwnerITeam());
 
