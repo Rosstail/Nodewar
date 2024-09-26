@@ -9,7 +9,8 @@ cp:
     ending-period: 1
     grace-period: 2
     attacker-ratio: 1
-    maximum-health: 10
+    maximum-health: 100
+    base-capture-speed: 10
     neutralize: true
     rewards:
       winner-player-reward:
@@ -34,6 +35,10 @@ cp-t2:
     - "A point to capture in order to gain advantages on greater territories."
     - "Tier 2"
   type: cp
+  objective:
+    maximum-health: 150
+    bonus-capture-speed-per-player: 1
+    maximum-capture-speed: 15
   type-display: "&9Capture point T2"
 
 cp-t3:
@@ -41,6 +46,10 @@ cp-t3:
     - "A point to capture in order to gain advantages on greater territories."
     - "Tier 3"
   type: cp
+  objective:
+    maximum-health: 200
+    bonus-capture-speed-per-player: 1
+    maximum-capture-speed: 20
   type-display: "&6Capture point T3"
 
 keep:

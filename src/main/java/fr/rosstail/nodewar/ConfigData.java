@@ -80,12 +80,14 @@ public class ConfigData {
 
         public final float configVersion;
         public final String defaultPermissionPlugin;
+        public final boolean canCounterAttack;
 
         ConfigGeneral(FileConfiguration config) {
             configFile = config;
 
             configVersion = (float) config.getDouble("general.config-version", 1.0F);
             defaultPermissionPlugin = config.getString("general.permission-plugin", "auto");
+            canCounterAttack = config.getBoolean("general.can-counter-attack", false);
         }
     }
 

@@ -1,6 +1,5 @@
 package fr.rosstail.nodewar.territory.objective.types;
 
-import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
@@ -14,13 +13,19 @@ import fr.rosstail.nodewar.territory.objective.NwConquestObjective;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 import org.bukkit.Bukkit;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ObjectiveControl extends NwConquestObjective {
 
     private final boolean neutralPeriod;
+    private int minAttackerAmount;
+    private int baseCaptureSpeed;
+    private int bonusCaptureSpeedPerPlayer;
+    private int maxCaptureSpeed;
     private float minAttackerRatio;
     private int maxHealth;
     private final Map<NwITeam, Integer> teamMemberOnTerritory = new HashMap<>();
@@ -37,9 +42,19 @@ public class ObjectiveControl extends NwConquestObjective {
             getStringRewardMap().put(s, new ObjectiveReward(rewardModel));
         });
 
-        this.neutralPeriod = Boolean.parseBoolean(this.objectiveControlModel.getNeedNeutralizeStepStr());
-        this.minAttackerRatio = Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr());
-        this.maxHealth = Integer.parseInt(this.objectiveControlModel.getMaxHealthStr());
+        this.neutralPeriod = this.objectiveControlModel.getNeedNeutralizeStepStr() == null || Boolean.parseBoolean(this.objectiveControlModel.getNeedNeutralizeStepStr());
+        this.minAttackerAmount = Math.min(1, this.objectiveControlModel.getMinimumAttackerStr() != null ?
+                Integer.parseInt(this.objectiveControlModel.getMinimumAttackerStr()) : 1);
+        this.baseCaptureSpeed = this.objectiveControlModel.getBaseCaptureSpeedStr() != null ?
+                Integer.parseInt(this.objectiveControlModel.getBaseCaptureSpeedStr()) : 1;
+        this.bonusCaptureSpeedPerPlayer = this.objectiveControlModel.getBonusCaptureSpeedPerPlayerStr() != null ?
+                Integer.parseInt(this.objectiveControlModel.getBonusCaptureSpeedPerPlayerStr()) : 0;
+        this.maxCaptureSpeed = this.objectiveControlModel.getMaxCaptureSpeedStr() != null ?
+                Integer.parseInt(this.objectiveControlModel.getMaxCaptureSpeedStr()) : 1;
+        this.minAttackerRatio = this.objectiveControlModel.getAttackerRatioStr() != null ?
+                Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr()) : 1F;
+        this.maxHealth = this.objectiveControlModel.getMaxHealthStr() != null ?
+                Integer.parseInt(this.objectiveControlModel.getMaxHealthStr()) : 10;
         this.display = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.description.control.display");
         this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.types.control.description");
     }
@@ -115,58 +130,45 @@ public class ObjectiveControl extends NwConquestObjective {
             return territory.getOwnerITeam();
         }
         NwITeam defenderTeam = territory.getOwnerITeam();
-        int greatestAttackerEffective = 0;
-        int defenderEffective = 0;
-        final ArrayList<NwITeam> greatestAttacker = new ArrayList<>();
+        final int defenderEffective = teamMemberOnTerritory.getOrDefault(defenderTeam, 0);
 
-        for (Map.Entry<NwITeam, Integer> entry : teamMemberOnTerritory.entrySet()) {
-            NwITeam attackerTeam = entry.getKey();
-            RelationType relation = ConfigData.getConfigData().team.defaultRelation;
+        Set<Map.Entry<NwITeam, Integer>> highestAttackers = teamMemberOnTerritory.entrySet().stream()
+                .filter(nwITeamIntegerEntry -> (defenderTeam == null || nwITeamIntegerEntry.getKey() != defenderTeam || // Undefended or not defenders
+                        (nwITeamIntegerEntry.getKey().getIRelation(defenderTeam) != null &&
+                                nwITeamIntegerEntry.getKey().getIRelation(defenderTeam).getType() == RelationType.ENEMY)) // ENEMY to the existing defender
+                        && nwITeamIntegerEntry.getValue() >= Math.max(1, minAttackerAmount) // Minimum player threshold
+                        && (float) nwITeamIntegerEntry.getValue() / defenderEffective >= minAttackerRatio // Attacker Ratio
+                ).collect(Collectors.toCollection(LinkedHashSet::new));
 
-            if (defenderTeam != null) {
-                if (defenderTeam == attackerTeam) {
-                    relation = RelationType.TEAM;
-                } else if (attackerTeam.getRelations().containsKey(defenderTeam)) {
-                    relation = attackerTeam.getRelations().get(defenderTeam).getType();
-                }
+        if (highestAttackers.isEmpty()) {
+            if (defenderEffective > minAttackerAmount) {
+                return defenderTeam;
             }
-
-            if (defenderTeam == null || relation == RelationType.ENEMY || relation == RelationType.TEAM) {
-                Integer force = entry.getValue();
-                if (attackerTeam != territory.getOwnerITeam()) {
-                    if (force >= greatestAttackerEffective) {
-                        if (force > greatestAttackerEffective) {
-                            greatestAttackerEffective = force;
-                            greatestAttacker.clear();
-                        }
-                        greatestAttacker.add(attackerTeam);
-                    }
-                } else {
-                    defenderEffective = force;
-                }
-            }
-        }
-
-        if (greatestAttackerEffective == 0 && defenderEffective == 0) {
             return null;
         }
 
-        float attackerDefenderRatio = (float) greatestAttackerEffective / (greatestAttackerEffective + defenderEffective);
-        if (greatestAttacker.size() > 1) { //Multiple attackers or None
-            if (attackerDefenderRatio >= minAttackerRatio) {
-                return null;
-            } else {
-                return defenderTeam;
+        if (highestAttackers.size() > 1) {
+            int highestValue = highestAttackers.stream().findFirst().get().getValue();
+
+            for (Map.Entry<NwITeam, Integer> highestAttacker : highestAttackers) {
+                if (highestAttacker.getValue().compareTo(highestValue) > 0) {
+                    highestValue = highestAttacker.getValue();
+                }
             }
-        } else { //One attacker
-            if (attackerDefenderRatio >= minAttackerRatio) {
-                return greatestAttacker.get(0);
-            } else if (defenderEffective > 0) {
-                return defenderTeam;
-            } else {
+
+            int finalHighestValue = highestValue;
+            Set<Map.Entry<NwITeam, Integer>> collect = highestAttackers.stream()
+                    .filter(nwITeamIntegerEntry -> nwITeamIntegerEntry.getValue() == finalHighestValue)
+                    .collect(Collectors.toSet());
+
+            if (collect.size() > 1) {
                 return null;
             }
+
+            return collect.stream().findFirst().get().getKey();
         }
+
+        return highestAttackers.stream().findFirst().get().getKey();
     }
 
     @Override
@@ -302,18 +304,31 @@ public class ObjectiveControl extends NwConquestObjective {
 
         if (advantagedTeam != null) {
             if (defenderTeam == null || advantagedTeam.equals(defenderTeam)) {
-                currentBattleControl.setCurrentHealth(Math.min(currentBattleControl.getCurrentHealth() + 1, maxHealth));
+                currentBattleControl.setCurrentHealth(Math.min(currentBattleControl.getCurrentHealth() + calculateCaptureSpeed(advantagedTeam), maxHealth));
             } else {
                 //Avoid it if not enemy
-                currentBattleControl.setCurrentHealth(Math.max(0, currentBattleControl.getCurrentHealth() - 1));
+                currentBattleControl.setCurrentHealth(Math.max(0, currentBattleControl.getCurrentHealth() - calculateCaptureSpeed(advantagedTeam)));
             }
         }
 
     }
 
+    private int calculateCaptureSpeed(NwITeam advantagedTeam) {
+        int captureSpeed = baseCaptureSpeed;
+
+        int advantageForce = teamMemberOnTerritory.get(advantagedTeam);
+        captureSpeed += (advantageForce - minAttackerAmount) / minAttackerAmount;
+
+        return Math.min(captureSpeed, maxCaptureSpeed);
+    }
+
     @Override
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
+        message = message.replaceAll("\\[territory_objective_base_capture_speed]", String.valueOf(baseCaptureSpeed));
+        message = message.replaceAll("\\[territory_objective_bonus_capture_speed]", String.valueOf(bonusCaptureSpeedPerPlayer));
+        message = message.replaceAll("\\[territory_objective_maximum_capture_speed]", String.valueOf(maxCaptureSpeed));
+        message = message.replaceAll("\\[territory_objective_minimum_attacker_amount]", String.valueOf(minAttackerAmount));
         message = message.replaceAll("\\[territory_objective_minimum_attacker_ratio]", String.valueOf(minAttackerRatio));
         message = message.replaceAll("\\[territory_objective_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)));
         message = message.replaceAll("\\[territory_objective_maximum_health]", String.valueOf(maxHealth));
@@ -327,5 +342,21 @@ public class ObjectiveControl extends NwConquestObjective {
 
     public boolean isNeutralPeriod() {
         return neutralPeriod;
+    }
+
+    public int getBaseCaptureSpeed() {
+        return baseCaptureSpeed;
+    }
+
+    public void setBaseCaptureSpeed(int baseCaptureSpeed) {
+        this.baseCaptureSpeed = baseCaptureSpeed;
+    }
+
+    public int getMinAttackerAmount() {
+        return minAttackerAmount;
+    }
+
+    public void setMinAttackerAmount(int minAttackerAmount) {
+        this.minAttackerAmount = minAttackerAmount;
     }
 }
