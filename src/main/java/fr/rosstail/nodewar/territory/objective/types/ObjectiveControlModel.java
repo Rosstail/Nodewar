@@ -21,7 +21,7 @@ public class ObjectiveControlModel extends ObjectiveModel {
                 this.attackerRatioStr = attackerRatioStr;
             }
 
-            String minimumAttackerStr = section.getString("minimum-attacker");
+            String minimumAttackerStr = section.getString("minimum-attackers");
             if (minimumAttackerStr != null && minimumAttackerStr.matches("\\d+")) {
                 this.minimumAttackerStr = minimumAttackerStr;
             }

@@ -48,6 +48,7 @@ cp-t3:
   type: cp
   objective:
     maximum-health: 200
+    minimum-attackers: 2
     bonus-capture-speed-per-player: 1
     maximum-capture-speed: 20
   type-display: "&6Capture point T3"
