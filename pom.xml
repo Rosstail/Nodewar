@@ -194,6 +194,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.github.ElgarL</groupId>
+            <artifactId>groupmanager</artifactId>
+            <version>3.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.github.UlrichBR</groupId>
             <artifactId>UClansV7-API</artifactId>
             <version>7.13.0-R1</version>
