@@ -17,11 +17,14 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
         this.url = "jdbc:sqlite:./plugins/Nodewar/data/data.db";
         enableForeignKeys();
 
+        deleteTeamMemberDuplicate();
+        alterTeamMemberTable();
+        alterTerritoryTable();
+
         createNodewarPlayerTable();
         createNodewarTeamTable();
         createNodewarTeamMemberTable();
         createNodewarTeamRelationTable();
-        alterTerritoryTable();
         createNodewarTerritoryTable();
         createNodewarBattlefieldTable();
     }
@@ -59,10 +62,92 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
     }
 
     @Override
+    public void deleteTeamMemberDuplicate() {
+        String deleteDuplicatesRequest =
+                "DELETE FROM " + teamMemberTableName
+                        + " WHERE ROWID NOT IN ("
+                        + " SELECT MIN(ROWID)"
+                        + " FROM " + teamMemberTableName
+                        + " GROUP BY player_id"
+                        + ");";
+
+        try {
+            executeSQLUpdate(deleteDuplicatesRequest);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void alterTeamMemberTable() {
+        String oldTableName = getTeamMemberTableName();
+        String newTableName = oldTableName + "_new";
+
+        String checkPlayerIdUinique = "SELECT sql" +
+                " FROM sqlite_master" +
+                " WHERE sqlite_master.type = 'table'" +
+                " AND sqlite_master.tbl_name = '" + teamMemberTableName + "';";
+
+        boolean hasPlayerIdUnique = false;
+        ResultSet rs = null;
+
+        try {
+            rs = super.executeSQLQuery(openConnection(), checkPlayerIdUinique);
+
+            if (rs.next()) {
+                String resultStr = rs.getString(1).toLowerCase();
+                hasPlayerIdUnique = resultStr.contains("unique");
+            }
+            rs.close();
+
+            if (hasPlayerIdUnique) {
+                return;
+            }
+
+            String copyDataQuery = "INSERT INTO " + newTableName + " (id, player_id, team_id, player_rank, join_time) " +
+                    "SELECT id, player_id, team_id, player_rank, join_time FROM " + oldTableName + ";";
+
+            String dropOldTableQuery = "DROP TABLE IF EXISTS " + oldTableName + ";";
+
+            String renameTableQuery = "ALTER TABLE " + newTableName + " RENAME TO " + oldTableName + ";";
+
+
+            String createNewTable = "CREATE TABLE IF NOT EXISTS " + newTableName + " (" +
+                    " id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " player_id INTEGER UNIQUE NOT NULL" +
+                    " REFERENCES " + getPlayerTableName() + " (id)" +
+                    " ON DELETE CASCADE," +
+                    " team_id INTEGER NOT NULL" +
+                    " REFERENCES " + getTeamTableName() + " (id)" +
+                    " ON DELETE CASCADE," +
+                    " player_rank INTEGER NOT NULL DEFAULT 5," +
+                    " join_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);";
+
+            executeSQL(createNewTable);
+
+            executeSQL(copyDataQuery);
+            executeSQL(dropOldTableQuery);
+            executeSQL(renameTableQuery);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                try {
+                    if (!rs.isClosed()) {
+                        rs.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
     public void createNodewarTeamMemberTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + getTeamMemberTableName() + " (" +
                 " id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " player_id INTEGER NOT NULL" +
+                " player_id INTEGER UNIQUE NOT NULL" +
                 " REFERENCES " + getPlayerTableName() + " (id)" +
                 " ON DELETE CASCADE," +
                 " team_id INTEGER NOT NULL" +

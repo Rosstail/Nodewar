@@ -13,8 +13,8 @@ public interface NwIPermissionManagerHandler {
     void setPlayerGroup(String groupName, String playerName, UUID playerUUID);
     void removePlayerGroup(String playerName, UUID playerUUID, String groupExceptionName);
 
-    @Deprecated
+    @Deprecated(since = "09-2024")
     void setPlayerGroup(String groupName, Player player);
-    @Deprecated
+    @Deprecated(since = "09-2024")
     void removePlayerGroup(Player player, String groupExceptionName);
 }

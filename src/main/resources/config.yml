@@ -9,7 +9,7 @@ storage:
 
 general:
   debug-messages: true
-  permission-plugin: auto # luckperms and "auto". Ask dev to add others
+  permission-plugin: auto # luckperms, GroupManager, and "auto". Ask the dev to add others
   can-counter-attack: false # Can a team attack another territory from a territory already in battle
 
 locale:

@@ -26,7 +26,7 @@ public class MySqlStorageRequest extends SqlStorageRequest {
     public void createNodewarTeamMemberTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + teamMemberTableName + " (" +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
-                " player_id INTEGER NOT NULL," +
+                " player_id INTEGER UNIQUE NOT NULL," +
                 " team_id INTEGER NOT NULL," +
                 " player_rank INTEGER NOT NULL," +
                 " join_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +

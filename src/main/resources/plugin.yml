@@ -9,6 +9,7 @@ depend:
 softdepend:
   - Vault
   - PlaceholderAPI
+  - GroupManager
   - Luckperms
   - BlueMap
   - BlueMapAPI

@@ -46,11 +46,16 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public void setupStorage(String host, short port, String database, String username, String password) {
+        // updaters
+        deleteTeamMemberDuplicate();
+        alterTeamMemberTable();
+        alterTerritoryTable();
+        //
+
         createNodewarPlayerTable();
         createNodewarTeamTable();
         createNodewarTeamMemberTable();
         createNodewarTeamRelationTable();
-        alterTerritoryTable();
         createNodewarTerritoryTable();
         createNodewarBattlefieldTable();
     }
@@ -82,10 +87,26 @@ public class SqlStorageRequest implements StorageRequest {
         executeSQL(query);
     }
 
+    public void deleteTeamMemberDuplicate() {
+        String deleteDuplicatesRequest =
+                "DELETE FROM " + teamMemberTableName + " a"
+                + " WHERE EXISTS (SELECT " + teamMemberTableName + " b"
+                + " WHERE a.player_id = b.player_id"
+                + " AND a.id > b.id)";
+
+        executeSQLQuery(openConnection(), deleteDuplicatesRequest);
+    }
+
+    public void alterTeamMemberTable() {
+        String setPlayerIdUnique = "ALTER TABLE " + teamMemberTableName + " ADD UNIQUE (player_id)";
+
+        executeSQL(setPlayerIdUnique);
+    }
+
     public void createNodewarTeamMemberTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + teamMemberTableName + " (" +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
-                " player_id INTEGER NOT NULL" +
+                " player_id INTEGER UNIQUE NOT NULL" +
                 " REFERENCES " + playerTableName + " (id)" +
                 " ON DELETE CASCADE," +
                 " team_id INTEGER NOT NULL" +
