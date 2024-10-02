@@ -17,9 +17,14 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
         this.url = "jdbc:sqlite:./plugins/Nodewar/data/data.db";
         enableForeignKeys();
 
-        deleteTeamMemberDuplicate();
-        alterTeamMemberTable();
-        alterTerritoryTable();
+        if (doesTableExists(teamMemberTableName)) {
+            deleteTeamMemberDuplicate();
+            alterTeamMemberTable();
+        }
+
+        if (doesTableExists(territoryTableName)) {
+            alterTerritoryTable();
+        }
 
         createNodewarPlayerTable();
         createNodewarTeamTable();
@@ -70,7 +75,6 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
                         + " FROM " + teamMemberTableName
                         + " GROUP BY player_id"
                         + ");";
-
         try {
             executeSQLUpdate(deleteDuplicatesRequest);
         } catch (SQLException e) {
@@ -83,7 +87,7 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
         String oldTableName = getTeamMemberTableName();
         String newTableName = oldTableName + "_new";
 
-        String checkPlayerIdUinique = "SELECT sql" +
+        String checkPlayerIdUnique = "SELECT sql" +
                 " FROM sqlite_master" +
                 " WHERE sqlite_master.type = 'table'" +
                 " AND sqlite_master.tbl_name = '" + teamMemberTableName + "';";
@@ -92,7 +96,7 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
         ResultSet rs = null;
 
         try {
-            rs = super.executeSQLQuery(openConnection(), checkPlayerIdUinique);
+            rs = super.executeSQLQuery(openConnection(), checkPlayerIdUnique);
 
             if (rs.next()) {
                 String resultStr = rs.getString(1).toLowerCase();
