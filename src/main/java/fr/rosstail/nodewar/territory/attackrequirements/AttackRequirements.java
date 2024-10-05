@@ -24,10 +24,12 @@ public class AttackRequirements {
         AttackRequirementsModel clonedChildModel = childModel.clone();
         AttackRequirementsModel clonedParentModel = parentModel.clone();
         this.attackRequirementsModel = new AttackRequirementsModel(clonedChildModel, clonedParentModel);
-        TerritoryManager territoryManager = TerritoryManager.getTerritoryManager();
 
         this.startPoint = Boolean.parseBoolean(attackRequirementsModel.getStartPointStr());
+    }
 
+    public void initialize() {
+        TerritoryManager territoryManager = TerritoryManager.getTerritoryManager();
         if (this.attackRequirementsModel.getTargetNameList() != null) {
             this.attackRequirementsModel.getTargetNameList().forEach(s -> {
                 Optional<Territory> first = territoryManager.getTerritoryMap().values().stream().filter(territory1 -> (
@@ -57,10 +59,11 @@ public class AttackRequirements {
         }
 
         // if a territory that can target self territory is already under attack, check if this territory can be counter-attacked
-        if (
-                ownedTerritoryList.stream()
+        if (!ConfigData.getConfigData().general.canCounterAttack
+                && !ownedTerritoryList.isEmpty() // TO CHECK
+                && ownedTerritoryList.stream()
                         .filter(attackerTerritory -> attackerTerritory.getAttackRequirements().getTargetTerritoryList().contains(territory))
-                        .noneMatch(attackerTerritory -> attackerTerritory.getCurrentBattle().isBattleStarted() || ConfigData.getConfigData().general.canCounterAttack)
+                        .allMatch(attackerTerritory -> attackerTerritory.getCurrentBattle().isBattleStarted())
         ) {
             return false;
         }

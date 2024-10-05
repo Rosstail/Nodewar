@@ -9,7 +9,6 @@ import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,14 +19,13 @@ public class WorldguardEventHandler implements Listener {
     @EventHandler
     public void OnRegionEnterEvent(final RegionEnteredEvent event) {
         Player player = event.getPlayer();
-        World world = event.getWorld();
         ProtectedRegion region = event.getRegion();
 
         PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
 
         TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(
                 territory -> (
-                        territory.getWorld() == world && territory.getModel().getRegionStringList().contains(region.getId())
+                        territory.getProtectedRegionList().stream().anyMatch(protectedRegion -> protectedRegion == region)
                 )
         ).forEach(territory -> {
             if (playerData.getProtectedRegionList().stream().noneMatch(territory.getProtectedRegionList()::contains)) {
@@ -43,14 +41,13 @@ public class WorldguardEventHandler implements Listener {
     @EventHandler
     public void OnRegionLeaveEvent(final RegionLeftEvent event) {
         Player player = event.getPlayer();
-        World world = event.getWorld();
         ProtectedRegion region = event.getRegion();
 
         PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
 
         TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(
                 territory -> (
-                        territory.getWorld() == world && territory.getModel().getRegionStringList().contains(region.getId())
+                        territory.getProtectedRegionList().stream().anyMatch(protectedRegion -> protectedRegion == region)
                 )
         ).forEach(territory -> {
             if (playerData.getProtectedRegionList().stream().noneMatch(territory.getProtectedRegionList()::contains)) {

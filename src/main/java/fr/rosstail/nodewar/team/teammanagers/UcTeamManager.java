@@ -1,36 +1,63 @@
 package fr.rosstail.nodewar.team.teammanagers;
 
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.events.UltimateClansEventHandler;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.permissionmannager.PermissionManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import fr.rosstail.nodewar.team.type.UcTeam;
+import fr.rosstail.nodewar.territory.TerritoryManager;
 import me.ulrich.clans.Clans;
 import me.ulrich.clans.api.ClanAPIManager;
 import me.ulrich.clans.data.ClanData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class UcTeamManager implements NwITeamManager {
+public class UcTeamManager implements NwITeamManager, Listener {
     private final Map<String, UcTeam> stringTeamMap = new HashMap<>();
 
-    private final Clans clans;
-    private final ClanAPIManager clanAPI;
+    private Clans clansPlugin;
+    private ClanAPIManager clanAPI;
+    private UltimateClansEventHandler ultimateClansEventHandler;
 
 
     public UcTeamManager() {
-        final Plugin plugin = Nodewar.getInstance().getServer().getPluginManager().getPlugin("UltimateClans");
-        if (!(plugin instanceof Clans)) {
-            throw new Error("Ultimate Clans is not in the server.");
+        final Plugin uClansPlugin = Nodewar.getInstance().getServer().getPluginManager().getPlugin("UltimateClans");
+        clansPlugin = (Clans) uClansPlugin;
+    }
+
+    @Override
+    public void tryInitialize() {
+        if (clansPlugin.isEnabled()) {
+            initialize(clansPlugin);
         }
-        clans = (Clans) plugin;
-        clanAPI = clans.getClanAPI();
+    }
+
+    @Override
+    public void initialize(JavaPlugin javaPlugin) {
+        clanAPI = clansPlugin.getClanAPI();
+        ultimateClansEventHandler = new UltimateClansEventHandler();
+        Bukkit.getPluginManager().registerEvents(ultimateClansEventHandler, Nodewar.getInstance());
+    }
+
+    @EventHandler
+    public void onPluginEnable(PluginEnableEvent event) {
+        JavaPlugin plugin = (JavaPlugin) event.getPlugin();
+        if (plugin.getName().equals("UltimateClans")) {
+            initialize(plugin);
+        }
     }
 
     @Override
@@ -39,6 +66,7 @@ public class UcTeamManager implements NwITeamManager {
             UcTeam ucTeam = new UcTeam(clanData);
             stringTeamMap.put(ucTeam.getName(), ucTeam);
         });
+        TerritoryManager.getTerritoryManager().initialize();
     }
 
     @Override

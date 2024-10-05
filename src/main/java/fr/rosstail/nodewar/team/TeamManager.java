@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.team;
 
 import fr.rosstail.nodewar.ConfigData;
+import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.permissionmannager.PermissionManager;
@@ -16,6 +17,7 @@ import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
@@ -55,32 +57,7 @@ public class TeamManager {
 
     private final HashSet<NwTeamInvite> teamInviteHashSet = new HashSet<>();
 
-    private TeamManager() {
-    }
-
-    public static void init() {
-        if (manager == null) {
-            manager = new TeamManager();
-        }
-    }
-
-    public String getUsedSystem() {
-        String system = ConfigData.getConfigData().team.system;
-        if (iTeamManagerMap.containsKey(system) && Bukkit.getServer().getPluginManager().getPlugin(system) != null) {
-            return system;
-        } else if (system.equalsIgnoreCase("auto")) {
-            for (Map.Entry<String, Class<? extends NwITeamManager>> entry : iTeamManagerMap.entrySet()) {
-                String s = entry.getKey();
-                if (Bukkit.getServer().getPluginManager().getPlugin(s) != null) {
-                    return s;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    public void loadTeams() {
+    private TeamManager(Nodewar plugin) {
         String usedSystem = getUsedSystem();
 
         if (usedSystem != null) {
@@ -101,6 +78,38 @@ public class TeamManager {
             iManager = new NwTeamManager();
         }
 
+        if (iManager instanceof Listener) {
+            Bukkit.getPluginManager().registerEvents((Listener) iManager, plugin);
+        }
+    }
+
+    public void tryInitialize() {
+        iManager.tryInitialize();
+    }
+
+    public static void init(Nodewar plugin) {
+        if (manager == null) {
+            manager = new TeamManager(plugin);
+        }
+    }
+
+    public String getUsedSystem() {
+        String system = ConfigData.getConfigData().team.system;
+        if (iTeamManagerMap.containsKey(system) && Bukkit.getServer().getPluginManager().getPlugin(system) != null) {
+            return system;
+        } else if (system.equalsIgnoreCase("auto")) {
+            for (Map.Entry<String, Class<? extends NwITeamManager>> entry : iTeamManagerMap.entrySet()) {
+                String s = entry.getKey();
+                if (Bukkit.getServer().getPluginManager().getPlugin(s) != null) {
+                    return s;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public void loadTeams() {
         iManager.loadTeams();
     }
 
@@ -110,6 +119,14 @@ public class TeamManager {
 
     public TeamIRelation getTeamRelation(NwITeam firstITeam, NwITeam secondITeam) {
         return iManager.getRelation(firstITeam, secondITeam);
+    }
+
+    public RelationType getTeamRelationType(NwITeam firstITeam, NwITeam secondITeam) {
+        TeamIRelation teamIRelation = getTeamRelation(firstITeam, secondITeam);
+        if (teamIRelation == null) {
+            return ConfigData.getConfigData().team.defaultRelation;
+        }
+        return teamIRelation.getType();
     }
 
     public void addNewTeam(NwITeam nwITeam) {

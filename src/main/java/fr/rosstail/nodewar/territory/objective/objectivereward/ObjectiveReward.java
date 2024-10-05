@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.territory.objective.objectivereward;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
@@ -155,10 +156,13 @@ public class ObjectiveReward {
     }
 
     private boolean shallRewardTeam(Territory territory, Battle battle, Map<NwITeam, Integer> teamPositionMap, NwITeam team) {
-        int teamPosition = teamPositionMap.get(team);
+        int teamPosition = teamPositionMap.getOrDefault(team, -1);
+        if (teamPosition == -1) {
+            AdaptMessage.print("ObjectiveReward.shallRewardTeam " + (team != null ? team.getName() : "Null " + " -1 position"), AdaptMessage.prints.DEBUG);
+            return false;
+        }
         String teamRole = getRewardModel().getTeamRole();
-        TeamIRelation relation = TeamManager.getManager().getTeamRelation(team, territory.getOwnerITeam());
-        RelationType relationType = relation != null ? relation.getType() : RelationType.NEUTRAL;
+        RelationType relationType = TeamManager.getManager().getTeamRelationType(team, territory.getOwnerITeam());
         List<Integer> teamPositions = getRewardModel().getTeamPositions();
 
         if (isShouldTeamWin() && teamPosition != 1) {

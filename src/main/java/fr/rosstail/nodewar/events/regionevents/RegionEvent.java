@@ -11,13 +11,11 @@ public abstract class RegionEvent extends PlayerEvent
 {
     private static final HandlerList handlerList;
     private final ProtectedRegion region;
-    private final World world;
     public Event parentEvent;
     
-    public RegionEvent(final ProtectedRegion region, final World world, final Player player, final Event parent) {
+    public RegionEvent(final ProtectedRegion region, final Player player, final Event parent) {
         super(player);
         this.region = region;
-        this.world = world;
         this.parentEvent = parent;
     }
     
@@ -27,10 +25,6 @@ public abstract class RegionEvent extends PlayerEvent
     
     public ProtectedRegion getRegion() {
         return this.region;
-    }
-
-    public World getWorld() {
-        return world;
     }
 
     public static HandlerList getHandlerList() {

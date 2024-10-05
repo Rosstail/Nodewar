@@ -38,7 +38,8 @@ public class AdaptMessage {
     public enum prints {
         OUT,
         WARNING,
-        ERROR
+        ERROR,
+        DEBUG
     }
 
     public AdaptMessage(Nodewar plugin) {
@@ -390,7 +391,11 @@ public class AdaptMessage {
         } else if (print.equals(prints.WARNING)) {
             getLogger().warning(string);
         } else {
-            getLogger().info(string);
+            if (print.equals(prints.DEBUG)) {
+                getLogger().info("[NW-DEBUG] " + string);
+            } else {
+                getLogger().info(string);
+            }
         }
     }
 

@@ -123,7 +123,7 @@ public class Territory {
 
         webmapInfo = new TerritoryWebmap(this, territoryWebmapModel, territoryType.getTerritoryWebmapModel());
 
-        updateRegionList();
+        setupRegionList();
 
         for (RelationType relation : RelationType.values()) {
             String territoryName;
@@ -174,7 +174,7 @@ public class Territory {
         }
     }
 
-    public void updateRegionList() {
+    private void setupRegionList() {
         world = Bukkit.getWorld(territoryModel.getWorldName());
         if (world != null) {
             final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -183,15 +183,32 @@ public class Territory {
                 getModel().getRegionStringList().forEach(s -> {
                     if (regions.hasRegion(s)) {
                         protectedRegionList.add(regions.getRegion(s));
-                        WebmapManager.getManager().eraseTerritoryMarker(this);
-                        WebmapManager.getManager().eraseTerritorySurface(this);
-                        WebmapManager.getManager().eraseLineBetweenTerritories(this, this);
-                        WebmapManager.getManager().eraseTerritoryMarker(this);
-                        WebmapManager.getManager().drawTerritoryMarker(this);
                     } else {
-                        System.err.println("The region " + s + " does not exists for " + this.getModel().getName() + " yet");
+                        AdaptMessage.print("The " + s + " region in " + getModel().getName() + "does not exists yet" , AdaptMessage.prints.WARNING);
                     }
                 });
+            }
+            updateAllBossBar();
+        }
+    }
+
+    public void updateRegionList() {
+        if (world != null) {
+            final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+            final RegionManager regions = container.get(BukkitAdapter.adapt(world));
+            if (regions != null) {
+                getModel().getRegionStringList().forEach(s -> {
+                    if (regions.hasRegion(s)) {
+                        protectedRegionList.add(regions.getRegion(s));
+                    } else {
+                        AdaptMessage.print("The " + s + " region in " + getModel().getName() + "does not exists yet" , AdaptMessage.prints.WARNING);
+                    }
+                });
+                WebmapManager.getManager().eraseTerritoryMarker(this);
+                WebmapManager.getManager().eraseTerritorySurface(this);
+                WebmapManager.getManager().eraseLineBetweenTerritories(this, this);
+                WebmapManager.getManager().eraseTerritoryMarker(this);
+                WebmapManager.getManager().drawTerritoryMarker(this);
             }
             updateAllBossBar();
         }
@@ -223,20 +240,23 @@ public class Territory {
 
         if (ownerNwITeam != null) {
             territoryUsedTeam = ownerNwITeam;
-        } else if (currentBattle.getAdvantagedITeam() != null) {
-            territoryUsedTeam = currentBattle.getAdvantagedITeam();
+        } else if (currentBattle != null) {
+            if (currentBattle.getAdvantagedITeam() != null) {
+                territoryUsedTeam = currentBattle.getAdvantagedITeam();
+            }
         }
 
         if (territoryUsedTeam != null) {
-            type = ConfigData.getConfigData().team.defaultRelation;
             if (playerTeam != null) {
                 if (territoryUsedTeam == playerTeam) {
                     type = RelationType.TEAM;
                 } else if (playerTeam.getRelations().containsKey(territoryUsedTeam)) {
                     TeamIRelation relation = playerTeam.getIRelation(ownerNwITeam);
                     type = relation.getType();
-                } else { // controlled point
+                } else if (ConfigData.getConfigData().team.defaultRelation == RelationType.NEUTRAL) {
                     type = RelationType.CONTROLLED;
+                } else {
+                    type = ConfigData.getConfigData().team.defaultRelation;
                 }
             }
         }
@@ -364,7 +384,7 @@ public class Territory {
     }
 
     public void setupAttackRequirements() {
-        this.attackRequirements = new AttackRequirements(this, territoryModel.getAttackRequirementsModel(), territoryType.getAttackRequirementsModel());
+        this.attackRequirements.initialize();
     }
 
 
@@ -455,8 +475,10 @@ public class Territory {
         boolean isProtected = territoryModel.isUnderProtection();
         if (isProtected) {
             message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_PROTECTED));
+            message = message.replaceAll("\\[territory_protected_short]", LangManager.getMessage(LangMessage.TERRITORY_PROTECTED_SHORT));
         } else {
             message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_VULNERABLE));
+            message = message.replaceAll("\\[territory_protected_short]", LangManager.getMessage(LangMessage.TERRITORY_VULNERABLE_SHORT));
         }
 
         message = message.replaceAll("\\[territory_team", "[team");

@@ -4,8 +4,10 @@ import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
+import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TownyTeamRelation;
 import me.ulrich.clans.data.ClanData;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +24,7 @@ public class UcTeam implements NwITeam {
         this.clanData = clanData;
         TeamModel model1 = StorageManager.getManager().selectTeamModelByName(clanData.getTag().toLowerCase());
         if (model1 == null) {
-            model1 = new TeamModel(clanData.getTag().toLowerCase(), clanData.getTag(), clanData.getTag(), "#CC000");
+            model1 = new TeamModel(clanData.getTag().toLowerCase(), clanData.getTag(), clanData.getTag(), TeamManager.getManager().generateRandomColor());
             StorageManager.getManager().insertTeamModel(model1);
         }
         this.model = model1;
@@ -105,22 +107,29 @@ public class UcTeam implements NwITeam {
 
     @Override
     public Map<Player, TeamMember> getOnlineMemberMap() {
-        return null;
+        Map<Player, TeamMember> playerTeamMemberMap = new HashMap<>();
+        clanData.getOnlineMembers().forEach(uuid -> {
+            Player player = Bukkit.getPlayer(uuid);
+            TeamMemberModel memberModel = new TeamMemberModel(getID(), 0, 1, new Timestamp(System.currentTimeMillis()), player.getName());
+            TeamMember member = new TeamMember(player, this, memberModel);
+            playerTeamMemberMap.put(Bukkit.getPlayer(uuid), member);
+        });
+        return playerTeamMemberMap;
     }
 
     @Override
     public Map<String, TeamMember> getMemberMap() {
-        return null;
+        return new HashMap<>();
     }
 
     @Override
     public int getOnlineMemberAmount() {
-        return 0;
+        return -1;
     }
 
     @Override
     public int getMemberAmount() {
-        return 0;
+        return -1;
     }
 
     /**

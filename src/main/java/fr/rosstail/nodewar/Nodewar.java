@@ -86,27 +86,35 @@ public class Nodewar extends JavaPlugin implements Listener {
         dimName = instance.getName().toLowerCase();
 
         AdaptMessage.initAdaptMessage(this);
-        TeamManager.init();
         TerritoryManager.init(this);
         ObjectiveManager.init(this);
         BattleManager.init(this);
         BattlefieldManager.init(this);
 
         loadCustomConfig();
+        this.createDataFolder();
+
         PermissionManager.init();
         PermissionManager.getManager().loadManager();
-
-        WebmapManager.init(this);
-        WebmapManager.getManager().loadManager();
 
         if (PermissionManager.getManager() == null) {
             AdaptMessage.print("[" + this.getName() + "] No permission plugin available. Disabling", AdaptMessage.prints.ERROR);
             this.onDisable();
         }
 
-        this.createDataFolder();
+        WebmapManager.init(this);
+        WebmapManager webmapManager = WebmapManager.getManager();
+        webmapManager.loadManager();
+
+        TerritoryManager territoryManager = TerritoryManager.getTerritoryManager();
+        territoryManager.loadTerritoryTypeConfig();
+        territoryManager.loadTerritoryConfigs("plugins/" + getName() + "/conquest/territories");
+
         StorageManager storageManager = StorageManager.initStorageManage(this);
         storageManager.chooseDatabase();
+
+        TeamManager.init(this);
+        TeamManager.getManager().tryInitialize();
 
         WorldGuardPlugin wgPlugin = this.getWGPlugin();
         if (wgPlugin != null) {
@@ -133,29 +141,13 @@ public class Nodewar extends JavaPlugin implements Listener {
         worldguardEventHandler = new WorldguardEventHandler();
         nodewarEventHandler = new NodewarEventHandler();
 
-
         Bukkit.getPluginManager().registerEvents(minecraftEventHandler, this);
         Bukkit.getPluginManager().registerEvents(worldguardEventHandler, this);
         Bukkit.getPluginManager().registerEvents(nodewarEventHandler, this);
 
         this.getCommand(getName().toLowerCase()).setExecutor(new CommandManager());
 
-        TerritoryManager territoryManager = TerritoryManager.getTerritoryManager();
-
-        territoryManager.loadTerritoryTypeConfig();
-        territoryManager.loadTerritoryConfigs("plugins/" + getName() + "/conquest/territories");
-
-        TeamManager.getManager().loadTeams();
         BattlefieldManager.getBattlefieldManager().loadBattlefieldList();
-        territoryManager.setupTerritoriesOwner();
-        territoryManager.setupTerritoriesSubTerritories();
-        territoryManager.setupTerritoriesObjective();
-        territoryManager.setupTerritoriesBattle();
-        territoryManager.setupTerritoriesAttackRequirements();
-        territoryManager.setupTerritoriesRewardScheduler();
-
-        WebmapManager webmapManager = WebmapManager.getManager();
-        webmapManager.addTerritorySetToDraw(new HashSet<>(territoryManager.getTerritoryMap().values()));
 
         PlayerDataManager.startDeployHandler();
         BattlefieldManager.getBattlefieldManager().startBattlefieldDispatcher();

@@ -15,6 +15,7 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
+import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -23,10 +24,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TerritoryManager {
@@ -85,6 +83,16 @@ public class TerritoryManager {
         });
     }
 
+    public void initialize() {
+        setupTerritoriesOwner();
+        setupTerritoriesSubTerritories();
+        setupTerritoriesObjective();
+        setupTerritoriesBattle();
+        setupTerritoriesAttackRequirements();
+        setupTerritoriesRewardScheduler();
+        WebmapManager.getManager().addTerritorySetToDraw(new HashSet<>(getTerritoryMap().values()));
+    }
+
     public void setupTerritoriesOwner() {
         Map<String, NwITeam> stringTeamMap = TeamManager.getManager().getStringTeamMap();
         List<TerritoryModel> storedTerritoryModelList = StorageManager.getManager().selectAllTerritoryModel();
@@ -98,6 +106,7 @@ public class TerritoryManager {
                 String ownerName = storedTerritoryModel.getOwnerName();
                 long territoryID = storedTerritoryModel.getId();
                 territory.getModel().setId(territoryID);
+
                 if (ownerName != null && stringTeamMap.containsKey(ownerName)) {
                     territory.setOwnerITeam(stringTeamMap.get(ownerName));
                 }
@@ -191,6 +200,10 @@ public class TerritoryManager {
 
         PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
 
+        if (playerData == null) {
+            return;
+        }
+
         List<ProtectedRegion> currentProtectedRegionList = playerData.getProtectedRegionList();
 
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -201,21 +214,22 @@ public class TerritoryManager {
 
         List<ProtectedRegion> leftRegionList = currentProtectedRegionList.stream()
                 .filter(region -> !newProtectedRegionList.contains(region))
-                .collect(Collectors.toList());
+                .toList();
+
         List<ProtectedRegion> enteredRegionList = newProtectedRegionList.stream()
                 .filter(region -> !currentProtectedRegionList.contains(region))
-                .collect(Collectors.toList());
+                .toList();
 
         playerData.getProtectedRegionList().removeAll(leftRegionList);
         playerData.getProtectedRegionList().addAll(enteredRegionList);
 
         leftRegionList.forEach(region -> {
-            RegionLeftEvent leftEvent = new RegionLeftEvent(region, player.getWorld(), player, null);
+            RegionLeftEvent leftEvent = new RegionLeftEvent(region, player, null);
             Bukkit.getPluginManager().callEvent(leftEvent);
         });
 
         enteredRegionList.forEach(region -> {
-            RegionEnteredEvent enteredEvent = new RegionEnteredEvent(region, newLocation.getWorld(), player, null);
+            RegionEnteredEvent enteredEvent = new RegionEnteredEvent(region, player, null);
             Bukkit.getPluginManager().callEvent(enteredEvent);
         });
 

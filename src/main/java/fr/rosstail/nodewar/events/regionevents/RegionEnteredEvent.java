@@ -7,8 +7,8 @@ import org.bukkit.event.Event;
 
 public class RegionEnteredEvent extends RegionEvent
 {
-    public RegionEnteredEvent(final ProtectedRegion region, final World world, final Player player, final Event parent) {
-        super(region, world, player, parent);
+    public RegionEnteredEvent(final ProtectedRegion region, final Player player, final Event parent) {
+        super(region, player, parent);
         /*final World world = player.getWorld();
         if (TerritoryManager.getUsedWorlds().containsKey(world)) {
             TerritoryManager.getUsedWorlds().get(world).getTerritories().forEach((s, territory) -> {

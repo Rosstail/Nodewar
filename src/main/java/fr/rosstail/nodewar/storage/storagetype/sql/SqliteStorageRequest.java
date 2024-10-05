@@ -6,9 +6,9 @@ import org.bukkit.ChatColor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class LiteSqlStorageRequest extends SqlStorageRequest {
+public class SqliteStorageRequest extends SqlStorageRequest {
 
-    public LiteSqlStorageRequest(String pluginName) {
+    public SqliteStorageRequest(String pluginName) {
         super(pluginName);
     }
 
@@ -36,6 +36,35 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
 
     public void enableForeignKeys() {
         executeSQL("PRAGMA foreign_keys=ON;");
+    }
+
+    @Override
+    public boolean doesTableExists(String tableName) {
+        boolean tableExists;
+        ResultSet rs = executeSQLQuery(openConnection(),
+                "SELECT count(*)" +
+                        " FROM sqlite_master" +
+                        " WHERE type='table'" +
+                        " AND name='" + tableName + "';");
+
+        try {
+            int count = rs.getInt(1);
+            tableExists = count > 0;
+            rs.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (rs != null) {
+                try {
+                    if (!rs.isClosed()) {
+                        rs.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return tableExists;
     }
 
     @Override

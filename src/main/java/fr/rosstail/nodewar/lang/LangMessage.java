@@ -217,7 +217,9 @@ public enum LangMessage {
     TERRITORY_BOSSBAR_GLOBAL_OCCUPIED("territory.bossbar.global.occupied", false, false),
     TERRITORY_BOSSBAR_GLOBAL_BATTLE("territory.bossbar.global.battle", false, false),
     TERRITORY_PROTECTED("territory.protected", false, false),
+    TERRITORY_PROTECTED_SHORT("territory.protected-short", false, false),
     TERRITORY_VULNERABLE("territory.vulnerable", false, false),
+    TERRITORY_VULNERABLE_SHORT("territory.vulnerable-short", false, false),
 
     WEBMAP_MARKER_SET_LABEL("webmap.marker-set-label", false, false),
 

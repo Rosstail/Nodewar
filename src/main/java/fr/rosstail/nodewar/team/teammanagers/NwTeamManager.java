@@ -1,6 +1,8 @@
 package fr.rosstail.nodewar.team.teammanagers;
 
+import com.palmergames.bukkit.towny.Towny;
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.permissionmannager.PermissionManager;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
@@ -14,14 +16,19 @@ import fr.rosstail.nodewar.team.relation.NwTeamRelation;
 import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
 import fr.rosstail.nodewar.team.type.NwTeam;
+import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
 import java.util.*;
 
-public class NwTeamManager implements NwITeamManager {
+public class NwTeamManager implements NwITeamManager, Listener {
     private final Map<String, NwTeam> stringTeamMap = new HashMap<>();
 
     private int teamInviteExpirationScheduler;
@@ -29,7 +36,29 @@ public class NwTeamManager implements NwITeamManager {
     private final Set<NwTeamRelationRequest> relationRequestHashSet = new HashSet<>();
 
     public NwTeamManager() {
+    }
+
+    @Override
+    public void tryInitialize() {
+        final JavaPlugin nodewarPlugin = (Nodewar) Nodewar.getInstance().getServer().getPluginManager().getPlugin("Nodewar");
+        if (nodewarPlugin.isEnabled()) {
+            initialize(nodewarPlugin);
+        }
+    }
+
+    @Override
+    public void initialize(JavaPlugin javaPlugin) {
         startInviteExpirationHandler();
+        loadTeams();
+        TerritoryManager.getTerritoryManager().initialize();
+    }
+
+    @EventHandler
+    public void onPluginEnable(PluginEnableEvent event) {
+        JavaPlugin plugin = (JavaPlugin) event.getPlugin();
+        if (plugin.getName().equals(Nodewar.getInstance().getName())) {
+            initialize(plugin);
+        }
     }
 
     @Override
