@@ -39,6 +39,7 @@ public class TerritoryModel {
     public void setTypeName(String typeName) {
         this.typeName = typeName;
     }
+
     public String getTypeDisplay() {
         return typeDisplay;
     }

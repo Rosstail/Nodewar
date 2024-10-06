@@ -1,12 +1,14 @@
 package fr.rosstail.nodewar.commands.subcommands.admin.territory.adminterritorysubcommands;
 
 import fr.rosstail.nodewar.commands.subcommands.admin.territory.AdminTerritorySubCommand;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryProtectionChangeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.webmap.WebmapManager;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 public class AdminTerritoryVulnerableCommand extends AdminTerritorySubCommand {
@@ -46,6 +48,9 @@ public class AdminTerritoryVulnerableCommand extends AdminTerritorySubCommand {
 
         territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(args[2]);
         territory.getModel().setUnderProtection(false);
+
+        TerritoryProtectionChangeEvent territoryProtectionChangeEvent = new TerritoryProtectionChangeEvent(territory, false);
+        Bukkit.getPluginManager().callEvent(territoryProtectionChangeEvent);
 
         WebmapManager.getManager().addTerritoryToEdit(territory);
 

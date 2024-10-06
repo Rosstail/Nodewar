@@ -5,7 +5,7 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
-import fr.rosstail.nodewar.team.relation.TownyTeamRelation;
+import fr.rosstail.nodewar.team.relation.NwTeamRelation;
 import me.ulrich.clans.data.ClanData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -47,7 +47,7 @@ public class UcTeam implements NwITeam {
 
     @Override
     public String getShortName() {
-        return clanData.getTag().substring(0,Math.min(clanData.getTag().length(), ConfigData.getConfigData().team.maximumShortNameLength));
+        return clanData.getTag().substring(0, Math.min(clanData.getTag().length(), ConfigData.getConfigData().team.maximumShortNameLength));
     }
 
     @Override
@@ -153,22 +153,49 @@ public class UcTeam implements NwITeam {
 
     @Override
     public Map<NwITeam, TeamIRelation> getAllies() {
-        return new HashMap<>();
+        TeamManager teamManager = TeamManager.getManager();
+        Map<NwITeam, TeamIRelation> allies = new HashMap<>();
+
+        clanData.getRivalAlly().getAlly().forEach(allyUuid -> {
+            UcTeam allyUcTeam = (UcTeam) teamManager.getStringTeamMap().values().stream().filter(nwITeam ->
+                    ((UcTeam) nwITeam).clanData.getId().equals(allyUuid)
+            ).findFirst().orElse(null);
+            if (allyUcTeam != null) {
+                NwTeamRelation allyRelation = new NwTeamRelation(this, allyUcTeam, RelationType.ALLY, null);
+                allies.put(allyUcTeam, allyRelation);
+            }
+        });
+
+        return allies;
     }
 
     @Override
     public Map<NwITeam, TeamIRelation> getTruce() {
-        return new HashMap<>();
+        return new HashMap<>(); // No Truce in Uc
     }
 
     @Override
     public Map<NwITeam, TeamIRelation> getEnemies() {
-        return new HashMap<>();
+        TeamManager teamManager = TeamManager.getManager();
+        Map<NwITeam, TeamIRelation> enemies = new HashMap<>();
+
+        clanData.getRivalAlly().getRival().forEach(rivalUuid -> {
+            UcTeam rivalUcTeam = (UcTeam) teamManager.getStringTeamMap().values().stream().filter(nwITeam ->
+                    ((UcTeam) nwITeam).clanData.getId().equals(rivalUuid)
+            ).findFirst().orElse(null);
+
+            if (rivalUcTeam != null) {
+                NwTeamRelation enemyRelation = new NwTeamRelation(this, rivalUcTeam, RelationType.ENEMY, null);
+                enemies.put(rivalUcTeam, enemyRelation);
+            }
+        });
+
+        return enemies;
     }
 
     @Override
     public TeamIRelation getIRelation(NwITeam relationTeam) {
-        return null;
+        return getRelations().get(relationTeam);
     }
 
     @Override

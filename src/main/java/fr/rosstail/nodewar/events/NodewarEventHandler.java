@@ -98,9 +98,13 @@ public class NodewarEventHandler implements Listener {
         Location location = event.getLocation();
         PlayerData playerData = PlayerDataManager.getPlayerDataFromMap(player);
 
-
         player.teleport(location);
         playerData.setLastDeploy(System.currentTimeMillis());
+    }
+
+    @EventHandler
+    public void onTerritoryProtectionChange(final TerritoryProtectionChangeEvent event) {
+        event.getTerritory().updateAllBossBar();
     }
 
 

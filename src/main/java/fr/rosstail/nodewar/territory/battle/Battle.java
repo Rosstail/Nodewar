@@ -88,12 +88,12 @@ public class Battle {
                 break;
         }
 
-        String direction = "<--->";
+        String direction = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_ARROW_NO_ADVANTAGE);
 
         if (territory.getOwnerITeam() == null || territory.getCurrentBattle().getAdvantagedITeam() == territory.getOwnerITeam()) {
-            direction = "====>";
+            direction = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_ARROW_ADVANTAGE_LEFT_TO_RIGHT);
         } else if (territory.getOwnerITeam() != null && territory.getCurrentBattle().getAdvantagedITeam() != null && territory.getCurrentBattle().getAdvantagedITeam() != territory.getOwnerITeam()) {
-            direction = "<====";
+            direction = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_ARROW_ADVANTAGE_RIGHT_TO_LEFT);
         }
         message = message.replaceAll("\\[territory_battle_direction]", direction);
         message = message.replaceAll("\\[territory_battle_advantage", "[team");

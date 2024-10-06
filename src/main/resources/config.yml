@@ -23,7 +23,7 @@ locale:
 team:
   system: "auto" # "Towny", "UltimateClans", "nodewar" OR "auto"
   creation-cost: 0
-  default-relation: neutral
+  default-relation: neutral # neutral, enemy, ally
   none-color: "#4C4C4C"
   deploy-timer: 10
   deploy-cooldown: 120

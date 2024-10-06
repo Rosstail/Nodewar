@@ -143,7 +143,7 @@ public class ObjectiveControl extends NwConquestObjective {
                                         (entry.getKey().getIRelation(defenderTeam) == null && ConfigData.getConfigData().team.defaultRelation == RelationType.ENEMY)
                                         || (TeamManager.getManager().getTeamRelationType(entry.getKey(), defenderTeam) == RelationType.ENEMY))))// ENEMY to the existing defender
                         && entry.getValue() >= Math.max(1, minAttackerAmount) // Minimum player threshold
-                        && (float) entry.getValue() / defenderEffective >= minAttackerRatio // Attacker Ratio
+                        && (defenderEffective == 0 || (float) entry.getValue() / defenderEffective > minAttackerRatio) // Attacker Ratio
                 ).collect(Collectors.toCollection(LinkedHashSet::new));
 
         if (highestAttackers.isEmpty()) {

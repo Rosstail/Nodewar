@@ -67,4 +67,14 @@ public class UltimateClansEventHandler implements Listener {
     public void onClanDelete(ClanDeleteEvent event) {
         TeamManager.getManager().deleteTeam(event.getTag().toLowerCase());
     }
+
+    @EventHandler
+    public void onClanAllyAddEvent(ClanAllyAddEvent event) {
+        // System.out.println("UltimateClansEventHandler.onClanAllyAdd");
+    }
+
+    @EventHandler
+    public void onClanAllyAdd(ClanAllyAddEvent event) {
+        // System.out.println("UltimateClansEventHandler.onClanAllyAdd");
+    }
 }

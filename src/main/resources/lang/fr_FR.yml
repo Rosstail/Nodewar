@@ -385,6 +385,10 @@ territory:
       wild: "[territory_display] - [territory_protected_short] [territory_battle_status] "
       occupied: "[territory_display] - {[territory_team_color]}[territory_team_display] - [territory_protected_short] [territory_battle_status]"
       battle: "[territory_display] - {[territory_team_color]}[territory_team_display]&r [territory_protected_short] {[territory_battle_advantage_color]}[territory_battle_direction]&r {[territory_battle_advantage_color]}[territory_battle_advantage_display]"
+    arrow:
+      no-advantage: "↔"
+      left-to-right: "→"
+      right-to-left: "←"
   protected: "&aProtégé"
   protected-short: "&a🔒"
   vulnerable: "&cVulnérable"
