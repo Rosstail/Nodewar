@@ -60,7 +60,7 @@ public class Territory {
     private Battle previousBattle;
     private Battle currentBattle;
 
-    private final TerritoryBossBar territoryBossBar;
+    private TerritoryBossBar territoryBossBar = null;
 
     private AttackRequirements attackRequirements;
     private final TerritoryWebmap webmapInfo;
@@ -106,10 +106,6 @@ public class Territory {
         objectiveSection = section.getConfigurationSection("objective");
         territoryModel.setObjectiveTypeName(section.getString("objective.name", territoryType.getObjectiveTypeName()));
 
-        ConfigurationSection bossBarSection = section.getConfigurationSection("bossbar");
-        TerritoryBossBarModel sectionBossBarModel = new TerritoryBossBarModel(bossBarSection);
-        territoryBossBar = new TerritoryBossBar(sectionBossBarModel, territoryType.getTerritoryBossBarModel());
-
         ConfigurationSection attackRequirementSection = section.getConfigurationSection("attack-requirements");
         AttackRequirementsModel sectionAttackRequirementsModel = new AttackRequirementsModel(attackRequirementSection);
         territoryModel.setAttackRequirementsModel(sectionAttackRequirementsModel);
@@ -125,21 +121,28 @@ public class Territory {
 
         setupRegionList();
 
-        for (RelationType relation : RelationType.values()) {
-            String territoryName;
-            if (getOwnerITeam() != null) {
-                territoryName = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_OCCUPIED);
-            } else {
-                territoryName = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_WILD);
+
+        if (ConfigData.getConfigData().bossbar.enabled) {
+            ConfigurationSection bossBarSection = section.getConfigurationSection("bossbar");
+            TerritoryBossBarModel sectionBossBarModel = new TerritoryBossBarModel(bossBarSection);
+            territoryBossBar = new TerritoryBossBar(sectionBossBarModel, territoryType.getTerritoryBossBarModel());
+
+            for (RelationType relation : RelationType.values()) {
+                String territoryName;
+                if (getOwnerITeam() != null) {
+                    territoryName = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_OCCUPIED);
+                } else {
+                    territoryName = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_WILD);
+                }
+
+                territoryName = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(territoryName, this);
+
+                relationBossBarMap.put(relation, Bukkit.createBossBar(
+                        territoryName,
+                        ConfigData.getConfigData().bossbar.stringBarColorMap.get(relation.toString().toLowerCase()),
+                        territoryBossBar.getBarStyle()
+                ));
             }
-
-            territoryName = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(territoryName, this);
-
-            relationBossBarMap.put(relation, Bukkit.createBossBar(
-                    territoryName,
-                    ConfigData.getConfigData().bossbar.stringBarColorMap.get(relation.toString().toLowerCase()),
-                    territoryBossBar.getBarStyle()
-            ));
         }
 
         ConfigurationSection territoryCommandsSection = section.getConfigurationSection("commands");
@@ -215,6 +218,9 @@ public class Territory {
     }
 
     public void updateAllBossBar() {
+        if (territoryBossBar == null) {
+            return;
+        }
         getRelationBossBarMap().forEach((relationType, bossBar) -> {
             String bossBarTitle;
             if (currentBattle != null && currentBattle.isBattleStarted()) {
@@ -233,6 +239,10 @@ public class Territory {
     }
 
     public void addPlayerToBossBar(Player player) {
+        if (territoryBossBar == null) {
+            return;
+        }
+
         RelationType type = RelationType.NEUTRAL;
         NwITeam territoryUsedTeam = null;
         PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());

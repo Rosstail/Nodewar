@@ -141,12 +141,14 @@ public class ConfigData {
     public class ConfigBossBar {
         public FileConfiguration configFile;
 
+        public final boolean enabled;
         public final String[] relations = new String[]{"neutral", "team", "ally", "truce", "enemy"};
         public final Map<String, BarColor> stringBarColorMap = new HashMap<>();
 
         ConfigBossBar(FileConfiguration config) {
             configFile = config;
 
+            enabled = config.getBoolean("bossbar.enabled", true);
             for (String relation : relations) {
                 try {
                     stringBarColorMap.put(relation, BarColor.valueOf(config.getString("bossbar.color." + relation)));

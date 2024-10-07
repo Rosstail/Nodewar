@@ -34,6 +34,7 @@ team:
   shortname-max-length: 5
 
 bossbar:
+  enabled: true
   color: # RED, YELLOW, BLUE, GREEN, PINK, PURPLE, WHITE
     neutral: WHITE # no team
     controlled: YELLOW # it's like neutral but controlled by a team
