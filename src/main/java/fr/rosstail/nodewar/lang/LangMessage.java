@@ -213,6 +213,8 @@ public enum LangMessage {
     TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE("territory.battle.alert.global.attack.disadvantage", false, false),
     TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_VICTORY("territory.battle.alert.global.attack.victory", false, false),
     TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT("territory.battle.alert.global.attack.defeat", false, false),
+    TERRITORY_ENTER("territory.enter", true, false),
+    TERRITORY_LEAVE("territory.leave", true, false),
     TERRITORY_BOSSBAR_GLOBAL_WILD("territory.bossbar.global.wild", false, false),
     TERRITORY_BOSSBAR_GLOBAL_OCCUPIED("territory.bossbar.global.occupied", false, false),
     TERRITORY_BOSSBAR_GLOBAL_BATTLE("territory.bossbar.global.battle", false, false),

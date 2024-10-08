@@ -26,6 +26,7 @@ public class NodewarEventHandler implements Listener {
 
         territory.getPlayers().add(player);
         territory.addPlayerToBossBar(player);
+        AdaptMessage.getAdaptMessage().sendToPlayer(player, territory.adaptMessage(LangManager.getMessage(LangMessage.TERRITORY_ENTER)));
     }
 
     @EventHandler
@@ -37,6 +38,7 @@ public class NodewarEventHandler implements Listener {
         territory.getRelationBossBarMap().forEach((s, bossBar) -> {
             bossBar.removePlayer(player);
         });
+        AdaptMessage.getAdaptMessage().sendToPlayer(player, territory.adaptMessage(LangManager.getMessage(LangMessage.TERRITORY_LEAVE)));
     }
 
     @EventHandler

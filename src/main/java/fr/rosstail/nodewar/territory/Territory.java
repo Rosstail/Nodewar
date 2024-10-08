@@ -471,6 +471,9 @@ public class Territory {
     }
 
     public String adaptMessage(String message) {
+        if (message == null) {
+            return null;
+        }
         message = message.replaceAll("\\[territory_description]", LangManager.getMessage(LangMessage.TERRITORY_DESCRIPTION));
 
         message = message.replaceAll("\\[territory_desc_line]", Matcher.quoteReplacement(String.join("\n", territoryModel.getDescription())));

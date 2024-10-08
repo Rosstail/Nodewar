@@ -380,6 +380,8 @@ territory:
           disadvantage: "&cVotre équipe se fait repousser à [territory_display]" # territory-wide
           victory: "&bVotre équipe a capturé [territory_display] !" # server-wide
           defeat: "&4Votre équipe s'est fait repousser à [territory_display]..." # server-wide
+  enter: "[msg-actionbar]Entrée dans le territoire [territory_display]."
+  leave: "[msg-actionbar]Sortie du territoire [territory_display]."
   bossbar:
     global:
       wild: "[territory_display] - [territory_protected_short] [territory_battle_status] "

@@ -58,24 +58,26 @@ public class AdaptMessage {
     private final Map<Player, Long> coolDown = new HashMap<>();
 
     public void sendToPlayer(Player player, String message) {
-        if (message != null) {
-            if (message.startsWith("[msg-title]")) {
-                message = message.replace("[msg-title]", "").trim();
-                String title;
-                String subTitle = null;
-                String[] titles = message.split("\\[msg-subtitle]");
-                title = titles[0];
-                if (titles.length > 1) {
-                    subTitle = titles[1];
-                }
-                sendTitle(player, title.trim(), subTitle != null ? subTitle.trim() : null);
-            } else if (message.startsWith("[msg-actionbar]")) {
-                sendActionBar(player, message.replace("[msg-actionbar]", "").trim());
-            } else if (message.startsWith("[msg]")) {
-                player.sendMessage(message.replace("[msg]", "").trim());
-            } else {
-                player.sendMessage(message);
+        if (message == null) {
+            return;
+        }
+
+        if (message.startsWith("[msg-title]")) {
+            message = message.replace("[msg-title]", "").trim();
+            String title;
+            String subTitle = null;
+            String[] titles = message.split("\\[msg-subtitle]");
+            title = titles[0];
+            if (titles.length > 1) {
+                subTitle = titles[1];
             }
+            sendTitle(player, title.trim(), subTitle != null ? subTitle.trim() : null);
+        } else if (message.startsWith("[msg-actionbar]")) {
+            sendActionBar(player, message.replace("[msg-actionbar]", "").trim());
+        } else if (message.startsWith("[msg]")) {
+            player.sendMessage(message.replace("[msg]", "").trim());
+        } else {
+            player.sendMessage(message);
         }
     }
 

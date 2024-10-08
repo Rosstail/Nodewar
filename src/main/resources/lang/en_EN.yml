@@ -382,6 +382,8 @@ territory:
           disadvantage: "&cYour team is getting repelled at [territory_display]" # territory-wide
           victory: "&bYour team has conquered [territory_display] !" # server-wide
           defeat: "&4Your team has been repelled at [territory_display]..." # server-wide
+  enter: "[msg-actionbar]Entering [territory_display] territory."
+  leave: "[msg-actionbar]Leaving [territory_display] territory."
   bossbar:
     global:
       wild: "[territory_display] - [territory_battle_status] [territory_protected_short]"
