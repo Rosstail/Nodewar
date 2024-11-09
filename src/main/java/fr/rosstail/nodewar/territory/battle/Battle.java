@@ -76,17 +76,38 @@ public class Battle {
         switch (getBattleStatus()) {
             case WAITING:
                 message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_WAITING));
+                message = message.replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_WAITING_SHORT));
                 break;
             case ONGOING:
                 message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ONGOING));
+                message = message.replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ONGOING_SHORT));
                 break;
             case ENDING:
                 message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDING));
+                message = message.replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDING_SHORT));
                 break;
             case ENDED:
                 message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDED));
+                message = message.replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDED_SHORT));
                 break;
         }
+
+
+        String endingTimeLeftStr = " - ";
+        if (getBattleStatus() == BattleStatus.ENDING) {
+            long deltaEndingLeft = battleEndTime + territory.getObjective().getEndingPeriod() - System.currentTimeMillis();
+            endingTimeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(deltaEndingLeft);
+        }
+
+        message = message.replaceAll("\\[territory_battle_ending_time_left]", endingTimeLeftStr);
+
+        String graceTimeLeftStr = " - ";
+        if (getBattleStatus() == BattleStatus.ENDED) {
+            long deltaGraceLeft = battleEndTime + territory.getObjective().getGracePeriod() - System.currentTimeMillis();
+            graceTimeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(deltaGraceLeft);
+        }
+
+        message = message.replaceAll("\\[territory_battle_grace_time_left]", graceTimeLeftStr);
 
         String direction = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_ARROW_NO_ADVANTAGE);
 
@@ -120,6 +141,10 @@ public class Battle {
     }
     public boolean isBattleOnEnd() {
         return this.battleStatus.equals(BattleStatus.ENDING) || this.battleStatus.equals(BattleStatus.ENDED);
+    }
+
+    public boolean isBattleEnded() {
+        return this.battleStatus.equals(BattleStatus.ENDED);
     }
 
     public void setBattleOngoing() {

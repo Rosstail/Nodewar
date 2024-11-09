@@ -1,6 +1,5 @@
 package fr.rosstail.nodewar.storage.storagetype.sql;
 
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.storagetype.SqlStorageRequest;
 
@@ -8,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class MySqlStorageRequest extends SqlStorageRequest {
+    private String databaseName;
 
     public MySqlStorageRequest(String pluginName) {
         super(pluginName);
@@ -15,11 +15,41 @@ public class MySqlStorageRequest extends SqlStorageRequest {
 
     @Override
     public void setupStorage(String host, short port, String database, String username, String password) {
+        this.databaseName = database;
         this.driver = "com.mysql.jdbc.Driver";
         this.url = "jdbc:mysql://" + host + ":" + port + "/" + database;
         this.username = username;
         this.password = password;
-        super.setupStorage(host, port, database, username, password);
+
+        if (doesTableExists(teamMemberTableName, database)) {
+            deleteTeamMemberDuplicate();
+            alterTeamMemberTable();
+        }
+
+        if (doesTableExists(territoryTableName, database)) {
+            alterTerritoryTable();
+        }
+
+        createNodewarPlayerTable();
+        createNodewarTeamTable();
+        createNodewarTeamMemberTable();
+        createNodewarTeamRelationTable();
+        createNodewarTerritoryTable();
+        createNodewarBattlefieldTable();
+    }
+
+    @Override
+    public void deleteTeamMemberDuplicate() {
+        String deleteDuplicatesRequest =
+                "DELETE t1 FROM " + teamMemberTableName + " t1 "
+                        + "INNER JOIN " + teamMemberTableName + " t2 "
+                        + "WHERE t1.id < t2.id AND t1.player_id = t2.player_id;";
+
+        try {
+            executeSQLUpdate(deleteDuplicatesRequest);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

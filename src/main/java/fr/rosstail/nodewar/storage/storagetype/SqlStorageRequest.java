@@ -46,12 +46,12 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public void setupStorage(String host, short port, String database, String username, String password) {
-        if (doesTableExists(teamMemberTableName)) {
+        if (doesTableExists(teamMemberTableName, username)) {
             deleteTeamMemberDuplicate();
             alterTeamMemberTable();
         }
 
-        if (doesTableExists(territoryTableName)) {
+        if (doesTableExists(territoryTableName, username)) {
             alterTerritoryTable();
         }
 
@@ -63,17 +63,19 @@ public class SqlStorageRequest implements StorageRequest {
         createNodewarBattlefieldTable();
     }
 
-    public boolean doesTableExists(String tableName) {
-        boolean tableExists;
+    public boolean doesTableExists(String tableName, String databaseName) {
+        boolean tableExists = false;
         ResultSet rs = executeSQLQuery(openConnection(),
                         "SELECT count(*)" +
                                 " FROM information_schema.tables" +
-                                " WHERE table_schema = DATABASE()" +
+                                " WHERE table_schema = '" + databaseName + "'" +
                                 " AND table_name = '" + tableName + "';");
 
         try {
-            int count = rs.getInt(1);
-            tableExists = count > 0;
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                tableExists = count > 0;
+            }
             rs.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -124,7 +126,12 @@ public class SqlStorageRequest implements StorageRequest {
                         + " WHERE EXISTS (SELECT " + teamMemberTableName + " b"
                         + " WHERE a.player_id = b.player_id"
                         + " AND a.id > b.id)";
-        executeSQLQuery(openConnection(), deleteDuplicatesRequest);
+
+        try {
+            executeSQLUpdate(deleteDuplicatesRequest);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void alterTeamMemberTable() {
@@ -220,7 +227,6 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public boolean insertTeamModel(TeamModel model) {
-        System.out.println("SqlStorageRequest.insertTeamModel " + model.getName().toLowerCase() + " " + model.getShortName());
         String query = "INSERT INTO " + teamTableName + " (name, display, short, color, is_open, is_relation_open, is_permanent)"
                 + " VALUES (?, ?, ?, ?, ?, ?, ?);";
         String name = model.getName().toLowerCase();

@@ -15,7 +15,7 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.RelationType;
-import fr.rosstail.nodewar.team.TeamIRelation;
+import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
@@ -217,14 +217,17 @@ public class Territory {
         }
     }
 
-    public void updateAllBossBar() {
-        if (territoryBossBar == null) {
-            return;
-        }
+    public void updateAllBossBarText() {
         getRelationBossBarMap().forEach((relationType, bossBar) -> {
             String bossBarTitle;
             if (currentBattle != null && currentBattle.isBattleStarted()) {
                 bossBarTitle = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_BATTLE);
+            } else if (currentBattle != null && currentBattle.isBattleOnEnd()) {
+                if (currentBattle.isBattleEnded()) {
+                    bossBarTitle = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_BATTLE_ENDED);
+                } else {
+                    bossBarTitle = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_BATTLE_ENDING);
+                }
             } else if (getOwnerITeam() != null) {
                 bossBarTitle = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_OCCUPIED);
             } else {
@@ -232,8 +235,17 @@ public class Territory {
             }
             bossBarTitle = AdaptMessage.getAdaptMessage().adaptMessage(AdaptMessage.getAdaptMessage().adaptTerritoryMessage(bossBarTitle, this));
             bossBar.setTitle(bossBarTitle);
+        });
+    }
+
+    public void updateAllBossBar() {
+        if (territoryBossBar == null) {
+            return;
+        }
+        getRelationBossBarMap().forEach((relationType, bossBar) -> {
             bossBar.removeAll();
         });
+        updateAllBossBarText();
 
         getPlayers().forEach(this::addPlayerToBossBar);
     }
@@ -261,8 +273,7 @@ public class Territory {
                 if (territoryUsedTeam == playerTeam) {
                     type = RelationType.TEAM;
                 } else if (playerTeam.getRelations().containsKey(territoryUsedTeam)) {
-                    TeamIRelation relation = playerTeam.getIRelation(ownerNwITeam);
-                    type = relation.getType();
+                    type = TeamManager.getManager().getTeamRelationType(playerTeam, ownerNwITeam);
                 } else if (ConfigData.getConfigData().team.defaultRelation == RelationType.NEUTRAL) {
                     type = RelationType.CONTROLLED;
                 } else {

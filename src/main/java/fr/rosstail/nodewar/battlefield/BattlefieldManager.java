@@ -121,6 +121,7 @@ public class BattlefieldManager {
                         }
                     }
                 }
+
                 territory.getModel().setUnderProtection(true);
 
                 TerritoryProtectionChangeEvent territoryProtectionChangeEvent = new TerritoryProtectionChangeEvent(territory, true);

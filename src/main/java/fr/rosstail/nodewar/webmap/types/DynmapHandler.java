@@ -147,10 +147,16 @@ public class DynmapHandler implements NwIWebmapHandler, Listener {
             }
             AreaMarker areaMarker = markerSet.createAreaMarker(markerId, name, false, worldName, x, z, false);
 
-            colorize(areaMarker, territory);
-            describe(areaMarker, territory);
-            areaMarkerList.add(areaMarker);
+            if (areaMarker == null) {
+                areaMarker = markerSet.getAreaMarkers().stream()
+                        .filter(areaMarker1 -> areaMarker1.getMarkerID().equals(markerId)).findFirst().orElse(null);
+            }
 
+            if (areaMarker != null) {
+                colorize(areaMarker, territory);
+                describe(areaMarker, territory);
+                areaMarkerList.add(areaMarker);
+            }
         });
         territoryAreaMarkerListMap.put(territory, areaMarkerList);
     }

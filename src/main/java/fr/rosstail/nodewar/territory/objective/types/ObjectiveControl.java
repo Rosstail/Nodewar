@@ -96,11 +96,13 @@ public class ObjectiveControl extends NwConquestObjective {
 
         switch (currentBattle.getBattleStatus()) {
             case WAITING:
+                territory.updateAllBossBarText();
                 if (checkStart()) {
                     start();
                 }
                 break;
             case ONGOING:
+                territory.updateAllBossBarText();
                 if (checkEnding()) {
                     ending();
                 } else {
@@ -108,11 +110,13 @@ public class ObjectiveControl extends NwConquestObjective {
                 }
                 break;
             case ENDING:
+                territory.updateAllBossBarText();
                 if (checkEnd()) {
                     end();
                 }
                 break;
             case ENDED:
+                territory.updateAllBossBarText();
                 long battleEndTimeAndGrace = territory.getCurrentBattle().getBattleEndTime() + getGracePeriod();
                 if (battleEndTimeAndGrace < System.currentTimeMillis()) {
                     restart();
@@ -147,7 +151,7 @@ public class ObjectiveControl extends NwConquestObjective {
                 ).collect(Collectors.toCollection(LinkedHashSet::new));
 
         if (highestAttackers.isEmpty()) {
-            if (defenderEffective > minAttackerAmount) {
+            if (defenderEffective >= minAttackerAmount) {
                 return defenderTeam;
             }
             return null;
@@ -320,6 +324,9 @@ public class ObjectiveControl extends NwConquestObjective {
     }
 
     private int calculateCaptureSpeed(NwITeam advantagedTeam) {
+        if (advantagedTeam == null) {
+            return 0;
+        }
         int captureSpeed = baseCaptureSpeed;
 
         int advantageForce = teamMemberOnTerritory.get(advantagedTeam);

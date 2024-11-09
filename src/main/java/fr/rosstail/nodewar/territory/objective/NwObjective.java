@@ -145,14 +145,15 @@ public class NwObjective implements NwIObjective {
     @Override
     public void progress() {
         BattleStatus status = territory.getCurrentBattle().getBattleStatus();
-
         switch (status) {
             case WAITING:
+                territory.updateAllBossBarText();
                 if (checkStart()) {
                     start();
                 }
                 break;
             case ONGOING:
+                territory.updateAllBossBarText();
                 if (checkEnding()) {
                     ending();
                 } else {
@@ -160,11 +161,13 @@ public class NwObjective implements NwIObjective {
                 }
                 break;
             case ENDING:
+                territory.updateAllBossBarText();
                 if (checkEnd()) {
                     end();
                 }
                 break;
             case ENDED:
+                territory.updateAllBossBarText();
                 long battleEndTimeAndGrace = territory.getCurrentBattle().getBattleEndTime() + getGracePeriod();
                 if (battleEndTimeAndGrace < System.currentTimeMillis()) {
                     restart();

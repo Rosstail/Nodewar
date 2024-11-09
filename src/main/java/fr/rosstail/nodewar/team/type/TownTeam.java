@@ -24,7 +24,7 @@ public class TownTeam implements NwITeam {
         this.town = town;
         TeamModel model1 = StorageManager.getManager().selectTeamModelByName(town.getName().toLowerCase());
         if (model1 == null) {
-            model1 = new TeamModel(town.getName(), town.getFormattedName(), town.getPrefix(), town.getMapColorHexCode());
+            model1 = new TeamModel(town.getName(), town.getFormattedName(), town.getName(), town.getMapColorHexCode());
             StorageManager.getManager().insertTeamModel(model1);
         }
         this.model = model1;

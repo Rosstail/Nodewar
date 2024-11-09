@@ -17,12 +17,12 @@ public class SqliteStorageRequest extends SqlStorageRequest {
         this.url = "jdbc:sqlite:./plugins/Nodewar/data/data.db";
         enableForeignKeys();
 
-        if (doesTableExists(teamMemberTableName)) {
+        if (doesTableExists(teamMemberTableName, username)) {
             deleteTeamMemberDuplicate();
             alterTeamMemberTable();
         }
 
-        if (doesTableExists(territoryTableName)) {
+        if (doesTableExists(territoryTableName, username)) {
             alterTerritoryTable();
         }
 
@@ -39,7 +39,7 @@ public class SqliteStorageRequest extends SqlStorageRequest {
     }
 
     @Override
-    public boolean doesTableExists(String tableName) {
+    public boolean doesTableExists(String tableName, String databaseName) {
         boolean tableExists;
         ResultSet rs = executeSQLQuery(openConnection(),
                 "SELECT count(*)" +
@@ -104,6 +104,7 @@ public class SqliteStorageRequest extends SqlStorageRequest {
                         + " FROM " + teamMemberTableName
                         + " GROUP BY player_id"
                         + ");";
+
         try {
             executeSQLUpdate(deleteDuplicatesRequest);
         } catch (SQLException e) {

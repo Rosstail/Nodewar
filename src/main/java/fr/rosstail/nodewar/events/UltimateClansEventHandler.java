@@ -41,7 +41,7 @@ public class UltimateClansEventHandler implements Listener {
 
     @EventHandler
     public void onClanLeave(ClanPlayerJoinEvent event) {
-        System.out.println("UltimateClansEventHandler.onClanLeave");
+        // System.out.println("UltimateClansEventHandler.onClanLeave");
         /*
         NwITeam nwITeam = TeamManager.getManager().getTeam(event.get().getName());
         Player player = event.getResident().getPlayer();
@@ -53,7 +53,7 @@ public class UltimateClansEventHandler implements Listener {
 
     @EventHandler
     public void onClanRename(ClanPlayerLeaveEvent event) {
-        System.out.println("UltimateClansEventHandler.onClanRename");
+        // System.out.println("UltimateClansEventHandler.onClanRename");
         /*
         String newName = event.getTown().getName().toLowerCase();
         String oldName = event.getOldName().toLowerCase();

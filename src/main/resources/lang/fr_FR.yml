@@ -366,6 +366,10 @@ territory:
       ongoing: "&6En cours"
       ending: "&7Fermeture"
       ended: "&8Terminé"
+      waiting-short: "&5⌛"
+      ongoing-short: "&6⚔"
+      ending-short: "🕊🏁"
+      ended-short: "&f🕊"
     alert:
       global:
         defend:
@@ -384,9 +388,11 @@ territory:
   leave: "[msg-actionbar]Sortie du territoire [territory_display]."
   bossbar:
     global:
-      wild: "[territory_display] - [territory_protected_short] [territory_battle_status] "
-      occupied: "[territory_display] - {[territory_team_color]}[territory_team_display] - [territory_protected_short] [territory_battle_status]"
-      battle: "[territory_display] - {[territory_team_color]}[territory_team_display]&r [territory_protected_short] {[territory_battle_advantage_color]}[territory_battle_direction]&r {[territory_battle_advantage_color]}[territory_battle_advantage_display]"
+      wild: "[territory_display] - [territory_protected_short] - [territory_battle_status_short] [territory_battle_status]"
+      occupied: "[territory_display] - [territory_protected_short] - [territory_battle_status_short] [territory_battle_status] - {[territory_team_color]}[territory_team_display]"
+      battle: "[territory_display] - [territory_protected_short][territory_battle_status_short] - {[territory_team_color]}[territory_team_display] - {[territory_battle_advantage_color]}[territory_battle_direction]&r {[territory_battle_advantage_color]}[territory_battle_advantage_display]"
+      battle-ending: "[territory_display] - [territory_protected_short] - [territory_battle_status_short] [territory_battle_status] [territory_battle_ending_time_left] - {[territory_team_color]}[territory_team_display]"
+      battle-ended: "[territory_display] - [territory_protected_short] - [territory_battle_status_short] [territory_battle_status] [territory_battle_grace_time_left] - {[territory_team_color]}[territory_team_display]"
     arrow:
       no-advantage: "↔"
       left-to-right: "→"
