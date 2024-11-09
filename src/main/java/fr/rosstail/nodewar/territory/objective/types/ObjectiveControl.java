@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.territory.objective.types;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryAdvantageChangeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
@@ -7,7 +8,9 @@ import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.RelationType;
+import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.territory.Territory;
+import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.battle.types.BattleControl;
 import fr.rosstail.nodewar.territory.objective.NwConquestObjective;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
@@ -93,11 +96,13 @@ public class ObjectiveControl extends NwConquestObjective {
 
         switch (currentBattle.getBattleStatus()) {
             case WAITING:
+                territory.updateAllBossBarText();
                 if (checkStart()) {
                     start();
                 }
                 break;
             case ONGOING:
+                territory.updateAllBossBarText();
                 if (checkEnding()) {
                     ending();
                 } else {
@@ -105,11 +110,13 @@ public class ObjectiveControl extends NwConquestObjective {
                 }
                 break;
             case ENDING:
+                territory.updateAllBossBarText();
                 if (checkEnd()) {
                     end();
                 }
                 break;
             case ENDED:
+                territory.updateAllBossBarText();
                 long battleEndTimeAndGrace = territory.getCurrentBattle().getBattleEndTime() + getGracePeriod();
                 if (battleEndTimeAndGrace < System.currentTimeMillis()) {
                     restart();
@@ -133,15 +140,18 @@ public class ObjectiveControl extends NwConquestObjective {
         final int defenderEffective = teamMemberOnTerritory.getOrDefault(defenderTeam, 0);
 
         Set<Map.Entry<NwITeam, Integer>> highestAttackers = teamMemberOnTerritory.entrySet().stream()
-                .filter(nwITeamIntegerEntry -> (defenderTeam == null || nwITeamIntegerEntry.getKey() != defenderTeam || // Undefended or not defenders
-                        (nwITeamIntegerEntry.getKey().getIRelation(defenderTeam) != null &&
-                                nwITeamIntegerEntry.getKey().getIRelation(defenderTeam).getType() == RelationType.ENEMY)) // ENEMY to the existing defender
-                        && nwITeamIntegerEntry.getValue() >= Math.max(1, minAttackerAmount) // Minimum player threshold
-                        && (float) nwITeamIntegerEntry.getValue() / defenderEffective >= minAttackerRatio // Attacker Ratio
+                .filter(entry -> (
+                        defenderTeam == null // Undefended
+                                || (entry.getKey() != defenderTeam // team is not defenders BUT is explicit enemy
+                                && (
+                                        (entry.getKey().getIRelation(defenderTeam) == null && ConfigData.getConfigData().team.defaultRelation == RelationType.ENEMY)
+                                        || (TeamManager.getManager().getTeamRelationType(entry.getKey(), defenderTeam) == RelationType.ENEMY))))// ENEMY to the existing defender
+                        && entry.getValue() >= Math.max(1, minAttackerAmount) // Minimum player threshold
+                        && (defenderEffective == 0 || (float) entry.getValue() / defenderEffective > minAttackerRatio) // Attacker Ratio
                 ).collect(Collectors.toCollection(LinkedHashSet::new));
 
         if (highestAttackers.isEmpty()) {
-            if (defenderEffective > minAttackerAmount) {
+            if (defenderEffective >= minAttackerAmount) {
                 return defenderTeam;
             }
             return null;
@@ -314,6 +324,9 @@ public class ObjectiveControl extends NwConquestObjective {
     }
 
     private int calculateCaptureSpeed(NwITeam advantagedTeam) {
+        if (advantagedTeam == null) {
+            return 0;
+        }
         int captureSpeed = baseCaptureSpeed;
 
         int advantageForce = teamMemberOnTerritory.get(advantagedTeam);

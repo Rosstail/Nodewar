@@ -84,11 +84,13 @@ public class ObjectiveKoth extends NwConquestObjective {
 
         switch (currentBattle.getBattleStatus()) {
             case WAITING:
+                territory.updateAllBossBarText();
                 if (checkStart()) {
                     start();
                 }
                 break;
             case ONGOING:
+                territory.updateAllBossBarText();
                 if (checkEnding()) {
                     ending();
                 } else {
@@ -96,11 +98,13 @@ public class ObjectiveKoth extends NwConquestObjective {
                 }
                 break;
             case ENDING:
+                territory.updateAllBossBarText();
                 if (checkEnd()) {
                     end();
                 }
                 break;
             case ENDED:
+                territory.updateAllBossBarText();
                 long battleEndTimeAndGrace = territory.getCurrentBattle().getBattleEndTime() + getGracePeriod();
                 if (battleEndTimeAndGrace < System.currentTimeMillis()) {
                     restart();

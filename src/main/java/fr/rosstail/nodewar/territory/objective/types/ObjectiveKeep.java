@@ -70,11 +70,13 @@ public class ObjectiveKeep extends NwConquestObjective {
 
         switch (territory.getCurrentBattle().getBattleStatus()) {
             case WAITING:
+                territory.updateAllBossBarText();
                 if (checkStart()) {
                     start();
                 }
                 break;
             case ONGOING:
+                territory.updateAllBossBarText();
                 if (checkEnding()) {
                     ending();
                 } else {
@@ -82,11 +84,13 @@ public class ObjectiveKeep extends NwConquestObjective {
                 }
                 break;
             case ENDING:
+                territory.updateAllBossBarText();
                 if (checkEnd()) {
                     end();
                 }
                 break;
             case ENDED:
+                territory.updateAllBossBarText();
                 if ((territory.getCurrentBattle().getBattleEndTime() + getGracePeriod() < System.currentTimeMillis())) {
                     restart();
                 }

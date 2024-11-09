@@ -4,6 +4,7 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -45,12 +46,19 @@ public class TerritoryCommands {
             String target = getTerritoryCommandsModel().getTargetName();
             String finalCommand = adaptMessage.adaptTerritoryMessage(command, territory);
             if (target == null || target.equalsIgnoreCase("server")) {
-                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptTerritoryMessage(finalCommand, territory));
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), PlaceholderAPI.setPlaceholders(null, finalCommand));
             } else if (ownerITeam != null) {
                 if (target.equalsIgnoreCase("player")) {
                     if (getTerritoryCommandsModel().isTargetOffline()) {
                         ownerITeam.getMemberMap().forEach((integer, member) -> {
-                            rewardPlayer(member.getModel().getUsername(), territory, finalCommand);
+                            if (ownerITeam.getOnlineMemberMap().containsValue(member)) {
+                                Player onlineMember = ownerITeam.getOnlineMemberMap().entrySet().stream()
+                                        .filter(playerTeamMemberEntry -> playerTeamMemberEntry.getValue() == member)
+                                        .findFirst().get().getKey();
+                                rewardPlayer(onlineMember, territory, finalCommand);
+                            } else {
+                                rewardPlayer(member.getModel().getUsername(), territory, finalCommand);
+                            }
                         });
                     } else {
                         ownerITeam.getOnlineMemberMap().forEach((player, member) -> {
@@ -58,7 +66,7 @@ public class TerritoryCommands {
                         });
                     }
                 } else if (target.equalsIgnoreCase("team")) {
-                    rewardTeam(ownerITeam, territory, finalCommand);
+                    rewardTeam(ownerITeam, territory, PlaceholderAPI.setPlaceholders(null, finalCommand));
                 }
             }
         }
@@ -68,16 +76,22 @@ public class TerritoryCommands {
 
     private void rewardPlayer(Player player, Territory territory, String command) {
         AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
-        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptMessage(command.replaceAll("\\[player]", player.getName())));
+        command = adaptMessage.adaptMessage(command.replaceAll("\\[player]", player.getName()));
+        command = PlaceholderAPI.setPlaceholders(player, command);
+        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
     }
     private void rewardPlayer(String playerName, Territory territory, String command) {
         AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
-        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptMessage(command.replaceAll("\\[player]", playerName)));
+        command = adaptMessage.adaptMessage(command.replaceAll("\\[player]", playerName));
+        command = PlaceholderAPI.setPlaceholders(null, command);
+        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
     }
 
     private void rewardTeam(NwITeam iTeam, Territory territory, String command) {
         AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
-        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptTerritoryMessage(adaptMessage.adaptTeamMessage(command, iTeam), territory));
+        command = adaptMessage.adaptTerritoryMessage(adaptMessage.adaptTeamMessage(command, iTeam), territory);
+        command = PlaceholderAPI.setPlaceholders(null, command);
+        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
     }
 
     public long getNextOccurrence() {

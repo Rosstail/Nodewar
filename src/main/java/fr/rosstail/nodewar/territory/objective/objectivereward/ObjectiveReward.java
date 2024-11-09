@@ -1,5 +1,6 @@
 package fr.rosstail.nodewar.territory.objective.objectivereward;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
@@ -12,6 +13,7 @@ import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.objective.NwObjective;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -115,7 +117,7 @@ public class ObjectiveReward {
                     rewardITeam(iTeam, battle, iTeamPositionMap, territory, finalCommand);
                 });
             } else {
-                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), PlaceholderAPI.setPlaceholders(null, finalCommand));
             }
         }
     }
@@ -135,14 +137,14 @@ public class ObjectiveReward {
         }
 
         if (playerTeam != null && shallRewardPlayer(territory, battle, iTeamPositionMap, player, playerTeam)) {
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptMessage(command.replaceAll("\\[player]", player.getName())));
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), PlaceholderAPI.setPlaceholders(player, adaptMessage.adaptMessage(command.replaceAll("\\[player]", player.getName()))));
         }
     }
 
     private void rewardITeam(NwITeam iTeam, Battle battle, Map<NwITeam, Integer> iTeamPositionMap, Territory territory, String command) {
         AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
         if (shallRewardTeam(territory, battle, iTeamPositionMap, iTeam)) {
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), adaptMessage.adaptTeamMessage(command, iTeam));
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), PlaceholderAPI.setPlaceholders(null, adaptMessage.adaptTeamMessage(command, iTeam)));
         }
     }
 
@@ -155,10 +157,13 @@ public class ObjectiveReward {
     }
 
     private boolean shallRewardTeam(Territory territory, Battle battle, Map<NwITeam, Integer> teamPositionMap, NwITeam team) {
-        int teamPosition = teamPositionMap.get(team);
+        int teamPosition = teamPositionMap.getOrDefault(team, -1);
+        if (teamPosition == -1) {
+            AdaptMessage.print("ObjectiveReward.shallRewardTeam " + (team != null ? team.getName() : "Null " + " -1 position"), AdaptMessage.prints.DEBUG);
+            return false;
+        }
         String teamRole = getRewardModel().getTeamRole();
-        TeamIRelation relation = TeamManager.getManager().getTeamRelation(team, territory.getOwnerITeam());
-        RelationType relationType = relation != null ? relation.getType() : RelationType.NEUTRAL;
+        RelationType relationType = TeamManager.getManager().getTeamRelationType(team, territory.getOwnerITeam());
         List<Integer> teamPositions = getRewardModel().getTeamPositions();
 
         if (isShouldTeamWin() && teamPosition != 1) {

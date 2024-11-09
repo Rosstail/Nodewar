@@ -15,7 +15,7 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.RelationType;
-import fr.rosstail.nodewar.team.TeamIRelation;
+import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
@@ -60,7 +60,7 @@ public class Territory {
     private Battle previousBattle;
     private Battle currentBattle;
 
-    private final TerritoryBossBar territoryBossBar;
+    private TerritoryBossBar territoryBossBar = null;
 
     private AttackRequirements attackRequirements;
     private final TerritoryWebmap webmapInfo;
@@ -106,10 +106,6 @@ public class Territory {
         objectiveSection = section.getConfigurationSection("objective");
         territoryModel.setObjectiveTypeName(section.getString("objective.name", territoryType.getObjectiveTypeName()));
 
-        ConfigurationSection bossBarSection = section.getConfigurationSection("bossbar");
-        TerritoryBossBarModel sectionBossBarModel = new TerritoryBossBarModel(bossBarSection);
-        territoryBossBar = new TerritoryBossBar(sectionBossBarModel, territoryType.getTerritoryBossBarModel());
-
         ConfigurationSection attackRequirementSection = section.getConfigurationSection("attack-requirements");
         AttackRequirementsModel sectionAttackRequirementsModel = new AttackRequirementsModel(attackRequirementSection);
         territoryModel.setAttackRequirementsModel(sectionAttackRequirementsModel);
@@ -123,23 +119,30 @@ public class Territory {
 
         webmapInfo = new TerritoryWebmap(this, territoryWebmapModel, territoryType.getTerritoryWebmapModel());
 
-        updateRegionList();
+        setupRegionList();
 
-        for (RelationType relation : RelationType.values()) {
-            String territoryName;
-            if (getOwnerITeam() != null) {
-                territoryName = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_OCCUPIED);
-            } else {
-                territoryName = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_WILD);
+
+        if (ConfigData.getConfigData().bossbar.enabled) {
+            ConfigurationSection bossBarSection = section.getConfigurationSection("bossbar");
+            TerritoryBossBarModel sectionBossBarModel = new TerritoryBossBarModel(bossBarSection);
+            territoryBossBar = new TerritoryBossBar(sectionBossBarModel, territoryType.getTerritoryBossBarModel());
+
+            for (RelationType relation : RelationType.values()) {
+                String territoryName;
+                if (getOwnerITeam() != null) {
+                    territoryName = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_OCCUPIED);
+                } else {
+                    territoryName = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_WILD);
+                }
+
+                territoryName = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(territoryName, this);
+
+                relationBossBarMap.put(relation, Bukkit.createBossBar(
+                        territoryName,
+                        ConfigData.getConfigData().bossbar.stringBarColorMap.get(relation.toString().toLowerCase()),
+                        territoryBossBar.getBarStyle()
+                ));
             }
-
-            territoryName = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(territoryName, this);
-
-            relationBossBarMap.put(relation, Bukkit.createBossBar(
-                    territoryName,
-                    ConfigData.getConfigData().bossbar.stringBarColorMap.get(relation.toString().toLowerCase()),
-                    territoryBossBar.getBarStyle()
-            ));
         }
 
         ConfigurationSection territoryCommandsSection = section.getConfigurationSection("commands");
@@ -174,7 +177,7 @@ public class Territory {
         }
     }
 
-    public void updateRegionList() {
+    private void setupRegionList() {
         world = Bukkit.getWorld(territoryModel.getWorldName());
         if (world != null) {
             final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -183,13 +186,8 @@ public class Territory {
                 getModel().getRegionStringList().forEach(s -> {
                     if (regions.hasRegion(s)) {
                         protectedRegionList.add(regions.getRegion(s));
-                        WebmapManager.getManager().eraseTerritoryMarker(this);
-                        WebmapManager.getManager().eraseTerritorySurface(this);
-                        WebmapManager.getManager().eraseLineBetweenTerritories(this, this);
-                        WebmapManager.getManager().eraseTerritoryMarker(this);
-                        WebmapManager.getManager().drawTerritoryMarker(this);
                     } else {
-                        System.err.println("The region " + s + " does not exists for " + this.getModel().getName() + " yet");
+                        AdaptMessage.print("The " + s + " region in " + getModel().getName() + "does not exists yet" , AdaptMessage.prints.WARNING);
                     }
                 });
             }
@@ -197,11 +195,39 @@ public class Territory {
         }
     }
 
-    public void updateAllBossBar() {
+    public void updateRegionList() {
+        if (world != null) {
+            final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+            final RegionManager regions = container.get(BukkitAdapter.adapt(world));
+            if (regions != null) {
+                getModel().getRegionStringList().forEach(s -> {
+                    if (regions.hasRegion(s)) {
+                        protectedRegionList.add(regions.getRegion(s));
+                    } else {
+                        AdaptMessage.print("The " + s + " region in " + getModel().getName() + "does not exists yet" , AdaptMessage.prints.WARNING);
+                    }
+                });
+                WebmapManager.getManager().eraseTerritoryMarker(this);
+                WebmapManager.getManager().eraseTerritorySurface(this);
+                WebmapManager.getManager().eraseLineBetweenTerritories(this, this);
+                WebmapManager.getManager().eraseTerritoryMarker(this);
+                WebmapManager.getManager().drawTerritoryMarker(this);
+            }
+            updateAllBossBar();
+        }
+    }
+
+    public void updateAllBossBarText() {
         getRelationBossBarMap().forEach((relationType, bossBar) -> {
             String bossBarTitle;
             if (currentBattle != null && currentBattle.isBattleStarted()) {
                 bossBarTitle = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_BATTLE);
+            } else if (currentBattle != null && currentBattle.isBattleOnEnd()) {
+                if (currentBattle.isBattleEnded()) {
+                    bossBarTitle = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_BATTLE_ENDED);
+                } else {
+                    bossBarTitle = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_BATTLE_ENDING);
+                }
             } else if (getOwnerITeam() != null) {
                 bossBarTitle = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_GLOBAL_OCCUPIED);
             } else {
@@ -209,13 +235,26 @@ public class Territory {
             }
             bossBarTitle = AdaptMessage.getAdaptMessage().adaptMessage(AdaptMessage.getAdaptMessage().adaptTerritoryMessage(bossBarTitle, this));
             bossBar.setTitle(bossBarTitle);
+        });
+    }
+
+    public void updateAllBossBar() {
+        if (territoryBossBar == null) {
+            return;
+        }
+        getRelationBossBarMap().forEach((relationType, bossBar) -> {
             bossBar.removeAll();
         });
+        updateAllBossBarText();
 
         getPlayers().forEach(this::addPlayerToBossBar);
     }
 
     public void addPlayerToBossBar(Player player) {
+        if (territoryBossBar == null) {
+            return;
+        }
+
         RelationType type = RelationType.NEUTRAL;
         NwITeam territoryUsedTeam = null;
         PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
@@ -223,20 +262,22 @@ public class Territory {
 
         if (ownerNwITeam != null) {
             territoryUsedTeam = ownerNwITeam;
-        } else if (currentBattle.getAdvantagedITeam() != null) {
-            territoryUsedTeam = currentBattle.getAdvantagedITeam();
+        } else if (currentBattle != null) {
+            if (currentBattle.getAdvantagedITeam() != null) {
+                territoryUsedTeam = currentBattle.getAdvantagedITeam();
+            }
         }
 
         if (territoryUsedTeam != null) {
-            type = ConfigData.getConfigData().team.defaultRelation;
             if (playerTeam != null) {
                 if (territoryUsedTeam == playerTeam) {
                     type = RelationType.TEAM;
                 } else if (playerTeam.getRelations().containsKey(territoryUsedTeam)) {
-                    TeamIRelation relation = playerTeam.getIRelation(ownerNwITeam);
-                    type = relation.getType();
-                } else { // controlled point
+                    type = TeamManager.getManager().getTeamRelationType(playerTeam, ownerNwITeam);
+                } else if (ConfigData.getConfigData().team.defaultRelation == RelationType.NEUTRAL) {
                     type = RelationType.CONTROLLED;
+                } else {
+                    type = ConfigData.getConfigData().team.defaultRelation;
                 }
             }
         }
@@ -364,7 +405,7 @@ public class Territory {
     }
 
     public void setupAttackRequirements() {
-        this.attackRequirements = new AttackRequirements(this, territoryModel.getAttackRequirementsModel(), territoryType.getAttackRequirementsModel());
+        this.attackRequirements.initialize();
     }
 
 
@@ -441,6 +482,9 @@ public class Territory {
     }
 
     public String adaptMessage(String message) {
+        if (message == null) {
+            return null;
+        }
         message = message.replaceAll("\\[territory_description]", LangManager.getMessage(LangMessage.TERRITORY_DESCRIPTION));
 
         message = message.replaceAll("\\[territory_desc_line]", Matcher.quoteReplacement(String.join("\n", territoryModel.getDescription())));
@@ -455,8 +499,10 @@ public class Territory {
         boolean isProtected = territoryModel.isUnderProtection();
         if (isProtected) {
             message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_PROTECTED));
+            message = message.replaceAll("\\[territory_protected_short]", LangManager.getMessage(LangMessage.TERRITORY_PROTECTED_SHORT));
         } else {
             message = message.replaceAll("\\[territory_protected]", LangManager.getMessage(LangMessage.TERRITORY_VULNERABLE));
+            message = message.replaceAll("\\[territory_protected_short]", LangManager.getMessage(LangMessage.TERRITORY_VULNERABLE_SHORT));
         }
 
         message = message.replaceAll("\\[territory_team", "[team");

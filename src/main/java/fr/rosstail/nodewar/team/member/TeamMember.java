@@ -13,9 +13,9 @@ public class TeamMember {
     private NwTeamRank rank;
     private TeamMemberModel model;
 
-    public TeamMember(final Player player, final NwITeam nwTeam, TeamMemberModel model) {
+    public TeamMember(final Player player, final NwITeam nwITeam, TeamMemberModel model) {
         this.player = player;
-        this.nwTeam = nwTeam;
+        this.nwTeam = nwITeam;
         this.rank = Arrays.stream(NwTeamRank.values()).filter(teamRank -> teamRank.getWeight() == model.getRank()).findFirst().get();
         this.model = model;
     }

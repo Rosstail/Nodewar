@@ -1,37 +1,68 @@
 package fr.rosstail.nodewar.team.teammanagers;
 
+import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.TownyEventHandler;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.permissionmannager.PermissionManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import fr.rosstail.nodewar.team.type.TownTeam;
+import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class TownyTeamManager implements NwITeamManager {
+public class TownyTeamManager implements NwITeamManager, Listener {
     private final Map<String, TownTeam> stringTeamMap = new HashMap<>();
-    private final TownyAPI townyAPI = TownyAPI.getInstance();
-    private final TownyEventHandler townyEventHandler;
+    private TownyAPI townyAPI;
+    private TownyEventHandler townyEventHandler;
 
 
     public TownyTeamManager() {
+    }
+
+    @Override
+    public void tryInitialize() {
+        final JavaPlugin townyPlugin = (Towny) Nodewar.getInstance().getServer().getPluginManager().getPlugin("Towny");
+        if (townyPlugin.isEnabled()) {
+            initialize(townyPlugin);
+        }
+    }
+
+    @Override
+    public void initialize(JavaPlugin javaPlugin) {
+        AdaptMessage.print("TownyTeamManager.initialize", AdaptMessage.prints.DEBUG);
+        townyAPI = TownyAPI.getInstance();
         townyEventHandler = new TownyEventHandler();
         Bukkit.getPluginManager().registerEvents(townyEventHandler, Nodewar.getInstance());
+        loadTeams();
+        TerritoryManager.getTerritoryManager().initialize();
+    }
+
+    @EventHandler
+    public void onPluginEnable(PluginEnableEvent event) {
+        JavaPlugin plugin = (JavaPlugin) event.getPlugin();
+        if (plugin.getName().equals("Towny")) {
+            initialize(plugin);
+        }
     }
 
     @Override
     public void loadTeams() {
         townyAPI.getTowns().forEach(town -> {
-
             TownTeam townTeam = new TownTeam(town);
             stringTeamMap.put(townTeam.getName(), townTeam);
         });

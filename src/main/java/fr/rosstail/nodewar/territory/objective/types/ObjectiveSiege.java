@@ -177,11 +177,13 @@ public class ObjectiveSiege extends NwConquestObjective {
 
         switch (currentBattle.getBattleStatus()) {
             case WAITING:
+                territory.updateAllBossBarText();
                 if (checkStart()) {
                     start();
                 }
                 break;
             case ONGOING:
+                territory.updateAllBossBarText();
                 if (checkEnding()) {
                     ending();
                 } else {
@@ -189,11 +191,13 @@ public class ObjectiveSiege extends NwConquestObjective {
                 }
                 break;
             case ENDING:
+                territory.updateAllBossBarText();
                 if (checkEnd()) {
                     end();
                 }
                 break;
             case ENDED:
+                territory.updateAllBossBarText();
                 long battleEndTimeAndGrace = territory.getCurrentBattle().getBattleEndTime() + getGracePeriod();
                 if (battleEndTimeAndGrace < System.currentTimeMillis()) {
                     restart();
@@ -216,7 +220,7 @@ public class ObjectiveSiege extends NwConquestObjective {
         int currentHealth = currentBattle.getCurrentHealth();
 
         if (newAdvantage == null) {
-            if (currentHealth == 0) {
+            if (currentHealth == 0 || currentHealth == maxHealth) {
                 return false;
             }
         }

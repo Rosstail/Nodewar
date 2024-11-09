@@ -191,7 +191,8 @@ public class WebmapManager {
     }
 
     public boolean addTerritorySetToDraw(Set<Territory> territorySet) {
-        return territoryToDrawSet.addAll(territorySet);
+        addTerritorySetToEdit(territorySet.stream().filter(territoryToDrawSet::contains).collect(Collectors.toSet()));
+        return territoryToDrawSet.addAll(territorySet.stream().filter(territory -> !territoryToDrawSet.contains(territory)).collect(Collectors.toSet()));
     }
 
     public boolean addTerritorySetToEdit(Set<Territory> territorySet) {

@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.battlefield;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
+import fr.rosstail.nodewar.events.territoryevents.TerritoryProtectionChangeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -93,6 +94,10 @@ public class BattlefieldManager {
         battlefield.getModel().setOpen(true);
         battlefield.getTerritoryList().forEach(territory -> {
             territory.getModel().setUnderProtection(false);
+
+            TerritoryProtectionChangeEvent territoryProtectionChangeEvent = new TerritoryProtectionChangeEvent(territory, false);
+            Bukkit.getPluginManager().callEvent(territoryProtectionChangeEvent);
+
             WebmapManager.getManager().addTerritoryToEdit(territory);
         });
 
@@ -116,7 +121,12 @@ public class BattlefieldManager {
                         }
                     }
                 }
+
                 territory.getModel().setUnderProtection(true);
+
+                TerritoryProtectionChangeEvent territoryProtectionChangeEvent = new TerritoryProtectionChangeEvent(territory, true);
+                Bukkit.getPluginManager().callEvent(territoryProtectionChangeEvent);
+
                 WebmapManager.getManager().addTerritoryToEdit(territory);
             });
         }

@@ -1,5 +1,5 @@
 storage:
-  type: LiteSQL # LiteSQL (local storage), MySQL, MariaDB, MongoDB
+  type: SQLite # SQLite (local storage), MySQL, MariaDB, MongoDB
   host: "localhost"
   port: 3306
   database: "database_name"
@@ -23,7 +23,7 @@ locale:
 team:
   system: "auto" # "Towny", "UltimateClans", "nodewar" OR "auto"
   creation-cost: 0
-  default-relation: neutral
+  default-relation: neutral # neutral, enemy, ally
   none-color: "#4C4C4C"
   deploy-timer: 10
   deploy-cooldown: 120
@@ -34,6 +34,7 @@ team:
   shortname-max-length: 5
 
 bossbar:
+  enabled: true
   color: # RED, YELLOW, BLUE, GREEN, PINK, PURPLE, WHITE
     neutral: WHITE # no team
     controlled: YELLOW # it's like neutral but controlled by a team

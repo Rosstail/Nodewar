@@ -203,6 +203,11 @@ public enum LangMessage {
     TERRITORY_BATTLE_STATUS_ONGOING("territory.battle.status.ongoing", false, false),
     TERRITORY_BATTLE_STATUS_ENDING("territory.battle.status.ending", false, false),
     TERRITORY_BATTLE_STATUS_ENDED("territory.battle.status.ended", false, false),
+    TERRITORY_BATTLE_STATUS_WAITING_SHORT("territory.battle.status.waiting-short", false, false),
+    TERRITORY_BATTLE_STATUS_ONGOING_SHORT("territory.battle.status.ongoing-short", false, false),
+    TERRITORY_BATTLE_STATUS_ENDING_SHORT("territory.battle.status.ending-short", false, false),
+    TERRITORY_BATTLE_STATUS_ENDED_SHORT("territory.battle.status.ended-short", false, false),
+
     TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START("territory.battle.alert.global.defend.start", false, false),
     TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE("territory.battle.alert.global.defend.advantage", false, false),
     TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE("territory.battle.alert.global.defend.disadvantage", false, false),
@@ -213,11 +218,21 @@ public enum LangMessage {
     TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE("territory.battle.alert.global.attack.disadvantage", false, false),
     TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_VICTORY("territory.battle.alert.global.attack.victory", false, false),
     TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT("territory.battle.alert.global.attack.defeat", false, false),
+
+    TERRITORY_ENTER("territory.enter", true, false),
+    TERRITORY_LEAVE("territory.leave", true, false),
     TERRITORY_BOSSBAR_GLOBAL_WILD("territory.bossbar.global.wild", false, false),
     TERRITORY_BOSSBAR_GLOBAL_OCCUPIED("territory.bossbar.global.occupied", false, false),
     TERRITORY_BOSSBAR_GLOBAL_BATTLE("territory.bossbar.global.battle", false, false),
+    TERRITORY_BOSSBAR_GLOBAL_BATTLE_ENDING("territory.bossbar.global.battle-ending", false, false),
+    TERRITORY_BOSSBAR_GLOBAL_BATTLE_ENDED("territory.bossbar.global.battle-ended", false, false),
+    TERRITORY_BOSSBAR_ARROW_NO_ADVANTAGE("territory.bossbar.arrow.no-advantage", false, false),
+    TERRITORY_BOSSBAR_ARROW_ADVANTAGE_LEFT_TO_RIGHT("territory.bossbar.arrow.left-to-right", false, false),
+    TERRITORY_BOSSBAR_ARROW_ADVANTAGE_RIGHT_TO_LEFT("territory.bossbar.arrow.right-to-left", false, false),
     TERRITORY_PROTECTED("territory.protected", false, false),
+    TERRITORY_PROTECTED_SHORT("territory.protected-short", false, false),
     TERRITORY_VULNERABLE("territory.vulnerable", false, false),
+    TERRITORY_VULNERABLE_SHORT("territory.vulnerable-short", false, false),
 
     WEBMAP_MARKER_SET_LABEL("webmap.marker-set-label", false, false),
 

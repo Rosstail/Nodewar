@@ -38,7 +38,8 @@ public class AdaptMessage {
     public enum prints {
         OUT,
         WARNING,
-        ERROR
+        ERROR,
+        DEBUG
     }
 
     public AdaptMessage(Nodewar plugin) {
@@ -57,24 +58,26 @@ public class AdaptMessage {
     private final Map<Player, Long> coolDown = new HashMap<>();
 
     public void sendToPlayer(Player player, String message) {
-        if (message != null) {
-            if (message.startsWith("[msg-title]")) {
-                message = message.replace("[msg-title]", "").trim();
-                String title;
-                String subTitle = null;
-                String[] titles = message.split("\\[msg-subtitle]");
-                title = titles[0];
-                if (titles.length > 1) {
-                    subTitle = titles[1];
-                }
-                sendTitle(player, title.trim(), subTitle != null ? subTitle.trim() : null);
-            } else if (message.startsWith("[msg-actionbar]")) {
-                sendActionBar(player, message.replace("[msg-actionbar]", "").trim());
-            } else if (message.startsWith("[msg]")) {
-                player.sendMessage(message.replace("[msg]", "").trim());
-            } else {
-                player.sendMessage(message);
+        if (message == null) {
+            return;
+        }
+
+        if (message.startsWith("[msg-title]")) {
+            message = message.replace("[msg-title]", "").trim();
+            String title;
+            String subTitle = null;
+            String[] titles = message.split("\\[msg-subtitle]");
+            title = titles[0];
+            if (titles.length > 1) {
+                subTitle = titles[1];
             }
+            sendTitle(player, title.trim(), subTitle != null ? subTitle.trim() : null);
+        } else if (message.startsWith("[msg-actionbar]")) {
+            sendActionBar(player, message.replace("[msg-actionbar]", "").trim());
+        } else if (message.startsWith("[msg]")) {
+            player.sendMessage(message.replace("[msg]", "").trim());
+        } else {
+            player.sendMessage(message);
         }
     }
 
@@ -390,7 +393,11 @@ public class AdaptMessage {
         } else if (print.equals(prints.WARNING)) {
             getLogger().warning(string);
         } else {
-            getLogger().info(string);
+            if (print.equals(prints.DEBUG)) {
+                getLogger().info("[NW-DEBUG] " + string);
+            } else {
+                getLogger().info(string);
+            }
         }
     }
 

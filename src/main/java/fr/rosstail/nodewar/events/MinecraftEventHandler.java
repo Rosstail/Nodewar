@@ -14,53 +14,41 @@ import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class MinecraftEventHandler implements Listener {
 
     private boolean isClosing = false;
 
     public MinecraftEventHandler() {
+        List<Player> playerList = new ArrayList<>();
+        final int[] playerSetSize = {0};
         new BukkitRunnable() {
             @Override
             public void run() {
-                Bukkit.getWorlds().forEach(world -> {
-                    List<Entity> entityList = world.getEntities().stream().filter(entity ->
-                            !(entity instanceof Player)
-                                    && !(entity instanceof Minecart)
-                                    && (!entity.getPassengers().isEmpty())
-                    ).collect(Collectors.toList());
+                if (playerList.isEmpty()) {
+                    playerList.addAll(Bukkit.getOnlinePlayers());
+                    playerSetSize[0] = playerList.size();
+                }
 
-                    entityList.forEach(entity -> {
-                        checkEntityPassengersMovement(entity);
-                    });
-                });
-            }
-        }.runTaskTimer(Nodewar.getInstance(), 0, 1);
-    }
+                int maxIndex = Math.min(playerList.size(), (playerSetSize[0] / 4) + 1);
 
-    private void checkEntityPassengersMovement(Entity entity) {
-        entity.getPassengers().forEach(passenger -> {
-            if (passenger instanceof Player player) {
-                checkPlayerPosition(player, player.getLocation());
-            } else if (!passenger.getPassengers().isEmpty()) {
-                checkEntityPassengersMovement(passenger);
+                for (int index = 0; index < maxIndex; index++) {
+                    Player player = playerList.get(0);
+                    checkPlayerPosition(player, player.getLocation());
+                    playerList.remove(0);
+                }
             }
-        });
+        }.runTaskTimer(Nodewar.getInstance(), 0, 4);
     }
 
     @EventHandler
@@ -92,8 +80,6 @@ public class MinecraftEventHandler implements Listener {
         } else {
             PermissionManager.getManager().removePlayerGroup(playerName, playerUUID, null);
         }
-
-        checkPlayerPosition(player, player.getLocation());
     }
 
     @EventHandler
@@ -102,7 +88,6 @@ public class MinecraftEventHandler implements Listener {
         PlayerModel model = PlayerDataManager.getPlayerDataMap().get(player.getName());
         NwITeam playerNwITeam = TeamManager.getManager().getPlayerTeam(player);
 
-        checkPlayerPosition(player, player.getLocation());
         TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory ->
                 territory.getPlayers().contains(player)).forEach(territory -> {
             territory.getPlayers().remove(player);
@@ -124,7 +109,6 @@ public class MinecraftEventHandler implements Listener {
             return;
         }
         PlayerDataManager.cancelPlayerDeploy(player);
-        checkPlayerPosition(player, player.getLocation());
     }
 
     @EventHandler
@@ -134,34 +118,8 @@ public class MinecraftEventHandler implements Listener {
             return;
         }
 
-        if (e.getFrom().getX() != e.getTo().getX() || e.getFrom().getY() != e.getTo().getY() || e.getFrom().getZ() != e.getTo().getZ()) {
+        if (e.getFrom().getBlock() != e.getTo().getBlock()) {
             PlayerDataManager.cancelPlayerDeploy(player);
-        }
-        checkPlayerPosition(player, e.getTo());
-    }
-
-    @EventHandler
-    public void onVehicleMoveEvent(final VehicleMoveEvent e) {
-        Vehicle vehicle = e.getVehicle();
-        if (!vehicle.getPassengers().isEmpty()) {
-            checkPassengers(e.getFrom(), e.getTo(), vehicle.getPassengers());
-        }
-    }
-
-    private void checkPassengers(Location from, Location to, List<Entity> passengerList) {
-        for (Entity passenger : passengerList) {
-            if (passenger instanceof Player) {
-                Player player = ((Player) passenger).getPlayer();
-                if (!player.hasMetadata("NPC")) {
-                    if (from.getX() != to.getX() || from.getY() != to.getY() || from.getZ() != to.getZ()) {
-                        PlayerDataManager.cancelPlayerDeploy(player);
-                    }
-                    checkPlayerPosition(player, to);
-                }
-            }
-            if (!passenger.getPassengers().isEmpty()) {
-                checkPassengers(from, to, passenger.getPassengers());
-            }
         }
     }
 
@@ -173,7 +131,6 @@ public class MinecraftEventHandler implements Listener {
         }
 
         PlayerDataManager.cancelPlayerDeploy(player);
-        checkPlayerPosition(player, e.getTo());
     }
 
     @EventHandler
@@ -184,7 +141,6 @@ public class MinecraftEventHandler implements Listener {
         }
 
         PlayerDataManager.cancelPlayerDeploy(player);
-        checkPlayerPosition(player, e.getRespawnLocation());
     }
 
     @EventHandler
@@ -195,7 +151,6 @@ public class MinecraftEventHandler implements Listener {
         }
 
         PlayerDataManager.cancelPlayerDeploy(player);
-        checkPlayerPosition(player, player.getLocation());
     }
 
     public void checkPlayerPosition(Player player, Location location) {

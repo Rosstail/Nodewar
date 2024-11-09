@@ -46,11 +46,14 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public void setupStorage(String host, short port, String database, String username, String password) {
-        // updaters
-        deleteTeamMemberDuplicate();
-        alterTeamMemberTable();
-        alterTerritoryTable();
-        //
+        if (doesTableExists(teamMemberTableName, username)) {
+            deleteTeamMemberDuplicate();
+            alterTeamMemberTable();
+        }
+
+        if (doesTableExists(territoryTableName, username)) {
+            alterTerritoryTable();
+        }
 
         createNodewarPlayerTable();
         createNodewarTeamTable();
@@ -58,6 +61,36 @@ public class SqlStorageRequest implements StorageRequest {
         createNodewarTeamRelationTable();
         createNodewarTerritoryTable();
         createNodewarBattlefieldTable();
+    }
+
+    public boolean doesTableExists(String tableName, String databaseName) {
+        boolean tableExists = false;
+        ResultSet rs = executeSQLQuery(openConnection(),
+                        "SELECT count(*)" +
+                                " FROM information_schema.tables" +
+                                " WHERE table_schema = '" + databaseName + "'" +
+                                " AND table_name = '" + tableName + "';");
+
+        try {
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                tableExists = count > 0;
+            }
+            rs.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (rs != null) {
+                try {
+                    if (!rs.isClosed()) {
+                        rs.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return tableExists;
     }
 
     public void createNodewarPlayerTable() {
@@ -90,16 +123,19 @@ public class SqlStorageRequest implements StorageRequest {
     public void deleteTeamMemberDuplicate() {
         String deleteDuplicatesRequest =
                 "DELETE FROM " + teamMemberTableName + " a"
-                + " WHERE EXISTS (SELECT " + teamMemberTableName + " b"
-                + " WHERE a.player_id = b.player_id"
-                + " AND a.id > b.id)";
+                        + " WHERE EXISTS (SELECT " + teamMemberTableName + " b"
+                        + " WHERE a.player_id = b.player_id"
+                        + " AND a.id > b.id)";
 
-        executeSQLQuery(openConnection(), deleteDuplicatesRequest);
+        try {
+            executeSQLUpdate(deleteDuplicatesRequest);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void alterTeamMemberTable() {
         String setPlayerIdUnique = "ALTER TABLE " + teamMemberTableName + " ADD UNIQUE (player_id)";
-
         executeSQL(setPlayerIdUnique);
     }
 
@@ -619,10 +655,10 @@ public class SqlStorageRequest implements StorageRequest {
         String query = "UPDATE " + territoryTableName + " SET owner_team_id = ?, last_update = CURRENT_TIMESTAMP WHERE name = ?";
         try {
             String ownerName = model.getOwnerName();
-            NwITeam nwTeam = TeamManager.getManager().getStringTeamMap().get(ownerName);
-            if (nwTeam != null) {
+            NwITeam nwITeam = TeamManager.getManager().getStringTeamMap().get(ownerName);
+            if (nwITeam != null) {
                 executeSQLUpdate(query,
-                        nwTeam.getID(),
+                        nwITeam.getID(),
                         model.getName()
                 );
             } else {

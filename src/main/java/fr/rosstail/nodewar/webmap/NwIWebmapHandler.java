@@ -6,8 +6,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 public interface NwIWebmapHandler {
 
     void initialize(JavaPlugin plugin);
+
     boolean isReady();
+
     void createMarkerSet();
+
     void drawTerritoryMarker(Territory territory);
 
     void editTerritoryMarker(Territory territory);

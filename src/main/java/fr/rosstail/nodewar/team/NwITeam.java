@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.team;
 
 import fr.rosstail.nodewar.team.member.TeamMember;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
@@ -9,7 +10,6 @@ import java.util.Date;
 import java.util.Map;
 
 public interface NwITeam {
-
     int getID();
     String getName();
     String getDisplay();

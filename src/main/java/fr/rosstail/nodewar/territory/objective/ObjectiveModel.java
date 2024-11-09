@@ -18,8 +18,8 @@ public class ObjectiveModel implements Cloneable {
     public ObjectiveModel(ConfigurationSection section) {
         if (section != null) {
             this.typeString = section.getString("type");
-            this.endingPeriodString = section.getString("ending-period", "0");
-            this.gracePeriodString = section.getString("grace-period", "0");
+            this.endingPeriodString = section.getString("ending-period");
+            this.gracePeriodString = section.getString("grace-period");
             ConfigurationSection rewardListSection = section.getConfigurationSection("rewards");
             if (rewardListSection != null) {
                 rewardListSection.getKeys(false).forEach(s -> {

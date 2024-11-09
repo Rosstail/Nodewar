@@ -6,9 +6,9 @@ import org.bukkit.ChatColor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class LiteSqlStorageRequest extends SqlStorageRequest {
+public class SqliteStorageRequest extends SqlStorageRequest {
 
-    public LiteSqlStorageRequest(String pluginName) {
+    public SqliteStorageRequest(String pluginName) {
         super(pluginName);
     }
 
@@ -17,9 +17,14 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
         this.url = "jdbc:sqlite:./plugins/Nodewar/data/data.db";
         enableForeignKeys();
 
-        deleteTeamMemberDuplicate();
-        alterTeamMemberTable();
-        alterTerritoryTable();
+        if (doesTableExists(teamMemberTableName, username)) {
+            deleteTeamMemberDuplicate();
+            alterTeamMemberTable();
+        }
+
+        if (doesTableExists(territoryTableName, username)) {
+            alterTerritoryTable();
+        }
 
         createNodewarPlayerTable();
         createNodewarTeamTable();
@@ -31,6 +36,35 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
 
     public void enableForeignKeys() {
         executeSQL("PRAGMA foreign_keys=ON;");
+    }
+
+    @Override
+    public boolean doesTableExists(String tableName, String databaseName) {
+        boolean tableExists;
+        ResultSet rs = executeSQLQuery(openConnection(),
+                "SELECT count(*)" +
+                        " FROM sqlite_master" +
+                        " WHERE type='table'" +
+                        " AND name='" + tableName + "';");
+
+        try {
+            int count = rs.getInt(1);
+            tableExists = count > 0;
+            rs.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (rs != null) {
+                try {
+                    if (!rs.isClosed()) {
+                        rs.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return tableExists;
     }
 
     @Override
@@ -83,7 +117,7 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
         String oldTableName = getTeamMemberTableName();
         String newTableName = oldTableName + "_new";
 
-        String checkPlayerIdUinique = "SELECT sql" +
+        String checkPlayerIdUnique = "SELECT sql" +
                 " FROM sqlite_master" +
                 " WHERE sqlite_master.type = 'table'" +
                 " AND sqlite_master.tbl_name = '" + teamMemberTableName + "';";
@@ -92,7 +126,7 @@ public class LiteSqlStorageRequest extends SqlStorageRequest {
         ResultSet rs = null;
 
         try {
-            rs = super.executeSQLQuery(openConnection(), checkPlayerIdUinique);
+            rs = super.executeSQLQuery(openConnection(), checkPlayerIdUnique);
 
             if (rs.next()) {
                 String resultStr = rs.getString(1).toLowerCase();

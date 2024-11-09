@@ -5,7 +5,7 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.battlefield.BattlefieldModel;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.storagetype.sql.MongoDbStorageRequest;
-import fr.rosstail.nodewar.storage.storagetype.sql.LiteSqlStorageRequest;
+import fr.rosstail.nodewar.storage.storagetype.sql.SqliteStorageRequest;
 import fr.rosstail.nodewar.storage.storagetype.sql.MariaDbStorageRequest;
 import fr.rosstail.nodewar.storage.storagetype.sql.MySqlStorageRequest;
 import fr.rosstail.nodewar.lang.AdaptMessage;
@@ -31,7 +31,7 @@ public class StorageManager {
     private MySqlStorageRequest mySqlStorageRequest;
     private MariaDbStorageRequest mariaDBStorageRequest;
     private MongoDbStorageRequest mongoDBStorageRequest;
-    private LiteSqlStorageRequest liteSqlDBStorageRequest;
+    private SqliteStorageRequest sqLiteDBStorageRequest;
 
     public static StorageManager initStorageManage(Nodewar plugin) {
         if (manager == null) {
@@ -70,9 +70,9 @@ public class StorageManager {
                 mongoDBStorageRequest.setupStorage(host, port, database, username, password);
                 break;
             default:
-                AdaptMessage.print(typeToPrint.replaceAll("\\[type]", "LiteSQL"), AdaptMessage.prints.OUT);
-                liteSqlDBStorageRequest = new LiteSqlStorageRequest(pluginName);
-                liteSqlDBStorageRequest.setupStorage(host, port, database, username, password);
+                AdaptMessage.print(typeToPrint.replaceAll("\\[type]", "SQLite"), AdaptMessage.prints.OUT);
+                sqLiteDBStorageRequest = new SqliteStorageRequest(pluginName);
+                sqLiteDBStorageRequest.setupStorage(host, port, database, username, password);
                 break;
         }
 
@@ -90,7 +90,7 @@ public class StorageManager {
                 mongoDBStorageRequest.closeConnection();
                 break;
             default:
-                liteSqlDBStorageRequest.closeConnection();
+                sqLiteDBStorageRequest.closeConnection();
                 break;
         }
     }
@@ -109,7 +109,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.insertPlayerModel(model);
             default:
-                return liteSqlDBStorageRequest.insertPlayerModel(model);
+                return sqLiteDBStorageRequest.insertPlayerModel(model);
         }
     }
 
@@ -122,7 +122,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.insertTeamModel(model);
             default:
-                return liteSqlDBStorageRequest.insertTeamModel(model);
+                return sqLiteDBStorageRequest.insertTeamModel(model);
         }
     }
 
@@ -135,7 +135,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.insertTeamMemberModel(model);
             default:
-                return liteSqlDBStorageRequest.insertTeamMemberModel(model);
+                return sqLiteDBStorageRequest.insertTeamMemberModel(model);
         }
     }
 
@@ -148,7 +148,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.insertTeamRelationModel(model);
             default:
-                return liteSqlDBStorageRequest.insertTeamRelationModel(model);
+                return sqLiteDBStorageRequest.insertTeamRelationModel(model);
         }
     }
 
@@ -164,7 +164,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.insertTerritoryModel(model);
             default:
-                return liteSqlDBStorageRequest.insertTerritoryModel(model);
+                return sqLiteDBStorageRequest.insertTerritoryModel(model);
         }
     }
 
@@ -180,7 +180,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.insertBattlefieldModel(model);
             default:
-                return liteSqlDBStorageRequest.insertBattlefieldModel(model);
+                return sqLiteDBStorageRequest.insertBattlefieldModel(model);
         }
     }
 
@@ -198,7 +198,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.selectPlayerModel(uuid);
             default:
-                return liteSqlDBStorageRequest.selectPlayerModel(uuid);
+                return sqLiteDBStorageRequest.selectPlayerModel(uuid);
         }
     }
 
@@ -216,7 +216,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.selectTeamModelByName(teamName);
             default:
-                return liteSqlDBStorageRequest.selectTeamModelByName(teamName);
+                return sqLiteDBStorageRequest.selectTeamModelByName(teamName);
         }
     }
 
@@ -232,7 +232,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.selectAllTeamModel();
             default:
-                return liteSqlDBStorageRequest.selectAllTeamModel();
+                return sqLiteDBStorageRequest.selectAllTeamModel();
         }
     }
 
@@ -245,7 +245,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.selectAllTeamMemberModel(teamName);
             default:
-                return liteSqlDBStorageRequest.selectAllTeamMemberModel(teamName);
+                return sqLiteDBStorageRequest.selectAllTeamMemberModel(teamName);
         }
     }
 
@@ -258,7 +258,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.selectTeamMemberModelByUUID(playerUUID);
             default:
-                return liteSqlDBStorageRequest.selectTeamMemberModelByUUID(playerUUID);
+                return sqLiteDBStorageRequest.selectTeamMemberModelByUUID(playerUUID);
         }
     }
 
@@ -276,7 +276,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.selectTeamMemberModelByUsername(userName);
             default:
-                return liteSqlDBStorageRequest.selectTeamMemberModelByUsername(userName);
+                return sqLiteDBStorageRequest.selectTeamMemberModelByUsername(userName);
         }
     }
 
@@ -293,7 +293,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.selectAllTeamRelationModel();
             default:
-                return liteSqlDBStorageRequest.selectAllTeamRelationModel();
+                return sqLiteDBStorageRequest.selectAllTeamRelationModel();
         }
     }
 
@@ -306,7 +306,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.selectTeamRelationModelByTeamUuid(teamName);
             default:
-                return liteSqlDBStorageRequest.selectTeamRelationModelByTeamUuid(teamName);
+                return sqLiteDBStorageRequest.selectTeamRelationModelByTeamUuid(teamName);
         }
     }
 
@@ -322,7 +322,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.selectAllTerritoryModel();
             default:
-                return liteSqlDBStorageRequest.selectAllTerritoryModel();
+                return sqLiteDBStorageRequest.selectAllTerritoryModel();
         }
     }
 
@@ -340,7 +340,7 @@ public class StorageManager {
             case "mongodb":
                 return mongoDBStorageRequest.selectBattlefieldModel(name);
             default:
-                return liteSqlDBStorageRequest.selectBattlefieldModel(name);
+                return sqLiteDBStorageRequest.selectBattlefieldModel(name);
         }
     }
 
@@ -375,9 +375,9 @@ public class StorageManager {
                 break;
             default:
                 if (async) {
-                    liteSqlDBStorageRequest.updatePlayerModelAsync(model);
+                    sqLiteDBStorageRequest.updatePlayerModelAsync(model);
                 } else {
-                    liteSqlDBStorageRequest.updatePlayerModel(model);
+                    sqLiteDBStorageRequest.updatePlayerModel(model);
                 }
                 break;
         }
@@ -400,7 +400,7 @@ public class StorageManager {
                 mongoDBStorageRequest.updateNwITeam(nwITeam);
                 break;
             default:
-                liteSqlDBStorageRequest.updateNwITeam(nwITeam);
+                sqLiteDBStorageRequest.updateNwITeam(nwITeam);
                 break;
         }
     }
@@ -424,7 +424,7 @@ public class StorageManager {
                 mongoDBStorageRequest.updateTeamName(newName, id);
                 break;
             default:
-                liteSqlDBStorageRequest.updateTeamName(newName, id);
+                sqLiteDBStorageRequest.updateTeamName(newName, id);
                 break;
         }
     }
@@ -446,7 +446,7 @@ public class StorageManager {
                 mongoDBStorageRequest.updateTeamMemberModel(model);
                 break;
             default:
-                liteSqlDBStorageRequest.updateTeamMemberModel(model);
+                sqLiteDBStorageRequest.updateTeamMemberModel(model);
                 break;
         }
     }
@@ -468,7 +468,7 @@ public class StorageManager {
                 mongoDBStorageRequest.updateTerritoryModel(model);
                 break;
             default:
-                liteSqlDBStorageRequest.updateTerritoryModel(model);
+                sqLiteDBStorageRequest.updateTerritoryModel(model);
                 break;
         }
     }
@@ -490,7 +490,7 @@ public class StorageManager {
                 mongoDBStorageRequest.updateBattlefieldModel(model);
                 break;
             default:
-                liteSqlDBStorageRequest.updateBattlefieldModel(model);
+                sqLiteDBStorageRequest.updateBattlefieldModel(model);
                 break;
         }
     }
@@ -512,7 +512,7 @@ public class StorageManager {
                 mongoDBStorageRequest.deletePlayerModel(uuid);
                 break;
             default:
-                liteSqlDBStorageRequest.deletePlayerModel(uuid);
+                sqLiteDBStorageRequest.deletePlayerModel(uuid);
                 break;
         }
     }
@@ -534,7 +534,7 @@ public class StorageManager {
                 mongoDBStorageRequest.deleteTeamModel(teamID);
                 break;
             default:
-                liteSqlDBStorageRequest.deleteTeamModel(teamID);
+                sqLiteDBStorageRequest.deleteTeamModel(teamID);
                 break;
         }
     }
@@ -556,7 +556,7 @@ public class StorageManager {
                 mongoDBStorageRequest.deleteTeamMemberModel(playerID);
                 break;
             default:
-                liteSqlDBStorageRequest.deleteTeamMemberModel(playerID);
+                sqLiteDBStorageRequest.deleteTeamMemberModel(playerID);
                 break;
         }
     }
@@ -578,7 +578,7 @@ public class StorageManager {
                 mongoDBStorageRequest.deleteTeamRelationModel(relationID);
                 break;
             default:
-                liteSqlDBStorageRequest.deleteTeamRelationModel(relationID);
+                sqLiteDBStorageRequest.deleteTeamRelationModel(relationID);
                 break;
         }
     }
