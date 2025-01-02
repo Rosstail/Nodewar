@@ -156,6 +156,19 @@ permissions:
       nodewar.command.territory: true
       nodewar.command.territory.check: true
 
+  nodewar.command.battlefield:
+    default: true
+  nodewar.command.battlefield.check:
+    default: true
+  nodewar.command.battlefield.list:
+    default: true
+  nodewar.command.battlefield.*:
+    default: op
+    children:
+      nodewar.command.battlefield: true
+      nodewar.command.battlefield.check: true
+      nodewar.command.battlefield.list: true
+
   nodewar.command.*:
     default: op
     children:
@@ -163,6 +176,7 @@ permissions:
       nodewar.command.admin: true
       nodewar.command.team.*: true
       nodewar.command.territory.*: true
+      nodewar.command.battlefield.*: true
 
   nodewar.*:
     default: op

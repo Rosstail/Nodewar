@@ -1,3 +1,5 @@
+config-version: 1.0
+
 storage:
   type: SQLite # SQLite (local storage), MySQL, MariaDB, MongoDB
   host: "localhost"
@@ -8,9 +10,9 @@ storage:
   save-delay: 300
 
 general:
-  debug-messages: true
   permission-plugin: auto # luckperms, GroupManager, and "auto". Ask the dev to add others
   can-counter-attack: false # Can a team attack another territory from a territory already in battle
+  debug-mode: false
 
 locale:
   lang: en_EN

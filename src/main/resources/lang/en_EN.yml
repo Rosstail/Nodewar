@@ -254,6 +254,22 @@ commands:
         - "[territory_battle_description]"
       result-not-on-territory: "You are not standing on a territory"
       result-on-multiple-territory: "You are standing on multiple territories: please select one of them: [territories]"
+  battlefield:
+    desc: "Battlefield commands"
+    check:
+      desc: "Check status of a battlefield"
+      result:
+        - "&2[battlefield_id] &7- &6[battlefield_display]&r&d:"
+        - "  &r&9Info&d:"
+        - "    &c* &6Status&d:&r [battlefield_status] for [battlefield_delay]"
+        - "    &c* &6Opens in&d:&r [battlefield_start_time]"
+        - "    &c* &6Closes in&d:&r [battlefield_close_time]"
+        - "    &c* &6Territories:&r<TODO>"
+        - "    &c* &6Territory Types:&r<TODO>"
+    list:
+      desc: "Check the list of battlefields"
+      result-header: "[prefix]&bBattlefield list &8:"
+      result-line: "&a► [battlefield_display] ([battlefield_name])&r is [battlefield_status] for [battlefield_delay]"
 
 player:
   online: "&aONLINE"

@@ -20,7 +20,7 @@ public class Battlefield {
     public Battlefield(BattlefieldModel model) {
         this.model = model;
 
-        BattlefieldManager.getBattlefieldManager().editBattlefieldAnouncementTimer(this, Math.min(model.getOpenDateTime(), model.getCloseDateTime()));
+        BattlefieldManager.getManager().editBattlefieldAnouncementTimer(this, Math.min(model.getOpenDateTime(), model.getCloseDateTime()));
 
         territoryList = TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory -> (
                 model.getTerritoryList().contains(territory.getModel().getName())
@@ -45,6 +45,7 @@ public class Battlefield {
     }
 
     public String adaptMessage(String message) {
+        message = message.replaceAll("\\[battlefield_id]", String.valueOf(model.getId()));
         message = message.replaceAll("\\[battlefield_name]", model.getName());
         message = message.replaceAll("\\[battlefield_display]", model.getDisplay());
         message = message.replaceAll("\\[battlefield_start_time]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getOpenDateTime()));
@@ -58,7 +59,6 @@ public class Battlefield {
             message = message.replaceAll("\\[battlefield_status]", LangManager.getMessage(LangMessage.BATTLEFIELD_CLOSED));
             message = message.replaceAll("\\[battlefield_delay]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getOpenDateTime() - System.currentTimeMillis()));
         }
-
 
         return message;
     }

@@ -1,6 +1,8 @@
 package fr.rosstail.nodewar.events;
 
+import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.permissionmannager.PermissionManager;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
@@ -63,6 +65,13 @@ public class MinecraftEventHandler implements Listener {
             StorageManager.getManager().insertPlayerModel(playerData);
         } else {
             playerData = new PlayerData(player, playerModel);
+            if (!playerData.getUsername().equals(playerName)) {
+                if (ConfigData.getConfigData().general.debugMode) {
+                    AdaptMessage.print("[NW] Updating model name from " + playerData.getUsername() + " to " + playerName, AdaptMessage.prints.WARNING);
+                }
+                playerData.setUsername(playerName);
+                StorageManager.getManager().updatePlayerModel(playerData, true);
+            }
         }
 
         PlayerDataManager.initPlayerDataToMap(playerData);

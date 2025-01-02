@@ -81,13 +81,15 @@ public class ConfigData {
         public final float configVersion;
         public final String defaultPermissionPlugin;
         public final boolean canCounterAttack;
+        public final boolean debugMode;
 
         ConfigGeneral(FileConfiguration config) {
             configFile = config;
 
-            configVersion = (float) config.getDouble("general.config-version", 1.0F);
+            configVersion = (float) config.getDouble("config-version", 1.0F); // Not in general cause top of file
             defaultPermissionPlugin = config.getString("general.permission-plugin", "auto");
             canCounterAttack = config.getBoolean("general.can-counter-attack", false);
+            debugMode = config.getBoolean("general.debug-mode", false);
         }
     }
 

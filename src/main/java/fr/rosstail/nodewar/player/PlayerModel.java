@@ -29,7 +29,6 @@ public class PlayerModel {
     public PlayerModel(String uuid, String username) {
         this.uuid = uuid;
         this.username = username;
-        this.checkForData();
     }
 
     /**
