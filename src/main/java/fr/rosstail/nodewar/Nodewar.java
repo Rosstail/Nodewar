@@ -31,7 +31,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -147,10 +146,10 @@ public class Nodewar extends JavaPlugin implements Listener {
 
         this.getCommand(getName().toLowerCase()).setExecutor(new CommandManager());
 
-        BattlefieldManager.getBattlefieldManager().loadBattlefieldList();
+        BattlefieldManager.getManager().loadBattlefieldList();
 
         PlayerDataManager.startDeployHandler();
-        BattlefieldManager.getBattlefieldManager().startBattlefieldDispatcher();
+        BattlefieldManager.getManager().startBattlefieldDispatcher();
     }
 
     private void initDefaultConfigs() {

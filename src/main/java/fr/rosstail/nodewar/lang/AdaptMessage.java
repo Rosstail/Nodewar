@@ -215,12 +215,10 @@ public class AdaptMessage {
         message = message.replaceAll(starter + ender, playerModel.getUsername());
         message = message.replaceAll(starter + "_uuid" + ender, playerModel.getUuid());
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(LangManager.getMessage(LangMessage.FORMAT_DATETIME));
-
         message = message.replaceAll(starter + "_status" + ender,
                 LangManager.getMessage(isPlayerOnline ? LangMessage.PLAYER_ONLINE : LangMessage.PLAYER_OFFLINE));
 
-        message = message.replaceAll(starter + "_last_update" + ender, playerModel.getLastUpdate() > 0L ? simpleDateFormat.format(playerModel.getLastUpdate()) : LangManager.getMessage(LangMessage.FORMAT_DATETIME_NEVER));
+        message = message.replaceAll(starter + "_last_update" + ender, playerModel.getLastUpdate() > 0L ? dateTimeFormatter(playerModel.getLastUpdate()) : LangManager.getMessage(LangMessage.FORMAT_DATETIME_NEVER));
         return adaptMessage(message);
     }
 
@@ -328,6 +326,12 @@ public class AdaptMessage {
         return String.format("%." + decimal + "f", value).replaceAll(",", String.valueOf(replacement));
     }
 
+
+    public String dateTimeFormatter(long datetime) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(LangManager.getMessage(LangMessage.FORMAT_DATETIME));
+
+        return simpleDateFormat.format(datetime);
+    }
     /**
      * Format the given value to a formatted String depending on the config.
      *

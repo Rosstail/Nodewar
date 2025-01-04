@@ -38,8 +38,8 @@ public class BattlefieldModel {
         String[] startTimeStr = fromTimeStr.split(":");
         String[] endTimeStr = toTimeStr.split(":");
 
-        this.openDateTime = BattlefieldManager.getBattlefieldManager().getNextDayTime(DayOfWeek.valueOf(fromDayStr.toUpperCase()), Integer.parseInt(startTimeStr[0]), Integer.parseInt(startTimeStr[1]));
-        this.closeDateTime = BattlefieldManager.getBattlefieldManager().getNextDayTime(DayOfWeek.valueOf(toDayStr.toUpperCase()), Integer.parseInt(endTimeStr[0]), Integer.parseInt(endTimeStr[1]));
+        this.openDateTime = BattlefieldManager.getManager().getNextDayTime(DayOfWeek.valueOf(fromDayStr.toUpperCase()), Integer.parseInt(startTimeStr[0]), Integer.parseInt(startTimeStr[1]));
+        this.closeDateTime = BattlefieldManager.getManager().getNextDayTime(DayOfWeek.valueOf(toDayStr.toUpperCase()), Integer.parseInt(endTimeStr[0]), Integer.parseInt(endTimeStr[1]));
 
         this.resetTeam = section.getBoolean("reset-team", false);
         this.endBattleOnBattlefieldEnd = section.getBoolean("end-battle-on-battlefield-end", false);

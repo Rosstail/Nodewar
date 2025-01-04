@@ -109,6 +109,15 @@ public enum LangMessage {
     COMMANDS_TERRITORY_CHECK_RESULT("commands.territory.check.result", false, true),
     COMMANDS_TERRITORY_CHECK_RESULT_NOT_ON_TERRITORY("commands.territory.check.result-not-on-territory", false, false),
     COMMANDS_TERRITORY_CHECK_RESULT_ON_MULTIPLE_TERRITORY("commands.territory.check.result-on-multiple-territory", false, false),
+
+    COMMANDS_BATTLEFIELD_DESC("commands.battlefield.desc", false, false),
+    COMMANDS_BATTLEFIELD_CHECK_DESC("commands.battlefield.check.desc", false, false),
+    COMMANDS_BATTLEFIELD_CHECK_RESULT("commands.battlefield.check.result", false, true),
+    COMMANDS_BATTLEFIELD_CHECK_RESULT_TERRITORY_LIST_LINE("commands.battlefield.check.result-territory-list-line", false, false),
+    COMMANDS_BATTLEFIELD_LIST_DESC("commands.battlefield.list.desc", false, false),
+    COMMANDS_BATTLEFIELD_LIST_RESULT_HEADER("commands.battlefield.list.result-header", false, false),
+    COMMANDS_BATTLEFIELD_LIST_RESULT_LINE("commands.battlefield.list.result-line", false, false),
+
     COMMANDS_ADMIN_DESC("commands.admin.desc", false, false),
     COMMANDS_ADMIN_TEAM_DESC("commands.admin.team.desc", false, false),
     COMMANDS_ADMIN_TEAM_CREATE_DESC("commands.admin.team.create.desc", false, false),

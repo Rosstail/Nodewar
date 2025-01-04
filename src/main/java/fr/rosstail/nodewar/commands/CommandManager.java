@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.commands;
 
 import fr.rosstail.nodewar.commands.subcommands.HelpCommand;
 import fr.rosstail.nodewar.commands.subcommands.admin.AdminCommand;
+import fr.rosstail.nodewar.commands.subcommands.battlefield.BattlefieldCommand;
 import fr.rosstail.nodewar.commands.subcommands.team.TeamCommand;
 import fr.rosstail.nodewar.commands.subcommands.admin.territory.AdminTerritoryCommand;
 import fr.rosstail.nodewar.commands.subcommands.territory.TerritoryCommand;
@@ -34,6 +35,7 @@ public class CommandManager implements CommandExecutor, TabExecutor {
 
     public CommandManager() {
         subCommands.add(new AdminCommand());
+        subCommands.add(new BattlefieldCommand());
         subCommands.add(new TeamCommand());
         subCommands.add(new TerritoryCommand());
     }

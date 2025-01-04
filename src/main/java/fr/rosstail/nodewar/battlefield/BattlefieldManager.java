@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class BattlefieldManager {
 
-    private static BattlefieldManager battlefieldManager;
+    private static BattlefieldManager manager;
     private final Nodewar plugin;
 
     private final List<Long> alertTimeList = new ArrayList<>();
@@ -35,8 +35,8 @@ public class BattlefieldManager {
     }
 
     public static void init(Nodewar plugin) {
-        if (battlefieldManager == null) {
-            battlefieldManager = new BattlefieldManager(plugin);
+        if (manager == null) {
+            manager = new BattlefieldManager(plugin);
         }
     }
 
@@ -242,8 +242,17 @@ public class BattlefieldManager {
         scheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), handleRequestExpiration, 20L, 20L);
     }
 
+    public List<Battlefield> getBattlefieldList() {
+        return battlefieldList;
+    }
+
+    public static BattlefieldManager getManager() {
+        return manager;
+    }
+
+    @Deprecated(forRemoval = true, since = "2.1.8")
     public static BattlefieldManager getBattlefieldManager() {
-        return battlefieldManager;
+        return manager;
     }
 
     public List<Long> getAlertTimeList() {
