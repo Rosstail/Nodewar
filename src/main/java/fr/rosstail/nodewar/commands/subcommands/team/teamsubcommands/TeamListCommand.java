@@ -57,16 +57,16 @@ public class TeamListCommand extends TeamSubCommand {
         Map<String, NwITeam> stringNwITeamMap = TeamManager.getManager().getStringTeamMap();
         List<String> strList = TeamManager.getManager().getStringTeamMap().keySet().stream().sorted().collect(Collectors.toList());
         int size = strList.size();
-        int maxPage = size / 10;
+        int maxPage = (int) Math.ceil((float) size / 10);
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
 
         if (args.length >= 3) {
-            page = Integer.parseInt(args[2]);
+            page = Integer.parseInt(args[2]) - 1;
         }
 
-        if (page < 0 || page > maxPage) {
+        if (page < 0 || page >= maxPage) {
             return;
         }
 
@@ -76,7 +76,7 @@ public class TeamListCommand extends TeamSubCommand {
                 NwITeam nwTeam = stringNwITeamMap.get(s);
                 message.append("\n").append(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_LIST_RESULT_LINE), nwTeam));
             }
-            message.append("\nP." + (page + 1) + "/" + (maxPage + 1));
+            message.append("\nP." + (page + 1) + "/" + maxPage);
         } else {
             message.append("\n&rP.0/0");
         }

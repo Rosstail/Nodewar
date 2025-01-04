@@ -58,16 +58,16 @@ public class BattlefieldListCommand extends BattlefieldSubCommand {
         List<Battlefield> battlefieldList = BattlefieldManager.getManager().getBattlefieldList();
         List<String> strList = battlefieldList.stream().map(battlefield -> battlefield.getModel().getName()).toList();
         int size = strList.size();
-        int maxPage = size / 10;
+        int maxPage = (int) Math.ceil((float) size / 10);
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
 
         if (args.length >= 3) {
-            page = Integer.parseInt(args[2]);
+            page = Integer.parseInt(args[2]) - 1;
         }
 
-        if (page < 0 || page > maxPage) {
+        if (page < 0 || page >= maxPage) {
             return;
         }
 
@@ -77,7 +77,7 @@ public class BattlefieldListCommand extends BattlefieldSubCommand {
                 Battlefield battlefield = battlefieldList.stream().filter(battlefield1 -> battlefield1.getModel().getName().equals(s)).findFirst().get();
                 message.append("\n").append(battlefield.adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_BATTLEFIELD_LIST_RESULT_LINE)));
             }
-            message.append("\nP." + (page + 1) + "/" + (maxPage + 1));
+            message.append("\nP." + (page + 1) + "/" + maxPage);
         } else {
             message.append("\n&rP.0/0");
         }
