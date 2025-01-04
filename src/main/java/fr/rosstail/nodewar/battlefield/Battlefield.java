@@ -48,8 +48,10 @@ public class Battlefield {
         message = message.replaceAll("\\[battlefield_id]", String.valueOf(model.getId()));
         message = message.replaceAll("\\[battlefield_name]", model.getName());
         message = message.replaceAll("\\[battlefield_display]", model.getDisplay());
-        message = message.replaceAll("\\[battlefield_start_time]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getOpenDateTime()));
-        message = message.replaceAll("\\[battlefield_close_time]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getCloseDateTime()));
+        message = message.replaceAll("\\[battlefield_start_time]", AdaptMessage.getAdaptMessage().dateTimeFormatter(model.getOpenDateTime()));
+        message = message.replaceAll("\\[battlefield_start_time_left]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getOpenDateTime()));
+        message = message.replaceAll("\\[battlefield_close_time]", AdaptMessage.getAdaptMessage().dateTimeFormatter(model.getCloseDateTime()));
+        message = message.replaceAll("\\[battlefield_close_time_left]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getCloseDateTime()));
 
         boolean isOpen = model.isOpen();
         if (isOpen) {
@@ -58,6 +60,20 @@ public class Battlefield {
         } else {
             message = message.replaceAll("\\[battlefield_status]", LangManager.getMessage(LangMessage.BATTLEFIELD_CLOSED));
             message = message.replaceAll("\\[battlefield_delay]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getOpenDateTime() - System.currentTimeMillis()));
+        }
+
+        if (message.contains("[battlefield_territory_list_line]")) {
+            StringBuilder territoryListStringBuilder = new StringBuilder();
+
+            territoryList.forEach(territory -> {
+                if (territoryList.indexOf(territory) > 0) {
+                    territoryListStringBuilder.append("\n");
+                }
+                territoryListStringBuilder.append(territory.adaptMessage(
+                        LangManager.getMessage(LangMessage.COMMANDS_BATTLEFIELD_CHECK_RESULT_TERRITORY_LIST_LINE)));
+            });
+
+            message = message.replaceAll("\\[battlefield_territory_list_line]", territoryListStringBuilder.toString());
         }
 
         return message;

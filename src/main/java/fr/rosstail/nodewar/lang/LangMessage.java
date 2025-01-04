@@ -113,6 +113,7 @@ public enum LangMessage {
     COMMANDS_BATTLEFIELD_DESC("commands.battlefield.desc", false, false),
     COMMANDS_BATTLEFIELD_CHECK_DESC("commands.battlefield.check.desc", false, false),
     COMMANDS_BATTLEFIELD_CHECK_RESULT("commands.battlefield.check.result", false, true),
+    COMMANDS_BATTLEFIELD_CHECK_RESULT_TERRITORY_LIST_LINE("commands.battlefield.check.result-territory-list-line", false, false),
     COMMANDS_BATTLEFIELD_LIST_DESC("commands.battlefield.list.desc", false, false),
     COMMANDS_BATTLEFIELD_LIST_RESULT_HEADER("commands.battlefield.list.result-header", false, false),
     COMMANDS_BATTLEFIELD_LIST_RESULT_LINE("commands.battlefield.list.result-line", false, false),
