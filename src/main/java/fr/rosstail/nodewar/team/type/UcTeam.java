@@ -62,12 +62,12 @@ public class UcTeam implements NwITeam {
 
     @Override
     public boolean isOpen() {
-        return false;
+        return clanData.getSettings().isOpened();
     }
 
     @Override
     public void setOpen(boolean value) {
-
+        clanData.getSettings().setOpened(value);
     }
 
     @Override
@@ -77,7 +77,6 @@ public class UcTeam implements NwITeam {
 
     @Override
     public void setPermanent(boolean value) {
-
     }
 
     @Override

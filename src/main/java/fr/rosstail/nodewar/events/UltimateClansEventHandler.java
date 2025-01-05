@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.events;
 
 import com.palmergames.bukkit.towny.event.RenameTownEvent;
 import com.palmergames.bukkit.towny.event.town.TownLeaveEvent;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.teammanagers.UcTeamManager;
@@ -11,6 +12,7 @@ import me.ulrich.clans.api.ClanAPIManager;
 import me.ulrich.clans.data.ClanData;
 import me.ulrich.clans.events.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,27 +42,25 @@ public class UltimateClansEventHandler implements Listener {
     }
 
     @EventHandler
-    public void onClanLeave(ClanPlayerJoinEvent event) {
-        // System.out.println("UltimateClansEventHandler.onClanLeave");
-        /*
-        NwITeam nwITeam = TeamManager.getManager().getTeam(event.get().getName());
-        Player player = event.getResident().getPlayer();
-        if (player != null) {
+    public void onClanLeave(ClanPlayerLeaveEvent event) {
+        NwITeam nwITeam = TeamManager.getManager().getTeam(event.getClanID().toString());
+        Player player = Bukkit.getPlayer(event.getPlayer());
+        if (nwITeam != null && player != null) {
             TeamManager.getManager().deleteOnlineTeamMember(nwITeam, player,false);
         }
-        */
     }
 
     @EventHandler
-    public void onClanRename(ClanPlayerLeaveEvent event) {
-        // System.out.println("UltimateClansEventHandler.onClanRename");
-        /*
-        String newName = event.getTown().getName().toLowerCase();
-        String oldName = event.getOldName().toLowerCase();
+    public void onClanRename(ClanModTagEvent event) {
+        String oldName = event.getOldTag();
+        NwITeam nwITeam = TeamManager.getManager().getTeam(oldName);
 
-        TeamManager.getManager().renameTeam(newName, oldName);
-
-         */
+        if (nwITeam != null) {
+            TeamManager.getManager().renameTeam(nwITeam.getName(), oldName);
+        } else {
+            event.setCancelled(true);
+            Bukkit.getPlayer(event.getSender()).sendMessage(AdaptMessage.getAdaptMessage().adaptMessage("[prefix] Cancelled UClan renaming because not found in Nodewar. Contact the server admin or the Nodewar dev to get support."));
+        }
     }
 
     @EventHandler
