@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BattlefieldListCommand extends BattlefieldSubCommand {
 
@@ -42,7 +43,7 @@ public class BattlefieldListCommand extends BattlefieldSubCommand {
 
     @Override
     public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        return List.of();
+        return List.of("-c", "-o");
     }
 
     @Override
@@ -56,9 +57,20 @@ public class BattlefieldListCommand extends BattlefieldSubCommand {
         int page = 0;
 
         List<Battlefield> battlefieldList = BattlefieldManager.getManager().getBattlefieldList();
+        Stream<Battlefield> battlefieldStreamList = battlefieldList.stream();
+
+        if (CommandManager.doesCommandMatchParameter(arguments, "o", "open")) {
+            battlefieldStreamList = battlefieldStreamList.filter(battlefield -> battlefield.getModel().isOpen());
+        }
+        if (CommandManager.doesCommandMatchParameter(arguments, "c", "closed")) {
+            battlefieldStreamList = battlefieldStreamList.filter(battlefield -> !battlefield.getModel().isOpen());
+        }
+
+        battlefieldList = battlefieldStreamList.toList();
         List<String> strList = battlefieldList.stream().map(battlefield -> battlefield.getModel().getName()).toList();
         int size = strList.size();
         int maxPage = (int) Math.ceil((float) size / 10);
+        
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
@@ -68,6 +80,9 @@ public class BattlefieldListCommand extends BattlefieldSubCommand {
         }
 
         if (page < 0 || page >= maxPage) {
+            if (size == 0) {
+                sender.sendMessage("P.0/0");
+            }
             return;
         }
 

@@ -3,7 +3,7 @@ prefix: "&f[&cNW&f]&r "
 format:
   datetime: "yyyy-MM-dd HH:mm:ss"
   datetime-never: "&7Never"
-  countdown: "{dd}d {HH}:{mm}:{ss}" #use dd, d, hh, h, mm, m, ss, s
+  countdown: "{dd}d {HH}:{mm}:{ss}" #use dd, d, hh, h, mm, m, ss, s between {}
 
 storage:
   type: "[prefix]Use [type] storage type."
@@ -266,7 +266,7 @@ commands:
         - "    &c* &6Closes at &d:&r [battlefield_close_time]"
         - "    &c* &6Territories &d:&r"
         - "[battlefield_territory_list_line]"
-      result-territory-list-line: "      &5 - &r[territory_display] [territory_team_color_display]&r"
+      result-territory-list-line: "      &5 - &r[territory_display] &r[[territory_team_color_display]&r]"
     list:
       desc: "Check the list of battlefields"
       result-header: "[prefix]&bBattlefield list &8:"

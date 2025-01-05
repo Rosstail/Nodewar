@@ -50,7 +50,6 @@ public class TeamManageOpenCommand extends TeamManageSubCommand {
 
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
-        boolean value;
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
