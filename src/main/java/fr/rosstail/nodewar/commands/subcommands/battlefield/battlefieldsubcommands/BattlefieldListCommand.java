@@ -68,10 +68,9 @@ public class BattlefieldListCommand extends BattlefieldSubCommand {
 
         battlefieldList = battlefieldStreamList.toList();
         List<String> strList = battlefieldList.stream().map(battlefield -> battlefield.getModel().getName()).toList();
-
-
         int size = strList.size();
         int maxPage = (int) Math.ceil((float) size / 10);
+        
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
