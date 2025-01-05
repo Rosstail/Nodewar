@@ -81,6 +81,9 @@ public class BattlefieldListCommand extends BattlefieldSubCommand {
         }
 
         if (page < 0 || page >= maxPage) {
+            if (size == 0) {
+                sender.sendMessage("P.0/0");
+            }
             return;
         }
 
