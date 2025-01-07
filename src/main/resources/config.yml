@@ -77,58 +77,39 @@ battlefield:
     - "2s"
     - "1s"
   list:
-    tier-1:
+    tier-1: # Daily tier 1 territories from 11pm to midnight
       display: "Tier 1"
       from:
-        days:
-          - monday
-          - wednesday
-          - saturday
-        time: "18:15"
-      to:
-        days:
-          - monday
-          - wednesday
-          - saturday
-        time: "19:00"
+        time: "23:00"
       reset-team: true
       end-battle-on-battlefield-end: true
       territory-types:
         - t1
         - cp-t1
-    tier-2:
+    tier-2: # On wednesday only from midnight to 5am
       display: "Tier 2"
       from:
         days:
-          - monday
           - wednesday
-          - saturday
-        time: "19:15"
       to:
-        days:
-          - monday
-          - wednesday
-          - saturday
-        time: "20:00"
+        time: "05:00"
       reset-team: true
       end-battle-on-battlefield-end: true
       territory-types:
         - t2
         - cp-t2
     tier-3:
-      display: "Tier 3"
+      display: "Tier 3" # starts monday and saturday at 4pm, ends 48hours later
       from:
         days:
           - monday
-          - wednesday
-          - saturday
-        time: "20:15"
+          - friday
+        time: "16:00"
       to:
         days:
-          - monday
           - wednesday
-          - saturday
-        time: "21:00"
+          - sunday
+        time: "16:00"
       reset-team: true
       end-battle-on-battlefield-end: true
       territory-types:
