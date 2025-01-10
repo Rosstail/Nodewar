@@ -6,13 +6,15 @@ import fr.rosstail.nodewar.team.TeamManager;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PlayerData extends PlayerModel {
 
     private Player player;
 
-    private final List<ProtectedRegion> protectedRegionList = new ArrayList<>();
+    private final Set<ProtectedRegion> protectedRegionList = new HashSet<>();
     public PlayerData(Player player) {
         super(player);
         this.player = player;
@@ -31,7 +33,7 @@ public class PlayerData extends PlayerModel {
         return TeamManager.getManager().getPlayerTeam(player);
     }
 
-    public List<ProtectedRegion> getProtectedRegionList() {
+    public Set<ProtectedRegion> getProtectedRegionList() {
         return protectedRegionList;
     }
 }

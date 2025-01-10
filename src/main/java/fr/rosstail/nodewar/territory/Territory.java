@@ -49,7 +49,6 @@ public class Territory {
     private World world;
     private Map<NwTeam, List<Player>> teamPlayerList;
 
-    private final List<ProtectedRegion> protectedRegionList = new ArrayList<>();
     private final List<Territory> subTerritoryList = new ArrayList<>();
 
     private TerritoryType territoryType;
@@ -119,9 +118,6 @@ public class Territory {
 
         webmapInfo = new TerritoryWebmap(this, territoryWebmapModel, territoryType.getTerritoryWebmapModel());
 
-        setupRegionList();
-
-
         if (ConfigData.getConfigData().bossbar.enabled) {
             ConfigurationSection bossBarSection = section.getConfigurationSection("bossbar");
             TerritoryBossBarModel sectionBossBarModel = new TerritoryBossBarModel(bossBarSection);
@@ -177,36 +173,11 @@ public class Territory {
         }
     }
 
-    private void setupRegionList() {
-        world = Bukkit.getWorld(territoryModel.getWorldName());
-        if (world != null) {
-            final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-            final RegionManager regions = container.get(BukkitAdapter.adapt(world));
-            if (regions != null) {
-                getModel().getRegionStringList().forEach(s -> {
-                    if (regions.hasRegion(s)) {
-                        protectedRegionList.add(regions.getRegion(s));
-                    } else {
-                        AdaptMessage.print("The " + s + " region in " + getModel().getName() + "does not exists yet" , AdaptMessage.prints.WARNING);
-                    }
-                });
-            }
-            updateAllBossBar();
-        }
-    }
-
     public void updateRegionList() {
         if (world != null) {
             final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
             final RegionManager regions = container.get(BukkitAdapter.adapt(world));
             if (regions != null) {
-                getModel().getRegionStringList().forEach(s -> {
-                    if (regions.hasRegion(s)) {
-                        protectedRegionList.add(regions.getRegion(s));
-                    } else {
-                        AdaptMessage.print("The " + s + " region in " + getModel().getName() + "does not exists yet" , AdaptMessage.prints.WARNING);
-                    }
-                });
                 WebmapManager.getManager().eraseTerritoryMarker(this);
                 WebmapManager.getManager().eraseTerritorySurface(this);
                 WebmapManager.getManager().eraseLineBetweenTerritories(this, this);
@@ -325,6 +296,20 @@ public class Territory {
     }
 
     public List<ProtectedRegion> getProtectedRegionList() {
+        List<ProtectedRegion> protectedRegionList = new ArrayList<>();
+        world = Bukkit.getWorld(territoryModel.getWorldName());
+        if (world != null) {
+            final RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+            final RegionManager regions = container.get(BukkitAdapter.adapt(world));
+
+            if (regions != null) {
+                protectedRegionList = getModel().getRegionStringList()
+                        .stream().filter(regions::hasRegion)
+                        .map(regions::getRegion)
+                        .collect(Collectors.toList());
+            }
+            updateAllBossBar();
+        }
         return protectedRegionList;
     }
 
@@ -444,6 +429,7 @@ public class Territory {
     }
 
     public Location getCenter() {
+        List<ProtectedRegion> protectedRegionList = getProtectedRegionList();
         if (protectedRegionList.isEmpty()) {
             return null;
         }
