@@ -1,4 +1,4 @@
-config-version: 1.0
+config-version: 1.2
 
 storage:
   type: SQLite # SQLite (local storage), MySQL, MariaDB, MongoDB
@@ -77,10 +77,10 @@ battlefield:
     - "2s"
     - "1s"
   list:
-    tier-1: # Daily tier 1 territories from 11pm to midnight
+    tier-1: # Daily tier 1 territories from 9pm to midnight
       display: "Tier 1"
-      from:
-        time: "23:00"
+      start-times:
+        - "21:00"
       reset-team: true
       end-battle-on-battlefield-end: true
       territory-types:
@@ -88,11 +88,9 @@ battlefield:
         - cp-t1
     tier-2: # On wednesday only from midnight to 5am
       display: "Tier 2"
-      from:
-        days:
-          - wednesday
-      to:
-        time: "05:00"
+      start-days:
+        - wednesday
+      duration: "5h"
       reset-team: true
       end-battle-on-battlefield-end: true
       territory-types:
@@ -100,16 +98,12 @@ battlefield:
         - cp-t2
     tier-3:
       display: "Tier 3" # starts monday and saturday at 4pm, ends 48hours later
-      from:
-        days:
-          - monday
-          - friday
-        time: "16:00"
-      to:
-        days:
-          - wednesday
-          - sunday
-        time: "16:00"
+      start-days:
+        - monday
+        - saturday
+      start-times:
+        - "16:00"
+      duration: "2d"
       reset-team: true
       end-battle-on-battlefield-end: true
       territory-types:

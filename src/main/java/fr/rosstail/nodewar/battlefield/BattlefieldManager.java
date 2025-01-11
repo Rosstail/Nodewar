@@ -126,16 +126,71 @@ public class BattlefieldManager {
                 WebmapManager.getManager().addTerritoryToEdit(territory);
             });
         }
-        String[] startTimeStr = battlefield.getModel().getFromTimeStr().split(":");
-        String[] endTimeStr = battlefield.getModel().getToTimeStr().split(":");
 
-        battlefield.getModel().setOpenDateTime(getNextDateTimeMillis(battlefield.getModel().getFromDayStrSet(), Integer.parseInt(startTimeStr[0]), Integer.parseInt(startTimeStr[1])));
-        battlefield.getModel().setCloseDateTime(getNextDateTimeMillis(battlefield.getModel().getToDayStrSet(), Integer.parseInt(endTimeStr[0]), Integer.parseInt(endTimeStr[1])));
+        battlefield.getModel().setOpenDateTime(getNextDateTimeMillis(battlefield.getModel().getStartDaysStrSet(), battlefield.getModel().getStartTimesStrSet()));
+        battlefield.getModel().setCloseDateTime(battlefield.getModel().getOpenDateTime() + battlefield.getModel().getDuration());
 
         StorageManager.getManager().updateBattlefieldModel(battlefield.getModel(), true);
 
     }
 
+
+    public long getNextDateTimeMillis(Set<String> daysOfWeekStr, Set<String> timeStrSet) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate today = now.toLocalDate();
+
+        Set<DayOfWeek> targetDays = new HashSet<>();
+        for (String day : daysOfWeekStr) {
+            targetDays.add(DayOfWeek.valueOf(day.toUpperCase()));
+        }
+
+        Set<LocalTime> targetTimes = new HashSet<>();
+        if (!timeStrSet.isEmpty()) {
+            for (String time : timeStrSet) {
+                String[] parts = time.split(":");
+                int hour = Integer.parseInt(parts[0]);
+                int minute = Integer.parseInt(parts[1]);
+                targetTimes.add(LocalTime.of(hour, minute));
+            }
+        } else {
+            targetTimes.add(LocalTime.of(0, 0));
+        }
+
+        LocalDateTime nextDateTime = null;
+        long smallestDifference = Long.MAX_VALUE;
+
+        for (int i = 0; i <= 7; i++) { // 7 next days
+            LocalDate currentDate = today.plusDays(i);
+            DayOfWeek currentDayOfWeek = currentDate.getDayOfWeek();
+
+            if (!targetDays.isEmpty() && !targetDays.contains(currentDayOfWeek)) {
+                continue;
+            }
+
+            for (LocalTime targetTime : targetTimes) {
+                LocalDateTime candidateDateTime = LocalDateTime.of(currentDate, targetTime);
+
+                if (i == 0 && candidateDateTime.isBefore(now)) {
+                    continue;
+                }
+
+                long difference = Duration.between(now, candidateDateTime).toMillis();
+                if (difference >= 0 && difference < smallestDifference) {
+                    smallestDifference = difference;
+                    nextDateTime = candidateDateTime;
+                }
+            }
+        }
+
+        if (nextDateTime != null) {
+            return nextDateTime.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000L;
+        }
+
+        return now.withDayOfMonth(now.getDayOfMonth() + 1).withHour(0).withMinute(0).withSecond(0).withNano(0)
+                .atZone(ZoneId.systemDefault()).toEpochSecond() * 1000L;
+    }
+
+    @Deprecated(since = "2.2.3", forRemoval = true)
     public long getNextDateTimeMillis(Set<String> daysOfWeekStr, int hour, int minute) {
         LocalDateTime now = LocalDateTime.now();
         LocalDate today = now.toLocalDate();

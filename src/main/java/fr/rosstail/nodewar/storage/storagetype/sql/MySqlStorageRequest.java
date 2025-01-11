@@ -3,8 +3,11 @@ package fr.rosstail.nodewar.storage.storagetype.sql;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.storage.storagetype.SqlStorageRequest;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MySqlStorageRequest extends SqlStorageRequest {
     private String databaseName;
@@ -103,5 +106,42 @@ public class MySqlStorageRequest extends SqlStorageRequest {
         }
     }
 
+    @Override
+    public void alterTeamMemberTable() {
+        String tableName = getTeamMemberTableName();
 
+        try {
+            // Check for UNIQUE constraint
+            String listIndexes = "SHOW INDEX FROM " + tableName + ";";
+            ResultSet rs = executeSQLQuery(openConnection(), listIndexes);
+
+            List<String> duplicateIndexes = new ArrayList<>();
+            while (rs.next()) {
+                String columnName = rs.getString("Column_name");
+                String indexName = rs.getString("Key_name");
+                if ("player_id".equals(columnName)) {
+                    duplicateIndexes.add(indexName);
+                }
+            }
+            rs.close();
+
+            // DELETE ALL DUPLICATE
+            for (int i = 0; i < duplicateIndexes.size(); i++) {
+                String indexName = duplicateIndexes.get(i);
+                if (i < duplicateIndexes.size() - 1) { // -1 to keep last index (original/last)
+                    String dropIndex = "ALTER TABLE " + tableName + " DROP INDEX " + indexName + ";";
+                    executeSQL(dropIndex);
+                }
+            }
+
+            // Add constraint safely if
+            if (duplicateIndexes.isEmpty()) {
+                String addUnique = "ALTER TABLE " + tableName + " ADD UNIQUE (player_id);";
+                executeSQL(addUnique);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
