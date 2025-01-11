@@ -1,4 +1,4 @@
-config-version: 1.0
+config-version: 1.2
 
 storage:
   type: SQLite # SQLite (local storage), MySQL, MariaDB, MongoDB
@@ -77,121 +77,33 @@ battlefield:
     - "2s"
     - "1s"
   list:
-    # MONDAY
-    monday-t1:
-      display: "Monday Tier 1"
-      from:
-        day: monday
-        time: '18:15'
-      to:
-        day: monday
-        time: '19:00'
+    tier-1: # Daily tier 1 territories from 9pm to midnight
+      display: "Tier 1"
+      start-times:
+        - "21:00"
       reset-team: true
       end-battle-on-battlefield-end: true
       territory-types:
         - t1
         - cp-t1
-    monday-t2:
-      display: "Monday Tier 2"
-      from:
-        day: monday
-        time: '19:15'
-      to:
-        day: monday
-        time: '20:00'
+    tier-2: # On wednesday only from midnight to 5am
+      display: "Tier 2"
+      start-days:
+        - wednesday
+      duration: "5h"
       reset-team: true
       end-battle-on-battlefield-end: true
       territory-types:
         - t2
         - cp-t2
-    monday-t3:
-      display: "Monday Tier 3"
-      from:
-        day: monday
-        time: '20:15'
-      to:
-        day: monday
-        time: '21:00'
-      reset-team: true
-      end-battle-on-battlefield-end: true
-      territory-types:
-        - t3
-        - cp-t3
-    # WEDNESDAY
-    wednesday-t1:
-      display: "Wednesday Tier 1"
-      from:
-        day: wednesday
-        time: '18:15'
-      to:
-        day: wednesday
-        time: '19:00'
-      reset-team: true
-      end-battle-on-battlefield-end: true
-      territory-types:
-        - t1
-        - cp-t1
-    wednesday-t2:
-      display: "Wednesday Tier 2"
-      from:
-        day: wednesday
-        time: '19:15'
-      to:
-        day: wednesday
-        time: '20:00'
-      reset-team: true
-      end-battle-on-battlefield-end: true
-      territory-types:
-        - t2
-        - cp-t2
-    wednesday-t3:
-      display: "Wednesday Tier 3"
-      from:
-        day: wednesday
-        time: '20:15'
-      to:
-        day: wednesday
-        time: '21:00'
-      reset-team: true
-      end-battle-on-battlefield-end: true
-      territory-types:
-        - t3
-        - cp-t3
-    # SATURDAY
-    saturday-t1:
-      display: "Saturday Tier 1"
-      from:
-        day: saturday
-        time: '16:15'
-      to:
-        day: saturday
-        time: '17:00'
-      reset-team: true
-      end-battle-on-battlefield-end: true
-      territory-types:
-        - t1
-        - cp-t1
-    saturday-t2:
-      display: "Saturday Tier 2"
-      from:
-        day: saturday
-        time: '17:15'
-      to:
-        day: saturday
-        time: '18:00'
-      reset-team: true
-      end-battle-on-battlefield-end: true
-      territory-types:
-        - t2
-        - cp-t2
-    saturday-t3:
-      display: "Saturday Tier 3"
-      from:
-        day: saturday
-        time: '18:15'
-      to:
-        day: saturday
-        time: '19:00'
+    tier-3:
+      display: "Tier 3" # starts monday and saturday at 4pm, ends 48hours later
+      start-days:
+        - monday
+        - saturday
+      start-times:
+        - "16:00"
+      duration: "2d"
       reset-team: true
       end-battle-on-battlefield-end: true
       territory-types:

@@ -204,8 +204,7 @@ public class TerritoryManager {
             return;
         }
 
-        List<ProtectedRegion> currentProtectedRegionList = playerData.getProtectedRegionList();
-
+        Set<ProtectedRegion> currentProtectedRegionList = playerData.getProtectedRegionList();
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionQuery query = container.createQuery();
         ApplicableRegionSet set = query.getApplicableRegions(wgLocation);
@@ -220,7 +219,7 @@ public class TerritoryManager {
                 .filter(region -> !currentProtectedRegionList.contains(region))
                 .toList();
 
-        playerData.getProtectedRegionList().removeAll(leftRegionList);
+        leftRegionList.forEach(playerData.getProtectedRegionList()::remove);
         playerData.getProtectedRegionList().addAll(enteredRegionList);
 
         leftRegionList.forEach(region -> {

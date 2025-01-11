@@ -12,12 +12,8 @@ import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.time.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BattlefieldManager {
@@ -130,27 +126,103 @@ public class BattlefieldManager {
                 WebmapManager.getManager().addTerritoryToEdit(territory);
             });
         }
-        String[] startTimeStr = battlefield.getModel().getFromTimeStr().split(":");
-        String[] endTimeStr = battlefield.getModel().getToTimeStr().split(":");
 
-        battlefield.getModel().setOpenDateTime(getNextDayTime(DayOfWeek.valueOf(battlefield.getModel().getFromDayStr().toUpperCase()), Integer.parseInt(startTimeStr[0]), Integer.parseInt(startTimeStr[1])));
-        battlefield.getModel().setCloseDateTime(getNextDayTime(DayOfWeek.valueOf(battlefield.getModel().getToDayStr().toUpperCase()), Integer.parseInt(endTimeStr[0]), Integer.parseInt(endTimeStr[1])));
+        battlefield.getModel().setOpenDateTime(getNextDateTimeMillis(battlefield.getModel().getStartDaysStrSet(), battlefield.getModel().getStartTimesStrSet()));
+        battlefield.getModel().setCloseDateTime(battlefield.getModel().getOpenDateTime() + battlefield.getModel().getDuration());
 
         StorageManager.getManager().updateBattlefieldModel(battlefield.getModel(), true);
 
     }
 
-    public long getNextDayTime(DayOfWeek day, int hour, int minute) {
 
+    public long getNextDateTimeMillis(Set<String> daysOfWeekStr, Set<String> timeStrSet) {
         LocalDateTime now = LocalDateTime.now();
-        DayOfWeek todayDay = now.getDayOfWeek();
-        int addDay = (day.getValue() - todayDay.getValue() + 7) % 7;
-        if (addDay == 0 && (hour < now.getHour() || (hour == now.getHour() && minute <= now.getMinute()))) {
-            addDay = 7;
+        LocalDate today = now.toLocalDate();
+
+        Set<DayOfWeek> targetDays = new HashSet<>();
+        for (String day : daysOfWeekStr) {
+            targetDays.add(DayOfWeek.valueOf(day.toUpperCase()));
         }
-        LocalDateTime nextDay = now.plusDays(addDay);
-        nextDay = nextDay.withHour(hour).withMinute(minute).withSecond(0).withNano(0);
-        return nextDay.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000L;
+
+        Set<LocalTime> targetTimes = new HashSet<>();
+        if (!timeStrSet.isEmpty()) {
+            for (String time : timeStrSet) {
+                String[] parts = time.split(":");
+                int hour = Integer.parseInt(parts[0]);
+                int minute = Integer.parseInt(parts[1]);
+                targetTimes.add(LocalTime.of(hour, minute));
+            }
+        } else {
+            targetTimes.add(LocalTime.of(0, 0));
+        }
+
+        LocalDateTime nextDateTime = null;
+        long smallestDifference = Long.MAX_VALUE;
+
+        for (int i = 0; i <= 7; i++) { // 7 next days
+            LocalDate currentDate = today.plusDays(i);
+            DayOfWeek currentDayOfWeek = currentDate.getDayOfWeek();
+
+            if (!targetDays.isEmpty() && !targetDays.contains(currentDayOfWeek)) {
+                continue;
+            }
+
+            for (LocalTime targetTime : targetTimes) {
+                LocalDateTime candidateDateTime = LocalDateTime.of(currentDate, targetTime);
+
+                if (i == 0 && candidateDateTime.isBefore(now)) {
+                    continue;
+                }
+
+                long difference = Duration.between(now, candidateDateTime).toMillis();
+                if (difference >= 0 && difference < smallestDifference) {
+                    smallestDifference = difference;
+                    nextDateTime = candidateDateTime;
+                }
+            }
+        }
+
+        if (nextDateTime != null) {
+            return nextDateTime.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000L;
+        }
+
+        return now.withDayOfMonth(now.getDayOfMonth() + 1).withHour(0).withMinute(0).withSecond(0).withNano(0)
+                .atZone(ZoneId.systemDefault()).toEpochSecond() * 1000L;
+    }
+
+    @Deprecated(since = "2.2.3", forRemoval = true)
+    public long getNextDateTimeMillis(Set<String> daysOfWeekStr, int hour, int minute) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate today = now.toLocalDate();
+        LocalTime targetTime = LocalTime.of(hour, minute);
+
+        Set<DayOfWeek> targetDays = new HashSet<>();
+        for (String day : daysOfWeekStr) {
+            targetDays.add(DayOfWeek.valueOf(day.toUpperCase()));
+        }
+
+        LocalDateTime nextDateTime;
+        if (targetDays.isEmpty()) { //tomorrow or today
+            if (now.toLocalTime().isBefore(targetTime)) {
+                nextDateTime = LocalDateTime.of(today, targetTime);
+            } else {
+                nextDateTime = LocalDateTime.of(today.plusDays(1), targetTime);
+            }
+        } else {
+            LocalDate nextDate = today;
+            for (int i = 0; i <= 7; i++) {
+                nextDate = today.plusDays(i);
+                if (targetDays.contains(nextDate.getDayOfWeek())) {
+                    if (i == 0 && now.toLocalTime().isAfter(targetTime)) { // today but hour/minute late
+                        continue;
+                    }
+                    break; //next nearest date found
+                }
+            }
+            nextDateTime = LocalDateTime.of(nextDate, targetTime);
+        }
+
+        return nextDateTime.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000L;
     }
 
     private void handleAlertAndAccess() {

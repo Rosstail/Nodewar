@@ -1,22 +1,24 @@
 package fr.rosstail.nodewar.battlefield;
 
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.time.DayOfWeek;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class BattlefieldModel {
 
     private int id;
     private final String name;
     private final String display;
-    private String fromDayStr;
-    private String fromTimeStr;
+    private Set<String> startDaysStrSet;
+    private Set<String> startTimesStrSet;
+    private String durationStr;
 
     private long openDateTime;
-    private String toDayStr;
-    private String toTimeStr;
-
+    private long duration;
     private long closeDateTime;
 
     private boolean open;
@@ -27,19 +29,57 @@ public class BattlefieldModel {
 
     private boolean announcement;
 
+    @Deprecated(since = "2.2.3", forRemoval = true)
+    private String fromTimeStr;
+    @Deprecated(since = "2.2.3", forRemoval = true)
+    private Set<String> toDayStrSet;
+    @Deprecated(since = "2.2.3", forRemoval = true)
+    private String toTimeStr;
+
     public BattlefieldModel(ConfigurationSection section) {
         this.name = section.getName();
         this.display = section.getString("display");
-        this.fromDayStr = section.getString("from.day");
-        this.fromTimeStr = section.getString("from.time");
+        this.startDaysStrSet = new HashSet<>(section.getStringList("start-days"));
+        this.startTimesStrSet = new HashSet<>(section.getStringList("start-times"));
 
-        this.toDayStr = section.getString("to.day");
-        this.toTimeStr = section.getString("to.time");
-        String[] startTimeStr = fromTimeStr.split(":");
-        String[] endTimeStr = toTimeStr.split(":");
+        if (startDaysStrSet.isEmpty()) {
+            startDaysStrSet = new HashSet<>();
+            if (section.getString("from.day") != null) {
+                startDaysStrSet.add(section.getString("from.day"));
+            }
+        }
+        if (startTimesStrSet.isEmpty()) {
+            startTimesStrSet = new HashSet<>();
+            if (section.getString("from.time") != null) {
+                startTimesStrSet.add(section.getString("from.time"));
+            }
+        }
 
-        this.openDateTime = BattlefieldManager.getManager().getNextDayTime(DayOfWeek.valueOf(fromDayStr.toUpperCase()), Integer.parseInt(startTimeStr[0]), Integer.parseInt(startTimeStr[1]));
-        this.closeDateTime = BattlefieldManager.getManager().getNextDayTime(DayOfWeek.valueOf(toDayStr.toUpperCase()), Integer.parseInt(endTimeStr[0]), Integer.parseInt(endTimeStr[1]));
+        durationStr = section.getString("duration");
+
+        Set<String> startTimeStrSet = startTimesStrSet != null
+                ? startTimesStrSet
+                : fromTimeStr != null
+                    ? Collections.singleton(fromTimeStr)
+                    : new HashSet<>();
+        this.openDateTime = BattlefieldManager.getManager().getNextDateTimeMillis(startDaysStrSet, startTimeStrSet);
+
+        if (durationStr != null) {
+            duration = AdaptMessage.evalDuration(durationStr);
+            this.closeDateTime = openDateTime + duration;
+        } else { // Deprecation maintenance
+            this.toDayStrSet = new HashSet<>(section.getStringList("to.days"));
+            this.toTimeStr = section.getString("to.time");
+            if (toDayStrSet.isEmpty()) {
+                toDayStrSet = new HashSet<>();
+                if (section.getString("to.day") != null) {
+                    toDayStrSet.add(section.getString("to.day"));
+                }
+            }
+
+            this.closeDateTime = BattlefieldManager.getManager().getNextDateTimeMillis(toDayStrSet, Collections.singleton(toTimeStr));
+            this.duration = closeDateTime - openDateTime;
+        }
 
         this.resetTeam = section.getBoolean("reset-team", false);
         this.endBattleOnBattlefieldEnd = section.getBoolean("end-battle-on-battlefield-end", false);
@@ -70,12 +110,12 @@ public class BattlefieldModel {
         return display;
     }
 
-    public String getFromDayStr() {
-        return fromDayStr;
+    public Set<String> getStartDaysStrSet() {
+        return startDaysStrSet;
     }
 
-    public void setFromDayStr(String fromDayStr) {
-        this.fromDayStr = fromDayStr;
+    public void setStartDaysStrSet(Set<String> startDaysStrSet) {
+        this.startDaysStrSet = startDaysStrSet;
     }
 
     public String getFromTimeStr() {
@@ -86,22 +126,49 @@ public class BattlefieldModel {
         this.fromTimeStr = fromTimeStr;
     }
 
-    public String getToDayStr() {
-        return toDayStr;
+    @Deprecated(since = "2.2.3", forRemoval = true)
+    public Set<String> getToDayStrSet() {
+        return toDayStrSet;
     }
 
     public long getOpenDateTime() {
         return openDateTime;
     }
 
+    public Set<String> getStartTimesStrSet() {
+        return startTimesStrSet;
+    }
+
+    public void setStartTimesStrSet(Set<String> startTimesStrSet) {
+        this.startTimesStrSet = startTimesStrSet;
+    }
+
     public void setOpenDateTime(long openDateTime) {
         this.openDateTime = openDateTime;
     }
 
-    public void setToDayStr(String toDayStr) {
-        this.toDayStr = toDayStr;
+    public long getDuration() {
+        return duration;
     }
 
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public String getDurationStr() {
+        return durationStr;
+    }
+
+    public void setDurationStr(String durationStr) {
+        this.durationStr = durationStr;
+    }
+
+    @Deprecated(since = "2.2.3", forRemoval = true)
+    public void setToDayStrSet(Set<String> toDayStrSet) {
+        this.toDayStrSet = toDayStrSet;
+    }
+
+    @Deprecated(since = "2.2.3", forRemoval = true)
     public String getToTimeStr() {
         return toTimeStr;
     }
@@ -114,6 +181,7 @@ public class BattlefieldModel {
         this.closeDateTime = closeDateTime;
     }
 
+    @Deprecated(since = "2.2.3", forRemoval = true)
     public void setToTimeStr(String toTimeStr) {
         this.toTimeStr = toTimeStr;
     }
