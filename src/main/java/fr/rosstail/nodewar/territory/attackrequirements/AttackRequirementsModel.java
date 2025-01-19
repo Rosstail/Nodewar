@@ -1,22 +1,23 @@
 package fr.rosstail.nodewar.territory.attackrequirements;
 
+import fr.rosstail.nodewar.territory.TerritoryModel;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttackRequirementsModel implements Cloneable {
-    private String startPointStr;
-    private List<String> targetNameList;
+public class AttackRequirementsModel {
+    private String startPointStr = null;
+    private String checkPointStr = null;
+    private final List<String> targetNameList = new ArrayList<>();
 
     public AttackRequirementsModel(ConfigurationSection section) {
-        if (section == null) {
-            return;
+        if (section != null) {
+            this.startPointStr = section.getString("startpoint");
+            this.checkPointStr = section.getString("checkpoint");
+            this.targetNameList.addAll(section.getStringList("targets"));
         }
-
-        this.startPointStr = section.getString("startpoint");
-        this.targetNameList = section.getStringList("targets");
     }
 
     /**
@@ -25,20 +26,30 @@ public class AttackRequirementsModel implements Cloneable {
      * @param parentAtkReqModel
      */
     public AttackRequirementsModel(AttackRequirementsModel childAtkReqModel, @NotNull AttackRequirementsModel parentAtkReqModel) {
-        AttackRequirementsModel clonedParentModel = parentAtkReqModel.clone();
-
         if (childAtkReqModel.getStartPointStr() != null) {
             this.startPointStr = childAtkReqModel.getStartPointStr();
         } else {
-            this.startPointStr = clonedParentModel.getStartPointStr();
+            this.startPointStr = parentAtkReqModel.getStartPointStr();
         }
 
-        if (childAtkReqModel.targetNameList != null) {
-            this.targetNameList = new ArrayList<>(childAtkReqModel.getTargetNameList());
-        } else if (clonedParentModel.targetNameList != null) {
-            this.targetNameList = new ArrayList<>(clonedParentModel.getTargetNameList());
+        if (childAtkReqModel.getCheckPointStr() != null) {
+            this.checkPointStr = childAtkReqModel.getCheckPointStr();
+        } else {
+            this.checkPointStr = parentAtkReqModel.getCheckPointStr();
         }
 
+        if (!childAtkReqModel.targetNameList.isEmpty()) {
+            this.targetNameList.addAll(childAtkReqModel.getTargetNameList());
+        } else {
+            this.targetNameList.addAll(parentAtkReqModel.getTargetNameList());
+        }
+
+    }
+
+    public AttackRequirementsModel(AttackRequirementsModel model) {
+        this.startPointStr = model.getStartPointStr();
+        this.checkPointStr = model.getCheckPointStr();
+        this.targetNameList.addAll(model.getTargetNameList());
     }
 
     public String getStartPointStr() {
@@ -49,26 +60,16 @@ public class AttackRequirementsModel implements Cloneable {
         this.startPointStr = startPointStr;
     }
 
+    public String getCheckPointStr() {
+        return checkPointStr;
+    }
+
+    public void setCheckPointStr(String checkPointStr) {
+        this.checkPointStr = checkPointStr;
+    }
+
     public List<String> getTargetNameList() {
         return targetNameList;
-    }
-
-    public void setTargetNameList(List<String> targetNameList) {
-        this.targetNameList = targetNameList;
-    }
-
-    @Override
-    public AttackRequirementsModel clone() {
-        try {
-            AttackRequirementsModel clone = (AttackRequirementsModel) super.clone();
-
-            clone.setStartPointStr(getStartPointStr());
-            clone.setTargetNameList(getTargetNameList());
-
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
     }
 
 }

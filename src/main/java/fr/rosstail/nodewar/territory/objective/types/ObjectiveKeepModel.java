@@ -30,7 +30,7 @@ public class ObjectiveKeepModel extends ObjectiveModel {
     }
 
     public ObjectiveKeepModel(ObjectiveKeepModel childObjectiveModel, ObjectiveKeepModel parentObjectiveModel) {
-        super(childObjectiveModel.clone(), parentObjectiveModel.clone());
+        super(childObjectiveModel, parentObjectiveModel);
 
         this.attackerRatioStr = childObjectiveModel.getAttackerRatioStr() != null ? childObjectiveModel.getAttackerRatioStr() : parentObjectiveModel.getAttackerRatioStr();
         this.minimumAttackerAmountStr = childObjectiveModel.getMinimumAttackerAmountStr() != null ? childObjectiveModel.getMinimumAttackerAmountStr() : parentObjectiveModel.getMinimumAttackerAmountStr();
@@ -59,16 +59,5 @@ public class ObjectiveKeepModel extends ObjectiveModel {
 
     public void setSecondsToHoldStr(String secondsToHoldStr) {
         this.secondsToHoldStr = secondsToHoldStr;
-    }
-
-    @Override
-    public ObjectiveKeepModel clone() {
-        ObjectiveKeepModel clone = (ObjectiveKeepModel) super.clone();
-
-        clone.setAttackerRatioStr(getAttackerRatioStr());
-        clone.setMinimumAttackerAmountStr(getMinimumAttackerAmountStr());
-        clone.setSecondsToHoldStr(getSecondsToHoldStr());
-
-        return clone;
     }
 }

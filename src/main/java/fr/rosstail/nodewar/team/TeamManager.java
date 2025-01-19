@@ -10,6 +10,7 @@ import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.relation.NwTeamRelation;
 import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import fr.rosstail.nodewar.team.teammanagers.NwTeamManager;
+import fr.rosstail.nodewar.team.teammanagers.SfTeamManager;
 import fr.rosstail.nodewar.team.teammanagers.TownyTeamManager;
 import fr.rosstail.nodewar.team.teammanagers.UcTeamManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
@@ -18,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
@@ -32,6 +34,7 @@ public class TeamManager {
     private NwITeamManager iManager = null;
 
     static {
+        iTeamManagerMap.put("Factions", SfTeamManager.class);
         iTeamManagerMap.put("Towny", TownyTeamManager.class);
         iTeamManagerMap.put("UltimateClans", UcTeamManager.class);
         iTeamManagerMap.put("nodewar", NwTeamManager.class); // last, failsafe for AUTO
@@ -95,6 +98,7 @@ public class TeamManager {
 
     public String getUsedSystem() {
         String system = ConfigData.getConfigData().team.system;
+
         if (iTeamManagerMap.containsKey(system) && Bukkit.getServer().getPluginManager().getPlugin(system) != null) {
             return system;
         } else if (system.equalsIgnoreCase("auto")) {
@@ -152,7 +156,7 @@ public class TeamManager {
         TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory -> (
             territory.getOwnerITeam() == team
         )).forEach(territory -> {
-            WebmapManager.getManager().addTerritoryToEdit(territory);
+            WebmapManager.getManager().addTerritoryToDraw(territory);
         });
     }
 

@@ -33,7 +33,7 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
     }
 
     public ObjectiveSiegeModel(ObjectiveSiegeModel childObjectiveModel, ObjectiveSiegeModel parentObjectiveModel) {
-        super(childObjectiveModel.clone(), parentObjectiveModel.clone());
+        super(childObjectiveModel, parentObjectiveModel);
 
         this.maxHealthStr = childObjectiveModel.getMaxHealthString() != null ? childObjectiveModel.getMaxHealthString() : parentObjectiveModel.getMaxHealthString();
         this.controlPointStringSet.addAll(parentObjectiveModel.getControlPointStringSet());
@@ -82,17 +82,5 @@ public class ObjectiveSiegeModel extends ObjectiveModel {
 
     public void setRegenPerSecondControlPointIntMap(Map<String, Integer> regenPerSecondControlPointIntMap) {
         this.regenPerSecondControlPointIntMap = regenPerSecondControlPointIntMap;
-    }
-
-    @Override
-    public ObjectiveSiegeModel clone() {
-        ObjectiveSiegeModel clone = (ObjectiveSiegeModel) super.clone();
-
-        clone.setMaxHealthStr(getMaxHealthString());
-        clone.setControlPointStringSet(new HashSet<>(getControlPointStringSet()));
-        clone.setDamagePerSecondControlPointIntMap(new HashMap<>(getDamagePerSecondControlPointIntMap()));
-        clone.setRegenPerSecondControlPointIntMap(new HashMap<>(getRegenPerSecondControlPointIntMap()));
-
-        return clone;
     }
 }

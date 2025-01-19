@@ -80,7 +80,7 @@ public class AdminTeamEditCommand extends AdminTeamEditSubCommand {
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         if (args.length <= 4) {
             return new ArrayList<>(TeamManager.getManager().getStringTeamMap().keySet());
         } else if (args.length == 5) {

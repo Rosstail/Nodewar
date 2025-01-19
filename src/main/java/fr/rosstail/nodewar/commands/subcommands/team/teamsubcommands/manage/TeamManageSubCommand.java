@@ -6,6 +6,7 @@ import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.rank.NwTeamRank;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public abstract class TeamManageSubCommand extends TeamSubCommand {
     }
 
     @Override
-    public abstract List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments);
+    public abstract List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments);
 
     protected boolean hasPlayerEnoughClearance(Player sender, NwITeam nwITeam, NwTeamRank requiredRank) {
         boolean value = false;

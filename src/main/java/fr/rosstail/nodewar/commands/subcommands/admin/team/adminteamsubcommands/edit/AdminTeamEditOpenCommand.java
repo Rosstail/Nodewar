@@ -63,7 +63,7 @@ public class AdminTeamEditOpenCommand extends AdminTeamEditSubCommand {
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         return null;
     }
 }

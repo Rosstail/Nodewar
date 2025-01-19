@@ -67,7 +67,7 @@ public class AdminTerritoryCommand extends AdminTerritorySubCommand {
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         if (args.length <= 3) {
             return new ArrayList<>(TerritoryManager.getTerritoryManager().getTerritoryMap().keySet());
         } else if (args.length == 4) {

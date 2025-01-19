@@ -22,6 +22,35 @@ public class SqliteStorageRequest extends SqlStorageRequest {
             alterTeamMemberTable();
         }
 
+        if (doesTableExists(playerTableName, username)) {
+            if (doColumnExists(playerTableName, "username")) {
+                String renameTableQuery = "ALTER TABLE " + playerTableName + " RENAME TO " + playerTableName + "_old;";
+                executeSQL(renameTableQuery);
+                createNodewarPlayerTable();
+
+                String copyPlayerTable = "INSERT INTO " + playerTableName + " (id, uuid, is_team_open, last_deploy, last_update) " +
+                        "SELECT id, uuid, is_team_open, last_deploy, last_update FROM " + playerTableName + "_old;";
+                executeSQL(copyPlayerTable);
+
+                if (doesTableExists(teamMemberTableName, username)) {
+                    String renameTeamMemberQuery = "ALTER TABLE " + teamMemberTableName + " RENAME TO " + teamMemberTableName + "_old;";
+                    executeSQL(renameTeamMemberQuery);
+                    createNodewarTeamMemberTable();
+
+                    String copyTeamMember = "INSERT INTO " + teamMemberTableName + " (id, player_id, team_id, player_rank, join_time) " +
+                            "SELECT id, player_id, team_id, player_rank, join_time FROM " + teamMemberTableName + "_old;";
+                    executeSQL(copyTeamMember);
+
+
+                    String dropOldTableQuery = "DROP TABLE IF EXISTS " + teamMemberTableName + "_old;";
+                    executeSQL(dropOldTableQuery);
+                }
+
+                String dropOldTableQuery = "DROP TABLE IF EXISTS " + playerTableName + "_old;";
+                executeSQL(dropOldTableQuery);
+            }
+        }
+
         if (doesTableExists(territoryTableName, username)) {
             alterTerritoryTable();
         }
@@ -71,7 +100,6 @@ public class SqliteStorageRequest extends SqlStorageRequest {
     public void createNodewarPlayerTable() {
         String query = "CREATE TABLE IF NOT EXISTS " + getPlayerTableName() + " (" +
                 " id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " username varchar(40) UNIQUE NOT NULL," +
                 " uuid varchar(40) UNIQUE NOT NULL," +
                 " is_team_open BOOLEAN NOT NULL DEFAULT TRUE," +
                 " last_deploy timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +

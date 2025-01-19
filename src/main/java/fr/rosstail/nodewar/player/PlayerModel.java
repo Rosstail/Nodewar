@@ -2,6 +2,8 @@ package fr.rosstail.nodewar.player;
 
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class PlayerModel {
     private int id;
     private String uuid;
@@ -29,6 +31,11 @@ public class PlayerModel {
     public PlayerModel(String uuid, String username) {
         this.uuid = uuid;
         this.username = username;
+    }
+
+    public PlayerModel(UUID uuid) {
+        this.uuid = uuid.toString();
+        this.username = PlayerDataManager.getPlayerNameFromUUID(uuid);
     }
 
     /**

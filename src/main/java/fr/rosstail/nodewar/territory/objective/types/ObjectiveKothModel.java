@@ -32,7 +32,7 @@ public class ObjectiveKothModel extends ObjectiveModel {
     }
 
     public ObjectiveKothModel(ObjectiveKothModel childObjectiveModel, ObjectiveKothModel parentObjectiveModel) {
-        super(childObjectiveModel.clone(), parentObjectiveModel.clone());
+        super(childObjectiveModel, parentObjectiveModel);
 
         this.pointsPerSecondControlPointIntMap.putAll(parentObjectiveModel.getPointsPerSecondControlPointIntMap());
         this.timeToReachStr = childObjectiveModel.getTimeToReachStr() != null ? childObjectiveModel.getTimeToReachStr() : parentObjectiveModel.getTimeToReachStr();
@@ -59,14 +59,5 @@ public class ObjectiveKothModel extends ObjectiveModel {
 
     public void setPointsPerSecondControlPointIntMap(Map<String, Integer> pointsPerSecondControlPointIntMap) {
         this.pointsPerSecondControlPointIntMap = pointsPerSecondControlPointIntMap;
-    }
-
-    @Override
-    public ObjectiveKothModel clone() {
-        ObjectiveKothModel clone = (ObjectiveKothModel) super.clone();
-
-        clone.setTimeToReachStr(getTimeToReachStr());
-
-        return clone;
     }
 }

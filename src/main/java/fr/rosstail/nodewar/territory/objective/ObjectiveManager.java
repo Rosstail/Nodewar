@@ -3,8 +3,7 @@ package fr.rosstail.nodewar.territory.objective;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.Territory;
-import fr.rosstail.nodewar.territory.TerritoryType;
-import fr.rosstail.nodewar.territory.battle.BattleManager;
+import fr.rosstail.nodewar.territory.TerritoryModel;
 import fr.rosstail.nodewar.territory.objective.types.*;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -31,6 +30,8 @@ public class ObjectiveManager {
 
     static {
         objectiveEntryMap.put("control", new AbstractMap.SimpleEntry<>(ObjectiveControl.class, ObjectiveControlModel.class));
+        objectiveEntryMap.put("demolition", new AbstractMap.SimpleEntry<>(ObjectiveDemolition.class, ObjectiveDemolitionModel.class));
+        objectiveEntryMap.put("extermination", new AbstractMap.SimpleEntry<>(ObjectiveExtermination.class, ObjectiveExterminationModel.class));
         objectiveEntryMap.put("siege", new AbstractMap.SimpleEntry<>(ObjectiveSiege.class, ObjectiveSiegeModel.class));
         objectiveEntryMap.put("koth", new AbstractMap.SimpleEntry<>(ObjectiveKoth.class, ObjectiveKothModel.class));
         objectiveEntryMap.put("keep", new AbstractMap.SimpleEntry<>(ObjectiveKeep.class, ObjectiveKeepModel.class));
@@ -52,7 +53,7 @@ public class ObjectiveManager {
         AdaptMessage.print("[Nodewar] Custom objective " + name + " added to the list !", AdaptMessage.prints.OUT);
     }
 
-    public void setupObjectiveModelToTerritoryType(TerritoryType territoryType, TerritoryType parentType, String objectiveName, ConfigurationSection objectiveSection) {
+    public void setupTerritoryObjectiveModel(TerritoryModel territoryPreset, TerritoryModel parentType, String objectiveName, ConfigurationSection objectiveSection) {
         if (objectiveEntryMap.containsKey(objectiveName)) {
             Map.Entry<Class<? extends NwObjective>, Class<? extends ObjectiveModel>> entry = objectiveEntryMap.get(objectiveName);
             Class<? extends ObjectiveModel> objectiveModelClass = entry.getValue();
@@ -82,20 +83,20 @@ public class ObjectiveManager {
             }
 
             try {
-                if (parentType != null) {
-                    territoryType.setObjectiveModel(objectiveModelConstructor.newInstance(objectiveChildModel, parentType.getObjectiveModel()));
+                if (parentType != null && parentType.getObjectiveModel() != null) {
+                    territoryPreset.setObjectiveModel(objectiveModelConstructor.newInstance(objectiveChildModel, parentType.getObjectiveModel()));
                 } else {
-                    territoryType.setObjectiveModel(objectiveModelConstructorSingle.newInstance(objectiveSection));
+                    territoryPreset.setObjectiveModel(objectiveModelConstructorSingle.newInstance(objectiveSection));
                 }
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            territoryType.setObjectiveModel(new ObjectiveModel(objectiveSection));
+            territoryPreset.setObjectiveModel(new ObjectiveModel(objectiveSection));
         }
     }
 
-    public void setUpObjectiveToTerritory(Territory territory, ConfigurationSection objectiveSection, String objectiveName) {
+    public NwObjective setUpObjective(Territory territory, String objectiveName) {
         if (objectiveEntryMap.containsKey(objectiveName)) {
             Map.Entry<Class<? extends NwObjective>, Class<? extends ObjectiveModel>> entry = objectiveEntryMap.get(objectiveName);
             Class<? extends NwObjective> objectiveClass = entry.getKey();
@@ -117,29 +118,28 @@ public class ObjectiveManager {
 
             ObjectiveModel objectiveChildModel;
             try {
-                objectiveChildModel = objectiveChildModelConstructor.newInstance(objectiveSection).clone();
+                objectiveChildModel = objectiveChildModelConstructor.newInstance((Object) null);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
 
-            ObjectiveModel objectiveParentModel = objectiveModelClass.cast(territory.getTerritoryType().getObjectiveModel()).clone();
+            ObjectiveModel objectiveParentModel = objectiveModelClass.cast(territory.getObjectiveModel());
 
             try {
-                NwObjective objective = objectiveConstructor.newInstance(territory, objectiveChildModel, objectiveParentModel);
-                territory.setObjective(objective);
+                return objectiveConstructor.newInstance(territory, objectiveChildModel, objectiveParentModel);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
-        } else {
-            territory.setObjective(new NwObjective(territory, null, null));
         }
+
+        return new NwObjective(territory, null, null);
     }
 
     public static Map<String, Map.Entry<Class<? extends NwObjective>, Class<? extends ObjectiveModel>>> getObjectiveEntryMap() {
         return objectiveEntryMap;
     }
 
-    public static ObjectiveManager getObjectiveManager() {
+    public static ObjectiveManager getManager() {
         return objectiveManager;
     }
 }

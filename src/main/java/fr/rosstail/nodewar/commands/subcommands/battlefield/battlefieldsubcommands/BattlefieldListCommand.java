@@ -42,7 +42,7 @@ public class BattlefieldListCommand extends BattlefieldSubCommand {
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         return List.of("-c", "-o");
     }
 

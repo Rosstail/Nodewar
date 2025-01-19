@@ -8,6 +8,7 @@ import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
+import fr.rosstail.nodewar.territory.TerritoryModel;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -75,7 +76,7 @@ public class TerritoryCheckCommand extends TerritorySubCommand {
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_CHECK_RESULT_NOT_ON_TERRITORY));
                 return;
             } else if (territoryList.size() > 1) {
-                String territoryNames = territoryList.stream().map(territory1 -> territory1.getModel().getName()).collect(Collectors.joining(", "));
+                String territoryNames = territoryList.stream().map(TerritoryModel::getName).collect(Collectors.joining(", "));
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_CHECK_RESULT_ON_MULTIPLE_TERRITORY).replaceAll("\\[territories]", territoryNames));
                 return;
             }
@@ -86,7 +87,7 @@ public class TerritoryCheckCommand extends TerritorySubCommand {
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         return new ArrayList<>(TerritoryManager.getTerritoryManager().getTerritoryMap().keySet());
     }
 }

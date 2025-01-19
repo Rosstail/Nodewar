@@ -57,7 +57,7 @@ public class TeamManageCommand extends TeamManageSubCommand {
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         if (args.length <= 3) {
             List<String> list = new ArrayList<>();
             for (SubCommand subCommand : subCommands) {

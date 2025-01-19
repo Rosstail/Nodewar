@@ -6,7 +6,7 @@
 
     <groupId>com.github.Rosstail</groupId>
     <artifactId>nodewar</artifactId>
-    <version>2.2.3</version>
+    <version>2.3.1-beta</version>
     <packaging>jar</packaging>
 
     <distributionManagement>
@@ -204,6 +204,13 @@
             <artifactId>UClansV7-API</artifactId>
             <version>7.13.0-R1</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.SaberLLC</groupId>
+            <artifactId>Saber-Factions</artifactId>
+            <version>4.1.6-BETA</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/Saber-Factions-4.1.6-BETA.jar</systemPath>
         </dependency>
     </dependencies>
 

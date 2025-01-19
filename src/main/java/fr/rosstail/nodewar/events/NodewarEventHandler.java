@@ -24,6 +24,9 @@ public class NodewarEventHandler implements Listener {
         Player player = event.getPlayer();
         Territory territory = event.getTerritory();
 
+        if (territory.getPlayers().isEmpty()) {
+            territory.updateAllBossBarText();
+        }
         territory.getPlayers().add(player);
         territory.addPlayerToBossBar(player);
         AdaptMessage.getAdaptMessage().sendToPlayer(player, territory.adaptMessage(LangManager.getMessage(LangMessage.TERRITORY_ENTER)));
@@ -67,7 +70,7 @@ public class NodewarEventHandler implements Listener {
         });
 
         territory.updateAllBossBar();
-        WebmapManager.getManager().addTerritoryToEdit(territory);
+        WebmapManager.getManager().addTerritoryToDraw(territory);
     }
 
     @EventHandler
@@ -85,7 +88,7 @@ public class NodewarEventHandler implements Listener {
         territory.setOwnerITeam(iTeam);
         territory.updateAllBossBar();
         territory.resetCommandsDelay();
-        WebmapManager.getManager().addTerritoryToEdit(territory);
+        WebmapManager.getManager().addTerritoryToDraw(territory);
     }
 
     @EventHandler

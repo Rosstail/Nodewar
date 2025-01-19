@@ -15,6 +15,7 @@ public class ConfigData {
 
     public final ConfigStorage storage;
     public final ConfigGeneral general;
+    public final ConfigPerm perm;
     public final ConfigLocale locale;
 
     public final ConfigTeam team;
@@ -79,17 +80,33 @@ public class ConfigData {
         public FileConfiguration configFile;
 
         public final float configVersion;
-        public final String defaultPermissionPlugin;
-        public final boolean canCounterAttack;
         public final boolean debugMode;
 
         ConfigGeneral(FileConfiguration config) {
             configFile = config;
 
             configVersion = (float) config.getDouble("config-version", 1.0F); // Not in general cause top of file
-            defaultPermissionPlugin = config.getString("general.permission-plugin", "auto");
-            canCounterAttack = config.getBoolean("general.can-counter-attack", false);
             debugMode = config.getBoolean("general.debug-mode", false);
+        }
+    }
+
+    public class ConfigPerm {
+        public FileConfiguration configFile;
+
+        public final String defaultPermissionPlugin;
+        public final String groupCreateCommand;
+        public final String groupJoinCommand;
+        public final String groupLeaveCommand;
+        public final String groupDeleteCommand;
+
+        ConfigPerm(FileConfiguration config) {
+            configFile = config;
+
+            defaultPermissionPlugin = config.getString("permission.plugin", "auto");
+            groupCreateCommand = config.getString("permisison.create-group");
+            groupJoinCommand = config.getString("permisison.join-group");
+            groupLeaveCommand = config.getString("permisison.leave-group");
+            groupDeleteCommand = config.getString("permisison.delete-group");
         }
     }
 
@@ -104,6 +121,7 @@ public class ConfigData {
         public final int maximumMembers;
         public final long deployTimer;
         public final long deployCooldown;
+        public final boolean canCounterAttack;
 
         public final short minimumNameLength;
         public final short maximumNameLength;
@@ -117,6 +135,7 @@ public class ConfigData {
             creationCost = config.getDouble("team.creation-cost");
             String relationTypeStr = config.getString("team.default-relation", "neutral");
             defaultRelation = RelationType.valueOf(relationTypeStr.toUpperCase());
+            canCounterAttack = config.getBoolean("general.can-counter-attack", false);
             noneDisplay = config.getString("team.none-display", "None");
             noneColor = config.getString("team.none-color", "#CACACA");
             maximumMembers = config.getInt("team.maximum-members", 50);
@@ -193,6 +212,12 @@ public class ConfigData {
         public final float fillOpacity;
         public final float lineOpacity;
 
+
+        public final float territoryTargetHeightDelta;
+
+        public final String protectedTerritoryBorderColor;
+        public final String vulnerableTerritoryBorderColor;
+
         ConfigWebmap(FileConfiguration config) {
             configFile = config;
             hideByDefault = configFile.getBoolean("webmap.hide-by-default", false);
@@ -205,39 +230,45 @@ public class ConfigData {
             simpleLine = config.getBoolean("webmap.simple-line", false);
             lineThickness = Math.max(config.getInt("webmap.line-thickness", 4), 1);
             pluginList.addAll(config.getStringList("webmap.plugins"));
+            pluginList.addAll(config.getStringList("webmap.plugins"));
+            territoryTargetHeightDelta = (float) config.getDouble("webmap.territory-target-height-delta");
+            protectedTerritoryBorderColor = config.getString("webmap.territory-protected-border-color", "00AA00");
+            vulnerableTerritoryBorderColor = config.getString("webmap.territory-vulnerable-border-color", "AA0000");
         }
     }
 
     public final FileConfiguration config;
 
-    ConfigData(FileConfiguration config) {
-        this.config = config;
+    ConfigData(File configFile) {
+        this.config = YamlConfiguration.loadConfiguration(configFile);
 
-        this.storage = new ConfigStorage(readConfig(config, "storage"));
-        this.locale = new ConfigLocale(readConfig(config, "locale"));
-        this.general = new ConfigGeneral(readConfig(config, "general"));
-        this.team = new ConfigTeam(readConfig(config, "team"));
-        this.battlefield = new ConfigBattlefield(readConfig(config, "battlefield"));
-        this.bossbar = new ConfigBossBar(readConfig(config, "bossbar"));
-        this.webmap = new ConfigWebmap(readConfig(readConfig(config, "webmap"), "dynmap"));
+        this.storage = new ConfigStorage(YamlConfiguration.loadConfiguration(readConfig(configFile, "storage")));
+        this.locale = new ConfigLocale(YamlConfiguration.loadConfiguration(readConfig(configFile, "locale")));
+        this.general = new ConfigGeneral(YamlConfiguration.loadConfiguration(readConfig(configFile, "general")));
+        this.perm = new ConfigPerm(YamlConfiguration.loadConfiguration(readConfig(configFile, "permission")));
+        this.team = new ConfigTeam(YamlConfiguration.loadConfiguration(readConfig(configFile, "team")));
+        this.battlefield = new ConfigBattlefield(YamlConfiguration.loadConfiguration(readConfig(configFile, "battlefield")));
+        this.bossbar = new ConfigBossBar(YamlConfiguration.loadConfiguration(readConfig(configFile, "bossbar")));
+        this.webmap = new ConfigWebmap(YamlConfiguration.loadConfiguration(readConfig(configFile, "webmap")));
     }
 
-    private FileConfiguration readConfig(FileConfiguration baseConfig, String item) {
+    public static File readConfig(File configFile, String item) {
+        FileConfiguration configuration = YamlConfiguration.loadConfiguration(configFile);
         try {
-            File file = new File("plugins/" + plugin.getName() + "/" + baseConfig.getString(item) + ".yml");
-            if (!(file.exists())) {
-                return baseConfig;
+            File otherFile = new File("plugins/" + Nodewar.getInstance().getName() + "/" + configuration.getString(item) + ".yml");
+            if (!(otherFile.exists())) {
+                return configFile;
             }
-            return YamlConfiguration.loadConfiguration(file);
+            return otherFile;
         } catch (Exception e) {
             e.printStackTrace();
             //If error such a ConfigurationSection instead of String
-            return baseConfig;
+            return configFile;
         }
     }
 
-    public static void init(FileConfiguration config) {
-        configData = new ConfigData(config);
+    public static void init(File file) {
+        configData = new ConfigData(file);
     }
 
     public static ConfigData getConfigData() {

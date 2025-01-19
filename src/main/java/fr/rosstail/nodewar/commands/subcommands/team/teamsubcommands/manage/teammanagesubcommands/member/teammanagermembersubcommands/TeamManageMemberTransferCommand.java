@@ -11,7 +11,6 @@ import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.rank.NwTeamRank;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -93,10 +92,10 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
             }
 
             targetTeamMemberModel = senderNwITeam.getMemberMap().values().stream()
-                    .filter(teamMember -> teamMember.getModel().getUsername().equalsIgnoreCase(targetName)).findFirst().orElse(null).getModel();
+                    .filter(teamMember -> teamMember.getUsername().equalsIgnoreCase(targetName)).findFirst().orElse(null);
 
-            senderTeamMember = senderNwITeam.getMemberMap().get(senderPlayer);
-            senderTeamMemberModel = senderTeamMember.getModel();
+            senderTeamMember = senderNwITeam.getMemberMap().get(senderPlayer.getName());
+            senderTeamMemberModel = senderTeamMember;
 
             if (targetTeamMemberModel == null) {
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM));
@@ -115,16 +114,16 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
                 return;
             }
 
-            senderTeamMemberModel.setRank(NwTeamRank.LIEUTENANT.getWeight());
-            targetTeamMemberModel.setRank(NwTeamRank.OWNER.getWeight());
+            senderTeamMemberModel.setNumRank(NwTeamRank.LIEUTENANT.getWeight());
+            targetTeamMemberModel.setNumRank(NwTeamRank.OWNER.getWeight());
             StorageManager.getManager().updateTeamMemberModel(senderTeamMemberModel);
             StorageManager.getManager().updateTeamMemberModel(targetTeamMemberModel);
 
-            senderNwITeam.getMemberMap().get(senderPlayer).setRank(NwTeamRank.LIEUTENANT);
+            senderNwITeam.getMemberMap().get(senderPlayer.getName()).setRank(NwTeamRank.LIEUTENANT);
             targetPlayer = Bukkit.getPlayer(targetName);
 
             if (targetPlayer != null) {
-                targetTeamMember = senderNwITeam.getMemberMap().get(targetPlayer);
+                targetTeamMember = senderNwITeam.getMemberMap().get(targetPlayer.getName());
                 targetTeamMember.setRank(NwTeamRank.OWNER);
             }
 
@@ -137,10 +136,13 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        NwITeam playerNwITeam = TeamManager.getManager().getPlayerTeam(sender);
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
+        if (!(sender instanceof Player)) {
+            return new ArrayList<>();
+        }
+        NwITeam playerNwITeam = TeamManager.getManager().getPlayerTeam((Player) sender);
         if (playerNwITeam != null) {
-            return playerNwITeam.getMemberMap().values().stream().map(teamMember -> teamMember.getModel().getUsername()).collect(Collectors.toList());
+            return playerNwITeam.getMemberMap().values().stream().map(TeamMemberModel::getUsername).collect(Collectors.toList());
         }
 
         return new ArrayList<>();

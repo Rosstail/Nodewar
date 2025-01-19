@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.permissionmannager;
 
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.lang.AdaptMessage;
+import fr.rosstail.nodewar.permissionmannager.types.NwCommandPermissionHandler;
 import fr.rosstail.nodewar.permissionmannager.types.NwGroupManagerHandler;
 import fr.rosstail.nodewar.permissionmannager.types.NwLuckPermsHandler;
 import fr.rosstail.nodewar.team.NwITeam;
@@ -23,7 +24,8 @@ public class PermissionManager {
 
     static {
         iPermissionManagerMap.put("GroupManager", NwGroupManagerHandler.class);
-        iPermissionManagerMap.put("luckperms", NwLuckPermsHandler.class); // end failsafe on AUTO
+        iPermissionManagerMap.put("luckperms", NwLuckPermsHandler.class);
+        iPermissionManagerMap.put("nw", NwLuckPermsHandler.class); // end failsafe on AUTO
     }
 
     public static boolean canAddCustomManager(String name) {
@@ -49,7 +51,7 @@ public class PermissionManager {
     }
 
     public String getUsedSystem() {
-        String system = ConfigData.getConfigData().general.defaultPermissionPlugin;
+        String system = ConfigData.getConfigData().perm.defaultPermissionPlugin;
         if (iPermissionManagerMap.containsKey(system) && Bukkit.getServer().getPluginManager().getPlugin(system) != null) {
             return system;
         } else if (system.equalsIgnoreCase("auto")) {
@@ -81,8 +83,8 @@ public class PermissionManager {
                 throw new RuntimeException(e);
             }
         } else {
-            iPermissionManager = new NwLuckPermsHandler();
-            AdaptMessage.print("[Nodewar] Using default " + usedSystem + " perm", AdaptMessage.prints.OUT);
+            iPermissionManager = new NwCommandPermissionHandler();
+            AdaptMessage.print("[Nodewar] Using default NW perm [Beta]", AdaptMessage.prints.OUT);
         }
     }
 
@@ -101,6 +103,7 @@ public class PermissionManager {
     public void removePlayerGroup(final String playerName, final UUID playerUUID, String exceptionGroupName) {
         iPermissionManager.removePlayerGroup(playerName, playerUUID, exceptionGroupName);
     }
+
     @Deprecated
     public void setPlayerGroup(final Player player, final NwITeam nwTeam) {
         iPermissionManager.setPlayerGroup("nw_" + nwTeam.getName(), player.getName(), player.getUniqueId());

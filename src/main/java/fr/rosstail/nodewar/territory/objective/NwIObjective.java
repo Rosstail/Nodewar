@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.territory.objective;
 
 import fr.rosstail.nodewar.team.NwITeam;
+import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
@@ -48,4 +49,8 @@ public interface NwIObjective {
     String adaptMessage(String message);
 
     void reward(Battle battle, Map<NwITeam, Integer> iTeamPositionMap);
+
+    void addTerritory(Territory territory);
+
+    void removeTerritory(Territory territory);
 }

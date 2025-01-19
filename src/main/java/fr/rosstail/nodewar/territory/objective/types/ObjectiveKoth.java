@@ -26,14 +26,14 @@ public class ObjectiveKoth extends NwConquestObjective {
 
     public ObjectiveKoth(Territory territory, ObjectiveKothModel childModel, ObjectiveKothModel parentModel) {
         super(territory, childModel, parentModel);
-        ObjectiveKothModel clonedChildKothModel = childModel.clone();
-        ObjectiveKothModel clonedParentKothModel = parentModel.clone();
+        ObjectiveKothModel clonedChildKothModel = childModel;
+        ObjectiveKothModel clonedParentKothModel = parentModel;
         this.objectiveKothModel = new ObjectiveKothModel(clonedChildKothModel, clonedParentKothModel);
 
 
         this.objectiveKothModel.getPointsPerSecondControlPointIntMap().forEach((s, points) -> {
             controlPointList.addAll(TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(
-                    (territory1 -> territory1.getModel().getName().equalsIgnoreCase(s)
+                    (territory1 -> territory1.getName().equalsIgnoreCase(s)
                             && territory1.getWorld() == territory.getWorld())
             ).collect(Collectors.toList()));
         });
@@ -144,7 +144,7 @@ public class ObjectiveKoth extends NwConquestObjective {
 
     @Override
     public boolean checkStart() {
-        if (territory.getModel().isUnderProtection()) {
+        if (territory.isUnderProtection()) {
             return false;
         }
         if (controlPointList.stream().noneMatch(capturePoint -> (capturePoint.getOwnerITeam() != null && capturePoint.getOwnerITeam() != territory.getOwnerITeam() && territory.getAttackRequirements().checkAttackRequirements(capturePoint.getOwnerITeam())))) {
@@ -159,7 +159,7 @@ public class ObjectiveKoth extends NwConquestObjective {
     public NwITeam checkAdvantage() {
         BattleKoth currentBattle = (BattleKoth) territory.getCurrentBattle();
 
-        if (territory.getModel().isUnderProtection()) {
+        if (territory.isUnderProtection()) {
             return territory.getOwnerITeam();
         }
         int maxHoldTime = currentBattle.getTeamHoldPointMap().values().stream()
@@ -273,8 +273,7 @@ public class ObjectiveKoth extends NwConquestObjective {
 
     @Override
     public String adaptMessage(String message) {
-        message = super.adaptMessage(message);
-        message = message.replaceAll("\\[territory_objective_time_to_reach]", String.valueOf(timeToReach));
+        message = super.adaptMessage(message).replaceAll("\\[territory_objective_time_to_reach]", String.valueOf(timeToReach));
 
         Pattern capturePointPattern = Pattern.compile("(\\[territory_objective_capturepoint)_(\\d+)(_\\w+])");
         Matcher capturePointMatcher = capturePointPattern.matcher(message);
@@ -298,5 +297,22 @@ public class ObjectiveKoth extends NwConquestObjective {
 
     public ObjectiveKothModel getObjectiveKothModel() {
         return objectiveKothModel;
+    }
+
+    @Override
+    public void addTerritory(Territory territory) {
+        super.addTerritory(territory);
+
+        if (this.objectiveKothModel.getPointsPerSecondControlPointIntMap().containsKey(territory.getName())
+                && territory.getWorld().equals(super.territory.getWorld())
+                && !controlPointList.contains(territory)) {
+            controlPointList.add(territory);
+        }
+    }
+
+    @Override
+    public void removeTerritory(Territory territory) {
+        super.removeTerritory(territory);
+        controlPointList.remove(territory);
     }
 }

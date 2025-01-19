@@ -27,8 +27,8 @@ public class ObjectiveControl extends NwConquestObjective {
     private final boolean neutralPeriod;
     private int minAttackerAmount;
     private int baseCaptureSpeed;
-    private int bonusCaptureSpeedPerPlayer;
-    private int maxCaptureSpeed;
+    private final int bonusCaptureSpeedPerPlayer;
+    private final int maxCaptureSpeed;
     private float minAttackerRatio;
     private int maxHealth;
     private final Map<NwITeam, Integer> teamMemberOnTerritory = new HashMap<>();
@@ -36,9 +36,7 @@ public class ObjectiveControl extends NwConquestObjective {
 
     public ObjectiveControl(Territory territory, ObjectiveControlModel childModel, ObjectiveControlModel parentModel) {
         super(territory, childModel, parentModel);
-        ObjectiveControlModel clonedChildObjectiveModel = childModel.clone();
-        ObjectiveControlModel clonedParentObjectiveModel = parentModel.clone();
-        this.objectiveControlModel = new ObjectiveControlModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
+        this.objectiveControlModel = new ObjectiveControlModel(childModel, parentModel);
 
 
         getObjectiveControlModel().getStringRewardModelMap().forEach((s, rewardModel) -> {
@@ -53,7 +51,7 @@ public class ObjectiveControl extends NwConquestObjective {
         this.bonusCaptureSpeedPerPlayer = this.objectiveControlModel.getBonusCaptureSpeedPerPlayerStr() != null ?
                 Integer.parseInt(this.objectiveControlModel.getBonusCaptureSpeedPerPlayerStr()) : 0;
         this.maxCaptureSpeed = this.objectiveControlModel.getMaxCaptureSpeedStr() != null ?
-                Integer.parseInt(this.objectiveControlModel.getMaxCaptureSpeedStr()) : 1;
+                Integer.parseInt(this.objectiveControlModel.getMaxCaptureSpeedStr()) : this.baseCaptureSpeed;
         this.minAttackerRatio = this.objectiveControlModel.getAttackerRatioStr() != null ?
                 Float.parseFloat(this.objectiveControlModel.getAttackerRatioStr()) : 1F;
         this.maxHealth = this.objectiveControlModel.getMaxHealthStr() != null ?
@@ -93,7 +91,6 @@ public class ObjectiveControl extends NwConquestObjective {
                 teamMemberOnTerritory.put(nwITeam, memberList.size());
             }
         });
-
         switch (currentBattle.getBattleStatus()) {
             case WAITING:
                 territory.updateAllBossBarText();
@@ -133,7 +130,7 @@ public class ObjectiveControl extends NwConquestObjective {
 
     @Override
     public NwITeam checkAdvantage() {
-        if (territory.getModel().isUnderProtection()) {
+        if (territory.isUnderProtection()) {
             return territory.getOwnerITeam();
         }
         NwITeam defenderTeam = territory.getOwnerITeam();
@@ -144,7 +141,7 @@ public class ObjectiveControl extends NwConquestObjective {
                         defenderTeam == null // Undefended
                                 || (entry.getKey() != defenderTeam // team is not defenders BUT is explicit enemy
                                 && (
-                                        (entry.getKey().getIRelation(defenderTeam) == null && ConfigData.getConfigData().team.defaultRelation == RelationType.ENEMY)
+                                (entry.getKey().getIRelation(defenderTeam) == null && ConfigData.getConfigData().team.defaultRelation == RelationType.ENEMY)
                                         || (TeamManager.getManager().getTeamRelationType(entry.getKey(), defenderTeam) == RelationType.ENEMY))))// ENEMY to the existing defender
                         && entry.getValue() >= Math.max(1, minAttackerAmount) // Minimum player threshold
                         && (defenderEffective == 0 || (float) entry.getValue() / defenderEffective > minAttackerRatio) // Attacker Ratio
@@ -329,7 +326,8 @@ public class ObjectiveControl extends NwConquestObjective {
         }
         int captureSpeed = baseCaptureSpeed;
 
-        int advantageForce = teamMemberOnTerritory.get(advantagedTeam);
+        int advantageForce = teamMemberOnTerritory.getOrDefault(advantagedTeam, 0);
+
         captureSpeed += (advantageForce - minAttackerAmount) / minAttackerAmount;
 
         return Math.min(captureSpeed, maxCaptureSpeed);
@@ -338,13 +336,19 @@ public class ObjectiveControl extends NwConquestObjective {
     @Override
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
-        message = message.replaceAll("\\[territory_objective_base_capture_speed]", String.valueOf(baseCaptureSpeed));
-        message = message.replaceAll("\\[territory_objective_bonus_capture_speed]", String.valueOf(bonusCaptureSpeedPerPlayer));
-        message = message.replaceAll("\\[territory_objective_maximum_capture_speed]", String.valueOf(maxCaptureSpeed));
-        message = message.replaceAll("\\[territory_objective_minimum_attacker_amount]", String.valueOf(minAttackerAmount));
-        message = message.replaceAll("\\[territory_objective_minimum_attacker_ratio]", String.valueOf(minAttackerRatio));
-        message = message.replaceAll("\\[territory_objective_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)));
-        message = message.replaceAll("\\[territory_objective_maximum_health]", String.valueOf(maxHealth));
+        message = message.replaceAll("\\[territory_objective_base_capture_speed]", String.valueOf(baseCaptureSpeed))
+                .replaceAll("\\[territory_objective_bonus_capture_speed]", String.valueOf(bonusCaptureSpeedPerPlayer))
+                .replaceAll("\\[territory_objective_maximum_capture_speed]", String.valueOf(maxCaptureSpeed))
+                .replaceAll("\\[territory_objective_minimum_attacker_amount]", String.valueOf(minAttackerAmount))
+                .replaceAll("\\[territory_objective_minimum_attacker_ratio]", String.valueOf(minAttackerRatio))
+                .replaceAll("\\[territory_objective_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)))
+                .replaceAll("\\[territory_objective_maximum_health]", String.valueOf(maxHealth))
+                .replaceAll("\\[territory_objective_capture_speed]", String.valueOf(
+                        calculateCaptureSpeed(
+                                territory.getCurrentBattle() != null ?
+                                        territory.getCurrentBattle().getAdvantagedITeam()
+                                        : null
+                        )));
 
         return message;
     }

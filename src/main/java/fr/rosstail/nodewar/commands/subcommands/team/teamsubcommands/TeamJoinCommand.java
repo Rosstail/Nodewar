@@ -113,7 +113,7 @@ public class TeamJoinCommand extends TeamSubCommand {
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         Set<String> teamSet = new HashSet<>();
         TeamManager.getManager().getStringTeamMap().values().stream().filter(NwITeam::isOpen).forEach(nwTeam -> {
             teamSet.add(nwTeam.getName());

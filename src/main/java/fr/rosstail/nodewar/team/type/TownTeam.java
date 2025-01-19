@@ -8,6 +8,7 @@ import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TownyTeamRelation;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
@@ -94,17 +95,28 @@ public class TownTeam implements NwITeam {
 
     @Override
     public Date getCreationDate() {
-        return new Date();
+        return this.model.getCreationDate();
     }
 
     @Override
     public Date getLastUpdate() {
-        return null;
+        return this.model.getLastUpdate();
     }
 
     @Override
     public void setLastUpdate(Timestamp value) {
+        this.model.setLastUpdate(value);
+    }
 
+    @Override
+    public ItemStack getBanner() {
+        //TODO
+        return null;
+    }
+
+    @Override
+    public void setBanner(ItemStack banner) {
+        //TODO
     }
 
     @Override
@@ -130,7 +142,7 @@ public class TownTeam implements NwITeam {
             }
 
             TeamMemberModel memberModel = new TeamMemberModel(getID(), 0, rank, new Timestamp(System.currentTimeMillis()), resident.getName());
-            memberMap.put(resident.getName(), new TeamMember(null, this, memberModel));
+            memberMap.put(resident.getName(), new TeamMember(this, memberModel));
         });
         return memberMap;
     }

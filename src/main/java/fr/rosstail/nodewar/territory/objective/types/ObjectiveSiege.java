@@ -31,15 +31,13 @@ public class ObjectiveSiege extends NwConquestObjective {
     public ObjectiveSiege(Territory territory, ObjectiveSiegeModel childModel, ObjectiveSiegeModel parentModel) {
         super(territory, childModel, parentModel);
 
-        ObjectiveSiegeModel clonedChildObjectiveModel = childModel.clone();
-        ObjectiveSiegeModel clonedParentObjectiveModel = parentModel.clone();
-        this.objectiveSiegeModel = new ObjectiveSiegeModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
+        this.objectiveSiegeModel = new ObjectiveSiegeModel(childModel, parentModel);
 
         objectiveSiegeModel.getControlPointStringSet().forEach(s -> {
             controlPointList.addAll(TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(
-                    (territory1 -> territory1.getModel().getName().equalsIgnoreCase(s)
+                    (territory1 -> territory1.getName().equalsIgnoreCase(s)
                             && territory1.getWorld() == territory.getWorld())
-            ).collect(Collectors.toList()));
+            ).toList());
         });
 
         getObjectiveSiegeModel().getStringRewardModelMap().forEach((s, rewardModel) -> {
@@ -70,7 +68,7 @@ public class ObjectiveSiege extends NwConquestObjective {
 
     @Override
     public NwITeam checkAdvantage() {
-        if (territory.getModel().isUnderProtection()) {
+        if (territory.isUnderProtection()) {
             return territory.getOwnerITeam();
         }
         NwITeam defenderITeam = territory.getOwnerITeam();
@@ -375,9 +373,8 @@ public class ObjectiveSiege extends NwConquestObjective {
 
     @Override
     public String adaptMessage(String message) {
-        message = super.adaptMessage(message);
-
-        message = message.replaceAll("\\[territory_objective_maximum_health]", String.valueOf(maxHealth));
+        message = super.adaptMessage(message)
+                .replaceAll("\\[territory_objective_maximum_health]", String.valueOf(maxHealth));
 
         Pattern capturePointPattern = Pattern.compile("(\\[territory_objective_capturepoint)_(\\d+)(_\\w+])");
         Matcher capturePointMatcher = capturePointPattern.matcher(message);
@@ -397,5 +394,22 @@ public class ObjectiveSiege extends NwConquestObjective {
         }
 
         return message;
+    }
+
+    @Override
+    public void addTerritory(Territory territory) {
+        super.addTerritory(territory);
+
+        if (this.objectiveSiegeModel.getControlPointStringSet().contains(territory.getName())
+                && territory.getWorld().equals(super.territory.getWorld())
+        && !controlPointList.contains(territory)) {
+            controlPointList.add(territory);
+        }
+    }
+
+    @Override
+    public void removeTerritory(Territory territory) {
+        super.removeTerritory(territory);
+        controlPointList.remove(territory);
     }
 }

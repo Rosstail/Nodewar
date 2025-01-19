@@ -3,13 +3,13 @@ package fr.rosstail.nodewar.webmap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
-public class TerritoryWebmapModel implements Cloneable {
+public class TerritoryWebmapModel {
 
-    private String marker;
-    private String drawLineStr;
-    private String xString;
-    private String yString;
-    private String zString;
+    private String marker = null;
+    private String drawLineStr = null;
+    private String xString = null;
+    private String yString = null;
+    private String zString = null;
 
     public TerritoryWebmapModel(ConfigurationSection section) {
         if (section != null) {
@@ -47,6 +47,14 @@ public class TerritoryWebmapModel implements Cloneable {
         } else if (parentObjectiveModel.getzString() != null) {
             this.zString = parentObjectiveModel.getzString();
         }
+    }
+
+    public TerritoryWebmapModel(TerritoryWebmapModel parentModel) {
+        this.marker = parentModel.getMarker();
+        this.drawLineStr = parentModel.getDrawLineStr();
+        this.xString= parentModel.getxString();
+        this.yString = parentModel.getyString();
+        this.zString = parentModel.getzString();
     }
 
     public String getMarker() {
@@ -87,21 +95,5 @@ public class TerritoryWebmapModel implements Cloneable {
 
     public void setzString(String zString) {
         this.zString = zString;
-    }
-
-    @Override
-    public TerritoryWebmapModel clone() {
-        try {
-            TerritoryWebmapModel clone = (TerritoryWebmapModel) super.clone();
-            clone.setMarker(getMarker());
-            clone.setDrawLineStr(getDrawLineStr());
-            clone.setxString(getxString());
-            clone.setyString(getyString());
-            clone.setzString(getzString());
-
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
     }
 }

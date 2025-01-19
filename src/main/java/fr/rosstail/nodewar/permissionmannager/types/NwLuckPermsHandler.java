@@ -79,44 +79,4 @@ public class NwLuckPermsHandler implements NwIPermissionManagerHandler {
             return null;
         });
     }
-
-    @Override
-    @Deprecated
-    public void setPlayerGroup(String groupName, Player player) {
-        UserManager userManager = luckPerms.getUserManager();
-
-        CompletableFuture<User> userFuture = userManager.loadUser(player.getUniqueId());
-
-        userFuture.thenAccept(user -> {
-            Node groupNode = InheritanceNode.builder(groupName).build();
-            user.data().add(groupNode);
-            userManager.saveUser(user);
-        }).exceptionally(exception -> {
-            exception.printStackTrace();
-            return null;
-        });
-    }
-
-    @Override
-    @Deprecated
-    public void removePlayerGroup(Player player, String exceptionTeamName) {
-        UserManager userManager = luckPerms.getUserManager();
-
-        CompletableFuture<User> userFuture = userManager.loadUser(player.getUniqueId());
-
-        userFuture.thenAccept(user -> {
-            Set<Node> groupsToRemove = user.getNodes().stream()
-                    .filter(node -> node instanceof InheritanceNode)
-                    .map(node -> (InheritanceNode) node)
-                    .filter(node -> node.getGroupName().startsWith("nw_") && (exceptionTeamName == null || !node.getGroupName().endsWith(exceptionTeamName)))
-                    .collect(Collectors.toSet());
-
-            groupsToRemove.forEach(user.data()::remove);
-
-            userManager.saveUser(user);
-        }).exceptionally(exception -> {
-            exception.printStackTrace();
-            return null;
-        });
-    }
 }

@@ -37,7 +37,7 @@ public class Lang {
             String stringPath = langMessage.getText();
             String gotMessage = null;
             if (langConfig != null) {
-                if (langMessage.isList()) {
+                if (langConfig.isList(stringPath)) {
                     gotMessage = String.join("\n", langConfig.getStringList(stringPath));
                     langMessage.setDisplayText(AdaptMessage.getAdaptMessage().adaptMessage(gotMessage));
                 } else {
@@ -49,7 +49,7 @@ public class Lang {
             }
 
             if (gotMessage == null && !langMessage.isNullable()) {
-                if (langMessage.isList()) {
+                if (defaultLangConfig.isList(stringPath)) {
                     langMessage.setDisplayText(AdaptMessage.getAdaptMessage().adaptMessage(String.join("\n", defaultLangConfig.getStringList(stringPath))));
                 } else {
                     langMessage.setDisplayText(AdaptMessage.getAdaptMessage().adaptMessage(defaultLangConfig.getString(stringPath)));

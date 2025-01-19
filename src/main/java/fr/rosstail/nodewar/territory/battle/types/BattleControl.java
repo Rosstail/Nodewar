@@ -244,9 +244,9 @@ public class BattleControl extends Battle {
 
     @Override
     public String adaptMessage(String message) {
-        message = super.adaptMessage(message);
-        message = message.replaceAll("\\[territory_battle_health]", String.valueOf(currentHealth));
-        message = message.replaceAll("\\[territory_battle_health_percent]", String.valueOf((int) ((float) currentHealth / objectiveControl.getMaxHealth() * 100)));
+        message = super.adaptMessage(message)
+                .replaceAll("\\[territory_battle_health]", String.valueOf(currentHealth))
+                .replaceAll("\\[territory_battle_health_percent]", String.valueOf((int) ((float) currentHealth / objectiveControl.getMaxHealth() * 100)));
 
         int timeLeft = 0;
         String timeLeftStr = " - ";

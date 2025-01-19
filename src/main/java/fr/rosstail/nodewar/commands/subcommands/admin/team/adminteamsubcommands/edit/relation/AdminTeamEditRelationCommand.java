@@ -68,7 +68,7 @@ public class AdminTeamEditRelationCommand extends AdminTeamEditRelationSubComman
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         if (args.length <= 6) {
             List<String> list = new ArrayList<>();
             for (SubCommand subCommand : subCommands) {

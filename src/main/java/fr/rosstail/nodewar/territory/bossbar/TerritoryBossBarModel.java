@@ -4,7 +4,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public class TerritoryBossBarModel implements Cloneable {
 
-    private String style;
+    private String style = null;
 
     public TerritoryBossBarModel(ConfigurationSection section) {
         if (section == null) {
