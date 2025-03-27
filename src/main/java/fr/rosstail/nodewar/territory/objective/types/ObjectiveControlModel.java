@@ -54,7 +54,7 @@ public class ObjectiveControlModel extends ObjectiveModel {
     }
 
     public ObjectiveControlModel(ObjectiveControlModel childObjectiveModel, ObjectiveControlModel parentObjectiveModel) {
-        super(childObjectiveModel.clone(), parentObjectiveModel.clone());
+        super(childObjectiveModel, parentObjectiveModel);
 
         this.minimumAttackerStr = childObjectiveModel.getMinimumAttackerStr() != null ? childObjectiveModel.getMinimumAttackerStr() : parentObjectiveModel.getMinimumAttackerStr();
         this.baseCaptureSpeedStr = childObjectiveModel.getBaseCaptureSpeedStr() != null ? childObjectiveModel.getBaseCaptureSpeedStr() : parentObjectiveModel.getBaseCaptureSpeedStr();
@@ -75,6 +75,7 @@ public class ObjectiveControlModel extends ObjectiveModel {
 
     public String getBaseCaptureSpeedStr() {
         return baseCaptureSpeedStr;
+
     }
 
     public void setBaseCaptureSpeedStr(String baseCaptureSpeedStr) {
@@ -119,20 +120,5 @@ public class ObjectiveControlModel extends ObjectiveModel {
 
     public void setNeedNeutralizeStepStr(String needNeutralizeStepStr) {
         this.needNeutralizeStepStr = needNeutralizeStepStr;
-    }
-
-    @Override
-    public ObjectiveControlModel clone() {
-        ObjectiveControlModel clone = (ObjectiveControlModel) super.clone();
-
-        clone.setMinimumAttackerStr(getMinimumAttackerStr());
-        clone.setBaseCaptureSpeedStr(getBaseCaptureSpeedStr());
-        clone.setBonusCaptureSpeedPerPlayerStr(getBonusCaptureSpeedPerPlayerStr());
-        clone.setMaxCaptureSpeedStr(getMaxCaptureSpeedStr());
-        clone.setAttackerRatioStr(getAttackerRatioStr());
-        clone.setMaximumHealthStr(getMaxHealthStr());
-        clone.setNeedNeutralizeStepStr(getNeedNeutralizeStepStr());
-
-        return clone;
     }
 }

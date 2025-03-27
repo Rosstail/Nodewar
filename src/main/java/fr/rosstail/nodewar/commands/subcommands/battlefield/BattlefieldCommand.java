@@ -52,7 +52,7 @@ public class BattlefieldCommand extends BattlefieldSubCommand {
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         if (args.length <= 2) {
             List<String> list = new ArrayList<>();
             for (SubCommand subCommand : subCommands) {
@@ -73,7 +73,6 @@ public class BattlefieldCommand extends BattlefieldSubCommand {
     public String getSubCommandHelp() {
         StringBuilder subCommandHelp = new StringBuilder(super.getSubCommandHelp());
         for (SubCommand subCommand : subCommands) {
-            System.out.println("YEAH");
             if (subCommand.getHelp() != null) {
                 subCommandHelp.append("\n").append(subCommand.getHelp());
             }

@@ -15,6 +15,7 @@ import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -110,8 +111,11 @@ public class TeamManageRelationAcceptCommand extends TeamManageRelationSubComman
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        NwITeam playerNwITeam = TeamManager.getManager().getPlayerTeam(sender);
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
+        if (!(sender instanceof Player)) {
+            return new ArrayList<>();
+        }
+        NwITeam playerNwITeam = TeamManager.getManager().getPlayerTeam((Player) sender);
         if (args.length <= 5) {
             return TeamManager.getManager().getTeamRelationRequestSet().stream().filter(nwTeamRelationInvite -> (nwTeamRelationInvite.getTargetTeam() == playerNwITeam)).map(nwTeamRelationInvite -> nwTeamRelationInvite.getSenderTeam().getName()).collect(Collectors.toList());
         }

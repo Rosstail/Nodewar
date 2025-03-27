@@ -80,7 +80,7 @@ public class BattlefieldManager {
             battlefield.getTerritoryList().forEach(territory -> {
                 TerritoryOwnerNeutralizeEvent event = new TerritoryOwnerNeutralizeEvent(territory, null);
                 Bukkit.getPluginManager().callEvent(event);
-                WebmapManager.getManager().addTerritoryToEdit(territory);
+                WebmapManager.getManager().addTerritoryToDraw(territory);
             });
         }
         if (battlefield.getModel().isAnnouncement()) {
@@ -89,12 +89,12 @@ public class BattlefieldManager {
         }
         battlefield.getModel().setOpen(true);
         battlefield.getTerritoryList().forEach(territory -> {
-            territory.getModel().setUnderProtection(false);
+            territory.setUnderProtection(false);
 
             TerritoryProtectionChangeEvent territoryProtectionChangeEvent = new TerritoryProtectionChangeEvent(territory, false);
             Bukkit.getPluginManager().callEvent(territoryProtectionChangeEvent);
 
-            WebmapManager.getManager().addTerritoryToEdit(territory);
+            WebmapManager.getManager().addTerritoryToDraw(territory);
         });
 
         StorageManager.getManager().updateBattlefieldModel(battlefield.getModel(), true);
@@ -118,26 +118,32 @@ public class BattlefieldManager {
                     }
                 }
 
-                territory.getModel().setUnderProtection(true);
+                territory.setUnderProtection(true);
 
                 TerritoryProtectionChangeEvent territoryProtectionChangeEvent = new TerritoryProtectionChangeEvent(territory, true);
                 Bukkit.getPluginManager().callEvent(territoryProtectionChangeEvent);
 
-                WebmapManager.getManager().addTerritoryToEdit(territory);
+                WebmapManager.getManager().addTerritoryToDraw(territory);
             });
         }
 
-        battlefield.getModel().setOpenDateTime(getNextDateTimeMillis(battlefield.getModel().getStartDaysStrSet(), battlefield.getModel().getStartTimesStrSet()));
+        battlefield.getModel().setOpenDateTime(getDateTimeMillisAfterDate(null, battlefield.getModel().getStartDaysStrSet(), battlefield.getModel().getStartTimesStrSet()));
         battlefield.getModel().setCloseDateTime(battlefield.getModel().getOpenDateTime() + battlefield.getModel().getDuration());
 
         StorageManager.getManager().updateBattlefieldModel(battlefield.getModel(), true);
 
     }
 
-
-    public long getNextDateTimeMillis(Set<String> daysOfWeekStr, Set<String> timeStrSet) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDate today = now.toLocalDate();
+    /**
+     * Get the next day of week and time after the specified date
+     * @param localDateTime The local datetime to check. If null, uses NOW
+     * @param daysOfWeekStr The days of week that must be reached
+     * @param timeStrSet The time of day that must be reached
+     * @return the next datetime compatible with the variables
+     */
+    public long getDateTimeMillisAfterDate(LocalDateTime localDateTime, Set<String> daysOfWeekStr, Set<String> timeStrSet) {
+        LocalDateTime localDateTime1 = localDateTime != null ? localDateTime : LocalDateTime.now();
+        LocalDate localDay = localDateTime1.toLocalDate();
 
         Set<DayOfWeek> targetDays = new HashSet<>();
         for (String day : daysOfWeekStr) {
@@ -160,7 +166,7 @@ public class BattlefieldManager {
         long smallestDifference = Long.MAX_VALUE;
 
         for (int i = 0; i <= 7; i++) { // 7 next days
-            LocalDate currentDate = today.plusDays(i);
+            LocalDate currentDate = localDay.plusDays(i);
             DayOfWeek currentDayOfWeek = currentDate.getDayOfWeek();
 
             if (!targetDays.isEmpty() && !targetDays.contains(currentDayOfWeek)) {
@@ -170,11 +176,11 @@ public class BattlefieldManager {
             for (LocalTime targetTime : targetTimes) {
                 LocalDateTime candidateDateTime = LocalDateTime.of(currentDate, targetTime);
 
-                if (i == 0 && candidateDateTime.isBefore(now)) {
+                if (i == 0 && candidateDateTime.isBefore(localDateTime1)) {
                     continue;
                 }
 
-                long difference = Duration.between(now, candidateDateTime).toMillis();
+                long difference = Duration.between(localDateTime1, candidateDateTime).toMillis();
                 if (difference >= 0 && difference < smallestDifference) {
                     smallestDifference = difference;
                     nextDateTime = candidateDateTime;
@@ -186,12 +192,12 @@ public class BattlefieldManager {
             return nextDateTime.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000L;
         }
 
-        return now.withDayOfMonth(now.getDayOfMonth() + 1).withHour(0).withMinute(0).withSecond(0).withNano(0)
+        return localDateTime1.plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0)
                 .atZone(ZoneId.systemDefault()).toEpochSecond() * 1000L;
     }
 
     @Deprecated(since = "2.2.3", forRemoval = true)
-    public long getNextDateTimeMillis(Set<String> daysOfWeekStr, int hour, int minute) {
+    public long getDateTimeMillisAfterDate(Set<String> daysOfWeekStr, int hour, int minute) {
         LocalDateTime now = LocalDateTime.now();
         LocalDate today = now.toLocalDate();
         LocalTime targetTime = LocalTime.of(hour, minute);
@@ -280,11 +286,11 @@ public class BattlefieldManager {
             battlefieldListToOpen.forEach(this::openBattlefield);
 
             battlefieldListToOpen.forEach(battlefield -> battlefield.getTerritoryList().forEach(territory -> {
-                WebmapManager.getManager().addTerritoryToEdit(territory);
+                WebmapManager.getManager().addTerritoryToDraw(territory);
             }));
 
             battlefieldListToClose.forEach(battlefield -> battlefield.getTerritoryList().forEach(territory -> {
-                WebmapManager.getManager().addTerritoryToEdit(territory);
+                WebmapManager.getManager().addTerritoryToDraw(territory);
             }));
         }
     }

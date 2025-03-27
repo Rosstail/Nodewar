@@ -77,7 +77,7 @@ public class CommandManager implements CommandExecutor, TabExecutor {
         } else {
             for (SubCommand subCommand : getSubCommands()) {
                 if (subCommand.getName().equalsIgnoreCase(args[0])) {
-                    return subCommand.getSubCommandsArguments((Player) sender, commandArgs, arguments);
+                    return subCommand.getSubCommandsArguments(sender, commandArgs, arguments);
                 }
             }
         }
@@ -97,9 +97,9 @@ public class CommandManager implements CommandExecutor, TabExecutor {
         AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
         String message = LangManager.getMessage(LangMessage.COMMANDS_PERMISSION_DENIED);
         message = adaptMessage.adaptPlayerMessage((Player) sender, message);
-        message = adaptMessage.adaptMessage(message);
-        message = message.replaceAll("\\[command]", command.getName());
-        message = message.replaceAll("\\[permission]", command.getPermission());
+        message = adaptMessage.adaptMessage(message)
+                .replaceAll("\\[command]", command.getName())
+                .replaceAll("\\[permission]", command.getPermission());
         sender.sendMessage(message);
     }
 

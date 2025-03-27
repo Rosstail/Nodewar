@@ -7,7 +7,6 @@ import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
@@ -80,21 +79,21 @@ public class AdminTeamEditMemberPromoteCommand extends AdminTeamEditMemberSubCom
         targetPlayerName = args[6];
 
         targetTeamMemberModel = targetTeam.getMemberMap().values().stream()
-                .filter(teamMember -> teamMember.getModel().getUsername().equalsIgnoreCase(targetPlayerName)).findFirst().orElse(null).getModel();
+                .filter(teamMember -> teamMember.getUsername().equalsIgnoreCase(targetPlayerName)).findFirst().orElse(null);
 
         if (targetTeamMemberModel == null) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM));
             return;
         }
 
-        newRank = targetTeamMemberModel.getRank() + 1;
+        newRank = targetTeamMemberModel.getNumRank() + 1;
         if (newRank == 5 && targetTeam.getMemberMap().values().stream()
                 .anyMatch(teamMember -> teamMember.getRank().getWeight() == NwTeamRank.OWNER.getWeight())) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_PROMOTE_ERROR));
             return;
         }
 
-        targetTeamMemberModel.setRank(newRank);
+        targetTeamMemberModel.setNumRank(newRank);
         StorageManager.getManager().updateTeamMemberModel(targetTeamMemberModel);
 
         targetPlayer = Bukkit.getPlayer(targetPlayerName);
@@ -109,10 +108,10 @@ public class AdminTeamEditMemberPromoteCommand extends AdminTeamEditMemberSubCom
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         NwITeam nwTeam = TeamManager.getManager().getStringTeamMap().get(args[2]);
         if (nwTeam != null) {
-            return nwTeam.getMemberMap().values().stream().map(teamMember -> teamMember.getModel().getUsername()).collect(Collectors.toList());
+            return nwTeam.getMemberMap().values().stream().map(teamMember -> teamMember.getUsername()).collect(Collectors.toList());
         }
 
         return new ArrayList<>();

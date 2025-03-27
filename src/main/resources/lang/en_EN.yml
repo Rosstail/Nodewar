@@ -308,8 +308,9 @@ territory:
     - "&2[territory_id] &7- &6[territory_display]&r&d:"
     - "  &r&9Info&d:"
     - "    &c* &6World&d:&r [territory_world]"
-    - "    &c* &6Type&d:&r [territory_type_display]"
+    - "    &c* &6Type&d:&r [territory_preset_display]"
     - "    &c* &6Protected&d:&r [territory_protected_short][territory_protected]"
+    - "    &c* &6Startpoint&d:&r [territory_attackreq_startpoint] / &6Checkpoint&d:&r [territory_attackreq_checkpoint]"
     - "    &c* &6Line:&r [territory_desc_line]"
     - "    &c* &6Owner&d:&r {[territory_team_color]}[territory_team_display]"
   objective:
@@ -341,6 +342,17 @@ territory:
           - "    &c*  &6Capture points&d:"
           - "[line_capturepoint]"
         line-capturepoint: "      &5- &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
+      demolition:
+        display: "Demolition"
+        description:
+          - "  &9Objective&d: &cDEMOLITION"
+      extermination:
+        display: "Extermination"
+        description:
+          - "  &9Objective&d: &4Extermination"
+          - "    &c*  &6Sides&d:"
+          - "[line_side]"
+        line-side: "      &5- &r[territory_objective_side_[index]_display]&d: [territory_objective_side_[index]_team_color_display]"
   battle:
     types:
       none:
@@ -377,6 +389,23 @@ territory:
           - "    &c* &6Status&d:&r [territory_battle_status]"
           - "    &c* &6Advantage&d:&r [territory_battle_advantage_color_display]"
           - "    &c* &6Health&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
+          - "    &c* &6Time left&d:&r [territory_battle_time_left]"
+          - "  &9Previous battle&d:"
+          - "    &c* &6Winner&d:&r [territory_battle_winner_color_display]"
+      demolition:
+        description:
+          - "  &9Current battle&d:"
+          - "    &c* &6Status&d:&r [territory_battle_status]"
+          - "    &c* &6Advantage&d:&r [territory_battle_advantage_color_display]"
+          - "    &c* &6Health&d:&r [territory_objective_health_lose] < &b[territory_battle_health]&r < [territory_objective_health_start]"
+          - "    &c* &6Time left&d:&r [territory_battle_time_left]"
+          - "  &9Previous battle&d:"
+          - "    &c* &6Winner&d:&r [territory_battle_winner_color_display]"
+      extermination:
+        description:
+          - "  &9Current battle&d:"
+          - "    &c* &6Status&d:&r [territory_battle_status]"
+          - "    &c* &6Advantage&d:&r [territory_battle_advantage_color_display]"
           - "    &c* &6Time left&d:&r [territory_battle_time_left]"
           - "  &9Previous battle&d:"
           - "    &c* &6Winner&d:&r [territory_battle_winner_color_display]"

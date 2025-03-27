@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands
 
 import fr.rosstail.nodewar.commands.subcommands.admin.team.AdminTeamSubCommand;
 import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.AdminTeamEditSubCommand;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -23,5 +24,5 @@ public abstract class AdminTeamEditMemberSubCommand extends AdminTeamEditSubComm
     }
 
     @Override
-    public abstract List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments);
+    public abstract List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments);
 }

@@ -51,6 +51,12 @@ public class SqlStorageRequest implements StorageRequest {
             alterTeamMemberTable();
         }
 
+        if (doesTableExists(playerTableName, username)) {
+            if (doColumnExists(playerTableName, "username")) {
+                dropTableColumn(playerTableName, "username");
+            }
+        }
+
         if (doesTableExists(territoryTableName, username)) {
             alterTerritoryTable();
         }
@@ -91,6 +97,40 @@ public class SqlStorageRequest implements StorageRequest {
             }
         }
         return tableExists;
+    }
+
+    public boolean doColumnExists(String tableName, String columnName) {
+        boolean columnExist = false;
+        ResultSet rs = executeSQLQuery(openConnection(), "SELECT 1 \n" +
+                "FROM pragma_table_info('" + tableName + "') \n" +
+                "WHERE name = '" + columnName + "';");
+
+        try {
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                columnExist = count > 0;
+            }
+            rs.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (rs != null) {
+                try {
+                    if (!rs.isClosed()) {
+                        rs.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return columnExist;
+    }
+
+    public void dropTableColumn(String tableName, String columnName) {
+        String query = "ALTER TABLE " + tableName + " DROP COLUMN " + columnName + ";";
+
+        executeSQL(query);
     }
 
     public void createNodewarPlayerTable() {
@@ -209,12 +249,12 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public boolean insertPlayerModel(PlayerModel model) {
-        String query = "INSERT INTO " + playerTableName + " (uuid, username)"
-                + " VALUES (?, ?);";
+        String query = "INSERT INTO " + playerTableName + " (uuid)"
+                + " VALUES (?);";
 
         String uuid = model.getUuid();
         try {
-            int id = executeSQLUpdate(query, uuid, model.getUsername());
+            int id = executeSQLUpdate(query, uuid);
             if (id != 0) {
                 model.setId(id);
                 return true;
@@ -256,7 +296,7 @@ public class SqlStorageRequest implements StorageRequest {
                 + " VALUES (?, ?, ?);";
         int teamId = model.getTeamId();
         int memberUuid = model.getPlayerId();
-        int memberRank = model.getRank();
+        int memberRank = model.getNumRank();
         try {
             int id = executeSQLUpdate(query, teamId, memberUuid, memberRank);
             if (id != 0) {
@@ -331,7 +371,8 @@ public class SqlStorageRequest implements StorageRequest {
         try {
             ResultSet result = executeSQLQuery(openConnection(), query, uuid);
             if (result.next()) {
-                PlayerModel model = new PlayerModel(uuid, result.getString("username"));
+                String playerName = PlayerDataManager.getPlayerNameFromUUID(UUID.fromString(uuid));
+                PlayerModel model = new PlayerModel(uuid, playerName);
                 model.setId(result.getInt("id"));
                 model.setTeamOpen(result.getBoolean("is_team_open"));
                 model.setLastDeploy(result.getTimestamp("last_deploy").getTime());
@@ -352,8 +393,7 @@ public class SqlStorageRequest implements StorageRequest {
             ResultSet result = executeSQLQuery(openConnection(), query, limit);
             while (result.next()) {
                 String uuid = result.getString("uuid");
-                String username = PlayerDataManager.getPlayerNameFromUUID(uuid);
-                PlayerModel model = new PlayerModel(uuid, username);
+                PlayerModel model = new PlayerModel(UUID.fromString(uuid));
                 model.setTeamOpen(result.getBoolean("is_team_open"));
                 model.setLastDeploy(result.getTimestamp("last_deploy").getTime());
                 model.setLastUpdate(result.getTimestamp("last_update").getTime());
@@ -413,7 +453,7 @@ public class SqlStorageRequest implements StorageRequest {
     public Map<String, TeamMemberModel> selectAllTeamMemberModel(String teamName) {
         Map<String, TeamMemberModel> memberModelMap = new HashMap<>();
 
-        String query = "SELECT p.uuid, p.username, tm.* " +
+        String query = "SELECT p.uuid, tm.* " +
                 "FROM " + teamMemberTableName + " AS tm, " + teamTableName + " AS tt, " + playerTableName + " AS p " +
                 "WHERE p.id = tm.player_id " +
                 "AND tt.id = tm.team_id " +
@@ -423,14 +463,15 @@ public class SqlStorageRequest implements StorageRequest {
             ResultSet result = executeSQLQuery(connection, query, teamName);
 
             while (result.next()) {
+                String playerName = PlayerDataManager.getPlayerNameFromUUID(UUID.fromString(result.getString("uuid")));
                 TeamMemberModel teamMemberModel = new TeamMemberModel(
                         result.getInt("team_id"),
                         result.getInt("player_id"),
                         result.getInt("player_rank"),
                         result.getTimestamp("join_time"),
-                        result.getString("username"));
+                        playerName);
                 teamMemberModel.setId(result.getInt("id"));
-                memberModelMap.put(result.getString("username"), teamMemberModel);
+                memberModelMap.put(playerName, teamMemberModel);
             }
 
             result.close();
@@ -548,11 +589,12 @@ public class SqlStorageRequest implements StorageRequest {
         try {
             ResultSet result = executeSQLQuery(openConnection(), query);
             while (result.next()) {
-                TerritoryModel territoryModel = new TerritoryModel();
 
-                territoryModel.setId(result.getInt(1));
-                territoryModel.setName(result.getString(2));
-                territoryModel.setOwnerName(result.getString(3));
+                int id = result.getInt(1);
+                String name = result.getString(2);
+                String ownerName = result.getString(3);
+
+                TerritoryModel territoryModel = new TerritoryModel(id, name, ownerName);
 
                 territoryModelList.add(territoryModel);
             }
@@ -593,9 +635,9 @@ public class SqlStorageRequest implements StorageRequest {
 
     @Override
     public void updatePlayerModel(PlayerModel model) {
-        String query = "UPDATE " + playerTableName + " SET username = ?, last_update = CURRENT_TIMESTAMP, is_team_open = ?, last_deploy = ? WHERE uuid = ?";
+        String query = "UPDATE " + playerTableName + " SET last_update = CURRENT_TIMESTAMP, is_team_open = ?, last_deploy = ? WHERE uuid = ?";
         try {
-            executeSQLUpdate(query, model.getUsername(), model.isTeamOpen(), new Timestamp(model.getLastDeploy()).getTime(), model.getUuid());
+            executeSQLUpdate(query, model.isTeamOpen(), new Timestamp(model.getLastDeploy()).getTime(), model.getUuid());
             model.setLastUpdate(System.currentTimeMillis());
         } catch (Exception e) {
             e.printStackTrace();
@@ -643,7 +685,7 @@ public class SqlStorageRequest implements StorageRequest {
             executeSQLUpdate(query,
                     model.getPlayerId(),
                     model.getTeamId(),
-                    model.getRank(),
+                    model.getNumRank(),
                     model.getId());
         } catch (SQLException e) {
             e.printStackTrace();

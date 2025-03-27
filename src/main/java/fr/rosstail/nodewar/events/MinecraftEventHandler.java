@@ -21,6 +21,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -51,6 +53,16 @@ public class MinecraftEventHandler implements Listener {
                 }
             }
         }.runTaskTimer(Nodewar.getInstance(), 0, 4);
+    }
+
+    @EventHandler
+    public void onWorldLoad(WorldLoadEvent event) {
+        TerritoryManager.getTerritoryManager().loadTerritories(event.getWorld());
+    }
+
+    @EventHandler
+    public void onWorldUnload(WorldUnloadEvent event) {
+        TerritoryManager.getTerritoryManager().unloadTerritories(event.getWorld());
     }
 
     @EventHandler

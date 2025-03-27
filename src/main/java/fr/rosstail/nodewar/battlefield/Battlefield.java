@@ -23,8 +23,8 @@ public class Battlefield {
         BattlefieldManager.getManager().editBattlefieldAnouncementTimer(this, Math.min(model.getOpenDateTime(), model.getCloseDateTime()));
 
         territoryList = TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory -> (
-                model.getTerritoryList().contains(territory.getModel().getName())
-                        || model.getTerritoryTypeList().contains(territory.getTerritoryType().getName())
+                model.getTerritoryList().contains(territory.getName())
+                        || model.getTerritoryTypeList().contains(territory.getPresetName())
         )).collect(Collectors.toList());
     }
 
@@ -45,21 +45,21 @@ public class Battlefield {
     }
 
     public String adaptMessage(String message) {
-        message = message.replaceAll("\\[battlefield_id]", String.valueOf(model.getId()));
-        message = message.replaceAll("\\[battlefield_name]", model.getName());
-        message = message.replaceAll("\\[battlefield_display]", model.getDisplay());
-        message = message.replaceAll("\\[battlefield_start_time]", AdaptMessage.getAdaptMessage().dateTimeFormatter(model.getOpenDateTime()));
-        message = message.replaceAll("\\[battlefield_start_time_left]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getOpenDateTime()));
-        message = message.replaceAll("\\[battlefield_close_time]", AdaptMessage.getAdaptMessage().dateTimeFormatter(model.getCloseDateTime()));
-        message = message.replaceAll("\\[battlefield_close_time_left]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getCloseDateTime()));
+        message = message.replaceAll("\\[battlefield_id]", String.valueOf(model.getId()))
+                .replaceAll("\\[battlefield_name]", model.getName())
+                .replaceAll("\\[battlefield_display]", model.getDisplay())
+                .replaceAll("\\[battlefield_start_time]", AdaptMessage.getAdaptMessage().dateTimeFormatter(model.getOpenDateTime()))
+                .replaceAll("\\[battlefield_start_time_left]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getOpenDateTime()))
+                .replaceAll("\\[battlefield_close_time]", AdaptMessage.getAdaptMessage().dateTimeFormatter(model.getCloseDateTime()))
+                .replaceAll("\\[battlefield_close_time_left]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getCloseDateTime()));
 
         boolean isOpen = model.isOpen();
         if (isOpen) {
-            message = message.replaceAll("\\[battlefield_status]", LangManager.getMessage(LangMessage.BATTLEFIELD_OPEN));
-            message = message.replaceAll("\\[battlefield_delay]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getCloseDateTime() - System.currentTimeMillis()));
+            message = message.replaceAll("\\[battlefield_status]", LangManager.getMessage(LangMessage.BATTLEFIELD_OPEN))
+                    .replaceAll("\\[battlefield_delay]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getCloseDateTime() - System.currentTimeMillis()));
         } else {
-            message = message.replaceAll("\\[battlefield_status]", LangManager.getMessage(LangMessage.BATTLEFIELD_CLOSED));
-            message = message.replaceAll("\\[battlefield_delay]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getOpenDateTime() - System.currentTimeMillis()));
+            message = message.replaceAll("\\[battlefield_status]", LangManager.getMessage(LangMessage.BATTLEFIELD_CLOSED))
+                    .replaceAll("\\[battlefield_delay]", AdaptMessage.getAdaptMessage().countdownFormatter(model.getOpenDateTime() - System.currentTimeMillis()));
         }
 
         if (message.contains("[battlefield_territory_list_line]")) {

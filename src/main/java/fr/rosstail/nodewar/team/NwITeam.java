@@ -2,6 +2,7 @@ package fr.rosstail.nodewar.team;
 
 import fr.rosstail.nodewar.team.member.TeamMember;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +26,8 @@ public interface NwITeam {
     Date getCreationDate();
     Date getLastUpdate();
     void setLastUpdate(Timestamp value);
+    ItemStack getBanner();
+    void setBanner(ItemStack banner);
 
     Map<Player, TeamMember> getOnlineMemberMap();
 

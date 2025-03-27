@@ -76,7 +76,7 @@ public class AdminTeamEditMemberRemoveCommand extends AdminTeamEditMemberSubComm
         targetPlayerName = args[6];
 
         if (targetTeam.getMemberMap().values().stream()
-                .noneMatch(teamMember -> teamMember.getModel().getUsername().equalsIgnoreCase(targetPlayerName))) {
+                .noneMatch(teamMember -> teamMember.getUsername().equalsIgnoreCase(targetPlayerName))) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM));
             return;
         }
@@ -100,10 +100,10 @@ public class AdminTeamEditMemberRemoveCommand extends AdminTeamEditMemberSubComm
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         NwITeam nwTeam = TeamManager.getManager().getStringTeamMap().get(args[3]);
         if (nwTeam != null) {
-            return nwTeam.getMemberMap().values().stream().map(teamMember -> teamMember.getModel().getUsername()).collect(Collectors.toList());
+            return nwTeam.getMemberMap().values().stream().map(teamMember -> teamMember.getUsername()).collect(Collectors.toList());
         }
 
         return new ArrayList<>();

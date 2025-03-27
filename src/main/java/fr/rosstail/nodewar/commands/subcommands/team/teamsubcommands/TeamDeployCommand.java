@@ -20,6 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -105,12 +106,12 @@ public class TeamDeployCommand extends TeamSubCommand {
                 .filter(streamTerritory -> streamTerritory.getOwnerITeam() == playerNwITeam &&
                         streamTerritory.getProtectedRegionList().stream().anyMatch(region ->
                                 region.getFlags().containsKey(Flags.TELE_LOC))).collect(Collectors.toList());
-        if (!teleportTerritoryList.stream().anyMatch(territory1 -> territory1.getModel().getName().equalsIgnoreCase(territoryName))) {
+        if (!teleportTerritoryList.stream().anyMatch(territory1 -> territory1.getName().equalsIgnoreCase(territoryName))) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DEPLOY_FAILURE_TERRITORY));
             return;
         }
 
-        territory = teleportTerritoryList.stream().filter(territory1 -> territory1.getModel().getName().equalsIgnoreCase(territoryName)).findFirst().get();
+        territory = teleportTerritoryList.stream().filter(territory1 -> territory1.getName().equalsIgnoreCase(territoryName)).findFirst().get();
 
         List<ProtectedRegion> teleportTerritoryRegionList = territory.getProtectedRegionList().stream().filter(region ->
                                 region.getFlags().containsKey(Flags.TELE_LOC)).collect(Collectors.toList());
@@ -135,9 +136,13 @@ public class TeamDeployCommand extends TeamSubCommand {
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
+        if (!(sender instanceof Player)) {
+            return new ArrayList<>();
+        }
+
         TeamManager teamManager = TeamManager.getManager();
-        NwITeam playerNwITeam = teamManager.getPlayerTeam(sender);
+        NwITeam playerNwITeam = teamManager.getPlayerTeam((Player) sender);
         String selectedTerritoryName;
         if (playerNwITeam != null && args.length <= 4) {
             Stream<Territory> territoryStream = TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream()
@@ -145,13 +150,13 @@ public class TeamDeployCommand extends TeamSubCommand {
                             territory.getProtectedRegionList().stream().anyMatch(region ->
                                     region.getFlags().containsKey(Flags.TELE_LOC)));
             if (args.length <= 3) {
-                return territoryStream.map(Territory::getModel).map(TerritoryModel::getName).collect(Collectors.toList());
+                return territoryStream.map(Territory::getName).collect(Collectors.toList());
             } else {
                 selectedTerritoryName = args[2];
-                Territory selectedTerritory = territoryStream.filter(territory -> (territory.getModel().getName().equalsIgnoreCase(selectedTerritoryName))).findFirst().orElse(null);
+                Territory selectedTerritory = territoryStream.filter(territory -> (territory.getName().equalsIgnoreCase(selectedTerritoryName))).findFirst().orElse(null);
                 if (selectedTerritory != null) {
                     List<ProtectedRegion> teleportTerritoryRegionList = selectedTerritory.getProtectedRegionList().stream().filter(region ->
-                            region.getFlags().containsKey(Flags.TELE_LOC)).collect(Collectors.toList());
+                            region.getFlags().containsKey(Flags.TELE_LOC)).toList();
                     return teleportTerritoryRegionList.stream().map(ProtectedRegion::getId).collect(Collectors.toList());
                 }
             }

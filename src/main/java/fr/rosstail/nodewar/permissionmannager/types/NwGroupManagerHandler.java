@@ -42,14 +42,4 @@ public class NwGroupManagerHandler implements NwIPermissionManagerHandler {
                     handler.getUser(playerName).removeSubGroup(handler.getGroup(s));
                 });
     }
-
-    @Override
-    public void setPlayerGroup(String groupName, Player player) {
-        // TODO REMOVE
-    }
-
-    @Override
-    public void removePlayerGroup(Player player, String groupExceptionName) {
-        // TODO REMOVE
-    }
 }

@@ -33,9 +33,7 @@ public class NwObjective implements NwIObjective {
 
     public NwObjective(Territory territory, ObjectiveModel childModel, ObjectiveModel parentModel) {
         if (childModel != null || parentModel != null) {
-            ObjectiveModel childObjectiveModel = childModel.clone();
-            ObjectiveModel parentObjectiveModel = parentModel.clone();
-            this.objectiveModel = new ObjectiveModel(childObjectiveModel, parentObjectiveModel);
+            this.objectiveModel = new ObjectiveModel(childModel, parentModel);
         } else {
             setObjectiveModel(new ObjectiveModel(null));
         }
@@ -55,6 +53,11 @@ public class NwObjective implements NwIObjective {
     @Override
     public void setStringRewardMap(Map<String, ObjectiveReward> stringRewardMap) {
         this.stringRewardMap = stringRewardMap;
+    }
+
+    @Override
+    public void setInitialState() {
+
     }
 
     public ObjectiveModel getObjectiveModel() {
@@ -90,11 +93,6 @@ public class NwObjective implements NwIObjective {
     }
 
     @Override
-    public void setInitialState() {
-
-    }
-
-    @Override
     public boolean checkStart() {
         return false;
     }
@@ -124,6 +122,8 @@ public class NwObjective implements NwIObjective {
         NwITeam winner = checkWinner();
         if (winner != null) {
             win(winner);
+        } else {
+            neutralize(null);
         }
     }
 
@@ -193,9 +193,9 @@ public class NwObjective implements NwIObjective {
 
     @Override
     public String adaptMessage(String message) {
-        message = message.replaceAll("\\[territory_objective_description]", description.stream().map(String::valueOf).collect(Collectors.joining("\n")));
-        message = message.replaceAll("\\[territory_objective_name]", getObjectiveModel().getTypeString());
-        message = message.replaceAll("\\[territory_objective_display]", display);
+        message = message.replaceAll("\\[territory_objective_description]", description.stream().map(String::valueOf).collect(Collectors.joining("\n")))
+                .replaceAll("\\[territory_objective_name]", getObjectiveModel().getTypeString())
+                .replaceAll("\\[territory_objective_display]", display);
         return message;
     }
 
@@ -204,5 +204,15 @@ public class NwObjective implements NwIObjective {
         getStringRewardMap().forEach((s, objectiveReward) -> {
             objectiveReward.handleReward(territory, this, battle, iTeamPositionMap);
         });
+    }
+
+    @Override
+    public void addTerritory(Territory territory) {
+
+    }
+
+    @Override
+    public void removeTerritory(Territory territory) {
+
     }
 }

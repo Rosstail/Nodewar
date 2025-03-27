@@ -88,7 +88,7 @@ public class TeamCheckCommand extends TeamSubCommand {
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         return new ArrayList<>(TeamManager.getManager().getStringTeamMap().keySet());
     }
 }

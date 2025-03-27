@@ -4,42 +4,33 @@ import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class AttackRequirements {
+public class AttackRequirements extends AttackRequirementsModel {
 
     protected Territory territory;
-    private final AttackRequirementsModel attackRequirementsModel;
 
     private final boolean startPoint;
-    private final List<Territory> targetTerritoryList = new ArrayList<>();
-    private final List<Territory> defendAgainstTerritoryList = new ArrayList<>();
+    private final boolean checkPoint;
+    private final Set<Territory> targetTerritorySet = new HashSet<>();
+    private final Set<Territory> defendAgainstTerritorySet = new HashSet<>();
 
-    public AttackRequirements(Territory territory, AttackRequirementsModel childModel, AttackRequirementsModel parentModel) {
-        this.territory = territory;
-        AttackRequirementsModel clonedChildModel = childModel.clone();
-        AttackRequirementsModel clonedParentModel = parentModel.clone();
-        this.attackRequirementsModel = new AttackRequirementsModel(clonedChildModel, clonedParentModel);
+    public AttackRequirements(@NotNull Territory territory, AttackRequirementsModel model) {
+        super(territory.getAttackRequirementsModel());
 
-        this.startPoint = Boolean.parseBoolean(attackRequirementsModel.getStartPointStr());
+        this.startPoint = Boolean.parseBoolean(model.getStartPointStr());
+        this.checkPoint = Boolean.parseBoolean(model.getCheckPointStr());
     }
 
-    public void initialize() {
-        TerritoryManager territoryManager = TerritoryManager.getTerritoryManager();
-        if (this.attackRequirementsModel.getTargetNameList() != null) {
-            this.attackRequirementsModel.getTargetNameList().forEach(s -> {
-                Optional<Territory> first = territoryManager.getTerritoryMap().values().stream().filter(territory1 -> (
-                        territory1.getModel().getName().equalsIgnoreCase(s) &&
-                                territory1.getWorld() == territory.getWorld()
-                )).findFirst();
-                first.ifPresent(targetTerritoryList::add);
-                first.ifPresent(territory1 -> territory1.getAttackRequirements().getDefendAgainstTerritoryList().add(this.territory));
-            });
-        }
+    public AttackRequirements(@NotNull Territory territory, AttackRequirementsModel childModel, AttackRequirementsModel parentModel) {
+        super(new AttackRequirementsModel(childModel, parentModel));
+
+        this.territory = territory;
+        this.startPoint = Boolean.parseBoolean(getStartPointStr());
+        this.checkPoint = Boolean.parseBoolean(getCheckPointStr());
     }
 
     public boolean checkAttackRequirements(NwITeam nwITeam) {
@@ -47,32 +38,34 @@ public class AttackRequirements {
             return true;
         }
         List<Territory> ownedTerritoryList = TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(teamTerritory ->
-                (teamTerritory.getWorld() == territory.getWorld() && teamTerritory.getOwnerITeam() == nwITeam)).collect(Collectors.toList());
+                (teamTerritory.getWorld() == territory.getWorld() && teamTerritory.getOwnerITeam() == nwITeam)).toList();
 
-        if (ownedTerritoryList.stream().anyMatch(territory1 -> territory1.getSubTerritoryList().contains(territory))) {
+        if (ownedTerritoryList.stream().anyMatch(territory1 -> territory1.getSubTerritoryNameSet().contains(territory.getName()))) {
             return true;
         }
 
         if (startPoint) { //Cannot capture another startpoint if not targeted by other territory
             return ownedTerritoryList.isEmpty() ||
-                    ownedTerritoryList.stream().anyMatch(territory1 -> territory1.getAttackRequirements().getTargetTerritoryList().contains(territory));
+                    ownedTerritoryList.stream().anyMatch(territory1 -> territory1.getAttackRequirements().getTargetTerritorySet().contains(territory));
         }
 
         // if a territory that can target self territory is already under attack, check if this territory can be counter-attacked
-        if (!ConfigData.getConfigData().general.canCounterAttack
+        if (!ConfigData.getConfigData().team.canCounterAttack
                 && !ownedTerritoryList.isEmpty() // TO CHECK
                 && ownedTerritoryList.stream()
-                        .filter(attackerTerritory -> attackerTerritory.getAttackRequirements().getTargetTerritoryList().contains(territory))
-                        .allMatch(attackerTerritory -> attackerTerritory.getCurrentBattle().isBattleStarted())
+                .filter(attackerTerritory -> attackerTerritory.getAttackRequirements().getTargetTerritorySet().contains(territory))
+                .allMatch(attackerTerritory -> attackerTerritory.getCurrentBattle().isBattleStarted())
         ) {
             return false;
         }
 
-        List<Territory> startPointList = ownedTerritoryList.stream().filter(
-                territory1 -> (territory1.getAttackRequirements().isStartPoint())
+        List<Territory> startAndCheckPointList = ownedTerritoryList.stream().filter(
+                territory1 -> (territory1.getAttackRequirements().isStartPoint()
+                        || territory1.getAttackRequirements().isCheckPoint()
+                )
         ).collect(Collectors.toList());
 
-        for (Territory startPoint : startPointList) {
+        for (Territory startPoint : startAndCheckPointList) {
             if (checkAttackRequirements(nwITeam, startPoint, new ArrayList<>(), territory)) {
                 return true;
             }
@@ -82,7 +75,7 @@ public class AttackRequirements {
     }
 
     public boolean checkAttackRequirements(NwITeam nwITeam, Territory territoryToCheck, ArrayList<Territory> territoryToIgnoreList, Territory finalTerritory) {
-        List<Territory> territoryListToCheck = territoryToCheck.getAttackRequirements().getTargetTerritoryList().stream()
+        List<Territory> territoryListToCheck = territoryToCheck.getAttackRequirements().getTargetTerritorySet().stream()
                 .filter(territory1 -> (!territoryToIgnoreList.contains(territory1))).collect(Collectors.toList());
 
 
@@ -104,10 +97,6 @@ public class AttackRequirements {
         return false;
     }
 
-    public AttackRequirementsModel getAttackRequirementsModel() {
-        return attackRequirementsModel;
-    }
-
     public Territory getTerritory() {
         return territory;
     }
@@ -116,11 +105,27 @@ public class AttackRequirements {
         return startPoint;
     }
 
-    public List<Territory> getTargetTerritoryList() {
-        return targetTerritoryList;
+    public boolean isCheckPoint() {
+        return checkPoint;
     }
 
-    public List<Territory> getDefendAgainstTerritoryList() {
-        return defendAgainstTerritoryList;
+    public Set<Territory> getTargetTerritorySet() {
+        return targetTerritorySet;
+    }
+
+    public Set<Territory> getDefendAgainstTerritorySet() {
+        return defendAgainstTerritorySet;
+    }
+
+    public String adaptMessage(String message) {
+        if (message == null) {
+            return null;
+        }
+
+        message = message
+                .replaceAll("\\[territory_attackreq_startpoint]", isStartPoint() ? "yes" : "no")
+                .replaceAll("\\[territory_attackreq_checkpoint]", isCheckPoint() ? "yes" : "no");
+
+        return message;
     }
 }

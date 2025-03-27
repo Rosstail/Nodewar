@@ -10,8 +10,8 @@ public class MongoDbStorageRequest extends SqlStorageRequest {
 
     @Override
     public void setupStorage(String host, short port, String database, String username, String password) {
-        this.url = "jdbc:mongodb://" + host + ":" + port + "/" + database;
         this.driver = "mongodb.jdbc.MongoDriver";
+        this.url = "jdbc:mongodb://" + host + ":" + port + "/" + database;
         this.username = username;
         this.password = password;
         super.setupStorage(host, port, database, username, password);

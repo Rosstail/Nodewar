@@ -57,7 +57,7 @@ public class TerritoryCommands {
                                         .findFirst().get().getKey();
                                 rewardPlayer(onlineMember, territory, finalCommand);
                             } else {
-                                rewardPlayer(member.getModel().getUsername(), territory, finalCommand);
+                                rewardPlayer(member.getUsername(), territory, finalCommand);
                             }
                         });
                     } else {

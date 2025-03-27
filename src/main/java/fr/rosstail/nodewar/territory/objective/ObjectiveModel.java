@@ -9,28 +9,29 @@ import java.util.Map;
 
 public class ObjectiveModel implements Cloneable {
 
-    private String typeString;
-    private String endingPeriodString;
-    private String gracePeriodString;
+    private String typeString = null;
+    private String endingPeriodString = null;
+    private String gracePeriodString = null;
 
     private Map<String, ObjectiveRewardModel> stringRewardModelMap = new HashMap<>();
 
     public ObjectiveModel(ConfigurationSection section) {
-        if (section != null) {
-            this.typeString = section.getString("type");
-            this.endingPeriodString = section.getString("ending-period");
-            this.gracePeriodString = section.getString("grace-period");
-            ConfigurationSection rewardListSection = section.getConfigurationSection("rewards");
-            if (rewardListSection != null) {
-                rewardListSection.getKeys(false).forEach(s -> {
-                    ConfigurationSection rewardSection = rewardListSection.getConfigurationSection(s);
-                    stringRewardModelMap.put(s, new ObjectiveRewardModel(rewardSection));
-                });
-            }
+        if (section == null) {
+            return;
+        }
+        this.typeString = section.getString("type");
+        this.endingPeriodString = section.getString("ending-period");
+        this.gracePeriodString = section.getString("grace-period");
+        ConfigurationSection rewardListSection = section.getConfigurationSection("rewards");
+        if (rewardListSection != null) {
+            rewardListSection.getKeys(false).forEach(s -> {
+                ConfigurationSection rewardSection = rewardListSection.getConfigurationSection(s);
+                stringRewardModelMap.put(s, new ObjectiveRewardModel(rewardSection));
+            });
         }
     }
 
-    protected ObjectiveModel(ObjectiveModel childObjectiveModel, @NotNull ObjectiveModel parentObjectiveModel) {
+    public ObjectiveModel(ObjectiveModel childObjectiveModel, @NotNull ObjectiveModel parentObjectiveModel) {
         if (childObjectiveModel.getTypeString() != null) {
             this.typeString = childObjectiveModel.typeString;
         } else {
@@ -81,20 +82,5 @@ public class ObjectiveModel implements Cloneable {
 
     public void setStringRewardModelMap(Map<String, ObjectiveRewardModel> stringRewardModelMap) {
         this.stringRewardModelMap = stringRewardModelMap;
-    }
-
-    @Override
-    public ObjectiveModel clone() {
-        try {
-            ObjectiveModel clone = (ObjectiveModel) super.clone();
-            clone.setTypeString(getTypeString());
-            clone.setEndingPeriodString(getEndingPeriodString());
-            clone.setGracePeriodString(getGracePeriodString());
-            clone.setStringRewardModelMap(new HashMap<>(getStringRewardModelMap()));
-
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
     }
 }

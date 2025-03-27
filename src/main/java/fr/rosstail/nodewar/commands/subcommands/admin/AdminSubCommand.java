@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.commands.subcommands.admin;
 
 import fr.rosstail.nodewar.commands.SubCommand;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -27,5 +28,5 @@ public abstract class AdminSubCommand extends SubCommand {
     }
 
     @Override
-    public abstract List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments);
+    public abstract List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments);
 }

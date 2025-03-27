@@ -159,8 +159,11 @@ public class TeamManageRelationRequestCommand extends TeamManageRelationSubComma
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        NwITeam playerNwTeam = TeamManager.getManager().getPlayerTeam(sender);
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
+        if (!(sender instanceof Player)) {
+            return new ArrayList<>();
+        }
+        NwITeam playerNwTeam = TeamManager.getManager().getPlayerTeam((Player) sender);
         if (args.length <= 5) {
             List<String> relations = new ArrayList<>();
 

@@ -97,12 +97,12 @@ public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
         sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_COLOR_RESULT), targetTeam, null));
 
         TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory -> territory.getOwnerITeam() == targetTeam).forEach(territory -> {
-            WebmapManager.getManager().addTerritoryToEdit(territory);
+            WebmapManager.getManager().addTerritoryToDraw(territory);
         });
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         List<String> list = new ArrayList<>();
         if (AdaptMessage.getAdaptMessage().getVersionNumbers().get(1) >= 16) {
             list.add("#");

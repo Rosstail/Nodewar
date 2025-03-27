@@ -10,6 +10,7 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.io.BufferedReader;
@@ -19,6 +20,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class PlayerDataManager {
     private static final Nodewar plugin = Nodewar.getInstance();
@@ -36,10 +38,13 @@ public class PlayerDataManager {
         playerDataMap.remove(player.getName());
     }
 
-    public static String getPlayerNameFromUUID(String uuid) {
-        if (!Bukkit.getOnlineMode()) {
-            return uuid;
+    public static String getPlayerNameFromUUID(UUID uuid) {
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+
+        if (offlinePlayer.hasPlayedBefore()) {
+            return offlinePlayer.getName();
         }
+
         try {
             URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

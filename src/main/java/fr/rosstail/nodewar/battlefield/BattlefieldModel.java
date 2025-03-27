@@ -3,6 +3,8 @@ package fr.rosstail.nodewar.battlefield;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -29,13 +31,6 @@ public class BattlefieldModel {
 
     private boolean announcement;
 
-    @Deprecated(since = "2.2.3", forRemoval = true)
-    private String fromTimeStr;
-    @Deprecated(since = "2.2.3", forRemoval = true)
-    private Set<String> toDayStrSet;
-    @Deprecated(since = "2.2.3", forRemoval = true)
-    private String toTimeStr;
-
     public BattlefieldModel(ConfigurationSection section) {
         this.name = section.getName();
         this.display = section.getString("display");
@@ -57,27 +52,16 @@ public class BattlefieldModel {
 
         durationStr = section.getString("duration");
 
-        Set<String> startTimeStrSet = startTimesStrSet != null
-                ? startTimesStrSet
-                : fromTimeStr != null
-                    ? Collections.singleton(fromTimeStr)
-                    : new HashSet<>();
-        this.openDateTime = BattlefieldManager.getManager().getNextDateTimeMillis(startDaysStrSet, startTimeStrSet);
+        Set<String> startTimeStrSet = startTimesStrSet != null ? startTimesStrSet : new HashSet<>();
+        this.openDateTime = BattlefieldManager.getManager().getDateTimeMillisAfterDate(LocalDateTime.now(), startDaysStrSet, startTimeStrSet);
 
         if (durationStr != null) {
             duration = AdaptMessage.evalDuration(durationStr);
             this.closeDateTime = openDateTime + duration;
-        } else { // Deprecation maintenance
-            this.toDayStrSet = new HashSet<>(section.getStringList("to.days"));
-            this.toTimeStr = section.getString("to.time");
-            if (toDayStrSet.isEmpty()) {
-                toDayStrSet = new HashSet<>();
-                if (section.getString("to.day") != null) {
-                    toDayStrSet.add(section.getString("to.day"));
-                }
-            }
-
-            this.closeDateTime = BattlefieldManager.getManager().getNextDateTimeMillis(toDayStrSet, Collections.singleton(toTimeStr));
+        } else {
+            this.closeDateTime = LocalDateTime.now()
+                    .plusDays(1L).withHour(0).withMinute(0).withSecond(0).withNano(0)
+                    .atZone(ZoneId.systemDefault()).toEpochSecond() * 1000L;
             this.duration = closeDateTime - openDateTime;
         }
 
@@ -118,19 +102,6 @@ public class BattlefieldModel {
         this.startDaysStrSet = startDaysStrSet;
     }
 
-    public String getFromTimeStr() {
-        return fromTimeStr;
-    }
-
-    public void setFromTimeStr(String fromTimeStr) {
-        this.fromTimeStr = fromTimeStr;
-    }
-
-    @Deprecated(since = "2.2.3", forRemoval = true)
-    public Set<String> getToDayStrSet() {
-        return toDayStrSet;
-    }
-
     public long getOpenDateTime() {
         return openDateTime;
     }
@@ -163,27 +134,12 @@ public class BattlefieldModel {
         this.durationStr = durationStr;
     }
 
-    @Deprecated(since = "2.2.3", forRemoval = true)
-    public void setToDayStrSet(Set<String> toDayStrSet) {
-        this.toDayStrSet = toDayStrSet;
-    }
-
-    @Deprecated(since = "2.2.3", forRemoval = true)
-    public String getToTimeStr() {
-        return toTimeStr;
-    }
-
     public long getCloseDateTime() {
         return closeDateTime;
     }
 
     public void setCloseDateTime(long closeDateTime) {
         this.closeDateTime = closeDateTime;
-    }
-
-    @Deprecated(since = "2.2.3", forRemoval = true)
-    public void setToTimeStr(String toTimeStr) {
-        this.toTimeStr = toTimeStr;
     }
 
     public boolean isOpen() {

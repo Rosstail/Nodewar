@@ -88,7 +88,7 @@ public class TeamManageMemberKickCommand extends TeamManageMemberSubCommand {
             }
 
             if (playerNwITeam.getMemberMap().values().stream()
-                    .noneMatch(teamMember -> teamMember.getModel().getUsername().equalsIgnoreCase(targetName))) {
+                    .noneMatch(teamMember -> teamMember.getUsername().equalsIgnoreCase(targetName))) {
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM));
                 return;
             }
@@ -111,10 +111,13 @@ public class TeamManageMemberKickCommand extends TeamManageMemberSubCommand {
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
-        NwITeam playerNwITeam = TeamManager.getManager().getPlayerTeam(sender);
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
+        if (!(sender instanceof Player)) {
+            return new ArrayList<>();
+        }
+        NwITeam playerNwITeam = TeamManager.getManager().getPlayerTeam((Player) sender);
         if (playerNwITeam != null) {
-            return playerNwITeam.getMemberMap().values().stream().map(teamMember -> teamMember.getModel().getUsername()).collect(Collectors.toList());
+            return playerNwITeam.getMemberMap().values().stream().map(teamMember -> teamMember.getUsername()).collect(Collectors.toList());
         }
 
         return new ArrayList<>();

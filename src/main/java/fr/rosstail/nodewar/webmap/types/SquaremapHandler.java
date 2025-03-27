@@ -84,10 +84,10 @@ public class SquaremapHandler implements NwIWebmapHandler, Listener {
         if (territoryCenter == null) {
             return;
         }
-        if (territory.getWebmapInfo().getTerritoryWebmapModel().getMarker() == null) {
+        if (territory.getWebmapInfo().getMarker() == null) {
             return;
         }
-        Key key = Key.of("nw.marker." + world.getName() + "." + territory.getModel().getName());
+        Key key = Key.of("nw.marker." + world.getName() + "." + territory.getName());
 
         Point point = Point.of(territoryCenter.getX(), territoryCenter.getZ());
         Marker marker = Marker.circle(point, 100);
@@ -113,7 +113,7 @@ public class SquaremapHandler implements NwIWebmapHandler, Listener {
         if (markerIcon != null) {
             marker.setMarkerIcon(markerIcon);
         }
-        marker.setLabel(ChatColor.stripColor(territory.getModel().getDisplay()));
+        marker.setLabel(ChatColor.stripColor(territory.getDisplay()));
         marker.setLocation(territory.getWorld().getName(), territoryCenter.x(), territoryCenter.getY(), territoryCenter.z());*/
     }
 
@@ -125,10 +125,10 @@ public class SquaremapHandler implements NwIWebmapHandler, Listener {
             double[] x;
             double[] z;
             RegionType regionType = protectedRegion.getType();
-            String markerId = "nw.area." + world.getName() + "." + territory.getModel().getName() + "." + protectedRegion.getId();
+            String markerId = "nw.area." + world.getName() + "." + territory.getName() + "." + protectedRegion.getId();
             Key key = Key.of(markerId);
 
-            String name = ChatColor.stripColor(territory.getModel().getDisplay());
+            String name = ChatColor.stripColor(territory.getDisplay());
             BlockVector3 l0 = protectedRegion.getMinimumPoint();
             BlockVector3 l1 = protectedRegion.getMaximumPoint();
             if (regionType == RegionType.CUBOID) {
@@ -183,7 +183,7 @@ public class SquaremapHandler implements NwIWebmapHandler, Listener {
         /*float opacity = ConfigData.getConfigData().webmap.fillOpacity;
         NwITeam nwITeam = territory.getOwnerITeam();
         String territoryColor = nwITeam != null ? nwITeam.getTeamColor() : ConfigData.getConfigData().team.noneColor;
-        boolean isProtected = territory.getModel().isUnderProtection();
+        boolean isProtected = territory.isUnderProtection();
         String strLineColor = isProtected ? "00AA00" : "AA0000";
         int lineColor = Integer.parseInt(strLineColor, 16);
 
@@ -192,7 +192,7 @@ public class SquaremapHandler implements NwIWebmapHandler, Listener {
     }
 
     private void describe(Marker areaMarker, Territory territory) {
-        /*areaMarker.setLabel(ChatColor.stripColor(territory.getModel().getDisplay()));
+        /*areaMarker.setLabel(ChatColor.stripColor(territory.getDisplay()));
         String description = AdaptMessage.getAdaptMessage()
                 .adaptTerritoryMessage(LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_CHECK_RESULT), territory);
         description = WebmapManager.getManager().convertYamlToHtml(description.split("\n"));
@@ -206,7 +206,7 @@ public class SquaremapHandler implements NwIWebmapHandler, Listener {
         if (areaMarkerList == null) {
             return;
         }
-        String name = ChatColor.stripColor(territory.getModel().getDisplay());
+        String name = ChatColor.stripColor(territory.getDisplay());
         areaMarkerList.forEach(areaMarker -> {
             areaMarker.setLabel(name);
             colorize(areaMarker, territory);
@@ -220,7 +220,7 @@ public class SquaremapHandler implements NwIWebmapHandler, Listener {
     @Override
     public void drawLineBetweenTerritories(Territory startTerritory, Territory endTerritory) {
         /*String worldName = startTerritory.getWorld().getName();
-        String markerId = worldName + "." + startTerritory.getModel().getName() + "_" + endTerritory.getModel().getName();
+        String markerId = worldName + "." + startTerritory.getName() + "_" + endTerritory.getName();
         if (startTerritory.getCenter() == null || endTerritory.getCenter() == null) {
             return;
         }
@@ -242,7 +242,7 @@ public class SquaremapHandler implements NwIWebmapHandler, Listener {
         int thickness = ConfigData.getConfigData().webmap.lineThickness;
 
         if (!ConfigData.getConfigData().webmap.simpleLine) {
-            Polyline aroundLineMarker = markerSet.createPolyLineMarker("nw.thick-line." + markerId, ChatColor.stripColor(startTerritory.getModel().getDisplay() + " -> " + endTerritory.getModel().getDisplay()), true, startTerritory.getModel().getWorldName(), x, aroundY, z, false);
+            Polyline aroundLineMarker = markerSet.createPolyLineMarker("nw.thick-line." + markerId, ChatColor.stripColor(startTerritory.getDisplay() + " -> " + endTerritory.getDisplay()), true, startTerritory.getWorldName(), x, aroundY, z, false);
             if (aroundLineMarker != null) {
                 aroundLineMarker.setLineStyle(thickness + 3, 0.5f, 0x000000);
                 polyLineMarkerBetweenTerritoriesMap.put(new AbstractMap.SimpleEntry<>(startTerritory, endTerritory), aroundLineMarker);
@@ -250,7 +250,7 @@ public class SquaremapHandler implements NwIWebmapHandler, Listener {
             }
         }
 
-        Polyline lineMarker = markerSet.createPolyLineMarker("nw.line." + markerId, ChatColor.stripColor(startTerritory.getModel().getDisplay() + " -> " + endTerritory.getModel().getDisplay()), true, startTerritory.getModel().getWorldName(), x, y, z, false);
+        Polyline lineMarker = markerSet.createPolyLineMarker("nw.line." + markerId, ChatColor.stripColor(startTerritory.getDisplay() + " -> " + endTerritory.getDisplay()), true, startTerritory.getWorldName(), x, y, z, false);
 
         if (lineMarker != null) {
             NwITeam nwTeam = startTerritory.getOwnerITeam();

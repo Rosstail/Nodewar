@@ -2,7 +2,6 @@ package fr.rosstail.nodewar.team.teammanagers;
 
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.UltimateClansEventHandler;
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.permissionmannager.PermissionManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
@@ -15,7 +14,6 @@ import me.ulrich.clans.api.ClanAPIManager;
 import me.ulrich.clans.data.ClanData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -28,7 +26,7 @@ import java.util.*;
 public class UcTeamManager implements NwITeamManager, Listener {
     private final Map<String, UcTeam> stringTeamMap = new HashMap<>();
 
-    private Clans clansPlugin;
+    private final Clans clansPlugin;
     private ClanAPIManager clanAPI;
     private UltimateClansEventHandler ultimateClansEventHandler;
 

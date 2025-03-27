@@ -47,12 +47,12 @@ public class AdminTerritoryVulnerableCommand extends AdminTerritorySubCommand {
         String message = LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TERRITORY_VULNERABLE_RESULT);
 
         territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(args[2]);
-        territory.getModel().setUnderProtection(false);
+        territory.setUnderProtection(false);
 
         TerritoryProtectionChangeEvent territoryProtectionChangeEvent = new TerritoryProtectionChangeEvent(territory, false);
         Bukkit.getPluginManager().callEvent(territoryProtectionChangeEvent);
 
-        WebmapManager.getManager().addTerritoryToEdit(territory);
+        WebmapManager.getManager().addTerritoryToDraw(territory);
 
         message = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory);
         sender.sendMessage(message);

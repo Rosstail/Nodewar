@@ -47,12 +47,12 @@ public class AdminTerritoryProtectCommand extends AdminTerritorySubCommand {
         String message = LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TERRITORY_PROTECT_RESULT);
 
         territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(args[2]);
-        territory.getModel().setUnderProtection(true);
+        territory.setUnderProtection(true);
 
         TerritoryProtectionChangeEvent territoryProtectionChangeEvent = new TerritoryProtectionChangeEvent(territory, true);
         Bukkit.getPluginManager().callEvent(territoryProtectionChangeEvent);
 
-        WebmapManager.getManager().addTerritoryToEdit(territory);
+        WebmapManager.getManager().addTerritoryToDraw(territory);
 
         message = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory);
         sender.sendMessage(message);

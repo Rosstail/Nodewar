@@ -3,10 +3,7 @@ package fr.rosstail.nodewar.territory.battle;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.territory.Territory;
-import fr.rosstail.nodewar.territory.battle.types.BattleControl;
-import fr.rosstail.nodewar.territory.battle.types.BattleKeep;
-import fr.rosstail.nodewar.territory.battle.types.BattleKoth;
-import fr.rosstail.nodewar.territory.battle.types.BattleSiege;
+import fr.rosstail.nodewar.territory.battle.types.*;
 import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -32,6 +29,8 @@ public class BattleManager {
 
     static {
         battleClassMap.put("control", BattleControl.class);
+        battleClassMap.put("demolition", BattleDemolition.class);
+        battleClassMap.put("extermination", BattleExtermination.class);
         battleClassMap.put("siege", BattleSiege.class);
         battleClassMap.put("koth", BattleKoth.class);
         battleClassMap.put("keep", BattleKeep.class);

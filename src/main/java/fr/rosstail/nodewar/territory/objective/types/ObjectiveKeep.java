@@ -30,9 +30,7 @@ public class ObjectiveKeep extends NwConquestObjective {
 
     public ObjectiveKeep(Territory territory, ObjectiveKeepModel childModel, ObjectiveKeepModel parentModel) {
         super(territory, childModel, parentModel);
-        ObjectiveKeepModel clonedChildObjectiveModel = childModel.clone();
-        ObjectiveKeepModel clonedParentObjectiveModel = parentModel.clone();
-        this.objectiveKeepModel = new ObjectiveKeepModel(clonedChildObjectiveModel, clonedParentObjectiveModel);
+        this.objectiveKeepModel = new ObjectiveKeepModel(childModel, parentModel);
 
         getObjectiveKeepModel().getStringRewardModelMap().forEach((s, rewardModel) -> {
             getStringRewardMap().put(s, new ObjectiveReward(rewardModel));
@@ -105,7 +103,7 @@ public class ObjectiveKeep extends NwConquestObjective {
 
     @Override
     public NwITeam checkAdvantage() {
-        if (territory.getModel().isUnderProtection()) {
+        if (territory.isUnderProtection()) {
             return territory.getOwnerITeam();
         }
 
@@ -272,12 +270,12 @@ public class ObjectiveKeep extends NwConquestObjective {
         message = super.adaptMessage(message);
         BattleKeep currentBattle = (BattleKeep) territory.getCurrentBattle();
 
-        message = message.replaceAll("\\[territory_objective_hold_time]", String.valueOf(currentBattle.getHoldTime()));
-        message = message.replaceAll("\\[territory_objective_seconds_to_hold]", String.valueOf(secondsToHold));
-        message = message.replaceAll("\\[territory_objective_minimum_attacker_ratio]", String.valueOf(minAttackerRatio));
-        message = message.replaceAll("\\[territory_objective_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)));
-        message = message.replaceAll("\\[territory_objective_minimum_attackers]", String.valueOf(minAttackerAmount));
-        message = message.replaceAll("\\[territory_objective_time_left]", AdaptMessage.getAdaptMessage().countdownFormatter(secondsToHold - currentBattle.getHoldTime()));
+        message = message.replaceAll("\\[territory_objective_hold_time]", String.valueOf(currentBattle.getHoldTime()))
+                .replaceAll("\\[territory_objective_seconds_to_hold]", String.valueOf(secondsToHold))
+                .replaceAll("\\[territory_objective_minimum_attacker_ratio]", String.valueOf(minAttackerRatio))
+                .replaceAll("\\[territory_objective_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)))
+                .replaceAll("\\[territory_objective_minimum_attackers]", String.valueOf(minAttackerAmount))
+                .replaceAll("\\[territory_objective_time_left]", AdaptMessage.getAdaptMessage().countdownFormatter(secondsToHold - currentBattle.getHoldTime()));
 
         return message;
     }

@@ -9,7 +9,6 @@ import fr.rosstail.nodewar.webmap.types.DynmapHandler;
 import fr.rosstail.nodewar.webmap.types.SquaremapHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -48,21 +47,11 @@ public class WebmapManager {
             });
             territoryToEraseSet.clear();
 
-            territoryToEditSet.forEach(territory -> {
-                editTerritoryMarker(territory);
-                editTerritorySurface(territory);
-                // TODO
-                territory.getAttackRequirements().getTargetTerritoryList().forEach(targetTerritory -> {
-                    editLineBetweenTerritories(territory, targetTerritory);
-                });
-            });
-            territoryToEditSet.clear();
-
             territoryToDrawSet.forEach(territory -> {
                 drawTerritoryMarker(territory);
                 drawTerritorySurface(territory);
                 if (territory.getWebmapInfo().isDrawLine()) {
-                    territory.getAttackRequirements().getTargetTerritoryList().stream().filter(targetTerritory -> (
+                    territory.getAttackRequirements().getTargetTerritorySet().stream().filter(targetTerritory -> (
                             targetTerritory.getWebmapInfo().isDrawLine())).forEach(targetTerritory -> {
                         drawLineBetweenTerritories(territory, targetTerritory);
                     });
@@ -78,7 +67,6 @@ public class WebmapManager {
 
     private final Set<Territory> territoryToDrawSet = new HashSet<>();
     private final Set<Territory> territoryToEraseSet = new HashSet<>();
-    private final Set<Territory> territoryToEditSet = new HashSet<>();
 
     static {
         iWebmapManagerMap.put("BlueMap", BluemapHandler.class);
@@ -182,21 +170,12 @@ public class WebmapManager {
         return territoryToDrawSet.add(territory);
     }
 
-    public boolean addTerritoryToEdit(Territory territory) {
-        return territoryToEditSet.add(territory);
-    }
-
     public boolean addTerritoryToErase(Territory territory) {
         return territoryToEraseSet.add(territory);
     }
 
     public boolean addTerritorySetToDraw(Set<Territory> territorySet) {
-        addTerritorySetToEdit(territorySet.stream().filter(territoryToDrawSet::contains).collect(Collectors.toSet()));
         return territoryToDrawSet.addAll(territorySet.stream().filter(territory -> !territoryToDrawSet.contains(territory)).collect(Collectors.toSet()));
-    }
-
-    public boolean addTerritorySetToEdit(Set<Territory> territorySet) {
-        return territoryToEditSet.addAll(territorySet);
     }
 
     public boolean addTerritorySetToErase(Set<Territory> territorySet) {

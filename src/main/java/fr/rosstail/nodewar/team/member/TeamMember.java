@@ -2,22 +2,41 @@ package fr.rosstail.nodewar.team.member;
 
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.rank.NwTeamRank;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public class TeamMember {
+public class TeamMember extends TeamMemberModel {
 
     private final Player player;
     private final NwITeam nwTeam;
     private NwTeamRank rank;
-    private TeamMemberModel model;
 
-    public TeamMember(final Player player, final NwITeam nwITeam, TeamMemberModel model) {
+    /**
+     * Player
+     * @param player
+     * @param nwITeam
+     * @param model
+     */
+    public TeamMember(@NotNull final Player player, final NwITeam nwITeam, TeamMemberModel model) {
+        super(nwITeam.getID(), model.getPlayerId(), model.getNumRank(), model.getJoinDate(), player.getName());
         this.player = player;
         this.nwTeam = nwITeam;
-        this.rank = Arrays.stream(NwTeamRank.values()).filter(teamRank -> teamRank.getWeight() == model.getRank()).findFirst().get();
-        this.model = model;
+        this.rank = Arrays.stream(NwTeamRank.values()).filter(teamRank -> teamRank.getWeight() == getNumRank()).findFirst().get();
+    }
+
+    /**
+     * OfflinePlayer
+     * @param nwITeam
+     * @param model
+     */
+    public TeamMember(final NwITeam nwITeam, TeamMemberModel model) {
+        super(nwITeam.getID(), model.getPlayerId(), model.getNumRank(), model.getJoinDate(), model.getUsername());
+        this.player = null;
+        this.nwTeam = nwITeam;
+        this.rank = Arrays.stream(NwTeamRank.values()).filter(teamRank -> teamRank.getWeight() == getNumRank()).findFirst().get();
     }
 
     public Player getPlayer() {
@@ -34,14 +53,6 @@ public class TeamMember {
 
     public void setRank(NwTeamRank rank) {
         this.rank = rank;
-        this.model.setRank(rank.ordinal());
-    }
-
-    public TeamMemberModel getModel() {
-        return model;
-    }
-
-    public void setModel(TeamMemberModel model) {
-        this.model = model;
+        super.setNumRank(rank.ordinal());
     }
 }

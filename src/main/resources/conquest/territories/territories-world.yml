@@ -1,7 +1,7 @@
 # CONTROL
 crateria-control:
   display: Crateria - Control
-  type: cp-t1
+  preset: cp-t1
   attack-requirements:
     startpoint: true
     targets:
@@ -13,7 +13,7 @@ crateria-control:
 # KEEP
 throne-keep:
   display: Throne - Keep
-  type: keep-t1
+  preset: keep-t1
   attack-requirements:
     startpoint: true
   regions:
@@ -22,7 +22,7 @@ throne-keep:
 # KOTH
 hill-koth:
   display: Hill - KotH
-  type: t1
+  preset: t1
   subterritories:
     - hill-keep
   objective:
@@ -40,7 +40,7 @@ hill-koth:
 
 hill-keep:
   display: Hill - Keep
-  type: keep-t1
+  preset: keep-t1
   attack-requirements:
     startpoint: true
     targets:
@@ -51,7 +51,7 @@ hill-keep:
 # SIEGE
 strong-siege:
   display: Strong - Siege
-  type: t2
+  preset: t2
   subterritories:
     - strong-control-a
     - strong-control-b
@@ -73,7 +73,7 @@ strong-siege:
 
 strong-control-a:
   display: Strong - Control A
-  type: cp-t1
+  preset: cp-t1
   attack-requirements:
     startpoint: true
     targets:
@@ -84,7 +84,7 @@ strong-control-a:
 
 strong-control-b:
   display: Strong - Control B
-  type: cp-t1
+  preset: cp-t1
   attack-requirements:
     startpoint: true
     targets:

@@ -1,8 +1,6 @@
 package fr.rosstail.nodewar.team.teammanagers;
 
-import com.palmergames.bukkit.towny.Towny;
 import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.permissionmannager.PermissionManager;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
@@ -102,7 +100,7 @@ public class NwTeamManager implements NwITeamManager, Listener {
 
         return nwTeams.stream().filter(team ->
                 team.getMemberMap().values().stream().anyMatch(
-                        teamMemberModel -> teamMemberModel.getModel().getPlayerId() == playerData.getId())
+                        teamMemberModel -> teamMemberModel.getPlayerId() == playerData.getId())
         ).findFirst().orElse(null);
     }
 
@@ -186,7 +184,7 @@ public class NwTeamManager implements NwITeamManager, Listener {
         NwTeam nwTeam = (NwTeam) nwITeam;
         String playerUuid = PlayerDataManager.getPlayerUUIDFromName(playerName);
         int playerModelId = StorageManager.getManager().selectPlayerModel(playerUuid).getId();
-        int teamMemberModelID = nwITeam.getMemberMap().get(playerName).getModel().getId();
+        int teamMemberModelID = nwITeam.getMemberMap().get(playerName).getId();
 
         nwTeam.getModel().getTeamMemberModelMap().remove(teamMemberModelID);
         if (!disband) {

@@ -4,6 +4,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.rosstail.nodewar.apis.PAPIExpansion;
 import fr.rosstail.nodewar.battlefield.BattlefieldManager;
 import fr.rosstail.nodewar.commands.CommandManager;
+import fr.rosstail.nodewar.config.ConfigUpdaterManager;
 import fr.rosstail.nodewar.events.MinecraftEventHandler;
 import fr.rosstail.nodewar.events.NodewarEventHandler;
 import fr.rosstail.nodewar.events.WorldguardEventHandler;
@@ -45,6 +46,7 @@ public class Nodewar extends JavaPlugin implements Listener {
     private MinecraftEventHandler minecraftEventHandler;
     private WorldguardEventHandler worldguardEventHandler;
     private NodewarEventHandler nodewarEventHandler;
+    private String filePath = "plugins/" + getName() + "/config.yml";
 
     public void onLoad() {
     }
@@ -53,16 +55,21 @@ public class Nodewar extends JavaPlugin implements Listener {
         return Nodewar.instance;
     }
 
+    public boolean doCustomConfigFileExist(File file) {
+        return (file.exists());
+    }
+
     public void loadCustomConfig() {
-        File fileConfig = new File("plugins/" + getName() + "/config.yml");
-        if (!(fileConfig.exists())) {
+        File fileConfig = new File(filePath);
+        if (!doCustomConfigFileExist(fileConfig)) {
             AdaptMessage.print("[" + this.getName() + "] Preparing default config.yml", AdaptMessage.prints.OUT);
             this.saveDefaultConfig();
         }
-        config = YamlConfiguration.loadConfiguration(fileConfig);
-        saveResource("conquest/territory-types.yml", false);
 
-        ConfigData.init(getCustomConfig());
+        config = YamlConfiguration.loadConfiguration(fileConfig);
+        saveResource("conquest/territories-presets.yml", false);
+
+        ConfigData.init(getCustomConfigFile());
         initDefaultLocales();
 
         LangManager.initCurrentLang(ConfigData.getConfigData().locale.lang);
@@ -90,6 +97,9 @@ public class Nodewar extends JavaPlugin implements Listener {
         BattleManager.init(this);
         BattlefieldManager.init(this);
 
+        if (doCustomConfigFileExist(new File(filePath))) {
+            new ConfigUpdaterManager().updateConfig();
+        }
         loadCustomConfig();
         this.createDataFolder();
 
@@ -97,7 +107,7 @@ public class Nodewar extends JavaPlugin implements Listener {
         PermissionManager.getManager().loadManager();
 
         if (PermissionManager.getManager() == null) {
-            AdaptMessage.print("[" + this.getName() + "] No permission plugin available. Disabling", AdaptMessage.prints.ERROR);
+            AdaptMessage.print("[" + this.getName() + "] No permission nor command available. Disabling", AdaptMessage.prints.ERROR);
             this.onDisable();
         }
 
@@ -106,8 +116,9 @@ public class Nodewar extends JavaPlugin implements Listener {
         webmapManager.loadManager();
 
         TerritoryManager territoryManager = TerritoryManager.getTerritoryManager();
-        territoryManager.loadTerritoryTypeConfig();
-        territoryManager.loadTerritoryConfigs("plugins/" + getName() + "/conquest/territories");
+        territoryManager.loadPresetModels();
+        territoryManager.loadTerritoryModels();
+        territoryManager.loadTerritories();
 
         StorageManager storageManager = StorageManager.initStorageManage(this);
         storageManager.chooseDatabase();
@@ -168,12 +179,7 @@ public class Nodewar extends JavaPlugin implements Listener {
     private void createDataFolder() {
         File folder = new File(this.getDataFolder(), "data/");
         if (!folder.exists()) {
-            String message = this.getCustomConfig().getString("messages.creating-data-folder");
-            if (message != null) {
-                message = AdaptMessage.getAdaptMessage().adaptMessage(message);
-
-                getServer().getConsoleSender().sendMessage(message);
-            }
+            getServer().getConsoleSender().sendMessage("[nw] Creating data/ folder");
             folder.mkdir();
         }
     }
@@ -239,7 +245,7 @@ public class Nodewar extends JavaPlugin implements Listener {
         chat = null;
     }
 
-    public YamlConfiguration getCustomConfig() {
-        return YamlConfiguration.loadConfiguration(new File("plugins/" + getName() + "/config.yml"));
+    public File getCustomConfigFile() {
+        return new File("plugins/" + getName() + "/config.yml");
     }
 }

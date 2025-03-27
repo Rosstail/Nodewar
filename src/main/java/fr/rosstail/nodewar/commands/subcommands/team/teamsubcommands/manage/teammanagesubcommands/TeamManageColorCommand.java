@@ -113,12 +113,12 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
 
         StorageManager.getManager().updateTeamModel(playerNwITeam);
         TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory -> territory.getOwnerITeam() == playerNwITeam).forEach(territory -> {
-            WebmapManager.getManager().addTerritoryToEdit(territory);
+            WebmapManager.getManager().addTerritoryToDraw(territory);
         });
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         List<String> list = new ArrayList<>();
         if (AdaptMessage.getAdaptMessage().getVersionNumbers().get(1) >= 16) {
             list.add("#");

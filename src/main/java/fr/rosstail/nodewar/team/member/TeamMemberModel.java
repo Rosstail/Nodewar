@@ -6,14 +6,14 @@ public class TeamMemberModel {
     private int id;
     private int teamId;
     private int playerId;
-    private int rank;
+    private int numRank;
     private Timestamp joinDate;
     private String username;
 
-    public TeamMemberModel(int teamId, int playerId, int rank, Timestamp joinDate, String username) {
+    public TeamMemberModel(int teamId, int playerId, int numRank, Timestamp joinDate, String username) {
         this.teamId = teamId;
         this.playerId = playerId;
-        this.rank = rank;
+        this.numRank = numRank;
         this.joinDate = joinDate;
         this.username = username;
     }
@@ -50,12 +50,12 @@ public class TeamMemberModel {
         this.username = username;
     }
 
-    public int getRank() {
-        return rank;
+    public int getNumRank() {
+        return numRank;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setNumRank(int numRank) {
+        this.numRank = numRank;
     }
 
     public Timestamp getJoinDate() {

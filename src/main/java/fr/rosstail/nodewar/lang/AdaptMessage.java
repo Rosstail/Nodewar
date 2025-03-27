@@ -111,28 +111,28 @@ public class AdaptMessage {
 
     public String adaptTeamMessage(String message, NwITeam team) {
         if (team == null) {
-            message = message.replaceAll("\\[team_name]", "NONE-TEST");
-            message = message.replaceAll("\\[team_display]", LangManager.getMessage(LangMessage.TEAM_NONE_DISPLAY));
-            message = message.replaceAll("\\[team_color_display]", "{" + ConfigData.getConfigData().team.noneColor + "}" + LangManager.getMessage(LangMessage.TEAM_NONE_DISPLAY));
-            message = message.replaceAll("\\[team_short]", "");
-            message = message.replaceAll("\\[team_color_short]", "{" + ConfigData.getConfigData().team.noneColor + "}");
-            message = message.replaceAll("\\[team_color]", ConfigData.getConfigData().team.noneColor);
-            message = message.replaceAll("\\[team_(\\w+)]", "");
-            message = message.replaceAll("\\[team_open]", "-");
-            message = message.replaceAll("\\[team_permanent]", "-");
-            message = message.replaceAll("\\[team_creation_date]", "-");
+            message = message.replaceAll("\\[team_name]", "NONE-TEST")
+                    .replaceAll("\\[team_display]", LangManager.getMessage(LangMessage.TEAM_NONE_DISPLAY))
+                    .replaceAll("\\[team_color_display]", "{" + ConfigData.getConfigData().team.noneColor + "}" + LangManager.getMessage(LangMessage.TEAM_NONE_DISPLAY))
+                    .replaceAll("\\[team_short]", "")
+                    .replaceAll("\\[team_color_short]", "{" + ConfigData.getConfigData().team.noneColor + "}")
+                    .replaceAll("\\[team_color]", ConfigData.getConfigData().team.noneColor)
+                    .replaceAll("\\[team_(\\w+)]", "")
+                    .replaceAll("\\[team_open]", "-")
+                    .replaceAll("\\[team_permanent]", "-")
+                    .replaceAll("\\[team_creation_date]", "-");
             return adaptMessage(message);
         }
-        message = message.replaceAll("\\[team_name]", team.getName());
-        message = message.replaceAll("\\[team_id]", String.valueOf(team.getID()));
-        message = message.replaceAll("\\[team_display]", team.getDisplay());
-        message = message.replaceAll("\\[team_color_display]", "{" + team.getTeamColor() + "}" + team.getDisplay());
-        message = message.replaceAll("\\[team_short]", team.getShortName());
-        message = message.replaceAll("\\[team_color_short]", "{" + team.getTeamColor() + "}" + team.getShortName());
-        message = message.replaceAll("\\[team_color]", team.getTeamColor());
-        message = message.replaceAll("\\[team_open]", String.valueOf(team.isOpen()));
-        message = message.replaceAll("\\[team_permanent]", String.valueOf(team.isPermanent()));
-        message = message.replaceAll("\\[team_creation_date]", String.valueOf(team.getCreationDate()));
+        message = message.replaceAll("\\[team_name]", team.getName())
+                .replaceAll("\\[team_id]", String.valueOf(team.getID()))
+                .replaceAll("\\[team_display]", team.getDisplay())
+                .replaceAll("\\[team_color_display]", "{" + team.getTeamColor() + "}" + team.getDisplay())
+                .replaceAll("\\[team_short]", team.getShortName())
+                .replaceAll("\\[team_color_short]", "{" + team.getTeamColor() + "}" + team.getShortName())
+                .replaceAll("\\[team_color]", team.getTeamColor())
+                .replaceAll("\\[team_open]", String.valueOf(team.isOpen()))
+                .replaceAll("\\[team_permanent]", String.valueOf(team.isPermanent()))
+                .replaceAll("\\[team_creation_date]", String.valueOf(team.getCreationDate()));
 
         return adaptMessage(message);
     }
@@ -142,10 +142,10 @@ public class AdaptMessage {
             String defaultMemberStringLine = LangManager.getMessage(LangMessage.COMMANDS_TEAM_CHECK_RESULT_MEMBER_LINE);
             List<String> memberStringList = new ArrayList<>();
             nwITeam.getMemberMap().forEach((name, teamMember) -> {
-                NwTeamRank playerNwTeamRank = Arrays.stream(NwTeamRank.values()).filter(teamRank -> (teamRank.getWeight() == teamMember.getModel().getRank())).findFirst().get();
+                NwTeamRank playerNwTeamRank = Arrays.stream(NwTeamRank.values()).filter(teamRank -> (teamRank.getWeight() == teamMember.getRank().getWeight())).findFirst().get();
                 String memberStringLine = defaultMemberStringLine
-                        .replaceAll("\\[team_player_connected]", Bukkit.getPlayer(teamMember.getModel().getUsername()) != null ? "&a+" : "&c-")
-                        .replaceAll("\\[team_player]", teamMember.getModel().getUsername());
+                        .replaceAll("\\[team_player_connected]", Bukkit.getPlayer(teamMember.getUsername()) != null ? "&a+" : "&c-")
+                        .replaceAll("\\[team_player]", teamMember.getUsername());
                 switch (playerNwTeamRank) {
                     case OWNER:
                         memberStringLine = memberStringLine.replaceAll("\\[team_player_rank]", LangManager.getMessage(LangMessage.TEAM_RANK_OWNER));
@@ -181,19 +181,18 @@ public class AdaptMessage {
             message = message.replaceAll("\\[team_result_relation_line]", String.join("\n", relationStringList));
         }
 
-        message = message.replaceAll("\\[team]", nwITeam.getName());
-        message = message.replaceAll("\\[team_display]", nwITeam.getDisplay());
-        message = message.replaceAll("\\[team_color_display]", "{" + nwITeam.getTeamColor() + "}" + nwITeam.getDisplay());
-        message = message.replaceAll("\\[team_short]", nwITeam.getShortName());
-        message = message.replaceAll("\\[team_color_short]", "{" + nwITeam.getTeamColor() + "}" + nwITeam.getShortName());
-        message = message.replaceAll("\\[team_color]", nwITeam.getTeamColor());
-        message = message.replaceAll("\\[team_open]", LangManager.getMessage(nwITeam.isOpen() ? LangMessage.TEAM_OPEN : LangMessage.TEAM_CLOSE));
-        message = message.replaceAll("\\[team_maximum_members]", ConfigData.getConfigData().team.maximumMembers != -1 ? String.valueOf(ConfigData.getConfigData().team.maximumMembers) : "∞");
-        message = message.replaceAll("\\[team_online_member]", nwITeam.getOnlineMemberAmount() + " / " + nwITeam.getMemberAmount());
-        message = message.replaceAll("\\[team_relation_default]", ConfigData.getConfigData().team.defaultRelation.toString());
+        message = message.replaceAll("\\[team]", nwITeam.getName()).replaceAll("\\[team_display]", nwITeam.getDisplay())
+                .replaceAll("\\[team_color_display]", "{" + nwITeam.getTeamColor() + "}" + nwITeam.getDisplay())
+                .replaceAll("\\[team_short]", nwITeam.getShortName())
+                .replaceAll("\\[team_color_short]", "{" + nwITeam.getTeamColor() + "}" + nwITeam.getShortName())
+                .replaceAll("\\[team_color]", nwITeam.getTeamColor())
+                .replaceAll("\\[team_open]", LangManager.getMessage(nwITeam.isOpen() ? LangMessage.TEAM_OPEN : LangMessage.TEAM_CLOSE))
+                .replaceAll("\\[team_maximum_members]", ConfigData.getConfigData().team.maximumMembers != -1 ? String.valueOf(ConfigData.getConfigData().team.maximumMembers) : "∞")
+                .replaceAll("\\[team_online_member]", nwITeam.getOnlineMemberAmount() + " / " + nwITeam.getMemberAmount())
+                .replaceAll("\\[team_relation_default]", ConfigData.getConfigData().team.defaultRelation.toString());
 
-        if (player != null && nwITeam.getMemberMap().containsKey(player)) {
-            message = message.replaceAll("\\[team_player_rank]", nwITeam.getMemberMap().get(player).getRank().toString());
+        if (player != null && nwITeam.getMemberMap().containsKey(player.getName())) {
+            message = message.replaceAll("\\[team_player_rank]", nwITeam.getMemberMap().get(player.getName()).getRank().toString());
         }
 
         return adaptMessage(message);
@@ -212,13 +211,15 @@ public class AdaptMessage {
         String starter = "\\[" + playerType;
         String ender = "]";
 
-        message = message.replaceAll(starter + ender, playerModel.getUsername());
-        message = message.replaceAll(starter + "_uuid" + ender, playerModel.getUuid());
-
-        message = message.replaceAll(starter + "_status" + ender,
-                LangManager.getMessage(isPlayerOnline ? LangMessage.PLAYER_ONLINE : LangMessage.PLAYER_OFFLINE));
-
-        message = message.replaceAll(starter + "_last_update" + ender, playerModel.getLastUpdate() > 0L ? dateTimeFormatter(playerModel.getLastUpdate()) : LangManager.getMessage(LangMessage.FORMAT_DATETIME_NEVER));
+        message = message.replaceAll(starter + ender, playerModel.getUsername())
+                .replaceAll(starter + "_uuid" + ender, playerModel.getUuid())
+                .replaceAll(starter + "_status" + ender,
+                        LangManager.getMessage(isPlayerOnline ? LangMessage.PLAYER_ONLINE : LangMessage.PLAYER_OFFLINE))
+                .replaceAll(starter + "_last_update" + ender,
+                        playerModel.getLastUpdate() > 0L
+                                ? dateTimeFormatter(playerModel.getLastUpdate())
+                                : LangManager.getMessage(LangMessage.FORMAT_DATETIME_NEVER)
+                );
         return adaptMessage(message);
     }
 
@@ -227,8 +228,8 @@ public class AdaptMessage {
             return null;
         }
 
-        message = message.replaceAll("\\[timestamp]", String.valueOf(System.currentTimeMillis()));
-        message = message.replaceAll("\\[now]", String.valueOf(System.currentTimeMillis()));
+        message = message.replaceAll("\\[timestamp]", String.valueOf(System.currentTimeMillis()))
+                .replaceAll("\\[now]", String.valueOf(System.currentTimeMillis()));
 
         message = ChatColor.translateAlternateColorCodes('&', setPlaceholderMessage(null, message));
         if (getVersionNumbers().get(1) >= 16) {
@@ -241,7 +242,7 @@ public class AdaptMessage {
         while (territoryMatcher.find()) {
             long territoryId = Long.parseLong(territoryMatcher.group(2));
 
-            Territory territory = TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory1 -> (territory1.getModel().getId() == territoryId)).findFirst().orElse(null);
+            Territory territory = TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory1 -> (territory1.getId() == territoryId)).findFirst().orElse(null);
             message = message.replace(territoryMatcher.group(), territoryMatcher.group(1) + territoryMatcher.group(3));
             if (territory != null) {
                 message = adaptTerritoryMessage(message, territory);
@@ -332,6 +333,7 @@ public class AdaptMessage {
 
         return simpleDateFormat.format(datetime);
     }
+
     /**
      * Format the given value to a formatted String depending on the config.
      *
@@ -408,7 +410,7 @@ public class AdaptMessage {
     /**
      * Calculate from a formatted string
      *
-     * @param expression        String, add time with parameters suchs as Xh for x hours (s, m, h, d)
+     * @param expression String, add time with parameters suchs as Xh for x hours (s, m, h, d)
      * @return the calculated duration in ms (Long)
      */
     public static long evalDuration(String expression) {
@@ -440,9 +442,11 @@ public class AdaptMessage {
         String finalMessage = message;
 
         if (serverWide) {
-            iTeam.getOnlineMemberMap().forEach((player, teamMember) -> {
-                player.sendMessage(finalMessage);
-            });
+            iTeam.getOnlineMemberMap().entrySet().stream()
+                    .filter(entry -> entry.getKey() != null)
+                    .forEach(playerTeamMemberEntry -> {
+                        playerTeamMemberEntry.getKey().sendMessage(finalMessage);
+                    });
         } else {
             Set<Player> teamMemberInTerritory = territory.getNwITeamEffectivePlayerAmountOnTerritory().get(iTeam);
             if (teamMemberInTerritory != null) {

@@ -95,8 +95,8 @@ public class BattleKoth extends Battle {
         if (!teamHoldPointMap.isEmpty()) {
             highScore = Collections.max(getTeamHoldPointMap().entrySet(), Map.Entry.comparingByValue()).getValue();
         }
-        message = message.replaceAll("\\[territory_battle_time]", String.valueOf(highScore));
-        message = message.replaceAll("\\[territory_battle_time_percent]", String.valueOf((int) ((float) (highScore) / objectiveKoth.getTimeToReach() * 100)));
+        message = message.replaceAll("\\[territory_battle_time]", String.valueOf(highScore))
+                .replaceAll("\\[territory_battle_time_percent]", String.valueOf((int) ((float) (highScore) / objectiveKoth.getTimeToReach() * 100)));
 
 
         List<Integer> pointPerSecondList = objectiveKoth.getCapturePointsValuePerSecond().entrySet().stream().filter(territoryListEntry ->

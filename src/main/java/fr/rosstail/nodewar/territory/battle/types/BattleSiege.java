@@ -94,7 +94,7 @@ public class BattleSiege extends Battle {
         controlPointList.forEach(controlPointTerritory -> {
             NwITeam controlITeam = controlPointTerritory.getOwnerITeam();
             if (controlITeam != null) {
-                String controlPointName = controlPointTerritory.getModel().getName();
+                String controlPointName = controlPointTerritory.getName();
                 int scorePerSecond = 0;
 
                 if (iTeamImpactPerSecond.get(controlITeam) != null) {
@@ -143,9 +143,9 @@ public class BattleSiege extends Battle {
 
     @Override
     public String adaptMessage(String message) {
-        message = super.adaptMessage(message);
-        message = message.replaceAll("\\[territory_battle_health]", String.valueOf(currentHealth));
-        message = message.replaceAll("\\[territory_battle_health_percent]", String.valueOf((int) ((float) currentHealth / objectiveSiege.getMaxHealth() * 100)));
+        message = super.adaptMessage(message)
+                .replaceAll("\\[territory_battle_health]", String.valueOf(currentHealth))
+                .replaceAll("\\[territory_battle_health_percent]", String.valueOf((int) ((float) currentHealth / objectiveSiege.getMaxHealth() * 100)));
 
         int regenPerSecond = objectiveSiege.getCapturePointsRegenPerSecond().entrySet().stream().filter(territoryListEntry ->
                 (territoryListEntry.getKey().getOwnerITeam() == getAdvantagedITeam())

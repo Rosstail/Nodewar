@@ -80,14 +80,14 @@ public class AdminTeamEditMemberDemoteCommand extends AdminTeamEditMemberSubComm
         targetPlayerName = args[6];
 
         targetTeamMember = targetTeam.getMemberMap().values().stream()
-                .filter(teamMemberModel -> teamMemberModel.getModel().getUsername().equalsIgnoreCase(targetPlayerName)).findFirst().orElse(null);
+                .filter(teamMemberModel -> teamMemberModel.getUsername().equalsIgnoreCase(targetPlayerName)).findFirst().orElse(null);
 
         if (targetTeamMember == null) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM));
             return;
         }
 
-        newRank = targetTeamMember.getModel().getRank() - 1;
+        newRank = targetTeamMember.getRank().getWeight() - 1;
         if (newRank == 0) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_DEMOTE_ERROR));
             return;
@@ -108,10 +108,10 @@ public class AdminTeamEditMemberDemoteCommand extends AdminTeamEditMemberSubComm
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         NwITeam nwTeam = TeamManager.getManager().getStringTeamMap().get(args[3]);
         if (nwTeam != null) {
-            return nwTeam.getMemberMap().values().stream().map(teamMember -> teamMember.getModel().getUsername()).collect(Collectors.toList());
+            return nwTeam.getMemberMap().values().stream().map(teamMember -> teamMember.getUsername()).collect(Collectors.toList());
         }
 
         return new ArrayList<>();

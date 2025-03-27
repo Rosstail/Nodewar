@@ -5,6 +5,7 @@ import fr.rosstail.nodewar.permissionmannager.PermissionManager;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.relation.NwTeamRelation;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
@@ -108,6 +109,17 @@ public class NwTeam implements NwITeam {
     }
 
     @Override
+    public ItemStack getBanner() {
+        //TODO
+        return null;
+    }
+
+    @Override
+    public void setBanner(ItemStack banner) {
+        //TODO
+    }
+
+    @Override
     public Map<Player, TeamMember> getOnlineMemberMap() {
         return onlineMemberMap;
     }
@@ -116,7 +128,7 @@ public class NwTeam implements NwITeam {
     public Map<String, TeamMember> getMemberMap() {
         Map<String, TeamMember> teamMemberMap = new HashMap<>();
         model.getTeamMemberModelMap().forEach((integer, teamMemberModel) -> {
-            teamMemberMap.put(teamMemberModel.getUsername(), new TeamMember(null, this, teamMemberModel));
+            teamMemberMap.put(teamMemberModel.getUsername(), new TeamMember(this, teamMemberModel));
         });
         return teamMemberMap;
     }

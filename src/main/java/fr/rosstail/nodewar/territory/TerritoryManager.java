@@ -15,6 +15,7 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
+import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirements;
 import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -31,8 +32,11 @@ public class TerritoryManager {
 
     private static TerritoryManager territoryManager;
     private final Nodewar plugin;
-    private Map<String, TerritoryType> territoryTypeMap = new HashMap<>();
-    private TerritoryType defaultTerritoryType;
+
+    private final Map<String, TerritoryModel> presetModelMap = new HashMap<>();
+    private final Map<String, TerritoryModel> territoryModelMap = new HashMap<>();
+
+    private TerritoryModel defaultTerritoryModel;
     private final Map<String, Territory> territoryMap = new HashMap<>();
 
     private int rewardScheduler;
@@ -47,48 +51,116 @@ public class TerritoryManager {
         }
     }
 
-    public void loadTerritoryConfigs(String folder) {
-        File territoriesDirectory = new File(folder);
-        List<File> territoryFolderList = new ArrayList<>();
-        if (territoriesDirectory.isDirectory()) {
-            for (File file : territoriesDirectory.listFiles()) {
-                if (file.isDirectory()) {
-                    territoryFolderList.add(file);
-                } else if (file.getName().endsWith(".yml")) {
-                    YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
-                    yamlConfiguration.getKeys(false).forEach(s -> {
+    public void loadPresetModels() {
+        //TODO init custom default
+        defaultTerritoryModel = new TerritoryModel();
 
-                        ConfigurationSection section = yamlConfiguration.getConfigurationSection(s);
-                        Territory territory = new Territory(section);
-                        territoryMap.put(territory.getModel().getName(), territory);
-                    });
-                }
-            }
-
-            territoryFolderList.forEach(file -> {
-                loadTerritoryConfigs(file.getPath());
-            });
-        }
-    }
-
-    public void loadTerritoryTypeConfig() {
-        defaultTerritoryType = new TerritoryType();
-
-        File fileConfig = new File("plugins/" + plugin.getName() + "/conquest/territory-types.yml");
+        File fileConfig = new File("plugins/" + plugin.getName() + "/conquest/territories-presets.yml");
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(fileConfig);
         yamlConfiguration.getKeys(false).forEach(s -> {
             ConfigurationSection section = yamlConfiguration.getConfigurationSection(s);
-            TerritoryType territoryType = new TerritoryType(section);
-            territoryTypeMap.put(territoryType.getName(), territoryType);
+            TerritoryModel territoryPreset = new TerritoryModel(section);
+            presetModelMap.put(territoryPreset.getName(), territoryPreset);
         });
+    }
+
+    public void loadTerritoryModels() {
+        loadTerritoryModels("plugins/" + plugin.getName() + "/conquest/territories");
+    }
+
+    public List<File> getTerritoryFiles(String folderName) {
+        List<File> yamlFiles = new ArrayList<>();
+        File folDir = new File(folderName);
+        for (File file : folDir.listFiles()) {
+            if (file.isDirectory()) {
+                yamlFiles.addAll(getTerritoryFiles(file.getPath()));
+            } else {
+                yamlFiles.add(file);
+            }
+        }
+
+        return yamlFiles;
+    }
+
+    public void loadTerritoryModels(String folder) {
+        List<File> territoryFolderList = getTerritoryFiles(folder);
+
+        territoryFolderList.forEach(file -> {
+            YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
+            yamlConfiguration.getKeys(false).forEach(s -> {
+                ConfigurationSection section = yamlConfiguration.getConfigurationSection(s);
+                TerritoryModel model = new TerritoryModel(section);
+                territoryModelMap.put(model.getName(), model);
+            });
+        });
+    }
+
+    public void loadTerritories() {
+        Bukkit.getWorlds().forEach(this::loadTerritories);
+    }
+
+    public void loadTerritories(World world) {
+        Set<TerritoryModel> territoriesToAdd = territoryModelMap.values().stream().filter(territoryModel -> (
+                territoryModel.getWorldName().equals(world.getName()))
+        ).collect(Collectors.toSet());
+
+        territoriesToAdd.forEach(territoryModel -> {
+            loadTerritory(territoryModel);
+            territoryModelMap.remove(territoryModel.getName());
+        });
+    }
+
+    public void loadTerritory(TerritoryModel territoryModel) {
+        Territory territory = new Territory(territoryModel);
+        territoryMap.put(territoryModel.getName(), territory);
+
+        addTerritoryOnSubTerritories(territory);
+        addTerritoryOnAttackRequirements(territory); // update which can be attacked and can attack it
+        // update Objective
+        territoryMap.forEach((s, territory1) -> {
+            territory1.getObjective().addTerritory(territory);
+        });
+
+        WebmapManager.getManager().addTerritoryToDraw(territory);
+    }
+
+    public void addTerritoryOnSubTerritories(Territory territory) {
+        territory.getSubTerritoryList().addAll(territoryMap.values().stream().filter(potentialSubTerritory -> (
+                territory.getSubTerritoryNameSet().contains(potentialSubTerritory.getName())
+                        && potentialSubTerritory.getWorld().equals(territory.getWorld())
+        )).collect(Collectors.toSet()));
+
+        territoryMap.values().stream().filter(potentialUpperTerritory -> (
+                potentialUpperTerritory.getSubTerritoryNameSet().contains(territory.getName())
+                        && potentialUpperTerritory.getWorld().equals(territory.getWorld())
+        )).forEach(upperTerritory -> {
+            upperTerritory.getSubTerritoryList().add(territory);
+        });
+    }
+
+    public void addTerritoryOnAttackRequirements(Territory territory) {
+        AttackRequirements attackRequirements = territory.getAttackRequirements();
+        attackRequirements.getTargetTerritorySet().addAll(territoryMap.values().stream().filter(potentialTarget -> (
+                attackRequirements.getTargetNameList().contains(potentialTarget.getName()) && potentialTarget.getWorld().equals(territory.getWorld())
+        )).collect(Collectors.toSet()));
+        for (Territory target : attackRequirements.getTargetTerritorySet()) {
+            target.getAttackRequirements().getDefendAgainstTerritorySet().add(territory);
+        }
+
+        attackRequirements.getDefendAgainstTerritorySet().addAll(territoryMap.values().stream().filter(potentialAttacker -> (
+                potentialAttacker.getAttackRequirementsModel().getTargetNameList().contains(territory.getName())
+                        && potentialAttacker.getWorld().equals(territory.getWorld())
+        )).collect(Collectors.toSet()));
+
+        for (Territory attacker : attackRequirements.getDefendAgainstTerritorySet()) {
+            attacker.getAttackRequirements().getTargetTerritorySet().add(territory);
+        }
     }
 
     public void initialize() {
         setupTerritoriesOwner();
         setupTerritoriesSubTerritories();
-        setupTerritoriesObjective();
         setupTerritoriesBattle();
-        setupTerritoriesAttackRequirements();
         setupTerritoriesRewardScheduler();
         WebmapManager.getManager().addTerritorySetToDraw(new HashSet<>(getTerritoryMap().values()));
     }
@@ -99,19 +171,19 @@ public class TerritoryManager {
 
         getTerritoryMap().forEach((s, territory) -> {
             TerritoryModel storedTerritoryModel = storedTerritoryModelList.stream().filter(model ->
-                    model.getName().equalsIgnoreCase(territory.getModel().getName())
+                    model.getName().equalsIgnoreCase(territory.getName())
             ).findFirst().orElse(null);
 
             if (storedTerritoryModel != null) {
                 String ownerName = storedTerritoryModel.getOwnerName();
                 long territoryID = storedTerritoryModel.getId();
-                territory.getModel().setId(territoryID);
+                territory.setId(territoryID);
 
                 if (ownerName != null && stringTeamMap.containsKey(ownerName)) {
                     territory.setOwnerITeam(stringTeamMap.get(ownerName));
                 }
             } else {
-                StorageManager.getManager().insertTerritoryOwner(territory.getModel());
+                StorageManager.getManager().insertTerritoryOwner(territory);
             }
         });
     }
@@ -121,12 +193,12 @@ public class TerritoryManager {
      */
     public void setupTerritoriesSubTerritories() {
         getTerritoryMap().forEach((s, territory) -> {
-            List<String> subTerritoryStringList = territory.getModel().getSubTerritoryList();
+            Set<String> subTerritoryStringList = territory.getSubTerritoryNameSet();
 
             subTerritoryStringList.forEach(subTerritoryName -> {
                 if (territoryMap.get(subTerritoryName) != null) {
                     Territory subTerritory = territoryMap.get(subTerritoryName);
-                    if (subTerritory.getWorld() == territory.getWorld()) {
+                    if (subTerritory.getWorld().equals(territory.getWorld())) {
                         territory.getSubTerritoryList().add(subTerritory);
                     }
                 }
@@ -135,21 +207,9 @@ public class TerritoryManager {
         });
     }
 
-    public void setupTerritoriesObjective() {
-        getTerritoryMap().forEach((s, territory) -> {
-            territory.setupObjective();
-        });
-    }
-
     public void setupTerritoriesBattle() {
         getTerritoryMap().forEach((s, territory) -> {
             territory.setupBattle();
-        });
-    }
-
-    public void setupTerritoriesAttackRequirements() {
-        getTerritoryMap().forEach((s, territory) -> {
-            territory.setupAttackRequirements();
         });
     }
 
@@ -161,37 +221,29 @@ public class TerritoryManager {
         return territoryMap;
     }
 
-    public Map<String, TerritoryType> getTerritoryTypeMap() {
-        return territoryTypeMap;
-    }
-
     public List<Territory> getTerritoryListPerWorld(World world) {
         return getTerritoryMap().values().stream().filter(territory -> (
                 territory.getWorld() == world
         )).collect(Collectors.toList());
     }
 
-    public TerritoryType getTerritoryTypeFromMap(String type) {
-        if (type == null || !territoryTypeMap.containsKey(type)) {
-            return defaultTerritoryType;
+    public TerritoryModel getTerritoryPresetModelFromMap(String type) {
+        if (type == null || !presetModelMap.containsKey(type)) {
+            return defaultTerritoryModel;
         }
-        return territoryTypeMap.get(type);
+        return presetModelMap.get(type);
     }
 
     public List<World> getUsedWorldList() {
         return getTerritoryMap().values().stream().map(Territory::getWorld).distinct().collect(Collectors.toList());
     }
 
-    public void setTerritoryTypeMap(Map<String, TerritoryType> territoryTypeMap) {
-        this.territoryTypeMap = territoryTypeMap;
-    }
-
     public void addRegionToTerritory(String worldName, ProtectedRegion region) {
         AdaptMessage.print(String.valueOf(territoryMap.entrySet().stream()
                 .filter(
-                        x -> x.getValue().getModel().getRegionStringList().contains(region.getId())
+                        x -> x.getValue().getRegionStringSet().contains(region.getId())
                 ).filter(
-                        x -> x.getValue().getModel().getWorldName().equalsIgnoreCase(worldName)
+                        x -> x.getValue().getWorldName().equalsIgnoreCase(worldName)
                 ).count()), AdaptMessage.prints.OUT);
     }
 
@@ -252,5 +304,40 @@ public class TerritoryManager {
         getTerritoryMap().entrySet().stream().filter(stringTerritoryEntry -> stringTerritoryEntry.getValue().getObjective() != null).collect(Collectors.toList()).forEach(stringTerritoryEntry -> {
             stringTerritoryEntry.getValue().getObjective().stopObjective();
         });
+    }
+
+    public void unloadTerritories(World world) {
+        Set<Territory> territoriesToRemove = territoryMap.values().stream().filter(territory -> (
+                territory.getWorldName().equals(world.getName()))
+        ).collect(Collectors.toSet());
+
+        territoriesToRemove.forEach(this::unloadTerritory);
+    }
+
+    public void unloadTerritory(Territory territory) {
+        removeTerritoryOnAttackRequirements(territory);
+        territoryMap.forEach((s, territory1) -> {
+            territory1.getObjective().removeTerritory(territory);
+        });
+
+        WebmapManager.getManager().addTerritoryToErase(territory);
+    }
+
+    public void removeTerritoryOnAttackRequirements(Territory territory) {
+        AttackRequirements attackRequirements = territory.getAttackRequirements();
+        attackRequirements.getTargetTerritorySet().removeAll(territoryMap.values().stream().filter(potentialTarget -> (
+                attackRequirements.getTargetNameList().contains(potentialTarget.getName()) && potentialTarget.getWorld().equals(territory.getWorld())
+        )).collect(Collectors.toSet()));
+        for (Territory target : attackRequirements.getTargetTerritorySet()) {
+            target.getAttackRequirements().getDefendAgainstTerritorySet().remove(territory);
+        }
+        attackRequirements.getDefendAgainstTerritorySet().removeAll(territoryMap.values().stream().filter(potentialAttacker -> (
+                potentialAttacker.getAttackRequirementsModel().getTargetNameList().contains(territory.getName())
+                        && potentialAttacker.getWorld().equals(territory.getWorld())
+        )).collect(Collectors.toSet()));
+
+        for (Territory attacker : attackRequirements.getDefendAgainstTerritorySet()) {
+            attacker.getAttackRequirements().getTargetTerritorySet().remove(territory);
+        }
     }
 }

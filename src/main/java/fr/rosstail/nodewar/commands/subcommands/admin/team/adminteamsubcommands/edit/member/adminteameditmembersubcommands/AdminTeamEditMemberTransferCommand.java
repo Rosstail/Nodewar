@@ -86,7 +86,7 @@ public class AdminTeamEditMemberTransferCommand extends AdminTeamEditMemberSubCo
                 .filter(teamMemberModel -> teamMemberModel.getUsername().equalsIgnoreCase(targetPlayerName)).findFirst().orElse(null);
 
         ownerTeamMemberModel = targetTeam.getModel().getTeamMemberModelMap().values().stream()
-                .filter(teamMemberModel -> teamMemberModel.getRank() == NwTeamRank.OWNER.getWeight()).findFirst().orElse(null);
+                .filter(teamMemberModel -> teamMemberModel.getNumRank() == NwTeamRank.OWNER.getWeight()).findFirst().orElse(null);
 
 
         if (targetTeamMemberModel == null) {
@@ -112,7 +112,7 @@ public class AdminTeamEditMemberTransferCommand extends AdminTeamEditMemberSubCo
         }
 
         if (ownerTeamMemberModel != null) {
-            ownerTeamMemberModel.setRank(NwTeamRank.LIEUTENANT.getWeight());
+            ownerTeamMemberModel.setNumRank(NwTeamRank.LIEUTENANT.getWeight());
             StorageManager.getManager().updateTeamMemberModel(ownerTeamMemberModel);
             ownerPlayer = Bukkit.getPlayer(ownerTeamMemberModel.getUsername());
             if (ownerPlayer != null) {
@@ -120,7 +120,7 @@ public class AdminTeamEditMemberTransferCommand extends AdminTeamEditMemberSubCo
             }
         }
 
-        targetTeamMemberModel.setRank(NwTeamRank.OWNER.getWeight());
+        targetTeamMemberModel.setNumRank(NwTeamRank.OWNER.getWeight());
         StorageManager.getManager().updateTeamMemberModel(targetTeamMemberModel);
 
         targetPlayer = Bukkit.getPlayer(targetTeamName);
@@ -135,10 +135,10 @@ public class AdminTeamEditMemberTransferCommand extends AdminTeamEditMemberSubCo
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         NwITeam targetTeam = TeamManager.getManager().getStringTeamMap().get(args[3]);
         if (targetTeam != null) {
-            return targetTeam.getMemberMap().values().stream().map(teamMember -> teamMember.getModel().getUsername()).collect(Collectors.toList());
+            return targetTeam.getMemberMap().values().stream().map(teamMember -> teamMember.getUsername()).collect(Collectors.toList());
         }
 
         return new ArrayList<>();

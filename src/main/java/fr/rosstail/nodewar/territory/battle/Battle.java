@@ -75,20 +75,20 @@ public class Battle {
         message = message.replaceAll("\\[territory_battle_description]", description.stream().map(String::valueOf).collect(Collectors.joining("\n")));
         switch (getBattleStatus()) {
             case WAITING:
-                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_WAITING));
-                message = message.replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_WAITING_SHORT));
+                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_WAITING))
+                        .replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_WAITING_SHORT));
                 break;
             case ONGOING:
-                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ONGOING));
-                message = message.replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ONGOING_SHORT));
+                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ONGOING))
+                        .replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ONGOING_SHORT));
                 break;
             case ENDING:
-                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDING));
-                message = message.replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDING_SHORT));
+                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDING))
+                        .replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDING_SHORT));
                 break;
             case ENDED:
-                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDED));
-                message = message.replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDED_SHORT));
+                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDED))
+                        .replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDED_SHORT));
                 break;
         }
 
@@ -116,10 +116,10 @@ public class Battle {
         } else if (territory.getOwnerITeam() != null && territory.getCurrentBattle().getAdvantagedITeam() != null && territory.getCurrentBattle().getAdvantagedITeam() != territory.getOwnerITeam()) {
             direction = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_ARROW_ADVANTAGE_RIGHT_TO_LEFT);
         }
-        message = message.replaceAll("\\[territory_battle_direction]", direction);
-        message = message.replaceAll("\\[territory_battle_advantage", "[team");
-        message = AdaptMessage.getAdaptMessage().adaptTeamMessage(message, getAdvantagedITeam());
-        message = message.replaceAll("\\[territory_battle_winner", "[team");
+        message = message.replaceAll("\\[territory_battle_direction]", direction)
+                .replaceAll("\\[territory_battle_advantage", "[team");
+        message = AdaptMessage.getAdaptMessage().adaptTeamMessage(message, getAdvantagedITeam())
+                .replaceAll("\\[territory_battle_winner", "[team");
         message = AdaptMessage.getAdaptMessage().adaptTeamMessage(message, getWinnerITeam());
 
         return message;
@@ -136,9 +136,11 @@ public class Battle {
     public boolean isBattleWaiting() {
         return this.battleStatus.equals(BattleStatus.WAITING);
     }
+
     public boolean isBattleStarted() {
         return this.battleStatus.equals(BattleStatus.ONGOING);
     }
+
     public boolean isBattleOnEnd() {
         return this.battleStatus.equals(BattleStatus.ENDING) || this.battleStatus.equals(BattleStatus.ENDED);
     }

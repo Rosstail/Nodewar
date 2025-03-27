@@ -2,17 +2,18 @@ package fr.rosstail.nodewar.territory;
 
 import fr.rosstail.nodewar.territory.attackrequirements.AttackRequirementsModel;
 import fr.rosstail.nodewar.territory.bossbar.TerritoryBossBarModel;
-import fr.rosstail.nodewar.webmap.TerritoryWebmapModel;
+import fr.rosstail.nodewar.territory.objective.ObjectiveManager;
+import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
 import fr.rosstail.nodewar.territory.territorycommands.TerritoryCommandsModel;
+import fr.rosstail.nodewar.webmap.TerritoryWebmapModel;
+import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TerritoryModel {
-    private String typeName;
-    private String typeDisplay;
+    private String presetName;
+    private String presetDisplay;
     private String worldName;
 
     private long id;
@@ -23,29 +24,144 @@ public class TerritoryModel {
     private List<String> description = new ArrayList<>();
     private String ownerName;
     private boolean underProtection;
-    private final List<String> regionStringList = new ArrayList<>();
-    private final List<String> subTerritoryList = new ArrayList<>();
+    private final Set<String> regionStringSet = new HashSet<>();
+    private final Set<String> subTerritoryNameSet = new HashSet<>();
 
     private String objectiveTypeName;
+    private ObjectiveModel objectiveModel;
     private TerritoryBossBarModel bossBarModel;
     private AttackRequirementsModel attackRequirementsModel;
     private TerritoryWebmapModel territoryWebmapModel;
     private Map<String, TerritoryCommandsModel> territoryCommandsModelMap = new HashMap<>();
 
-    public String getTypeName() {
-        return typeName;
+    /**
+     * Used only by SELECT on database
+     *
+     * @param id
+     * @param name
+     * @param ownerName
+     */
+    public TerritoryModel(int id, String name, String ownerName) {
+        this.id = id;
+        this.name = name;
+        this.ownerName = ownerName;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    /**
+     * Model created for presets and base of territories from config
+     *
+     * @param section
+     */
+    public TerritoryModel(ConfigurationSection section) {
+        TerritoryModel parentPreset = TerritoryManager.getTerritoryManager().getTerritoryPresetModelFromMap(section.getString("preset"));
+
+        this.name = section.getName();
+        this.display = section.getString("display", parentPreset.getDisplay());
+        this.presetName = section.getString("preset", parentPreset.getPresetName());
+        this.presetDisplay = section.getString("preset-display", parentPreset.getPresetDisplay());
+
+        this.worldName = section.getString("world", parentPreset.getWorldName());
+        this.prefix = section.getString("prefix", parentPreset.getPrefix());
+        this.suffix = section.getString("suffix", parentPreset.getSuffix());
+        if (!section.getStringList("description").isEmpty()) {
+            this.description.addAll(section.getStringList("description"));
+        } else {
+            this.description.addAll(parentPreset.getDescription());
+        }
+        this.underProtection = section.getBoolean("protected", parentPreset.isUnderProtection());
+        this.objectiveTypeName = section.getString("objective.type", parentPreset.getObjectiveTypeName());
+
+        ConfigurationSection objectiveSection = section.getConfigurationSection("objective");
+
+        ObjectiveManager.getManager().setupTerritoryObjectiveModel(this, parentPreset, getObjectiveTypeName(), objectiveSection);
+
+        ConfigurationSection territoryCommandsSection = section.getConfigurationSection("commands");
+
+        attackRequirementsModel = new AttackRequirementsModel(new AttackRequirementsModel(section.getConfigurationSection("attack-requirements")), parentPreset.attackRequirementsModel);
+
+        territoryWebmapModel = new TerritoryWebmapModel(new TerritoryWebmapModel(section.getConfigurationSection("webmap")), parentPreset.territoryWebmapModel);
+
+        bossBarModel = new TerritoryBossBarModel(new TerritoryBossBarModel(section.getConfigurationSection("bossbar")), parentPreset.getBossBarModel());
+        Map<String, TerritoryCommandsModel> parentTerritoryCommandsModelList = parentPreset.territoryCommandsModelMap;
+        Set<String> territoryCommandsKeys = new HashSet<>();
+
+        if (territoryCommandsSection != null) {
+            territoryCommandsKeys.addAll(territoryCommandsSection.getKeys(false));
+        }
+        Set<String> newTerritoryCommandsKeys = territoryCommandsKeys.stream().filter(s -> parentTerritoryCommandsModelList.values().stream().noneMatch(territoryCommandsModel -> territoryCommandsModel.getName().equalsIgnoreCase(s))).collect(Collectors.toSet());
+        Set<String> editTerritoryCommandsKeys = territoryCommandsKeys.stream().filter(s -> parentTerritoryCommandsModelList.values().stream().anyMatch(territoryCommandsModel -> territoryCommandsModel.getName().equalsIgnoreCase(s))).collect(Collectors.toSet());
+        Map<String, TerritoryCommandsModel> uneditedTerritoryCommands = parentTerritoryCommandsModelList.entrySet().stream().filter(entrySet -> !territoryCommandsKeys.contains(entrySet.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        newTerritoryCommandsKeys.forEach(s -> {
+            territoryCommandsModelMap.put(s, new TerritoryCommandsModel(territoryCommandsSection.getConfigurationSection(s)));
+        });
+        editTerritoryCommandsKeys.forEach(s -> {
+            territoryCommandsModelMap.put(s, new TerritoryCommandsModel(new TerritoryCommandsModel(territoryCommandsSection.getConfigurationSection(s)), parentTerritoryCommandsModelList.values().stream().filter(territoryCommandsModel -> territoryCommandsModel.getName().equalsIgnoreCase(s)).findFirst().get()));
+        });
+        territoryCommandsModelMap.putAll(uneditedTerritoryCommands);
+        regionStringSet.addAll(parentPreset.getRegionStringSet());
+        regionStringSet.addAll(section.getStringList("regions"));
     }
 
-    public String getTypeDisplay() {
-        return typeDisplay;
+    /**
+     * @param model
+     */
+    public TerritoryModel(TerritoryModel model) {
+        this.presetName = model.presetName;
+        this.presetDisplay = model.presetDisplay;
+
+        this.id = model.getId();
+        this.name = model.getName();
+        this.display = model.getDisplay();
+        this.prefix = model.getPrefix();
+        this.suffix = model.getSuffix();
+        this.worldName = model.getWorldName();
+        this.description.addAll(model.getDescription());
+        this.ownerName = model.getOwnerName();
+        this.underProtection = model.isUnderProtection();
+        this.regionStringSet.addAll(model.getRegionStringSet());
+
+        this.subTerritoryNameSet.addAll(model.getSubTerritoryNameSet());
+
+        this.objectiveTypeName = model.getObjectiveTypeName();
+        this.bossBarModel = model.getBossBarModel();
+        this.objectiveModel = model.getObjectiveModel();
+        this.attackRequirementsModel = model.getAttackRequirementsModel();
+        this.territoryWebmapModel = model.getTerritoryWebmapModel();
+        this.territoryCommandsModelMap.putAll(model.getTerritoryCommandsModelMap());
     }
 
-    public void setTypeDisplay(String typeDisplay) {
-        this.typeDisplay = typeDisplay;
+    /**
+     * DEFAULT TERRITORY MODEL
+     */
+    public TerritoryModel() {
+        presetName = "none";
+        presetDisplay = "&7&o[NONE]";
+        worldName = "world";
+
+        name = "default";
+        display = "&7&o[DEFAULT]";
+        underProtection = true;
+
+        bossBarModel = new TerritoryBossBarModel(null);
+        attackRequirementsModel = new AttackRequirementsModel((ConfigurationSection) null);
+        territoryWebmapModel = new TerritoryWebmapModel((ConfigurationSection) null);
+    }
+
+    public String getPresetName() {
+        return presetName;
+    }
+
+    public void setPresetName(String presetName) {
+        this.presetName = presetName;
+    }
+
+    public String getPresetDisplay() {
+        return presetDisplay;
+    }
+
+    public void setPresetDisplay(String presetDisplay) {
+        this.presetDisplay = presetDisplay;
     }
 
     public long getId() {
@@ -87,6 +203,7 @@ public class TerritoryModel {
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
+
     public String getSuffix() {
         return suffix;
     }
@@ -119,12 +236,12 @@ public class TerritoryModel {
         this.worldName = worldName;
     }
 
-    public List<String> getRegionStringList() {
-        return regionStringList;
+    public Set<String> getRegionStringSet() {
+        return regionStringSet;
     }
 
-    public List<String> getSubTerritoryList() {
-        return subTerritoryList;
+    public Set<String> getSubTerritoryNameSet() {
+        return subTerritoryNameSet;
     }
 
     public String getObjectiveTypeName() {
@@ -165,5 +282,21 @@ public class TerritoryModel {
 
     public void setTerritoryCommandsModelMap(Map<String, TerritoryCommandsModel> territoryCommandsModelMap) {
         this.territoryCommandsModelMap = territoryCommandsModelMap;
+    }
+
+    public TerritoryWebmapModel getTerritoryWebmapModel() {
+        return territoryWebmapModel;
+    }
+
+    public void setTerritoryWebmapModel(TerritoryWebmapModel territoryWebmapModel) {
+        this.territoryWebmapModel = territoryWebmapModel;
+    }
+
+    public ObjectiveModel getObjectiveModel() {
+        return objectiveModel;
+    }
+
+    public void setObjectiveModel(ObjectiveModel objectiveModel) {
+        this.objectiveModel = objectiveModel;
     }
 }

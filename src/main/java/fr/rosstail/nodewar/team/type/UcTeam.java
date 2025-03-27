@@ -1,6 +1,7 @@
 package fr.rosstail.nodewar.team.type;
 
 import fr.rosstail.nodewar.ConfigData;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
@@ -8,10 +9,15 @@ import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.NwTeamRelation;
 import me.ulrich.clans.data.ClanData;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.io.BukkitObjectInputStream;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayInputStream;
 import java.sql.Timestamp;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -96,12 +102,32 @@ public class UcTeam implements NwITeam {
 
     @Override
     public Date getLastUpdate() {
-        return null;
+        return model.getLastUpdate();
     }
 
     @Override
     public void setLastUpdate(Timestamp value) {
+        this.model.setLastUpdate(value);
+    }
 
+    @Override
+    public ItemStack getBanner() {
+        try {
+            byte[] bytes = Base64.getDecoder().decode(clanData.getBanner());
+            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+            BukkitObjectInputStream bois = new BukkitObjectInputStream(bais);
+            ItemStack item = (ItemStack) bois.readObject();
+            bois.close();
+            return item;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Impossible de désérialiser l'ItemStack", e);
+        }
+    }
+
+    @Override
+    public void setBanner(ItemStack banner) {
+        //TODO
+        clanData.setBanner(null);
     }
 
     @Override
@@ -109,16 +135,31 @@ public class UcTeam implements NwITeam {
         Map<Player, TeamMember> playerTeamMemberMap = new HashMap<>();
         clanData.getOnlineMembers().forEach(uuid -> {
             Player player = Bukkit.getPlayer(uuid);
-            TeamMemberModel memberModel = new TeamMemberModel(getID(), 0, 1, new Timestamp(System.currentTimeMillis()), player.getName());
-            TeamMember member = new TeamMember(player, this, memberModel);
-            playerTeamMemberMap.put(Bukkit.getPlayer(uuid), member);
+            if (player != null) {
+                TeamMemberModel memberModel = new TeamMemberModel(getID(), 0, 1, new Timestamp(System.currentTimeMillis()), player.getName());
+                TeamMember member = new TeamMember(player, this, memberModel);
+                playerTeamMemberMap.put(player, member);
+            }
         });
         return playerTeamMemberMap;
     }
 
     @Override
     public Map<String, TeamMember> getMemberMap() {
-        return new HashMap<>();
+        Map<String, TeamMember> playerTeamMemberMap = new HashMap<>();
+        clanData.getMembers().forEach(uuid -> {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+            TeamMember member;
+            TeamMemberModel memberModel = new TeamMemberModel(getID(), 0, 1, new Timestamp(System.currentTimeMillis()), player.getName());
+
+            if (player.isOnline()) {
+                member = new TeamMember((Player) player, this, memberModel);
+            } else {
+                member = new TeamMember(this, memberModel);
+            }
+            playerTeamMemberMap.put(player.getName(), member);
+        });
+        return playerTeamMemberMap;
     }
 
     @Override

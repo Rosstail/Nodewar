@@ -71,7 +71,7 @@ public class BattlefieldCheckCommand extends BattlefieldSubCommand {
     }
 
     @Override
-    public List<String> getSubCommandsArguments(Player sender, String[] args, String[] arguments) {
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         return BattlefieldManager.getManager().getBattlefieldList().stream().map(battlefield -> battlefield.getModel().getName()).toList();
     }
 }
