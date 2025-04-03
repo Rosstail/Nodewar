@@ -4,7 +4,7 @@ import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
-import fr.rosstail.nodewar.permissionmannager.PermissionManager;
+import fr.rosstail.nodewar.permission.PermissionManager;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.relation.NwTeamRelation;

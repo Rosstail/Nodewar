@@ -2,7 +2,7 @@ package fr.rosstail.nodewar.team.teammanagers;
 
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.UltimateClansEventHandler;
-import fr.rosstail.nodewar.permissionmannager.PermissionManager;
+import fr.rosstail.nodewar.permission.PermissionManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;

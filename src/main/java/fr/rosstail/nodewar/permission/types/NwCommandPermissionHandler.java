@@ -1,7 +1,7 @@
-package fr.rosstail.nodewar.permissionmannager.types;
+package fr.rosstail.nodewar.permission.types;
 
 import fr.rosstail.nodewar.ConfigData;
-import fr.rosstail.nodewar.permissionmannager.NwIPermissionManagerHandler;
+import fr.rosstail.nodewar.permission.NwIPermissionManagerHandler;
 import org.bukkit.Bukkit;
 
 import java.util.UUID;

@@ -1,7 +1,7 @@
 package fr.rosstail.nodewar.team.type;
 
 import fr.rosstail.nodewar.team.*;
-import fr.rosstail.nodewar.permissionmannager.PermissionManager;
+import fr.rosstail.nodewar.permission.PermissionManager;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.relation.NwTeamRelation;
 import org.bukkit.entity.Player;

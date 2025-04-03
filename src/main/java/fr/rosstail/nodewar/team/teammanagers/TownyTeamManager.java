@@ -7,7 +7,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.TownyEventHandler;
 import fr.rosstail.nodewar.lang.AdaptMessage;
-import fr.rosstail.nodewar.permissionmannager.PermissionManager;
+import fr.rosstail.nodewar.permission.PermissionManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 

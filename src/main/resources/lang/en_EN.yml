@@ -350,9 +350,9 @@ territory:
         display: "Extermination"
         description:
           - "  &9Objective&d: &4Extermination"
-          - "    &c*  &6Sides&d:"
-          - "[line_side]"
-        line-side: "      &5- &r[territory_objective_side_[index]_display]&d: [territory_objective_side_[index]_team_color_display]"
+          - "    &c*  &6Capture points&d:"
+          - "[line_capturepoint]"
+        line-capturepoint: "      &5- &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
   battle:
     types:
       none:

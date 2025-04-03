@@ -22,16 +22,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ObjectiveDemolition extends NwConquestObjective {
-    private int blockStart;
-    private float blockRatioStart;
-    private int blockLose;
-    private float blockRatioLose;
+    private final int blockStart;
+    private final float blockRatioStart;
+    private final int blockLose;
+    private final float blockRatioLose;
 
-    private long duration;
+    private final long duration;
 
-    private boolean countAirBlocks;
-    private boolean countLiquidsBlocks;
-    private boolean countSolidBlocks;
+    private final boolean countAirBlocks;
+    private final boolean countLiquidsBlocks;
+    private final boolean countSolidBlocks;
 
     private final Set<Pattern> blockPatternSet = new HashSet<>();
 

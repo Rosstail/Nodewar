@@ -1,7 +1,6 @@
 package fr.rosstail.nodewar;
 
-import fr.rosstail.nodewar.permissionmannager.NwIPermissionManagerHandler;
-import fr.rosstail.nodewar.player.PlayerData;
+import fr.rosstail.nodewar.permission.NwIPermissionManagerHandler;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.objective.NwObjective;

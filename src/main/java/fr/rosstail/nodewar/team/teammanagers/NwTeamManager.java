@@ -1,7 +1,7 @@
 package fr.rosstail.nodewar.team.teammanagers;
 
 import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.permissionmannager.PermissionManager;
+import fr.rosstail.nodewar.permission.PermissionManager;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;

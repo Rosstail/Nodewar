@@ -21,7 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.dynmap.DynmapAPI;
+import org.dynmap.DynmapCommonAPI;
 import org.dynmap.markers.*;
 
 import java.util.*;
@@ -31,7 +31,7 @@ public class DynmapHandler implements NwIWebmapHandler, Listener {
 
     private final Nodewar plugin;
     private final Plugin dynmapPlugin;
-    private DynmapAPI dynmapAPI;
+    private DynmapCommonAPI dynmapAPI;
     private MarkerAPI markerAPI;
     MarkerSet markerSet = null;
 
@@ -44,7 +44,7 @@ public class DynmapHandler implements NwIWebmapHandler, Listener {
     }
 
     public void initialize(JavaPlugin plugin) {
-        this.dynmapAPI = (DynmapAPI) dynmapPlugin;
+        this.dynmapAPI = (DynmapCommonAPI) dynmapPlugin;
         this.markerAPI = dynmapAPI.getMarkerAPI();
         createMarkerSet();
     }

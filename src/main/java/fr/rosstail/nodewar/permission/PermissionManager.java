@@ -1,12 +1,11 @@
-package fr.rosstail.nodewar.permissionmannager;
+package fr.rosstail.nodewar.permission;
 
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.lang.AdaptMessage;
-import fr.rosstail.nodewar.permissionmannager.types.NwCommandPermissionHandler;
-import fr.rosstail.nodewar.permissionmannager.types.NwGroupManagerHandler;
-import fr.rosstail.nodewar.permissionmannager.types.NwLuckPermsHandler;
+import fr.rosstail.nodewar.permission.types.NwCommandPermissionHandler;
+import fr.rosstail.nodewar.permission.types.NwGroupManagerHandler;
+import fr.rosstail.nodewar.permission.types.NwLuckPermsHandler;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.NwITeamManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

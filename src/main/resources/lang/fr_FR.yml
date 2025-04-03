@@ -343,14 +343,14 @@ territory:
       demolition:
         display: "Démolition"
         description:
-          - "  &9Objective&d: &cDÉMOLITION"
+          - "  &9Objectif&d: &cDÉMOLITION"
       extermination:
         display: "Extermination"
         description:
-          - "  &9Objective&d: &4Extermination"
-          - "    &c*  &6Sides&d:"
-          - "[line_side]"
-        line-side: "      &5- &r[territory_objective_side_[index]_display]&d: [territory_objective_side_[index]_team_color_display]"
+          - "  &9Objectif&d: &4Extermination"
+          - "    &c*  &6Points de capture&d:"
+          - "[line_capturepoint]"
+        line-capturepoint: "      &5- &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
   battle:
     types:
       none:

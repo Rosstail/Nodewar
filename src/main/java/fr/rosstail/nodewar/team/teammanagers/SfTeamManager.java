@@ -7,7 +7,7 @@ import com.massivecraft.factions.FactionsPlugin;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.SaberFactionsEventHandler;
 import fr.rosstail.nodewar.lang.AdaptMessage;
-import fr.rosstail.nodewar.permissionmannager.PermissionManager;
+import fr.rosstail.nodewar.permission.PermissionManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;

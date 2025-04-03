@@ -1,6 +1,6 @@
-package fr.rosstail.nodewar.permissionmannager.types;
+package fr.rosstail.nodewar.permission.types;
 
-import fr.rosstail.nodewar.permissionmannager.NwIPermissionManagerHandler;
+import fr.rosstail.nodewar.permission.NwIPermissionManagerHandler;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
@@ -9,7 +9,6 @@ import net.luckperms.api.model.user.UserManager;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.Set;

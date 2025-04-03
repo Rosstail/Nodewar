@@ -1,10 +1,9 @@
-package fr.rosstail.nodewar.permissionmannager.types;
+package fr.rosstail.nodewar.permission.types;
 
 import fr.rosstail.nodewar.Nodewar;
-import fr.rosstail.nodewar.permissionmannager.NwIPermissionManagerHandler;
+import fr.rosstail.nodewar.permission.NwIPermissionManagerHandler;
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.dataholder.OverloadedWorldHolder;
-import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
