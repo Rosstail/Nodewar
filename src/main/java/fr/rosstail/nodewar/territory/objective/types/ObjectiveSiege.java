@@ -48,22 +48,7 @@ public class ObjectiveSiege extends NwConquestObjective {
 
         this.maxHealth = Integer.parseInt(this.objectiveSiegeModel.getMaxHealthString());
         this.display = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.description.siege.display");
-        List<String> rawDescriptionList = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.types.siege.description");
-        String capturePointLine = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.types.siege.line-capturepoint", "");
-
-        for (int lineIndex = 0; lineIndex < rawDescriptionList.size(); lineIndex++) {
-            String line = rawDescriptionList.get(lineIndex);
-            if (line.contains("[line_capturepoint]")) {
-                rawDescriptionList.remove(lineIndex);
-                for (int controlPointIndex = 0; controlPointIndex < controlPointList.size(); controlPointIndex++) {
-                    rawDescriptionList.add(lineIndex + controlPointIndex, capturePointLine.replaceAll("\\[index]", String.valueOf(controlPointIndex + 1)));
-                }
-                lineIndex += controlPointList.size();
-            }
-        }
-
-        this.description = rawDescriptionList;
-
+        updateDesc();
     }
 
     @Override
@@ -405,11 +390,31 @@ public class ObjectiveSiege extends NwConquestObjective {
         && !controlPointList.contains(territory)) {
             controlPointList.add(territory);
         }
+        updateDesc();
     }
 
     @Override
     public void removeTerritory(Territory territory) {
         super.removeTerritory(territory);
         controlPointList.remove(territory);
+        updateDesc();
+    }
+
+    private void updateDesc() {
+        List<String> rawDescriptionList = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.types.siege.description");
+        String capturePointLine = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.types.siege.line-capturepoint", "");
+
+        for (int lineIndex = 0; lineIndex < rawDescriptionList.size(); lineIndex++) {
+            String line = rawDescriptionList.get(lineIndex);
+            if (line.contains("[line_capturepoint]")) {
+                rawDescriptionList.remove(lineIndex);
+                for (int controlPointIndex = 0; controlPointIndex < controlPointList.size(); controlPointIndex++) {
+                    rawDescriptionList.add(lineIndex + controlPointIndex, capturePointLine.replaceAll("\\[index]", String.valueOf(controlPointIndex + 1)));
+                }
+                lineIndex += controlPointList.size();
+            }
+        }
+
+        this.description = rawDescriptionList;
     }
 }

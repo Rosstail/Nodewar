@@ -10,7 +10,7 @@ import fr.rosstail.nodewar.events.NodewarEventHandler;
 import fr.rosstail.nodewar.events.WorldguardEventHandler;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
-import fr.rosstail.nodewar.permissionmannager.PermissionManager;
+import fr.rosstail.nodewar.permission.PermissionManager;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
@@ -46,7 +46,7 @@ public class Nodewar extends JavaPlugin implements Listener {
     private MinecraftEventHandler minecraftEventHandler;
     private WorldguardEventHandler worldguardEventHandler;
     private NodewarEventHandler nodewarEventHandler;
-    private String filePath = "plugins/" + getName() + "/config.yml";
+    private final String filePath = "plugins/" + getName() + "/config.yml";
 
     public void onLoad() {
     }

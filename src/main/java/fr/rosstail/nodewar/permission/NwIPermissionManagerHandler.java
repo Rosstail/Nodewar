@@ -1,6 +1,4 @@
-package fr.rosstail.nodewar.permissionmannager;
-
-import org.bukkit.entity.Player;
+package fr.rosstail.nodewar.permission;
 
 import java.util.UUID;
 

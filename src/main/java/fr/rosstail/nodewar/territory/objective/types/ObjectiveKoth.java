@@ -26,16 +26,13 @@ public class ObjectiveKoth extends NwConquestObjective {
 
     public ObjectiveKoth(Territory territory, ObjectiveKothModel childModel, ObjectiveKothModel parentModel) {
         super(territory, childModel, parentModel);
-        ObjectiveKothModel clonedChildKothModel = childModel;
-        ObjectiveKothModel clonedParentKothModel = parentModel;
-        this.objectiveKothModel = new ObjectiveKothModel(clonedChildKothModel, clonedParentKothModel);
-
+        this.objectiveKothModel = new ObjectiveKothModel(childModel, parentModel);
 
         this.objectiveKothModel.getPointsPerSecondControlPointIntMap().forEach((s, points) -> {
             controlPointList.addAll(TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(
                     (territory1 -> territory1.getName().equalsIgnoreCase(s)
                             && territory1.getWorld() == territory.getWorld())
-            ).collect(Collectors.toList()));
+            ).toList());
         });
 
 
@@ -45,21 +42,7 @@ public class ObjectiveKoth extends NwConquestObjective {
 
         this.timeToReach = Integer.parseInt(this.objectiveKothModel.getTimeToReachStr());
         this.display = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.description.koth.display");
-        List<String> rawDescriptionList = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.types.koth.description");
-        String capturePointLine = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.types.koth.line-capturepoint", "");
-
-        for (int lineIndex = 0; lineIndex < rawDescriptionList.size(); lineIndex++) {
-            String line = rawDescriptionList.get(lineIndex);
-            if (line.contains("[line_capturepoint]")) {
-                rawDescriptionList.remove(lineIndex);
-                for (int controlPointIndex = 0; controlPointIndex < controlPointList.size(); controlPointIndex++) {
-                    rawDescriptionList.add(lineIndex + controlPointIndex, capturePointLine.replaceAll("\\[index]", String.valueOf(controlPointIndex + 1)));
-                }
-                lineIndex += controlPointList.size();
-            }
-        }
-
-        this.description = rawDescriptionList;
+        updateDesc();
     }
 
     public Map<Territory, Integer> getCapturePointsValuePerSecond() {
@@ -308,11 +291,31 @@ public class ObjectiveKoth extends NwConquestObjective {
                 && !controlPointList.contains(territory)) {
             controlPointList.add(territory);
         }
+        updateDesc();
     }
 
     @Override
     public void removeTerritory(Territory territory) {
         super.removeTerritory(territory);
         controlPointList.remove(territory);
+        updateDesc();
+    }
+
+    private void updateDesc() {
+        List<String> rawDescriptionList = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.types.koth.description");
+        String capturePointLine = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.types.koth.line-capturepoint", "");
+
+        for (int lineIndex = 0; lineIndex < rawDescriptionList.size(); lineIndex++) {
+            String line = rawDescriptionList.get(lineIndex);
+            if (line.contains("[line_capturepoint]")) {
+                rawDescriptionList.remove(lineIndex);
+                for (int controlPointIndex = 0; controlPointIndex < controlPointList.size(); controlPointIndex++) {
+                    rawDescriptionList.add(lineIndex + controlPointIndex, capturePointLine.replaceAll("\\[index]", String.valueOf(controlPointIndex + 1)));
+                }
+                lineIndex += controlPointList.size();
+            }
+        }
+
+        this.description = rawDescriptionList;
     }
 }

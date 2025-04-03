@@ -47,7 +47,7 @@ public class BattleExtermination extends Battle {
 
     public void eliminateLosingSides() {
         for (Territory side : liveSideSet) {
-            if (objectiveExtermination.doSideLose(side, this)) {
+            if (objectiveExtermination.doSideLose(side)) {
                 eliminateSide(side);
             }
         }

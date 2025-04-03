@@ -8,13 +8,13 @@ public class TerritoryWebmap extends TerritoryWebmapModel {
 
     private boolean drawLine = true;
 
-    private boolean xSet;
+    private final boolean xSet;
     private float x;
 
-    private boolean ySet;
+    private final boolean ySet;
     private float y;
 
-    private boolean zSet;
+    private final boolean zSet;
     private float z;
 
     public TerritoryWebmap(Territory territory, TerritoryWebmapModel childModel, TerritoryWebmapModel parentModel) {

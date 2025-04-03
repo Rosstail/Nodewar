@@ -13,11 +13,13 @@ import fr.rosstail.nodewar.territory.objective.NwConquestObjective;
 import org.bukkit.Bukkit;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ObjectiveExtermination extends NwConquestObjective {
     private final Set<Territory> territorySet = new HashSet<>();
 
-    private long duration;
+    private final long duration;
 
     ObjectiveExterminationModel objectiveExterminationModel;
 
@@ -35,6 +37,8 @@ public class ObjectiveExtermination extends NwConquestObjective {
         this.display = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.description.extermination.display");
         this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.types.extermination.description");
         this.duration = Long.parseLong(objectiveExterminationModel.getDurationStr() != null ? objectiveExterminationModel.getDurationStr() : "0") * 1000L;
+
+        updateDesc();
     }
 
     @Override
@@ -110,7 +114,7 @@ public class ObjectiveExtermination extends NwConquestObjective {
             NwITeam nwITeam = sideTerritory.getOwnerITeam();
 
             if (nwITeam != null) {
-                if (!doSideLose(sideTerritory, currentBattle)) {
+                if (!doSideLose(sideTerritory)) {
                     teamSideMap.put(nwITeam, teamSideMap.getOrDefault(nwITeam, 0) + 1);
                 }
             }
@@ -118,13 +122,7 @@ public class ObjectiveExtermination extends NwConquestObjective {
         return teamSideMap;
     }
 
-    @Override
-    public String adaptMessage(String message) {
-        message = super.adaptMessage(message);
-        return message;
-    }
-
-    public boolean doSideLose(Territory side, BattleExtermination currentBattle) {
+    public boolean doSideLose(Territory side) {
         return side.getOwnerITeam() == null;
     }
 
@@ -212,7 +210,7 @@ public class ObjectiveExtermination extends NwConquestObjective {
             for (Map.Entry<NwITeam, Integer> entry : teamSideMap.entrySet()) {
                 NwITeam nwITeam = entry.getKey();
                 Integer integer = entry.getValue();
-                
+
                 if (integer >= highestSideAmount) {
                     if (integer > highestSideAmount) {
                         highestSideOwners.clear();
@@ -221,7 +219,7 @@ public class ObjectiveExtermination extends NwConquestObjective {
                     highestSideOwners.add(nwITeam);
                 }
             }
-            
+
             if (highestSideOwners.size() == 1) {
                 return highestSideOwners.stream().findFirst().get();
             }
@@ -234,7 +232,6 @@ public class ObjectiveExtermination extends NwConquestObjective {
     @Override
     public void neutralize(NwITeam winnerITeam) {
         super.neutralize(winnerITeam);
-        BattleExtermination currentBattleExtermination = (BattleExtermination) territory.getCurrentBattle();
     }
 
     @Override
@@ -279,12 +276,57 @@ public class ObjectiveExtermination extends NwConquestObjective {
                 && !getTerritorySet().contains(sideTerritory)) {
             territorySet.add(sideTerritory);
         }
+        updateDesc();
     }
 
     @Override
     public void removeTerritory(Territory territory) {
         super.removeTerritory(territory);
         removeSide(territory);
+        updateDesc();
+    }
+
+    @Override
+    public String adaptMessage(String message) {
+        message = super.adaptMessage(message);
+
+        Pattern capturePointPattern = Pattern.compile("(\\[territory_objective_capturepoint)_(\\d+)(_\\w+])");
+        Matcher capturePointMatcher = capturePointPattern.matcher(message);
+        List<Territory> territoryList = territorySet.stream().toList();
+
+        while (capturePointMatcher.find()) {
+            int capturePointId = Integer.parseInt(capturePointMatcher.group(2));
+            if (!territoryList.isEmpty()) {
+                Territory capturePoint = territoryList.get(capturePointId - 1);
+
+                if (capturePoint != null) {
+                    message = message.replace(capturePointMatcher.group(), "[territory" + capturePointMatcher.group(3));
+                    message = capturePoint.adaptMessage(message);
+                }
+            } else {
+                message = message.replace(capturePointMatcher.group(), "N/A");
+            }
+        }
+
+        return message;
+    }
+
+    private void updateDesc() {
+        List<String> rawDescriptionList = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.types.extermination.description");
+        String capturePointLine = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.types.extermination.line-capturepoint", "");
+
+        for (int lineIndex = 0; lineIndex < rawDescriptionList.size(); lineIndex++) {
+            String line = rawDescriptionList.get(lineIndex);
+            if (line.contains("[line_capturepoint]")) {
+                rawDescriptionList.remove(lineIndex);
+                for (int controlPointIndex = 0; controlPointIndex < territorySet.size(); controlPointIndex++) {
+                    rawDescriptionList.add(lineIndex + controlPointIndex, capturePointLine.replaceAll("\\[index]", String.valueOf(controlPointIndex + 1)));
+                }
+                lineIndex += territorySet.size();
+            }
+        }
+
+        this.description = rawDescriptionList;
     }
 
     private void removeSide(Territory sideTerritory) {
