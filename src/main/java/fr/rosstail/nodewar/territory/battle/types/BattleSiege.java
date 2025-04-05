@@ -39,10 +39,6 @@ public class BattleSiege extends Battle {
         if (isBattleOnEnd()) {
             return;
         }
-        int currentHealth = getCurrentHealth();
-        int maxHealth = objectiveSiege.getMaxHealth();
-        NwITeam ownerITeam = territory.getOwnerITeam();
-        NwITeam advantageITeam = getAdvantagedITeam();
 
         handleRegenScore();
         handleDamageScore();

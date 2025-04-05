@@ -97,9 +97,9 @@ public class MySqlStorageRequest extends SqlStorageRequest {
 
     @Override
     public void updatePlayerModel(PlayerModel model) {
-        String query = "UPDATE " + playerTableName + " SET username = ?, last_update = CURRENT_TIMESTAMP, is_team_open = ?, last_deploy = ? WHERE uuid = ?";
+        String query = "UPDATE " + playerTableName + " SET last_update = CURRENT_TIMESTAMP, is_team_open = ?, last_deploy = ? WHERE uuid = ?";
         try {
-            super.executeSQLUpdate(query, model.getUsername(), model.isTeamOpen(), new Timestamp(model.getLastDeploy()), model.getUuid());
+            super.executeSQLUpdate(query, model.isTeamOpen(), new Timestamp(model.getLastDeploy()), model.getUuid());
             model.setLastUpdate(System.currentTimeMillis());
         } catch (Exception e) {
             e.printStackTrace();

@@ -42,7 +42,6 @@ public class WebmapManager {
             territoryToEraseSet.forEach(territory -> {
                 eraseTerritoryMarker(territory);
                 eraseTerritorySurface(territory);
-                // TODO
                 eraseLineBetweenTerritories(territory, territory);
             });
             territoryToEraseSet.clear();

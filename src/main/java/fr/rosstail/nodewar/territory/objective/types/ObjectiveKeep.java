@@ -270,12 +270,14 @@ public class ObjectiveKeep extends NwConquestObjective {
         message = super.adaptMessage(message);
         BattleKeep currentBattle = (BattleKeep) territory.getCurrentBattle();
 
-        message = message.replaceAll("\\[territory_objective_hold_time]", String.valueOf(currentBattle.getHoldTime()))
+        int holdTime = currentBattle != null ? currentBattle.getHoldTime() : 0;
+
+        message = message.replaceAll("\\[territory_objective_hold_time]", String.valueOf(holdTime))
                 .replaceAll("\\[territory_objective_seconds_to_hold]", String.valueOf(secondsToHold))
                 .replaceAll("\\[territory_objective_minimum_attacker_ratio]", String.valueOf(minAttackerRatio))
                 .replaceAll("\\[territory_objective_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)))
                 .replaceAll("\\[territory_objective_minimum_attackers]", String.valueOf(minAttackerAmount))
-                .replaceAll("\\[territory_objective_time_left]", AdaptMessage.getAdaptMessage().countdownFormatter(secondsToHold - currentBattle.getHoldTime()));
+                .replaceAll("\\[territory_objective_time_left]", AdaptMessage.getAdaptMessage().countdownFormatter(secondsToHold - holdTime));
 
         return message;
     }

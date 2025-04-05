@@ -108,14 +108,6 @@ public interface StorageRequest {
     TeamMemberModel selectTeamMemberModelByUUID(String playerUuid);
 
     /**
-     * READ
-     * get member team model from storage
-     * @param userName name of player
-     * @return the team member model if exists
-     */
-    TeamMemberModel selectTeamMemberModelByUsername(String userName);
-
-    /**
      * Get all team models from the database
      * @return
      */

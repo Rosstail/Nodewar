@@ -2,7 +2,6 @@ package fr.rosstail.nodewar.apis;
 
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.lang.AdaptMessage;
-import fr.rosstail.nodewar.lang.PlayerType;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

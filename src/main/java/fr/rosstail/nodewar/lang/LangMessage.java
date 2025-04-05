@@ -15,8 +15,8 @@ public enum LangMessage {
     COMMANDS_PLAYER_ALREADY_IN_TEAM("commands.player-already-in-team", false),
 
     COMMANDS_HELP_HEADER("commands.help.header", false),
-
     COMMANDS_HELP_LINE("commands.help.line", false),
+
     COMMANDS_EDIT_PLAYER_DISCONNECTED("commands.edit.player.disconnected-player", false),
     COMMANDS_TEAM_DESC("commands.team.desc", false),
     COMMANDS_TEAM_ALREADY_EXIST("commands.team.already-exist", false),

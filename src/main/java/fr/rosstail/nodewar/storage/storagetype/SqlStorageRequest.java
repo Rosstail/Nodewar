@@ -3,6 +3,7 @@ package fr.rosstail.nodewar.storage.storagetype;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.battlefield.BattlefieldModel;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.NwITeam;
@@ -137,7 +138,6 @@ public class SqlStorageRequest implements StorageRequest {
         String query = "CREATE TABLE IF NOT EXISTS " + playerTableName + " (" +
                 " id INTEGER PRIMARY KEY AUTO_INCREMENT," +
                 " uuid varchar(40) UNIQUE NOT NULL," +
-                " username varchar(40) UNIQUE NOT NULL," +
                 " is_team_open BOOLEAN NOT NULL DEFAULT TRUE," +
                 " last_deploy timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 " last_update timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP) CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
@@ -494,32 +494,7 @@ public class SqlStorageRequest implements StorageRequest {
                         result.getInt("player_id"),
                         result.getInt("player_rank"),
                         result.getTimestamp("join_time"),
-                        result.getString("username")
-                );
-                teamMemberModel.setId(result.getInt("id"));
-                return teamMemberModel;
-            }
-            result.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public TeamMemberModel selectTeamMemberModelByUsername(String userName) {
-        String query = "SELECT * FROM " + teamMemberTableName + " AS tmt, " + teamTableName + " AS tt, " + playerTableName + " AS pt " +
-                "WHERE tt.id = tmt.team_id AND tmt.player_id = pt.id AND pt.username = ? " +
-                "LIMIT 1";
-        try {
-            ResultSet result = executeSQLQuery(openConnection(), query, userName);
-            if (result.next()) {
-                TeamMemberModel teamMemberModel = new TeamMemberModel(
-                        result.getInt("team_id"),
-                        result.getInt("player_id"),
-                        result.getInt("player_rank"),
-                        result.getTimestamp("join_time"),
-                        userName
+                        PlayerDataManager.getPlayerNameFromUUID(UUID.fromString(playerUUID))
                 );
                 teamMemberModel.setId(result.getInt("id"));
                 return teamMemberModel;

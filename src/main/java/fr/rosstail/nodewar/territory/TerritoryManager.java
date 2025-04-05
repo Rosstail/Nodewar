@@ -52,7 +52,6 @@ public class TerritoryManager {
     }
 
     public void loadPresetModels() {
-        //TODO init custom default
         defaultTerritoryModel = new TerritoryModel();
 
         File fileConfig = new File("plugins/" + plugin.getName() + "/conquest/territories-presets.yml");

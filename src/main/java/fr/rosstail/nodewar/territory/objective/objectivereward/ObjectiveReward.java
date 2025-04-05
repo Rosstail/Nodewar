@@ -129,7 +129,7 @@ public class ObjectiveReward {
         if (player.isOnline()) {
             playerTeam = playerData.getTeam();
         } else {
-            TeamMemberModel offlineTeamMemberModel = StorageManager.getManager().selectTeamMemberModelByUsername(player.getName());
+            TeamMemberModel offlineTeamMemberModel = StorageManager.getManager().selectTeamMemberModelByUUID(player.getUniqueId().toString());
             if (offlineTeamMemberModel == null) {
                 return;
             }

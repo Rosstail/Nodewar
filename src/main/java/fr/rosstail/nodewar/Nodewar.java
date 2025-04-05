@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class Nodewar extends JavaPlugin implements Listener {
-    private YamlConfiguration config;
     private static final Logger log;
     private static Economy econ;
     private static final Permission perms;
@@ -66,7 +65,7 @@ public class Nodewar extends JavaPlugin implements Listener {
             this.saveDefaultConfig();
         }
 
-        config = YamlConfiguration.loadConfiguration(fileConfig);
+        YamlConfiguration.loadConfiguration(fileConfig);
         saveResource("conquest/territories-presets.yml", false);
 
         ConfigData.init(getCustomConfigFile());
@@ -90,6 +89,8 @@ public class Nodewar extends JavaPlugin implements Listener {
     public void onEnable() {
         instance = this;
         dimName = instance.getName().toLowerCase();
+
+        this.initDefaultConfigs();
 
         AdaptMessage.initAdaptMessage(this);
         TerritoryManager.init(this);
@@ -133,7 +134,6 @@ public class Nodewar extends JavaPlugin implements Listener {
             AdaptMessage.print("[" + this.getName() + "] Worldguard has not been found.", AdaptMessage.prints.ERROR);
             this.onDisable();
         }
-        this.initDefaultConfigs();
 
         if (Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PAPIExpansion(this).register();
