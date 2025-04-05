@@ -350,6 +350,7 @@ territory:
         display: "Extermination"
         description:
           - "  &9Objective&d: &4Extermination"
+          - "    &c*  &6Ignore unowned capture points&d: &r[territory_objective_ignore_unowned_capturepoint]"
           - "    &c*  &6Capture points&d:"
           - "[line_capturepoint]"
         line-capturepoint: "      &5- &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"

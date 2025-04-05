@@ -60,7 +60,6 @@ public class TeamJoinCommand extends TeamSubCommand {
         String teamName;
         NwITeam nwTeam;
         PlayerData playerData;
-        TeamMemberModel teamMemberModel;
         NwTeamInvite teamInvite = null;
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
@@ -77,7 +76,7 @@ public class TeamJoinCommand extends TeamSubCommand {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_ALREADY_IN_TEAM));
             return;
         } else if (args.length < 3) {
-            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_BY_PLAYER_ONLY));
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TOO_FEW_ARGUMENTS));
             return;
         }
 

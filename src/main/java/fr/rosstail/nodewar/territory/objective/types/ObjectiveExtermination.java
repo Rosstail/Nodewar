@@ -20,6 +20,7 @@ public class ObjectiveExtermination extends NwConquestObjective {
     private final Set<Territory> territorySet = new HashSet<>();
 
     private final long duration;
+    private final boolean ignoreUnownedSides;
 
     ObjectiveExterminationModel objectiveExterminationModel;
 
@@ -37,6 +38,7 @@ public class ObjectiveExtermination extends NwConquestObjective {
         this.display = LangManager.getCurrentLang().getLangConfig().getString("territory.objective.description.extermination.display");
         this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.types.extermination.description");
         this.duration = Long.parseLong(objectiveExterminationModel.getDurationStr() != null ? objectiveExterminationModel.getDurationStr() : "0") * 1000L;
+        this.ignoreUnownedSides = objectiveExterminationModel != null && Boolean.parseBoolean(objectiveExterminationModel.getIgnoreUnownedSidesStr());
 
         updateDesc();
     }
@@ -108,12 +110,11 @@ public class ObjectiveExtermination extends NwConquestObjective {
     }
 
     public Map<NwITeam, Integer> getTeamSideMap() {
-        BattleExtermination currentBattle = (BattleExtermination) territory.getCurrentBattle();
         Map<NwITeam, Integer> teamSideMap = new HashMap<>();
         for (Territory sideTerritory : territorySet) {
             NwITeam nwITeam = sideTerritory.getOwnerITeam();
 
-            if (nwITeam != null) {
+            if (nwITeam != null || !ignoreUnownedSides) {
                 if (!doSideLose(sideTerritory)) {
                     teamSideMap.put(nwITeam, teamSideMap.getOrDefault(nwITeam, 0) + 1);
                 }
@@ -135,7 +136,9 @@ public class ObjectiveExtermination extends NwConquestObjective {
         }
 
         return !territorySet.stream().allMatch(
-                territory1 -> territory1.getOwnerITeam() == null || territory1.getOwnerITeam() == owner
+                territory1 ->
+                        (!ignoreUnownedSides && territory1.getOwnerITeam() == null)
+                                || territory1.getOwnerITeam() == owner
         );
     }
 
@@ -290,6 +293,8 @@ public class ObjectiveExtermination extends NwConquestObjective {
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
 
+        message = message.replaceAll("\\[territory_objective_ignore_unowned_capturepoint]", String.valueOf(ignoreUnownedSides).toUpperCase());
+
         Pattern capturePointPattern = Pattern.compile("(\\[territory_objective_capturepoint)_(\\d+)(_\\w+])");
         Matcher capturePointMatcher = capturePointPattern.matcher(message);
         List<Territory> territoryList = territorySet.stream().toList();
@@ -335,5 +340,9 @@ public class ObjectiveExtermination extends NwConquestObjective {
 
     public long getDuration() {
         return duration;
+    }
+
+    public boolean isIgnoreUnownedSides() {
+        return ignoreUnownedSides;
     }
 }

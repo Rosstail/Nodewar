@@ -12,6 +12,7 @@ import java.util.Set;
 public class ObjectiveExterminationModel extends ObjectiveModel {
     private Set<String> sideStrSet = new HashSet<>();
     private String durationStr;
+    private String ignoreUnownedSidesStr;
 
 
     public ObjectiveExterminationModel(ConfigurationSection section) {
@@ -22,8 +23,9 @@ public class ObjectiveExterminationModel extends ObjectiveModel {
                 ConfigurationSection sidesConfigSection = section.getConfigurationSection("sides");
 
                 sideStrSet.addAll(sidesConfigSection.getKeys(false));
-                durationStr = section.getString("duration");
             }
+            durationStr = section.getString("duration");
+            ignoreUnownedSidesStr = section.getString("ignore-unowned-sides");
         }
     }
 
@@ -34,6 +36,7 @@ public class ObjectiveExterminationModel extends ObjectiveModel {
         this.sideStrSet.addAll(childObjectiveModel.getSideStrSet());
 
         this.durationStr = childObjectiveModel.durationStr != null ? childObjectiveModel.durationStr : parentObjectiveModel.durationStr;
+        this.ignoreUnownedSidesStr = childObjectiveModel.ignoreUnownedSidesStr != null ? childObjectiveModel.ignoreUnownedSidesStr : parentObjectiveModel.ignoreUnownedSidesStr;
     }
 
     public Set<String> getSideStrSet() {
@@ -50,5 +53,13 @@ public class ObjectiveExterminationModel extends ObjectiveModel {
 
     public void setDurationStr(String durationStr) {
         this.durationStr = durationStr;
+    }
+
+    public String getIgnoreUnownedSidesStr() {
+        return ignoreUnownedSidesStr;
+    }
+
+    public void setIgnoreUnownedSidesStr(String ignoreUnownedSidesStr) {
+        this.ignoreUnownedSidesStr = ignoreUnownedSidesStr;
     }
 }
