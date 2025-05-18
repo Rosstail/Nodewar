@@ -15,10 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public interface StorageRequest {
+public interface IStorageManager {
     ZoneId serverZoneId = ZoneId.systemDefault();
+    String name = "defStorageRequest";
 
-    long offsetMillis = serverZoneId.getRules().getOffset(Instant.now()).getTotalSeconds() * 1000L;
+    default long getOffsetMillis() {
+        return serverZoneId.getRules().getOffset(Instant.now()).getTotalSeconds() * 1000L;
+    }
 
     void setupStorage(String host, short port, String database, String username, String password);
 
@@ -203,4 +206,8 @@ public interface StorageRequest {
      * @param playerId the id of player
      */
     void deleteTeamMemberModel(int playerId);
+
+    default String getName() {
+        return name;
+    }
 }

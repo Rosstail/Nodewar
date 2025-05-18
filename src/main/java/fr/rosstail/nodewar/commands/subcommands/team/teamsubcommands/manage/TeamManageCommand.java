@@ -41,37 +41,32 @@ public class TeamManageCommand extends TeamManageSubCommand {
             return;
         }
 
-        List<String> subCommandsStringList = new ArrayList<>();
-        for (TeamManageSubCommand subCommand : subCommands) {
-            subCommandsStringList.add(subCommand.getName());
-        }
+        SubCommand subCommand = subCommands.stream()
+                .filter(teamSubCommand -> teamSubCommand.getName().equalsIgnoreCase(args[2]))
+                .findFirst().orElse(null);
 
-        if (!subCommandsStringList.contains(args[2])) {
+        if (subCommand == null) {
             sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
             return;
         }
 
-        subCommands.stream()
-                .filter(subCommand -> subCommand.getName().equalsIgnoreCase(args[2]))
-                .findFirst().ifPresent(subCommand -> subCommand.perform(sender, args, arguments));
+        subCommand.perform(sender, args, arguments);
     }
 
     @Override
     public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         if (args.length <= 3) {
-            List<String> list = new ArrayList<>();
-            for (SubCommand subCommand : subCommands) {
-                list.add(subCommand.getName());
-            }
-            return list;
+            return subCommands.stream().map(SubCommand::getName).toList();
         } else {
-            for (SubCommand subCommand : subCommands) {
-                if (subCommand.getName().equalsIgnoreCase(args[2])) {
-                    return subCommand.getSubCommandsArguments(sender, args, arguments);
-                }
+            SubCommand subCommand = subCommands.stream()
+                    .filter(filterSubCommand -> filterSubCommand.getName().equalsIgnoreCase(args[2]))
+                    .findFirst().orElse(null);
+            
+            if (subCommand == null) {
+                return null;
             }
+            return subCommand.getSubCommandsArguments(sender, args, arguments);
         }
-        return null;
     }
 
     @Override

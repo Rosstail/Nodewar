@@ -11,7 +11,6 @@ import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,6 @@ public class AdminTerritoryCommand extends AdminTerritorySubCommand {
     @Override
     public void perform(CommandSender sender, String[] args, String[] arguments) {
         String territoryName;
-        String subCommandArg;
         if (!CommandManager.canLaunchCommand(sender, this)) {
             return;
         }
@@ -41,29 +39,23 @@ public class AdminTerritoryCommand extends AdminTerritorySubCommand {
             return;
         }
 
-
         territoryName = args[2];
-        subCommandArg = args[3];
-
-        List<String> subCommandsStringList = new ArrayList<>();
-        for (AdminTerritorySubCommand subCommand : subCommands) {
-            subCommandsStringList.add(subCommand.getName());
-        }
 
         if (!TerritoryManager.getTerritoryManager().getTerritoryMap().containsKey(territoryName)) {
             sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", territoryName));
             return;
         }
 
-        if (!subCommandsStringList.contains(subCommandArg)) {
+        SubCommand subCommand = subCommands.stream()
+                .filter(teamSubCommand -> teamSubCommand.getName().equalsIgnoreCase(args[3]))
+                .findFirst().orElse(null);
+
+        if (subCommand == null) {
             sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
             return;
         }
 
-        subCommands.stream()
-                .filter(subCommand -> subCommand.getName().equalsIgnoreCase(subCommandArg))
-                .findFirst().ifPresent(subCommand -> subCommand.perform(sender, args, arguments));
-
+        subCommand.perform(sender, args, arguments);
     }
 
     @Override
@@ -71,19 +63,17 @@ public class AdminTerritoryCommand extends AdminTerritorySubCommand {
         if (args.length <= 3) {
             return new ArrayList<>(TerritoryManager.getTerritoryManager().getTerritoryMap().keySet());
         } else if (args.length == 4) {
-            List<String> list = new ArrayList<>();
-            for (SubCommand subCommand : subCommands) {
-                list.add(subCommand.getName());
-            }
-            return list;
+            return subCommands.stream().map(SubCommand::getName).toList();
         } else {
-            for (SubCommand subCommand : subCommands) {
-                if (subCommand.getName().equalsIgnoreCase(args[3])) {
-                    return subCommand.getSubCommandsArguments(sender, args, arguments);
-                }
+            SubCommand subCommand = subCommands.stream()
+                    .filter(filterSubCommand -> filterSubCommand.getName().equalsIgnoreCase(args[3]))
+                    .findFirst().orElse(null);
+            
+            if (subCommand == null) {
+                return null;
             }
+            return subCommand.getSubCommandsArguments(sender, args, arguments);
         }
-        return null;
     }
 
     @Override

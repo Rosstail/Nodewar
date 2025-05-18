@@ -68,7 +68,7 @@ public class BattlefieldModel {
         this.resetTeam = section.getBoolean("reset-team", false);
         this.endBattleOnBattlefieldEnd = section.getBoolean("end-battle-on-battlefield-end", false);
 
-        territoryTypeList = section.getStringList("territory-types");
+        territoryTypeList = section.getStringList("territory-presets");
         territoryList = section.getStringList("territories");
         announcement = section.getBoolean("announcement", true);
     }

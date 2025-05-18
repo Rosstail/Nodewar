@@ -4,34 +4,41 @@ import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.battlefield.BattlefieldModel;
 import fr.rosstail.nodewar.player.PlayerModel;
-import fr.rosstail.nodewar.storage.storagetype.sql.MongoDbStorageRequest;
-import fr.rosstail.nodewar.storage.storagetype.sql.SqliteStorageRequest;
-import fr.rosstail.nodewar.storage.storagetype.sql.MariaDbStorageRequest;
-import fr.rosstail.nodewar.storage.storagetype.sql.MySqlStorageRequest;
+import fr.rosstail.nodewar.storage.storagetype.SqlStorageManager;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
+import fr.rosstail.nodewar.storage.storagetype.sql.MariaDbStorageManager;
+import fr.rosstail.nodewar.storage.storagetype.sql.MongoDbStorageManager;
+import fr.rosstail.nodewar.storage.storagetype.sql.MySqlStorageManager;
+import fr.rosstail.nodewar.storage.storagetype.sql.SQLiteStorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.TeamModel;
 import fr.rosstail.nodewar.team.relation.TeamRelationModel;
 import fr.rosstail.nodewar.territory.TerritoryModel;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class StorageManager {
     private static StorageManager manager;
     private final String pluginName;
-    private String type;
-    public String host, database, username, password;
-    public short port;
 
-    private MySqlStorageRequest mySqlStorageRequest;
-    private MariaDbStorageRequest mariaDBStorageRequest;
-    private MongoDbStorageRequest mongoDBStorageRequest;
-    private SqliteStorageRequest sqLiteDBStorageRequest;
+    private SqlStorageManager sqlStorageManager;
+
+    public static Map<String, Class<? extends SqlStorageManager>> iSqlStorageRequestMap = new HashMap<>();
+
+    static {
+        iSqlStorageRequestMap.put("mariadb", MariaDbStorageManager.class);
+        iSqlStorageRequestMap.put("mongodb", MongoDbStorageManager.class);
+        iSqlStorageRequestMap.put("mysql", MySqlStorageManager.class);
+        iSqlStorageRequestMap.put("sqlite", SQLiteStorageManager.class); // last, failsafe for AUTO
+    }
 
     public static StorageManager initStorageManage(Nodewar plugin) {
         if (manager == null) {
@@ -44,55 +51,48 @@ public class StorageManager {
         this.pluginName = plugin.getName().toLowerCase();
     }
 
+    public String getUsedSystem() {
+        String system = ConfigData.getConfigData().storage.storageType;
+
+        if (iSqlStorageRequestMap.containsKey(system)) {
+            return system;
+        }
+        return "sqlite";
+    }
+
     public void chooseDatabase() {
-        host = ConfigData.getConfigData().storage.storageHost;
-        database = ConfigData.getConfigData().storage.storageDatabase;
-        port = ConfigData.getConfigData().storage.storagePort;
-        username = ConfigData.getConfigData().storage.storageUser;
-        password = ConfigData.getConfigData().storage.storagePass;
-        type = ConfigData.getConfigData().storage.storageType.toLowerCase();
+        String host = ConfigData.getConfigData().storage.storageHost;
+        String database = ConfigData.getConfigData().storage.storageDatabase;
+        short port = ConfigData.getConfigData().storage.storagePort;
+        String username = ConfigData.getConfigData().storage.storageUser;
+        String password = ConfigData.getConfigData().storage.storagePass;
         String typeToPrint = LangManager.getMessage(LangMessage.STORAGE_TYPE);
 
-        switch (type) {
-            case "mysql":
-                AdaptMessage.print(typeToPrint.replaceAll("\\[type]", "MySQL"), AdaptMessage.prints.OUT);
-                mySqlStorageRequest = new MySqlStorageRequest(pluginName);
-                mySqlStorageRequest.setupStorage(host, port, database, username, password);
-                break;
-            case "mariadb":
-                AdaptMessage.print(typeToPrint.replaceAll("\\[type]", "mariaDB"), AdaptMessage.prints.OUT);
-                mariaDBStorageRequest = new MariaDbStorageRequest(pluginName);
-                mariaDBStorageRequest.setupStorage(host, port, database, username, password);
-                break;
-            case "mongodb":
-                AdaptMessage.print(typeToPrint.replaceAll("\\[type]", "MongoDB"), AdaptMessage.prints.OUT);
-                mongoDBStorageRequest = new MongoDbStorageRequest(pluginName);
-                mongoDBStorageRequest.setupStorage(host, port, database, username, password);
-                break;
-            default:
-                AdaptMessage.print(typeToPrint.replaceAll("\\[type]", "SQLite"), AdaptMessage.prints.OUT);
-                sqLiteDBStorageRequest = new SqliteStorageRequest(pluginName);
-                sqLiteDBStorageRequest.setupStorage(host, port, database, username, password);
-                break;
+        String type = getUsedSystem();
+
+        if (type != null) {
+            Class<? extends SqlStorageManager> managerClass = iSqlStorageRequestMap.get(type.toLowerCase());
+            Constructor<? extends SqlStorageManager> managerConstructor;
+
+            try {
+                managerConstructor = managerClass.getDeclaredConstructor(String.class);
+                sqlStorageManager = managerConstructor.newInstance(pluginName);
+                AdaptMessage.print("[nodewar] Using " + type + " database", AdaptMessage.prints.OUT);
+            } catch (NoSuchMethodException e) {
+                throw new IllegalArgumentException("Missing appropriate constructor in StorageManager class.", e);
+            } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            sqlStorageManager = new SQLiteStorageManager(pluginName);
         }
 
+        AdaptMessage.print(typeToPrint.replaceAll("\\[type]", sqlStorageManager.getName()), AdaptMessage.prints.OUT);
+        sqlStorageManager.setupStorage(host, port, database, username, password);
     }
 
     public void disconnect() {
-        switch (type) {
-            case "mysql":
-                mySqlStorageRequest.closeConnection();
-                break;
-            case "mariadb":
-                mariaDBStorageRequest.closeConnection();
-                break;
-            case "mongodb":
-                mongoDBStorageRequest.closeConnection();
-                break;
-            default:
-                sqLiteDBStorageRequest.closeConnection();
-                break;
-        }
+        sqlStorageManager.closeConnection();
     }
 
     /**
@@ -101,87 +101,33 @@ public class StorageManager {
      * @param model
      */
     public boolean insertPlayerModel(PlayerModel model) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.insertPlayerModel(model);
-            case "mariadb":
-                return mariaDBStorageRequest.insertPlayerModel(model);
-            case "mongodb":
-                return mongoDBStorageRequest.insertPlayerModel(model);
-            default:
-                return sqLiteDBStorageRequest.insertPlayerModel(model);
-        }
+        return sqlStorageManager.insertPlayerModel(model);
     }
 
     public boolean insertTeamModel(TeamModel model) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.insertTeamModel(model);
-            case "mariadb":
-                return mariaDBStorageRequest.insertTeamModel(model);
-            case "mongodb":
-                return mongoDBStorageRequest.insertTeamModel(model);
-            default:
-                return sqLiteDBStorageRequest.insertTeamModel(model);
-        }
+        return sqlStorageManager.insertTeamModel(model);
     }
 
     public boolean insertTeamMemberModel(TeamMemberModel model) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.insertTeamMemberModel(model);
-            case "mariadb":
-                return mariaDBStorageRequest.insertTeamMemberModel(model);
-            case "mongodb":
-                return mongoDBStorageRequest.insertTeamMemberModel(model);
-            default:
-                return sqLiteDBStorageRequest.insertTeamMemberModel(model);
-        }
+        return sqlStorageManager.insertTeamMemberModel(model);
     }
 
     public boolean insertTeamRelationModel(TeamRelationModel model) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.insertTeamRelationModel(model);
-            case "mariadb":
-                return mariaDBStorageRequest.insertTeamRelationModel(model);
-            case "mongodb":
-                return mongoDBStorageRequest.insertTeamRelationModel(model);
-            default:
-                return sqLiteDBStorageRequest.insertTeamRelationModel(model);
-        }
+        return sqlStorageManager.insertTeamRelationModel(model);
     }
 
     /**
      * CREATE
      */
     public boolean insertTerritoryOwner(TerritoryModel model) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.insertTerritoryModel(model);
-            case "mariadb":
-                return mariaDBStorageRequest.insertTerritoryModel(model);
-            case "mongodb":
-                return mongoDBStorageRequest.insertTerritoryModel(model);
-            default:
-                return sqLiteDBStorageRequest.insertTerritoryModel(model);
-        }
+        return sqlStorageManager.insertTerritoryModel(model);
     }
 
     /**
      * CREATE
      */
     public boolean insertBattlefieldModel(BattlefieldModel model) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.insertBattlefieldModel(model);
-            case "mariadb":
-                return mariaDBStorageRequest.insertBattlefieldModel(model);
-            case "mongodb":
-                return mongoDBStorageRequest.insertBattlefieldModel(model);
-            default:
-                return sqLiteDBStorageRequest.insertBattlefieldModel(model);
-        }
+        return sqlStorageManager.insertBattlefieldModel(model);
     }
 
     /**
@@ -190,16 +136,7 @@ public class StorageManager {
      * @param uuid
      */
     public PlayerModel selectPlayerModel(String uuid) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.selectPlayerModel(uuid);
-            case "mariadb":
-                return mariaDBStorageRequest.selectPlayerModel(uuid);
-            case "mongodb":
-                return mongoDBStorageRequest.selectPlayerModel(uuid);
-            default:
-                return sqLiteDBStorageRequest.selectPlayerModel(uuid);
-        }
+        return sqlStorageManager.selectPlayerModel(uuid);
     }
 
     /**
@@ -208,58 +145,22 @@ public class StorageManager {
      * @param teamName
      */
     public TeamModel selectTeamModelByName(String teamName) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.selectTeamModelByName(teamName);
-            case "mariadb":
-                return mariaDBStorageRequest.selectTeamModelByName(teamName);
-            case "mongodb":
-                return mongoDBStorageRequest.selectTeamModelByName(teamName);
-            default:
-                return sqLiteDBStorageRequest.selectTeamModelByName(teamName);
-        }
+        return sqlStorageManager.selectTeamModelByName(teamName);
     }
 
     /**
      * SELECT ALL TEAM MODEL
      */
     public Map<String, TeamModel> selectAllTeamModel() {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.selectAllTeamModel();
-            case "mariadb":
-                return mariaDBStorageRequest.selectAllTeamModel();
-            case "mongodb":
-                return mongoDBStorageRequest.selectAllTeamModel();
-            default:
-                return sqLiteDBStorageRequest.selectAllTeamModel();
-        }
+        return sqlStorageManager.selectAllTeamModel();
     }
 
     public Map<String, TeamMemberModel> selectAllTeamMemberModel(String teamName) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.selectAllTeamMemberModel(teamName);
-            case "mariadb":
-                return mariaDBStorageRequest.selectAllTeamMemberModel(teamName);
-            case "mongodb":
-                return mongoDBStorageRequest.selectAllTeamMemberModel(teamName);
-            default:
-                return sqLiteDBStorageRequest.selectAllTeamMemberModel(teamName);
-        }
+        return sqlStorageManager.selectAllTeamMemberModel(teamName);
     }
 
     public TeamMemberModel selectTeamMemberModelByUUID(String playerUUID) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.selectTeamMemberModelByUUID(playerUUID);
-            case "mariadb":
-                return mariaDBStorageRequest.selectTeamMemberModelByUUID(playerUUID);
-            case "mongodb":
-                return mongoDBStorageRequest.selectTeamMemberModelByUUID(playerUUID);
-            default:
-                return sqLiteDBStorageRequest.selectTeamMemberModelByUUID(playerUUID);
-        }
+        return sqlStorageManager.selectTeamMemberModelByUUID(playerUUID);
     }
 
 
@@ -267,45 +168,18 @@ public class StorageManager {
      * SELECT ALL TEAM RELATION MODEL
      */
     public ArrayList<TeamRelationModel> selectAllTeamRelationModel() {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.selectAllTeamRelationModel();
-            case "mariadb":
-                return mariaDBStorageRequest.selectAllTeamRelationModel();
-            case "mongodb":
-                return mongoDBStorageRequest.selectAllTeamRelationModel();
-            default:
-                return sqLiteDBStorageRequest.selectAllTeamRelationModel();
-        }
+        return sqlStorageManager.selectAllTeamRelationModel();
     }
 
-    public Map<String, TeamRelationModel> selectTeamRelationModelByTeamUuid(String teamName) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.selectTeamRelationModelByTeamUuid(teamName);
-            case "mariadb":
-                return mariaDBStorageRequest.selectTeamRelationModelByTeamUuid(teamName);
-            case "mongodb":
-                return mongoDBStorageRequest.selectTeamRelationModelByTeamUuid(teamName);
-            default:
-                return sqLiteDBStorageRequest.selectTeamRelationModelByTeamUuid(teamName);
-        }
+    public Map<String, TeamRelationModel> selectTeamRelationModelByTeamName(String teamName) {
+        return sqlStorageManager.selectTeamRelationModelByTeamUuid(teamName);
     }
 
     /**
      * READ
      */
     public List<TerritoryModel> selectAllTerritoryModel() {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.selectAllTerritoryModel();
-            case "mariadb":
-                return mariaDBStorageRequest.selectAllTerritoryModel();
-            case "mongodb":
-                return mongoDBStorageRequest.selectAllTerritoryModel();
-            default:
-                return sqLiteDBStorageRequest.selectAllTerritoryModel();
-        }
+        return sqlStorageManager.selectAllTerritoryModel();
     }
 
     /**
@@ -314,16 +188,7 @@ public class StorageManager {
      * @param name
      */
     public BattlefieldModel selectBattlefieldModel(String name) {
-        switch (type) {
-            case "mysql":
-                return mySqlStorageRequest.selectBattlefieldModel(name);
-            case "mariadb":
-                return mariaDBStorageRequest.selectBattlefieldModel(name);
-            case "mongodb":
-                return mongoDBStorageRequest.selectBattlefieldModel(name);
-            default:
-                return sqLiteDBStorageRequest.selectBattlefieldModel(name);
-        }
+        return sqlStorageManager.selectBattlefieldModel(name);
     }
 
 
@@ -333,35 +198,10 @@ public class StorageManager {
      * @param model
      */
     public void updatePlayerModel(PlayerModel model, boolean async) {
-        switch (type) {
-            case "mysql":
-                if (async) {
-                    mySqlStorageRequest.updatePlayerModelAsync(model);
-                } else {
-                    mySqlStorageRequest.updatePlayerModel(model);
-                }
-                break;
-            case "mariadb":
-                if (async) {
-                    mariaDBStorageRequest.updatePlayerModelAsync(model);
-                } else {
-                    mariaDBStorageRequest.updatePlayerModel(model);
-                }
-                break;
-            case "mongodb":
-                if (async) {
-                    mongoDBStorageRequest.updatePlayerModelAsync(model);
-                } else {
-                    mongoDBStorageRequest.updatePlayerModel(model);
-                }
-                break;
-            default:
-                if (async) {
-                    sqLiteDBStorageRequest.updatePlayerModelAsync(model);
-                } else {
-                    sqLiteDBStorageRequest.updatePlayerModel(model);
-                }
-                break;
+        if (async) {
+            sqlStorageManager.updatePlayerModelAsync(model);
+        } else {
+            sqlStorageManager.updatePlayerModel(model);
         }
     }
 
@@ -371,20 +211,7 @@ public class StorageManager {
      * @param nwITeam
      */
     public void updateTeamModel(NwITeam nwITeam) {
-        switch (type) {
-            case "mysql":
-                mySqlStorageRequest.updateNwITeam(nwITeam);
-                break;
-            case "mariadb":
-                mariaDBStorageRequest.updateNwITeam(nwITeam);
-                break;
-            case "mongodb":
-                mongoDBStorageRequest.updateNwITeam(nwITeam);
-                break;
-            default:
-                sqLiteDBStorageRequest.updateNwITeam(nwITeam);
-                break;
-        }
+        sqlStorageManager.updateNwITeam(nwITeam);
     }
 
     /**
@@ -395,20 +222,7 @@ public class StorageManager {
      * @param id the identifier of team
      */
     public void updateTeamName(String newName, int id) {
-        switch (type) {
-            case "mysql":
-                mySqlStorageRequest.updateTeamName(newName, id);
-                break;
-            case "mariadb":
-                mariaDBStorageRequest.updateTeamName(newName, id);
-                break;
-            case "mongodb":
-                mongoDBStorageRequest.updateTeamName(newName, id);
-                break;
-            default:
-                sqLiteDBStorageRequest.updateTeamName(newName, id);
-                break;
-        }
+        sqlStorageManager.updateTeamName(newName, id);
     }
 
     /**
@@ -417,20 +231,7 @@ public class StorageManager {
      * @param model
      */
     public void updateTeamMemberModel(TeamMemberModel model) {
-        switch (type) {
-            case "mysql":
-                mySqlStorageRequest.updateTeamMemberModel(model);
-                break;
-            case "mariadb":
-                mariaDBStorageRequest.updateTeamMemberModel(model);
-                break;
-            case "mongodb":
-                mongoDBStorageRequest.updateTeamMemberModel(model);
-                break;
-            default:
-                sqLiteDBStorageRequest.updateTeamMemberModel(model);
-                break;
-        }
+        sqlStorageManager.updateTeamMemberModel(model);
     }
 
     /**
@@ -439,20 +240,7 @@ public class StorageManager {
      * @param model
      */
     public void updateTerritoryModel(TerritoryModel model, boolean async) {
-        switch (type) {
-            case "mysql":
-                mySqlStorageRequest.updateTerritoryModel(model);
-                break;
-            case "mariadb":
-                mariaDBStorageRequest.updateTerritoryModel(model);
-                break;
-            case "mongodb":
-                mongoDBStorageRequest.updateTerritoryModel(model);
-                break;
-            default:
-                sqLiteDBStorageRequest.updateTerritoryModel(model);
-                break;
-        }
+        sqlStorageManager.updateTerritoryModel(model);
     }
 
     /**
@@ -461,20 +249,7 @@ public class StorageManager {
      * @param model
      */
     public void updateBattlefieldModel(BattlefieldModel model, boolean async) {
-        switch (type) {
-            case "mysql":
-                mySqlStorageRequest.updateBattlefieldModel(model);
-                break;
-            case "mariadb":
-                mariaDBStorageRequest.updateBattlefieldModel(model);
-                break;
-            case "mongodb":
-                mongoDBStorageRequest.updateBattlefieldModel(model);
-                break;
-            default:
-                sqLiteDBStorageRequest.updateBattlefieldModel(model);
-                break;
-        }
+        sqlStorageManager.updateBattlefieldModel(model);
     }
 
     /**
@@ -483,20 +258,7 @@ public class StorageManager {
      * @param uuid
      */
     public void deletePlayerModel(String uuid) {
-        switch (type) {
-            case "mysql":
-                mySqlStorageRequest.deletePlayerModel(uuid);
-                break;
-            case "mariadb":
-                mariaDBStorageRequest.deletePlayerModel(uuid);
-                break;
-            case "mongodb":
-                mongoDBStorageRequest.deletePlayerModel(uuid);
-                break;
-            default:
-                sqLiteDBStorageRequest.deletePlayerModel(uuid);
-                break;
-        }
+        sqlStorageManager.deletePlayerModel(uuid);
     }
 
     /**
@@ -505,20 +267,7 @@ public class StorageManager {
      * @param teamID team identifier
      */
     public void deleteTeamModel(int teamID) {
-        switch (type) {
-            case "mysql":
-                mySqlStorageRequest.deleteTeamModel(teamID);
-                break;
-            case "mariadb":
-                mariaDBStorageRequest.deleteTeamModel(teamID);
-                break;
-            case "mongodb":
-                mongoDBStorageRequest.deleteTeamModel(teamID);
-                break;
-            default:
-                sqLiteDBStorageRequest.deleteTeamModel(teamID);
-                break;
-        }
+        sqlStorageManager.deleteTeamModel(teamID);
     }
 
     /**
@@ -527,20 +276,7 @@ public class StorageManager {
      * @param playerID team player identifier
      */
     public void deleteTeamMemberModel(int playerID) {
-        switch (type) {
-            case "mysql":
-                mySqlStorageRequest.deleteTeamMemberModel(playerID);
-                break;
-            case "mariadb":
-                mariaDBStorageRequest.deleteTeamMemberModel(playerID);
-                break;
-            case "mongodb":
-                mongoDBStorageRequest.deleteTeamMemberModel(playerID);
-                break;
-            default:
-                sqLiteDBStorageRequest.deleteTeamMemberModel(playerID);
-                break;
-        }
+        sqlStorageManager.deleteTeamMemberModel(playerID);
     }
 
     /**
@@ -549,20 +285,7 @@ public class StorageManager {
      * @param relationID team relation identifier
      */
     public void deleteTeamRelationModel(int relationID) {
-        switch (type) {
-            case "mysql":
-                mySqlStorageRequest.deleteTeamRelationModel(relationID);
-                break;
-            case "mariadb":
-                mariaDBStorageRequest.deleteTeamRelationModel(relationID);
-                break;
-            case "mongodb":
-                mongoDBStorageRequest.deleteTeamRelationModel(relationID);
-                break;
-            default:
-                sqLiteDBStorageRequest.deleteTeamRelationModel(relationID);
-                break;
-        }
+        sqlStorageManager.deleteTeamRelationModel(relationID);
     }
 
     public static StorageManager getManager() {

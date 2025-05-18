@@ -75,7 +75,7 @@ public class NwTeamManager implements NwITeamManager, Listener {
             });
 
             Map<String, TeamRelationModel> teamRelationModelMap =
-                    StorageManager.getManager().selectTeamRelationModelByTeamUuid(s);
+                    StorageManager.getManager().selectTeamRelationModelByTeamName(s);
             teamRelationModelMap.forEach((s1, teamRelationModel) -> {
                 team.getModel().getTeamRelationModelMap().put(teamRelationModel.getSecondTeamId(), teamRelationModel);
             });

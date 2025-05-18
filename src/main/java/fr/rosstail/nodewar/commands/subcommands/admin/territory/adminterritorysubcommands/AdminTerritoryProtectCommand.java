@@ -11,6 +11,8 @@ import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 public class AdminTerritoryProtectCommand extends AdminTerritorySubCommand {
 
     public AdminTerritoryProtectCommand() {
@@ -34,6 +36,11 @@ public class AdminTerritoryProtectCommand extends AdminTerritorySubCommand {
     @Override
     public String getSyntax() {
         return "nodewar admin territory <territory> protect";
+    }
+
+    @Override
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
+        return List.of();
     }
 
     @Override

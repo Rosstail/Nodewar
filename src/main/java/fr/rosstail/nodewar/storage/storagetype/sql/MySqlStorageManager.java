@@ -1,7 +1,7 @@
 package fr.rosstail.nodewar.storage.storagetype.sql;
 
 import fr.rosstail.nodewar.player.PlayerModel;
-import fr.rosstail.nodewar.storage.storagetype.SqlStorageRequest;
+import fr.rosstail.nodewar.storage.storagetype.SqlStorageManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,10 +9,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlStorageRequest extends SqlStorageRequest {
+public class MySqlStorageManager extends SqlStorageManager {
     private String databaseName;
 
-    public MySqlStorageRequest(String pluginName) {
+    public MySqlStorageManager(String pluginName) {
         super(pluginName);
     }
 

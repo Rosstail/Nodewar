@@ -1,14 +1,14 @@
 package fr.rosstail.nodewar.storage.storagetype.sql;
 
-import fr.rosstail.nodewar.storage.storagetype.SqlStorageRequest;
+import fr.rosstail.nodewar.storage.storagetype.SqlStorageManager;
 import org.bukkit.ChatColor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SqliteStorageRequest extends SqlStorageRequest {
+public class SQLiteStorageManager extends SqlStorageManager {
 
-    public SqliteStorageRequest(String pluginName) {
+    public SQLiteStorageManager(String pluginName) {
         super(pluginName);
     }
 
