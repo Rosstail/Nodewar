@@ -8,6 +8,8 @@ import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 public class AdminTerritoryReloadRegionsCommand extends AdminTerritorySubCommand {
 
     public AdminTerritoryReloadRegionsCommand() {
@@ -31,6 +33,11 @@ public class AdminTerritoryReloadRegionsCommand extends AdminTerritorySubCommand
     @Override
     public String getSyntax() {
         return "nodewar admin territory <territory> reloadregions";
+    }
+
+    @Override
+    public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
+        return List.of();
     }
 
     @Override

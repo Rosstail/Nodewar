@@ -21,6 +21,7 @@ public class ObjectiveExtermination extends NwConquestObjective {
 
     private final long duration;
     private final boolean ignoreUnownedSides;
+    private final boolean instantEnd;
 
     ObjectiveExterminationModel objectiveExterminationModel;
 
@@ -39,6 +40,7 @@ public class ObjectiveExtermination extends NwConquestObjective {
         this.description = LangManager.getCurrentLang().getLangConfig().getStringList("territory.objective.types.extermination.description");
         this.duration = Long.parseLong(objectiveExterminationModel.getDurationStr() != null ? objectiveExterminationModel.getDurationStr() : "0") * 1000L;
         this.ignoreUnownedSides = objectiveExterminationModel != null && Boolean.parseBoolean(objectiveExterminationModel.getIgnoreUnownedSidesStr());
+        this.instantEnd = objectiveExterminationModel != null && Boolean.parseBoolean(objectiveExterminationModel.getInstantEndStr());
 
         updateDesc();
     }
@@ -183,11 +185,12 @@ public class ObjectiveExtermination extends NwConquestObjective {
     @Override
     public boolean checkEnding() {
         BattleExtermination currentBattle = (BattleExtermination) territory.getCurrentBattle();
-        if (System.currentTimeMillis() >= currentBattle.getEndTime()) {
+
+        if (getTeamSideMap().size() <= 1 && instantEnd) {
             return true;
         }
 
-        return getTeamSideMap().size() <= 1;
+        return  (System.currentTimeMillis() >= currentBattle.getEndTime());
     }
 
     @Override
@@ -344,5 +347,9 @@ public class ObjectiveExtermination extends NwConquestObjective {
 
     public boolean isIgnoreUnownedSides() {
         return ignoreUnownedSides;
+    }
+
+    public boolean isInstantEnd() {
+        return instantEnd;
     }
 }

@@ -64,22 +64,17 @@ public class CommandManager implements CommandExecutor, TabExecutor {
         String[] commandArgs = removeFoundArgumentsFromCommand(args, arguments);
 
         if (args.length <= 1) {
-            ArrayList<String> subCommandArguments = new ArrayList<>();
-
-            for (int i = 0; i < getSubCommands().size(); i++) {
-                subCommandArguments.add(getSubCommands().get(i).getName());
-            }
-
-            return subCommandArguments;
+            return subCommands.stream().map(SubCommand::getName).toList();
         } else {
-            for (SubCommand subCommand : getSubCommands()) {
-                if (subCommand.getName().equalsIgnoreCase(args[0])) {
-                    return subCommand.getSubCommandsArguments(sender, commandArgs, arguments);
-                }
-            }
-        }
+            SubCommand subCommand = subCommands.stream()
+                    .filter(filterSubCommand -> filterSubCommand.getName().equalsIgnoreCase(args[0]))
+                    .findFirst().orElse(null);
 
-        return null;
+            if (subCommand == null) {
+                return null;
+            }
+            return subCommand.getSubCommandsArguments(sender, args, arguments);
+        }
     }
 
     public static boolean canLaunchCommand(CommandSender sender, SubCommand command) {

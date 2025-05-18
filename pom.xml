@@ -6,7 +6,7 @@
 
     <groupId>com.github.Rosstail</groupId>
     <artifactId>nodewar</artifactId>
-    <version>2.3.1-beta</version>
+    <version>2.3.2-beta</version>
     <packaging>jar</packaging>
 
     <distributionManagement>

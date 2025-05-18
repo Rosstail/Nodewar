@@ -93,7 +93,7 @@ battlefield:
         - "21:00"
       reset-team: true
       end-battle-on-battlefield-end: true
-      territory-types:
+      territory-presets:
         - t1
         - cp-t1
     tier-2: # On wednesday only from midnight to 5am
@@ -103,7 +103,7 @@ battlefield:
       duration: "5h"
       reset-team: true
       end-battle-on-battlefield-end: true
-      territory-types:
+      territory-presets:
         - t2
         - cp-t2
     tier-3:
@@ -116,6 +116,6 @@ battlefield:
       duration: "2d"
       reset-team: true
       end-battle-on-battlefield-end: true
-      territory-types:
+      territory-presets:
         - t3
         - cp-t3

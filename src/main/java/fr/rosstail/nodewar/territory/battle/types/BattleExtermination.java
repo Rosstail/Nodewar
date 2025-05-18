@@ -72,7 +72,6 @@ public class BattleExtermination extends Battle {
         sideList.forEach(side -> {
             NwITeam controlITeam = side.getOwnerITeam();
             if (controlITeam != null) {
-                String controlPointName = side.getName();
                 int scorePerSecond = 1;
 
                 iTeamSurviveOnBlockDestroyedPerSecond.put(controlITeam, scorePerSecond);

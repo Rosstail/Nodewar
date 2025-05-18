@@ -42,10 +42,6 @@ public class ConfigUpdater1_2 extends ConfigUpdater {
             }
         }
 
-
-
-
-
         try {
             baseConfig.set("config-version", getVersion());
             baseConfig.save(configFile);

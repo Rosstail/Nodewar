@@ -4,15 +4,14 @@ import fr.rosstail.nodewar.territory.objective.ObjectiveModel;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class ObjectiveExterminationModel extends ObjectiveModel {
     private Set<String> sideStrSet = new HashSet<>();
     private String durationStr;
     private String ignoreUnownedSidesStr;
+    private String instantEndStr;
 
 
     public ObjectiveExterminationModel(ConfigurationSection section) {
@@ -26,6 +25,7 @@ public class ObjectiveExterminationModel extends ObjectiveModel {
             }
             durationStr = section.getString("duration");
             ignoreUnownedSidesStr = section.getString("ignore-unowned-sides");
+            ignoreUnownedSidesStr = section.getString("instant-end");
         }
     }
 
@@ -37,6 +37,7 @@ public class ObjectiveExterminationModel extends ObjectiveModel {
 
         this.durationStr = childObjectiveModel.durationStr != null ? childObjectiveModel.durationStr : parentObjectiveModel.durationStr;
         this.ignoreUnownedSidesStr = childObjectiveModel.ignoreUnownedSidesStr != null ? childObjectiveModel.ignoreUnownedSidesStr : parentObjectiveModel.ignoreUnownedSidesStr;
+        this.instantEndStr = childObjectiveModel.instantEndStr != null ? childObjectiveModel.instantEndStr : parentObjectiveModel.instantEndStr;
     }
 
     public Set<String> getSideStrSet() {
@@ -61,5 +62,13 @@ public class ObjectiveExterminationModel extends ObjectiveModel {
 
     public void setIgnoreUnownedSidesStr(String ignoreUnownedSidesStr) {
         this.ignoreUnownedSidesStr = ignoreUnownedSidesStr;
+    }
+
+    public String getInstantEndStr() {
+        return instantEndStr;
+    }
+
+    public void setInstantEndStr(String instantEndStr) {
+        this.instantEndStr = instantEndStr;
     }
 }

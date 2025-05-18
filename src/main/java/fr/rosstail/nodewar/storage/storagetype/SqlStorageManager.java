@@ -3,7 +3,6 @@ package fr.rosstail.nodewar.storage.storagetype;
 import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.battlefield.BattlefieldModel;
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.player.PlayerModel;
 import fr.rosstail.nodewar.team.NwITeam;
@@ -18,7 +17,7 @@ import org.bukkit.ChatColor;
 import java.sql.*;
 import java.util.*;
 
-public class SqlStorageRequest implements StorageRequest {
+public class SqlStorageManager implements IStorageManager {
     private final Nodewar plugin = Nodewar.getInstance();
     private final String pluginName;
     protected String driver;
@@ -35,7 +34,7 @@ public class SqlStorageRequest implements StorageRequest {
     protected String territoryTableName;
     protected String battlefieldTableName;
 
-    public SqlStorageRequest(String pluginName) {
+    public SqlStorageManager(String pluginName) {
         this.pluginName = pluginName;
         this.playerTableName = pluginName + "_players";
         this.teamTableName = pluginName + "_teams";
