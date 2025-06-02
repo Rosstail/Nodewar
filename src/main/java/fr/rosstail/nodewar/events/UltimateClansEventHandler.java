@@ -1,18 +1,14 @@
 package fr.rosstail.nodewar.events;
 
-import com.palmergames.bukkit.towny.event.RenameTownEvent;
-import com.palmergames.bukkit.towny.event.town.TownLeaveEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
-import fr.rosstail.nodewar.team.teammanagers.UcTeamManager;
-import fr.rosstail.nodewar.team.type.UcTeam;
+import fr.rosstail.nodewar.team.type.UltimateClanTeam;
 import me.ulrich.clans.Clans;
 import me.ulrich.clans.api.ClanAPIManager;
 import me.ulrich.clans.data.ClanData;
 import me.ulrich.clans.events.*;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,8 +33,8 @@ public class UltimateClansEventHandler implements Listener {
         if (clanData == null) {
             return;
         }
-        UcTeam ucTeam = new UcTeam(clanData);
-        TeamManager.getManager().addNewTeam(ucTeam);
+        UltimateClanTeam ultimateClanTeam = new UltimateClanTeam(clanData);
+        TeamManager.getManager().addNewTeam(ultimateClanTeam);
     }
 
     @EventHandler

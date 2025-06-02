@@ -212,6 +212,13 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/Saber-Factions-4.1.6-BETA.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.github.CryptoMorin</groupId>
+            <artifactId>KingdomsX</artifactId>
+            <version>1.17.10-BETA</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/KingdomsX-1.17.10-BETA.jar</systemPath>
+        </dependency>
     </dependencies>
 
 </project>

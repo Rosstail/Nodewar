@@ -8,7 +8,7 @@ import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
-import fr.rosstail.nodewar.team.type.SfTeam;
+import fr.rosstail.nodewar.team.type.SaberFactionTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -36,8 +36,8 @@ public class SaberFactionsEventHandler implements Listener {
             if (faction == null) {
                 return;
             }
-            SfTeam sfTeam = new SfTeam(faction);
-            TeamManager.getManager().addNewTeam(sfTeam);
+            SaberFactionTeam saberFactionTeam = new SaberFactionTeam(faction);
+            TeamManager.getManager().addNewTeam(saberFactionTeam);
         }, 1L);
     }
 
@@ -56,7 +56,7 @@ public class SaberFactionsEventHandler implements Listener {
     public void onFactionRename(FactionRenameEvent event) {
         Bukkit.getScheduler().runTaskLater(Nodewar.getInstance(), () -> {
             NwITeam nwITeam = TeamManager.getManager().getStringTeamMap().values().stream()
-                    .filter(nwITeam1 -> ((SfTeam) nwITeam1).getFaction() == event.getFaction())
+                    .filter(nwITeam1 -> ((SaberFactionTeam) nwITeam1).getFaction() == event.getFaction())
                     .findFirst().orElse(null);
 
             if (nwITeam != null) {

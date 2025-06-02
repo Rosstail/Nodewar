@@ -9,17 +9,13 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.relation.NwTeamRelation;
 import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
-import fr.rosstail.nodewar.team.teammanagers.NwTeamManager;
-import fr.rosstail.nodewar.team.teammanagers.SfTeamManager;
-import fr.rosstail.nodewar.team.teammanagers.TownyTeamManager;
-import fr.rosstail.nodewar.team.teammanagers.UcTeamManager;
+import fr.rosstail.nodewar.team.teammanagers.*;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
@@ -34,9 +30,10 @@ public class TeamManager {
     private NwITeamManager iManager = null;
 
     static {
-        iTeamManagerMap.put("Factions", SfTeamManager.class);
+        iTeamManagerMap.put("Factions", SaberFactionsTeamManager.class);
+        iTeamManagerMap.put("KingdomsX", KingdomXTeamManager.class); // last, failsafe for AUTO
         iTeamManagerMap.put("Towny", TownyTeamManager.class);
-        iTeamManagerMap.put("UltimateClans", UcTeamManager.class);
+        iTeamManagerMap.put("UltimateClans", UltimateClansTeamManager.class);
         iTeamManagerMap.put("nodewar", NwTeamManager.class); // last, failsafe for AUTO
     }
 
