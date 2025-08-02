@@ -30,7 +30,7 @@ permission:
     delete-group: "pex group delete [group]" # on team disband
 
 team:
-  system: "auto" # "Towny", "UltimateClans", "nodewar" OR "auto"
+  system: "auto" # "Towny", "UltimateClans", "Kingdoms", "nodewar" OR "auto"
   creation-cost: 0
   default-relation: neutral # neutral, enemy, ally
   none-color: "#4C4C4C"

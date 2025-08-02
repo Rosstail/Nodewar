@@ -2,15 +2,14 @@ package fr.rosstail.nodewar.team.teammanagers;
 
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.KingdomsEventHandler;
+import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.permission.PermissionManager;
 import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import fr.rosstail.nodewar.team.type.KingdomXTeam;
-import fr.rosstail.nodewar.team.type.UltimateClanTeam;
 import fr.rosstail.nodewar.territory.TerritoryManager;
-import me.ulrich.clans.data.ClanData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,7 +33,7 @@ public class KingdomXTeamManager implements NwITeamManager, Listener {
     private KingdomsEventHandler kingdomsEventHandler;
 
     public KingdomXTeamManager() {
-        final Plugin kingdomsPlugin = Nodewar.getInstance().getServer().getPluginManager().getPlugin("KingdomsX");
+        final Plugin kingdomsPlugin = Nodewar.getInstance().getServer().getPluginManager().getPlugin("Kingdoms");
         this.kingdomsPlugin = (Kingdoms) kingdomsPlugin;
     }
 
@@ -47,16 +46,18 @@ public class KingdomXTeamManager implements NwITeamManager, Listener {
 
     @Override
     public void initialize(JavaPlugin javaPlugin) {
+        AdaptMessage.print("KingdomsXTeamManager.initialize", AdaptMessage.prints.DEBUG);
         kingdomsAPI = KingdomsAPI.getApi();
         kingdomsEventHandler = new KingdomsEventHandler();
         Bukkit.getPluginManager().registerEvents(kingdomsEventHandler, Nodewar.getInstance());
-
+        loadTeams();
+        TerritoryManager.getTerritoryManager().initialize();
     }
 
     @EventHandler
     public void onPluginEnable(PluginEnableEvent event) {
         JavaPlugin plugin = (JavaPlugin) event.getPlugin();
-        if (plugin.getName().equals("KingdomsX")) {
+        if (plugin.getName().equals("Kingdoms")) {
             initialize(plugin);
         }
     }
@@ -84,7 +85,7 @@ public class KingdomXTeamManager implements NwITeamManager, Listener {
 
     @Override
     public Map<String, NwITeam> getStringITeamMap() {
-        return Map.of();
+        return new HashMap<>(stringTeamMap);
     }
 
     @Override

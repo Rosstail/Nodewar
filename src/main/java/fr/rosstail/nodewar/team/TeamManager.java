@@ -31,7 +31,7 @@ public class TeamManager {
 
     static {
         iTeamManagerMap.put("Factions", SaberFactionsTeamManager.class);
-        iTeamManagerMap.put("KingdomsX", KingdomXTeamManager.class); // last, failsafe for AUTO
+        iTeamManagerMap.put("Kingdoms", KingdomXTeamManager.class);
         iTeamManagerMap.put("Towny", TownyTeamManager.class);
         iTeamManagerMap.put("UltimateClans", UltimateClansTeamManager.class);
         iTeamManagerMap.put("nodewar", NwTeamManager.class); // last, failsafe for AUTO

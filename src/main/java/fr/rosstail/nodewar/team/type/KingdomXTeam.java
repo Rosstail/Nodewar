@@ -25,9 +25,9 @@ public class KingdomXTeam implements NwITeam {
 
     public KingdomXTeam(Kingdom kingdom) {
         this.kingdom = kingdom;
-        TeamModel model1 = StorageManager.getManager().selectTeamModelByName(kingdom.getTag().toLowerCase());
+        TeamModel model1 = StorageManager.getManager().selectTeamModelByName(kingdom.getName().toLowerCase());
         if (model1 == null) {
-            model1 = new TeamModel(kingdom.getTag().toLowerCase(), kingdom.getTag(), kingdom.getTag(), TeamManager.getManager().generateRandomColor());
+            model1 = new TeamModel(kingdom.getName().toLowerCase(), kingdom.getName(), kingdom.getName(), TeamManager.getManager().generateRandomColor());
             StorageManager.getManager().insertTeamModel(model1);
         }
         this.model = model1;
@@ -40,17 +40,17 @@ public class KingdomXTeam implements NwITeam {
 
     @Override
     public String getName() {
-        return kingdom.getTag().toLowerCase();
+        return kingdom.getName().toLowerCase();
     }
 
     @Override
     public String getDisplay() {
-        return kingdom.getTag();
+        return kingdom.getName();
     }
 
     @Override
     public String getShortName() {
-        return kingdom.getTag().substring(0, Math.min(kingdom.getTag().length(), ConfigData.getConfigData().team.maximumShortNameLength));
+        return kingdom.getName().substring(0, Math.min(kingdom.getName().length(), ConfigData.getConfigData().team.maximumShortNameLength));
     }
 
     @Override

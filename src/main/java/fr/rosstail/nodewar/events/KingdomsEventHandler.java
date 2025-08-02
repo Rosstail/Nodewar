@@ -3,31 +3,25 @@ package fr.rosstail.nodewar.events;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.type.KingdomXTeam;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.kingdoms.api.KingdomsAPI;
 import org.kingdoms.constants.group.Kingdom;
-import org.kingdoms.events.KingdomsEvent;
 import org.kingdoms.events.general.KingdomCreateEvent;
 import org.kingdoms.events.general.KingdomDisbandEvent;
 import org.kingdoms.events.members.KingdomLeaveEvent;
-import org.kingdoms.main.Kingdoms;
 
 public class KingdomsEventHandler implements Listener {
-    private final Kingdoms kingdoms;
-    private final KingdomsAPI kingdomsAPI;
 
-    public KingdomsEventHandler() {
-        kingdoms = (Kingdoms) Bukkit.getPluginManager().getPlugin("KingdomsX");
-        kingdomsAPI = KingdomsAPI.getApi();
-    }
-
+    /**
+     * C'est pas un vrai event
+     * @param event
+     */
+    /*
     @EventHandler
     public void onKingdomsEvent(KingdomsEvent event) {
         TeamManager.getManager().loadTeams();
-    }
+    }*/
 
     @EventHandler
     public void onKingdomCreateEvent(KingdomCreateEvent event) {
