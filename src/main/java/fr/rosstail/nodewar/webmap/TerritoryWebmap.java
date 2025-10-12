@@ -1,5 +1,7 @@
 package fr.rosstail.nodewar.webmap;
 
+import fr.rosstail.nodewar.lang.LangManager;
+import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.territory.Territory;
 
 public class TerritoryWebmap extends TerritoryWebmapModel {
@@ -73,5 +75,33 @@ public class TerritoryWebmap extends TerritoryWebmapModel {
 
     public boolean iszSet() {
         return zSet;
+    }
+
+    public String adaptMessage(String message) {
+        if (message == null) {
+            return null;
+        }
+
+        message = message
+                .replaceAll("\\[territory_webmap_description]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_DESCRIPTION))
+                .replaceAll("\\[territory_webmap_battle_status_waiting]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_WAITING))
+                .replaceAll("\\[territory_webmap_battle_status_ongoing]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ONGOING))
+                .replaceAll("\\[territory_webmap_battle_status_ending]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDING))
+                .replaceAll("\\[territory_webmap_battle_status_ended]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDED))
+                .replaceAll("\\[territory_webmap_battle_status_waiting_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_WAITING_SHORT))
+                .replaceAll("\\[territory_webmap_battle_status_ongoing_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ONGOING_SHORT))
+                .replaceAll("\\[territory_webmap_battle_status_ending_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDING_SHORT))
+                .replaceAll("\\[territory_webmap_battle_status_ended_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDED_SHORT))
+        ;
+
+        if (territory.isUnderProtection()) {
+            message = message.replaceAll("\\[territory_webmap_protected]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_PROTECTED))
+                    .replaceAll("\\[territory_webmap_protected_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_PROTECTED_SHORT));
+        } else {
+            message = message.replaceAll("\\[territory_webmap_protected]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_VULNERABLE))
+                    .replaceAll("\\[territory_webmap_protected_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_VULNERABLE_SHORT));
+        }
+
+        return territory.adaptMessage(message);
     }
 }

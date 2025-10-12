@@ -238,13 +238,27 @@ public enum LangMessage {
     TERRITORY_BOSSBAR_ARROW_NO_ADVANTAGE("territory.bossbar.arrow.no-advantage", false),
     TERRITORY_BOSSBAR_ARROW_ADVANTAGE_LEFT_TO_RIGHT("territory.bossbar.arrow.left-to-right", false),
     TERRITORY_BOSSBAR_ARROW_ADVANTAGE_RIGHT_TO_LEFT("territory.bossbar.arrow.right-to-left", false),
+
     TERRITORY_PROTECTED("territory.protected", false),
     TERRITORY_PROTECTED_SHORT("territory.protected-short", false),
     TERRITORY_VULNERABLE("territory.vulnerable", false),
     TERRITORY_VULNERABLE_SHORT("territory.vulnerable-short", false),
 
     WEBMAP_MARKER_SET_LABEL("webmap.marker-set-label", false),
-
+    WEBMAP_TERRITORY_GLOBAL_DIV("webmap.territory.global-div", false),
+    WEBMAP_TERRITORY_DESCRIPTION("webmap.territory.description", false),
+    WEBMAP_TERRITORY_BATTLE_STATUS_WAITING("webmap.territory.battle.status.waiting", false),
+    WEBMAP_TERRITORY_BATTLE_STATUS_ONGOING("webmap.territory.battle.status.ongoing", false),
+    WEBMAP_TERRITORY_BATTLE_STATUS_ENDING("webmap.territory.battle.status.ending", false),
+    WEBMAP_TERRITORY_BATTLE_STATUS_ENDED("webmap.territory.battle.status.ended", false),
+    WEBMAP_TERRITORY_BATTLE_STATUS_WAITING_SHORT("webmap.territory.battle.status.waiting-short", false),
+    WEBMAP_TERRITORY_BATTLE_STATUS_ONGOING_SHORT("webmap.territory.battle.status.ongoing-short", false),
+    WEBMAP_TERRITORY_BATTLE_STATUS_ENDING_SHORT("webmap.territory.battle.status.ending-short", false),
+    WEBMAP_TERRITORY_BATTLE_STATUS_ENDED_SHORT("webmap.territory.battle.status.ended-short", false),
+    WEBMAP_TERRITORY_PROTECTED("webmap.territory.protected", false),
+    WEBMAP_TERRITORY_PROTECTED_SHORT("webmap.territory.protected-short", false),
+    WEBMAP_TERRITORY_VULNERABLE("webmap.territory.vulnerable", false),
+    WEBMAP_TERRITORY_VULNERABLE_SHORT("webmap.territory.vulnerable-short", false),
 
     ;
 

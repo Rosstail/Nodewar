@@ -189,10 +189,9 @@ public class DynmapHandler implements NwIWebmapHandler, Listener {
 
     private void describe(AreaMarker areaMarker, Territory territory) {
         areaMarker.setLabel(ChatColor.stripColor(territory.getDisplay()));
-        String description = AdaptMessage.getAdaptMessage()
-                .adaptTerritoryMessage(LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_CHECK_RESULT), territory);
-        description = WebmapManager.getManager().convertYamlToHtml(description.split("\n"));
-        areaMarker.setDescription(description);
+
+        String webmapDescription = territory.getWebmapInfo().adaptMessage(LangMessage.WEBMAP_TERRITORY_GLOBAL_DIV.getDisplayText());
+        areaMarker.setDescription(ChatColor.stripColor(webmapDescription));
     }
 
     @Override

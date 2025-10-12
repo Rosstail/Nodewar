@@ -198,10 +198,8 @@ public class BluemapHandler implements NwIWebmapHandler, Listener {
 
     private void describe(ShapeMarker shapeMarker, Territory territory) {
         shapeMarker.setLabel(ChatColor.stripColor(territory.getDisplay()));
-        String description = AdaptMessage.getAdaptMessage()
-                .adaptTerritoryMessage(LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_CHECK_RESULT), territory);
-        description = WebmapManager.getManager().convertYamlToHtml(description.split("\n"));
-        shapeMarker.setDetail(description);
+        String webmapDescription = territory.getWebmapInfo().adaptMessage(LangMessage.WEBMAP_TERRITORY_GLOBAL_DIV.getDisplayText());
+        shapeMarker.setDetail(ChatColor.stripColor(webmapDescription));
     }
 
     @Override

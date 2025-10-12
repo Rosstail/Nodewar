@@ -328,20 +328,20 @@ public class Territory extends TerritoryModel {
         BlockVector3 max = firstRegion.getMaximumPoint();
 
         double centerX;
+        double centerY;
+        double centerZ;
 
         if (webmapInfo.isxSet()) {
             centerX = webmapInfo.getX();
         } else {
             centerX = (min.getX() + max.getX()) / 2.0;
         }
-        double centerY;
 
         if (webmapInfo.isySet()) {
             centerY = webmapInfo.getY();
         } else {
             centerY = (min.getY() + max.getY()) / 2.0;
         }
-        double centerZ;
 
         if (webmapInfo.iszSet()) {
             centerZ = webmapInfo.getZ();

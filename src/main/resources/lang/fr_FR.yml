@@ -8,9 +8,6 @@ format:
 storage:
   type: "[prefix]Utilisation du stockage [type]."
 
-webmap:
-  marker-set-label: "Territories"
-
 commands:
   by-player-only: "[prefix]Cette commande doit être envoyée par un joueur."
   permission-denied: "[prefix]Vous n'avez pas la permission pour la commande [command_name] : [command_permission]."
@@ -448,3 +445,134 @@ territory:
   protected-short: "&a🔒"
   vulnerable: "&cVulnérable"
   vulnerable-short: "&c🔓"
+
+webmap:
+  marker-set-label: "Territories"
+  territory:
+    global-div:
+      "<div >
+      <p style='font-size: x-large'>
+        <span style='padding-left: 30px; color:#00CC00'>[territory_id]</span> <span style='color:#CCCCCC'>-</span> <span style='color:#D4AF37'>[territory_display]</span>
+      </p>
+      [territory_webmap_description]
+      </div>"
+    description:
+      "<p style='font-size:larger'>
+        <span style='color:#AAAAFF'>Info </span><span style='color:#FFC0CB'>:</span><br/>
+        <span style='color:red'>*</span> <span style='color:#D4AF37'>World </span><span style='color:#FFC0CB'>:</span> [territory_world]<br/>
+        <span style='color:red'>*</span> <span style='color:#D4AF37'>Type </span><span style='color:#FFC0CB'>:</span> [territory_preset_display]<br/>
+        <span style='color:red'>*</span> <span style='color:#D4AF37'>Protected </span><span style='color:#FFC0CB'>:</span> [territory_webmap_protected_short][territory_webmap_protected]<br/>
+        <span style='color:red'>*</span> <span style='color:#D4AF37'>Startpoint </span><span style='color:#FFC0CB'>:</span> [territory_attackreq_startpoint] / <span style='color:#D4AF37'>Checkpoint </span><span style='color:#FFC0CB'>:</span> [territory_attackreq_checkpoint]<br/>
+        <span style='color:red'>*</span> <span style='color:#D4AF37'>Line </span> <span style='color:#FFC0CB'>:</span> [territory_desc_line]<br/>
+        <span style='color:red'>*</span> <span style='color:#D4AF37'>Owner </span><span style='color:#FFC0CB'>:</span> <span style='color:[territory_team_color]'>[territory_team_display]</span><br/>
+      </p>"
+    objective:
+      types:
+        none:
+          display: "None"
+          description:
+            - "  <span style='color:dodgerblue'>Objective </span><span style='color:magenta'>:</span> <span style='color:lightgrey'>NONE</span>"
+        control:
+          description:
+            - "  <span style='color:dodgerblue'>Objective </span><span style='color:magenta'>:</span> <span style='color:dodgerblue'>CONTROL</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Attackers ratio </span><span style='color:magenta'>:</span> [territory_objective_minimum_attacker_ratio_percent]%"
+        keep:
+          description:
+            - "  <span style='color:dodgerblue'>Objective </span><span style='color:magenta'>:</span> <span style='color:green'>KEEP</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Minimum attackers </span><span style='color:magenta'>:</span> &f[territory_objective_minimum_attackers]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Attackers ratio </span><span style='color:magenta'>:</span> [territory_objective_minimum_attacker_ratio_percent]%"
+        koth:
+          display: "King of the Hill"
+          description:
+            - "  <span style='color:dodgerblue'>Objective </span><span style='color:magenta'>:</span> <span style='color:gold'>KOTH</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Capture points </span> <span style='color:magenta'>:</span>"
+            - "[line_capturepoint]"
+          line-capturepoint: "      <span style='color:darkmagenta'>- </span> [territory_objective_capturepoint_[index]_display]<span style='color:magenta'>:</span> [territory_objective_capturepoint_[index]_team_color_display]"
+        siege:
+          display: "Siege"
+          description:
+            - "  <span style='color:dodgerblue'>Objective </span><span style='color:magenta'>:</span> <span style='color:firebrick'>SIEGE</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Capture points </span> <span style='color:magenta'>:</span>"
+            - "[line_capturepoint]"
+          line-capturepoint: "      <span style='color:darkmagenta'>- </span> [territory_objective_capturepoint_[index]_display]<span style='color:magenta'>:</span> [territory_objective_capturepoint_[index]_team_color_display]"
+        demolition:
+          display: "Demolition"
+          description:
+            - "  <span style='color:dodgerblue'>Objective </span><span style='color:magenta'>:</span> <span style='color:firebrick'>DEMOLITION</span>"
+        extermination:
+          display: "Extermination"
+          description:
+            - "  <span style='color:dodgerblue'>Objective </span><span style='color:magenta'>:</span> <span style='color:red'>EXTERMINATION</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Ignore unowned capture points </span><span style='color:magenta'>:</span> [territory_objective_ignore_unowned_capturepoint]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Capture points </span> <span style='color:magenta'>:</span>"
+            - "[line_capturepoint]"
+          line-capturepoint: "      <span style='color:darkmagenta'>- </span> [territory_objective_capturepoint_[index]_display]<span style='color:magenta'>:</span> [territory_objective_capturepoint_[index]_team_color_display]"
+    battle:
+      types:
+        none:
+          description: [ ]
+        control:
+          description:
+            - "  <span style='color:dodgerblue'>Current battle </span><span style='color:magenta'>:</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [territory_battle_status]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [territory_battle_advantage_color_display]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Health </span> <span style='color:magenta'>:</span> [territory_battle_health] / [territory_objective_maximum_health]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [territory_battle_time_left]"
+            - "  <span style='color:dodgerblue'>Previous battle </span><span style='color:magenta'>:</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [territory_battle_winner_color_display]"
+        keep:
+          description:
+            - "  <span style='color:dodgerblue'>Current battle </span><span style='color:magenta'>:</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [territory_battle_status]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage</span> <span style='color:magenta'>:</span> [territory_battle_advantage_color_display]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left</span> <span style='color:magenta'>:</span> [territory_battle_time_left]"
+            - "  <span style='color:dodgerblue'>Previous battle </span><span style='color:magenta'>:</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [territory_battle_winner_color_display]"
+        koth:
+          description:
+            - "  <span style='color:dodgerblue'>Current battle </span><span style='color:magenta'>:</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [territory_battle_status]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [territory_battle_advantage_color_display]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>High score </span> <span style='color:magenta'>:</span> [territory_battle_time] / [territory_objective_time_to_reach]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [territory_battle_time_left]"
+            - "  <span style='color:dodgerblue'>Previous battle </span><span style='color:magenta'>:</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [territory_battle_winner_color_display]"
+        siege:
+          description:
+            - "  <span style='color:dodgerblue'>Current battle </span><span style='color:magenta'>:</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [territory_battle_status]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [territory_battle_advantage_color_display]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Health </span> <span style='color:magenta'>:</span> [territory_battle_health] / [territory_objective_maximum_health]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [territory_battle_time_left]"
+            - "  <span style='color:dodgerblue'>Previous battle </span><span style='color:magenta'>:</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [territory_battle_winner_color_display]"
+        demolition:
+          description:
+            - "  <span style='color:dodgerblue'>Current battle </span><span style='color:magenta'>:</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [territory_battle_status]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [territory_battle_advantage_color_display]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Health </span> <span style='color:magenta'>:</span> [territory_objective_health_lose] < <span style='color:cyan'>[territory_battle_health] < [territory_objective_health_start]</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [territory_battle_time_left]"
+            - "  <span style='color:dodgerblue'>Previous battle </span><span style='color:magenta'>:</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [territory_battle_winner_color_display]"
+        extermination:
+          description:
+            - "  <span style='color:dodgerblue'>Current battle </span><span style='color:magenta'>:</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [territory_battle_status]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [territory_battle_advantage_color_display]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [territory_battle_time_left]"
+            - "  <span style='color:dodgerblue'>Previous battle </span><span style='color:magenta'>:</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [territory_battle_winner_color_display]"
+      status:
+        waiting: "<span style='color:blueviolet'>Waiting</span>"
+        ongoing: "<span style='color:gold'>Ongoing</span>"
+        ending: "<span style='color:darkorange'>Ending</span>"
+        ended: "<span style='color:darkslateblue'>Ended</span>"
+        waiting-short: "<span style='color:blueviolet'>⌛</span>"
+        ongoing-short: "<span style='color:gold'>⚔</span>"
+        ending-short: "<span style='color:darkorange'>🕊🏁</span>"
+        ended-short: "<span style='color:darkslateblue'>🕊</span>"
+    protected: "<span style='color:green'>Protected</span>"
+    protected-short: "<span style='color:green'>🔒</span>"
+    vulnerable: "<span style='color:firebrick'>Vulnerable</span>"
+    vulnerable-short: "<span style='color:firebrick'>🔓</span>"
