@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class TeamManageRelationAcceptCommand extends TeamManageRelationSubCommand {
 
     public TeamManageRelationAcceptCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_ACCEPT_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));

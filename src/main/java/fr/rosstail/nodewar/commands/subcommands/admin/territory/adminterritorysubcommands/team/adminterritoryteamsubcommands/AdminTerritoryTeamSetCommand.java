@@ -6,13 +6,11 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +18,7 @@ import java.util.List;
 public class AdminTerritoryTeamSetCommand extends AdminTerritoryTeamSubCommand {
 
     public AdminTerritoryTeamSetCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TERRITORY_TEAM_SET_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -63,14 +61,14 @@ public class AdminTerritoryTeamSetCommand extends AdminTerritoryTeamSubCommand {
 
         if (team == null) {
             message = LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", args[5]);
-            sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message));
+            sender.sendMessage(AdaptMessage.getInstance().adaptMessage(message));
             return;
         }
 
         TerritoryOwnerChangeEvent event = new TerritoryOwnerChangeEvent(territory, team);
         Bukkit.getPluginManager().callEvent(event);
-        message = AdaptMessage.getAdaptMessage().adaptTeamMessage(message, team);
-        message = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory);
+        message = AdaptMessage.getInstance().adaptTeamMessage(message, team);
+        message = AdaptMessage.getInstance().adaptTerritoryMessage(message, territory);
         sender.sendMessage(message);
     }
 

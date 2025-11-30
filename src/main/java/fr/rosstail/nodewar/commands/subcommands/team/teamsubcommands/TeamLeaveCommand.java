@@ -20,7 +20,7 @@ import java.util.List;
 public class TeamLeaveCommand extends TeamSubCommand {
 
     public TeamLeaveCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_LEAVE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -81,7 +81,7 @@ public class TeamLeaveCommand extends TeamSubCommand {
         }
 
         TeamManager.getManager().deleteOnlineTeamMember(nwTeam, senderPlayer, false);
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_LEAVE_RESULT), nwTeam, senderPlayer) );
+        sender.sendMessage(AdaptMessage.getInstance().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_LEAVE_RESULT), nwTeam, senderPlayer) );
     }
 
     @Override

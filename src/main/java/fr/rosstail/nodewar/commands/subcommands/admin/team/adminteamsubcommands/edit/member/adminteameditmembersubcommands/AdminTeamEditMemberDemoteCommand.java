@@ -5,9 +5,7 @@ import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
-import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
@@ -24,7 +22,7 @@ import java.util.stream.Collectors;
 public class AdminTeamEditMemberDemoteCommand extends AdminTeamEditMemberSubCommand {
 
     public AdminTeamEditMemberDemoteCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_DEMOTE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -103,7 +101,7 @@ public class AdminTeamEditMemberDemoteCommand extends AdminTeamEditMemberSubComm
         }
 
         sender.sendMessage(
-                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_DEMOTE_RESULT), targetTeam, targetPlayer)
+                AdaptMessage.getInstance().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_DEMOTE_RESULT), targetTeam, targetPlayer)
         );
     }
 

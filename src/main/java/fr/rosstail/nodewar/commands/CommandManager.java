@@ -86,7 +86,7 @@ public class CommandManager implements CommandExecutor, TabExecutor {
     }
 
     private static void permissionDenied(CommandSender sender, SubCommand command) {
-        AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
+        AdaptMessage adaptMessage = AdaptMessage.getInstance();
         String message = LangManager.getMessage(LangMessage.COMMANDS_PERMISSION_DENIED);
         message = adaptMessage.adaptPlayerMessage((Player) sender, message);
         message = adaptMessage.adaptMessage(message)
@@ -99,15 +99,15 @@ public class CommandManager implements CommandExecutor, TabExecutor {
      * @param sender
      */
     public static void disconnectedPlayer(CommandSender sender, String playerName) {
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_EDIT_PLAYER_DISCONNECTED).replaceAll("\\[player]", playerName)));
+        sender.sendMessage(AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_EDIT_PLAYER_DISCONNECTED).replaceAll("\\[player]", playerName)));
     }
 
     public static void errorMessage(CommandSender sender, Exception e) {
         if (e instanceof ArrayIndexOutOfBoundsException) {
-            sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE)));
+            sender.sendMessage(AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE)));
         }
         if (e instanceof NumberFormatException) {
-            sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE)));
+            sender.sendMessage(AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE)));
             e.printStackTrace();
         }
     }

@@ -15,7 +15,6 @@ import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
-import fr.rosstail.nodewar.territory.TerritoryModel;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -29,7 +28,7 @@ import java.util.stream.Stream;
 public class TeamDeployCommand extends TeamSubCommand {
 
     public TeamDeployCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_DEPLOY_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -87,12 +86,12 @@ public class TeamDeployCommand extends TeamSubCommand {
         playerNwITeam = teamManager.getPlayerTeam(senderPlayer);
 
         if (playerNwITeam == null) {
-            sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM)));
+            sender.sendMessage(AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_PLAYER_NOT_IN_TEAM)));
             return;
         }
 
         if (playerData.getLastDeploy() > System.currentTimeMillis() - ConfigData.getConfigData().team.deployCooldown) {
-            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DEPLOY_FAILURE_TIMER).replaceAll("\\[timer]", AdaptMessage.getAdaptMessage().countdownFormatter(playerData.getLastDeploy() + ConfigData.getConfigData().team.deployCooldown - System.currentTimeMillis())));
+            sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_DEPLOY_FAILURE_TIMER).replaceAll("\\[timer]", AdaptMessage.getInstance().countdownFormatter(playerData.getLastDeploy() + ConfigData.getConfigData().team.deployCooldown - System.currentTimeMillis())));
             return;
         }
 

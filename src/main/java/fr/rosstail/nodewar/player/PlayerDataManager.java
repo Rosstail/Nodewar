@@ -24,7 +24,7 @@ import java.util.UUID;
 
 public class PlayerDataManager {
     private static final Nodewar plugin = Nodewar.getInstance();
-    private static final AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
+    private static final AdaptMessage adaptMessage = AdaptMessage.getInstance();
 
     private static final Map<String, PlayerData> playerDataMap = new HashMap<>();
     private static final Map<Player, PlayerInitDeployEvent> playerInitDeployEventMap = new HashMap<>();

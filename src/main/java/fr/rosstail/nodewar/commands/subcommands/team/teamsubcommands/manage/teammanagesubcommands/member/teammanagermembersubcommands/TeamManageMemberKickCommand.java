@@ -9,7 +9,6 @@ import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.rank.NwTeamRank;
 import org.bukkit.Bukkit;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 public class TeamManageMemberKickCommand extends TeamManageMemberSubCommand {
 
     public TeamManageMemberKickCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_KICK_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -102,7 +101,7 @@ public class TeamManageMemberKickCommand extends TeamManageMemberSubCommand {
             }
 
             sender.sendMessage(
-                    AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_KICK_RESULT), playerNwITeam, player)
+                    AdaptMessage.getInstance().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_KICK_RESULT), playerNwITeam, player)
             );
 
 

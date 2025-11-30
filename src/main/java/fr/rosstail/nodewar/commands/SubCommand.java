@@ -4,7 +4,6 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public abstract class SubCommand {
     }
 
     public String getSubCommandHelp() {
-        return AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_HELP_HEADER));
+        return AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_HELP_HEADER));
     }
 
     public abstract List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments);

@@ -68,27 +68,25 @@ public class ObjectiveKeep extends NwConquestObjective {
 
         switch (territory.getCurrentBattle().getBattleStatus()) {
             case WAITING:
-                territory.updateAllBossBarText();
                 if (checkStart()) {
-                    start();
+                    toStart();
                 }
                 break;
             case ONGOING:
-                territory.updateAllBossBarText();
                 if (checkEnding()) {
-                    ending();
+                    toEnding();
                 } else {
                     onGoing();
                 }
                 break;
             case ENDING:
-                territory.updateAllBossBarText();
                 if (checkEnd()) {
-                    end();
+                    toEnd();
+                } else {
+                    ending();
                 }
                 break;
             case ENDED:
-                territory.updateAllBossBarText();
                 if ((territory.getCurrentBattle().getBattleEndTime() + getGracePeriod() < System.currentTimeMillis())) {
                     restart();
                 }
@@ -196,8 +194,8 @@ public class ObjectiveKeep extends NwConquestObjective {
             return false;
         }
 
-        AdaptMessage.getAdaptMessage().alertITeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
-        AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
+        AdaptMessage.getInstance().alertITeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
+        AdaptMessage.getInstance().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
         return true;
     }
 
@@ -244,14 +242,14 @@ public class ObjectiveKeep extends NwConquestObjective {
         currentBattle.getTeamScoreMap().entrySet().stream()
                 .filter(nwTeamIntegerEntry -> nwTeamIntegerEntry.getKey() != winnerTeam && nwTeamIntegerEntry.getKey() != territory.getOwnerITeam())
                 .forEach(nwTeamIntegerEntry -> {
-                    AdaptMessage.getAdaptMessage().alertITeam(nwTeamIntegerEntry.getKey(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
+                    AdaptMessage.getInstance().alertITeam(nwTeamIntegerEntry.getKey(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
                 });
         if (winnerTeam == territory.getOwnerITeam()) {
-            AdaptMessage.getAdaptMessage().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_VICTORY), territory, true);
-            AdaptMessage.getAdaptMessage().alertITeam(winnerTeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
+            AdaptMessage.getInstance().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_VICTORY), territory, true);
+            AdaptMessage.getInstance().alertITeam(winnerTeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
         } else {
-            AdaptMessage.getAdaptMessage().alertITeam(winnerTeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DEFEAT), territory, true);
-            AdaptMessage.getAdaptMessage().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_VICTORY), territory, true);
+            AdaptMessage.getInstance().alertITeam(winnerTeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DEFEAT), territory, true);
+            AdaptMessage.getInstance().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_VICTORY), territory, true);
         }
 
         Map<NwITeam, Integer> teamPositionMap = new HashMap<>();
@@ -272,12 +270,12 @@ public class ObjectiveKeep extends NwConquestObjective {
 
         int holdTime = currentBattle != null ? currentBattle.getHoldTime() : 0;
 
-        message = message.replaceAll("\\[territory_objective_hold_time]", String.valueOf(holdTime))
-                .replaceAll("\\[territory_objective_seconds_to_hold]", String.valueOf(secondsToHold))
-                .replaceAll("\\[territory_objective_minimum_attacker_ratio]", String.valueOf(minAttackerRatio))
-                .replaceAll("\\[territory_objective_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)))
-                .replaceAll("\\[territory_objective_minimum_attackers]", String.valueOf(minAttackerAmount))
-                .replaceAll("\\[territory_objective_time_left]", AdaptMessage.getAdaptMessage().countdownFormatter(secondsToHold - holdTime));
+        message = message.replaceAll("\\[terr(iroty)?_obj(ective)?_hold_time]", String.valueOf(holdTime))
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_seconds_to_hold]", String.valueOf(secondsToHold))
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_minimum_attacker_ratio]", String.valueOf(minAttackerRatio))
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)))
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_minimum_attackers]", String.valueOf(minAttackerAmount))
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_time_left]", AdaptMessage.getInstance().countdownFormatter(secondsToHold - holdTime));
 
         return message;
     }

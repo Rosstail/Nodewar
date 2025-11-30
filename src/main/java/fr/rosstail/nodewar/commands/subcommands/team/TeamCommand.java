@@ -9,9 +9,7 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.TeamManager;
-import fr.rosstail.nodewar.team.teammanagers.NwTeamManager;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +18,7 @@ public class TeamCommand extends TeamSubCommand {
     public List<TeamSubCommand> subCommands = new ArrayList<>();
 
     public TeamCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -52,7 +50,7 @@ public class TeamCommand extends TeamSubCommand {
                 .findFirst().orElse(null);
 
         if (subCommand == null) {
-            sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
+            sender.sendMessage(AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
             return;
         }
 

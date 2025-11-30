@@ -1,7 +1,6 @@
 package fr.rosstail.nodewar.commands.subcommands.territory.teamsubcommands;
 
 import fr.rosstail.nodewar.commands.CommandManager;
-import fr.rosstail.nodewar.commands.subcommands.admin.territory.AdminTerritorySubCommand;
 import fr.rosstail.nodewar.commands.subcommands.territory.TerritorySubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 public class TerritoryCheckCommand extends TerritorySubCommand {
 
     public TerritoryCheckCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_CHECK_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -64,7 +63,7 @@ public class TerritoryCheckCommand extends TerritorySubCommand {
             territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(args[2]);
             if (territory != null) {
                 message = LangManager.getMessage(LangMessage.COMMANDS_TERRITORY_CHECK_RESULT);
-                sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory));
+                sender.sendMessage(AdaptMessage.getInstance().adaptTerritoryMessage(message, territory));
             } else {
                 sender.sendMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", args[2]));
             }
@@ -82,7 +81,7 @@ public class TerritoryCheckCommand extends TerritorySubCommand {
             }
 
             territory = territoryList.get(0);
-            sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory));
+            sender.sendMessage(AdaptMessage.getInstance().adaptTerritoryMessage(message, territory));
         }
     }
 

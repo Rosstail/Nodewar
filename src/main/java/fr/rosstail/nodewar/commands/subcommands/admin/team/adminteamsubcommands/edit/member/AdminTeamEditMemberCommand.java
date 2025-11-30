@@ -7,7 +7,6 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ public class AdminTeamEditMemberCommand extends AdminTeamEditMemberSubCommand {
     public List<AdminTeamEditMemberSubCommand> subCommands = new ArrayList<>();
 
     public AdminTeamEditMemberCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -57,7 +56,7 @@ public class AdminTeamEditMemberCommand extends AdminTeamEditMemberSubCommand {
                 .findFirst().orElse(null);
 
         if (subCommand == null) {
-            sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
+            sender.sendMessage(AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
             return;
         }
 

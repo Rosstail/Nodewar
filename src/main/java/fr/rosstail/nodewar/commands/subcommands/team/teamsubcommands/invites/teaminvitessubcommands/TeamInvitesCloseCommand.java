@@ -16,7 +16,7 @@ import java.util.List;
 public class TeamInvitesCloseCommand extends TeamInvitesSubCommand {
 
     public TeamInvitesCloseCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_CLOSE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -67,7 +67,7 @@ public class TeamInvitesCloseCommand extends TeamInvitesSubCommand {
         playerData.setTeamOpen(false);
         StorageManager.getManager().updatePlayerModel(playerData, true);
 
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message));
+        sender.sendMessage(AdaptMessage.getInstance().adaptMessage(message));
     }
 
     @Override

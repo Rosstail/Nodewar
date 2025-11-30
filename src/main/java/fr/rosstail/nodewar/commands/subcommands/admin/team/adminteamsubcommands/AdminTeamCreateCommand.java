@@ -12,7 +12,6 @@ import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.TeamModel;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.text.Normalizer;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.List;
 public class AdminTeamCreateCommand extends AdminTeamSubCommand {
 
     public AdminTeamCreateCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_CREATE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -99,8 +98,8 @@ public class AdminTeamCreateCommand extends AdminTeamSubCommand {
         teamManager.addNewTeam(team);
 
         sender.sendMessage(
-                AdaptMessage.getAdaptMessage().adaptMessage(
-                        AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_CREATE_RESULT), team))
+                AdaptMessage.getInstance().adaptMessage(
+                        AdaptMessage.getInstance().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_CREATE_RESULT), team))
         );
     }
 

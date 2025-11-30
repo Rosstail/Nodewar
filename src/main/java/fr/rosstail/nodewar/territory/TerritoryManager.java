@@ -160,7 +160,7 @@ public class TerritoryManager {
         setupTerritoriesOwner();
         setupTerritoriesSubTerritories();
         setupTerritoriesBattle();
-        setupTerritoriesRewardScheduler();
+        setupScheduler();
         WebmapManager.getManager().addTerritorySetToDraw(new HashSet<>(getTerritoryMap().values()));
     }
 
@@ -285,18 +285,22 @@ public class TerritoryManager {
 
     }
 
-    private void handleCommands() {
-        territoryMap.forEach((s, territory) -> {
-            territory.getTerritoryCommandList().forEach(territoryCommands -> {
-                if (territoryCommands.getNextOccurrence() <= System.currentTimeMillis()) {
-                    territoryCommands.handleCommand(territory);
-                }
-            });
+    private void handleCommands(Territory territory) {
+        territory.getTerritoryCommandList().forEach(territoryCommands -> {
+            if (territoryCommands.getNextOccurrence() <= System.currentTimeMillis()) {
+                territoryCommands.handleCommand(territory);
+            }
         });
     }
 
-    public void setupTerritoriesRewardScheduler() {
-        this.rewardScheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), this::handleCommands, 0L, 20L);
+    public void setupScheduler() {
+        this.rewardScheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(Nodewar.getInstance(), () -> {
+            for (Territory territory : territoryMap.values()) {
+                this.handleCommands(territory);
+                territory.updateActivity();
+                territory.updateDesc();
+            }
+        }, 0L, 20L);
     }
 
     public void stopAllObjective() {

@@ -64,7 +64,7 @@ public class SaberFactionsEventHandler implements Listener {
                 TeamManager.getManager().renameTeam(getFactionName(event.getFactionTag()), oldName);
             } else {
                 event.setCancelled(true);
-                event.getfPlayer().getPlayer().sendMessage(AdaptMessage.getAdaptMessage().adaptMessage("[prefix] Cancelled SaberFaction renaming because not found in Nodewar. Contact the server admin or the Nodewar dev to get support."));
+                event.getfPlayer().getPlayer().sendMessage(AdaptMessage.getInstance().adaptMessage("[prefix] Cancelled SaberFaction renaming because not found in Nodewar. Contact the server admin or the Nodewar dev to get support."));
             }
         }, 1L);
     }

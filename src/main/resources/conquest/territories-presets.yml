@@ -19,7 +19,7 @@ cp:
         target: "player"
         should-team-win: true
         commands:
-          - "toast [player] -t:task -icon:light_blue_banner [territory_display] capturé !"
+          - "toast [player] -t:task -icon:light_blue_banner [terr(iroty)?_display] capturé !"
   protected: true
   webmap:
     marker: "Target"
@@ -128,7 +128,7 @@ t1:
         target: "player"
         should-team-win: true
         commands:
-          - "toast [player] -t:challenge -icon:green_banner [territory_display] capturé !"
+          - "toast [player] -t:challenge -icon:green_banner [terr(iroty)?_display] capturé !"
       player-startpoint-reward:
         target: "player"
         team-minimum-score: 25
@@ -144,14 +144,14 @@ t1:
       global-startpoint-reward:
         target: "server"
         commands:
-          - "broadcast [territory_team_name] is victorious at [territory_name] !"
+          - "broadcast [terr(iroty)?_team_name] is victorious at [terr(iroty)?_name] !"
   commands:
     server-periodic-reward:
       target: "server"
       initial-delay: 3600
       delay: 3600
       commands: []
-      #- "bc Territory command: [territory_display]"
+      #- "bc Territory command: [terr(iroty)?_display]"
     team-periodic-reward:
       target: "team"
       initial-delay: 3600
@@ -170,7 +170,7 @@ t1:
       initial-delay: 3600
       delay: 3600
       commands:
-        - "toast [player] -t:task -icon:green_banner [territory_display] &a30&6$"
+        - "toast [player] -t:task -icon:green_banner [terr(iroty)?_display] &a30&6$"
 
 t2:
   prefix: "T2"
@@ -196,7 +196,7 @@ t2:
         target: "player"
         should-team-win: true
         commands:
-          - "toast [player] -t:challenge -icon:light_blue_banner [territory_display] capturé !"
+          - "toast [player] -t:challenge -icon:light_blue_banner [terr(iroty)?_display] capturé !"
       player-startpoint-reward:
         target: "player"
         team-minimum-score: 25
@@ -212,14 +212,14 @@ t2:
       global-startpoint-reward:
         target: "server"
         commands:
-          - "broadcast [territory_team_name] is victorious at [territory_name] !"
+          - "broadcast [terr(iroty)?_team_name] is victorious at [terr(iroty)?_name] !"
   commands:
     server-periodic-reward:
       target: "server"
       initial-delay: 3600
       delay: 3600
       commands: []
-      #- "bc Territory command: [territory_display]"
+      #- "bc Territory command: [terr(iroty)?_display]"
     team-periodic-reward:
       target: "team"
       initial-delay: 3600
@@ -238,7 +238,7 @@ t2:
       initial-delay: 3600
       delay: 3600
       commands:
-        - "toast [player] -t:task -icon:light_blue_banner [territory_display] &a50&6$"
+        - "toast [player] -t:task -icon:light_blue_banner [terr(iroty)?_display] &a50&6$"
   attack-requirements:
     checkpoint: true
 
@@ -266,7 +266,7 @@ t3:
         target: "player"
         should-team-win: true
         commands:
-          - "toast [player] -t:challenge -icon:light_yellow_banner [territory_display] capturé !"
+          - "toast [player] -t:challenge -icon:light_yellow_banner [terr(iroty)?_display] capturé !"
       player-startpoint-reward:
         target: "player"
         team-minimum-score: 25
@@ -282,14 +282,14 @@ t3:
       global-startpoint-reward:
         target: "server"
         commands:
-          - "broadcast [territory_team_name] is victorious at [territory_name] !"
+          - "broadcast [terr(iroty)?_team_name] is victorious at [terr(iroty)?_name] !"
   commands:
     server-periodic-reward:
       target: "server"
       initial-delay: 3600
       delay: 3600
       commands: []
-      #- "bc Territory command: [territory_display]"
+      #- "bc Territory command: [terr(iroty)?_display]"
     team-periodic-reward:
       target: "team"
       initial-delay: 3600
@@ -308,7 +308,7 @@ t3:
       initial-delay: 3600
       delay: 3600
       commands:
-        - "toast [player] -t:task -icon:yellow_banner [territory_display] &a80&6$"
+        - "toast [player] -t:task -icon:yellow_banner [terr(iroty)?_display] &a80&6$"
   attack-requirements:
     checkpoint: true
 

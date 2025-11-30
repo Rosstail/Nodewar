@@ -16,7 +16,7 @@ import java.util.List;
 public class TeamInvitesOpenCommand extends TeamInvitesSubCommand {
 
     public TeamInvitesOpenCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_OPEN_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -67,7 +67,7 @@ public class TeamInvitesOpenCommand extends TeamInvitesSubCommand {
         playerData.setTeamOpen(true);
         StorageManager.getManager().updatePlayerModel(playerData, true);
 
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message));
+        sender.sendMessage(AdaptMessage.getInstance().adaptMessage(message));
     }
 
     @Override

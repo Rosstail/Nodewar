@@ -67,27 +67,25 @@ public class ObjectiveKoth extends NwConquestObjective {
 
         switch (currentBattle.getBattleStatus()) {
             case WAITING:
-                territory.updateAllBossBarText();
                 if (checkStart()) {
-                    start();
+                    toStart();
                 }
                 break;
             case ONGOING:
-                territory.updateAllBossBarText();
                 if (checkEnding()) {
-                    ending();
+                    toEnding();
                 } else {
                     onGoing();
                 }
                 break;
             case ENDING:
-                territory.updateAllBossBarText();
                 if (checkEnd()) {
-                    end();
+                    toEnd();
+                } else {
+                    ending();
                 }
                 break;
             case ENDED:
-                territory.updateAllBossBarText();
                 long battleEndTimeAndGrace = territory.getCurrentBattle().getBattleEndTime() + getGracePeriod();
                 if (battleEndTimeAndGrace < System.currentTimeMillis()) {
                     restart();
@@ -106,13 +104,13 @@ public class ObjectiveKoth extends NwConquestObjective {
         NwITeam newIAdvantage = checkAdvantage(); //also apply scores
 
         if (currentIAdvantage != newIAdvantage) {
-            if (currentBattle.isBattleStarted()) {
+            if (currentBattle.isStarted()) {
                 if (newIAdvantage == territory.getOwnerITeam()) {
-                    AdaptMessage.getAdaptMessage().alertITeam(currentIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(newIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(currentIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(newIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
                 } else {
-                    AdaptMessage.getAdaptMessage().alertITeam(newIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(currentIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(newIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(currentIAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
                 }
             }
             TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newIAdvantage);
@@ -133,7 +131,7 @@ public class ObjectiveKoth extends NwConquestObjective {
         if (controlPointList.stream().noneMatch(capturePoint -> (capturePoint.getOwnerITeam() != null && capturePoint.getOwnerITeam() != territory.getOwnerITeam() && territory.getAttackRequirements().checkAttackRequirements(capturePoint.getOwnerITeam())))) {
             return false;
         }
-        AdaptMessage.getAdaptMessage().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
+        AdaptMessage.getInstance().alertITeam(territory.getOwnerITeam(), LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
         return true;
     }
 
@@ -244,7 +242,7 @@ public class ObjectiveKoth extends NwConquestObjective {
 
     private void updateBossBar(BattleKoth currentBattle) {
         float progress = timeToReach;
-        if (currentBattle.isBattleStarted() && !currentBattle.getTeamHoldPointMap().isEmpty()) {
+        if (currentBattle.isStarted() && !currentBattle.getTeamHoldPointMap().isEmpty()) {
             int max = Collections.max(currentBattle.getTeamHoldPointMap().values());
             progress = ((float) max / timeToReach);
         }
@@ -256,9 +254,9 @@ public class ObjectiveKoth extends NwConquestObjective {
 
     @Override
     public String adaptMessage(String message) {
-        message = super.adaptMessage(message).replaceAll("\\[territory_objective_time_to_reach]", String.valueOf(timeToReach));
+        message = super.adaptMessage(message).replaceAll("\\[terr(iroty)?_obj(ective)?_time_to_reach]", String.valueOf(timeToReach));
 
-        Pattern capturePointPattern = Pattern.compile("(\\[territory_objective_capturepoint)_(\\d+)(_\\w+])");
+        Pattern capturePointPattern = Pattern.compile("(\\[terr(iroty)?_obj(ective)?_(cp|capturepoint))_(\\d+)(_\\w+])");
         Matcher capturePointMatcher = capturePointPattern.matcher(message);
 
         while (capturePointMatcher.find()) {
@@ -267,7 +265,7 @@ public class ObjectiveKoth extends NwConquestObjective {
                 Territory capturePoint = controlPointList.get(capturePointId - 1);
 
                 if (capturePoint != null) {
-                    message = message.replace(capturePointMatcher.group(), "[territory" + capturePointMatcher.group(3));
+                    message = message.replace(capturePointMatcher.group(), "[terr" + capturePointMatcher.group(3));
                     message = capturePoint.adaptMessage(message);
                 }
             } else {
@@ -307,7 +305,7 @@ public class ObjectiveKoth extends NwConquestObjective {
 
         for (int lineIndex = 0; lineIndex < rawDescriptionList.size(); lineIndex++) {
             String line = rawDescriptionList.get(lineIndex);
-            if (line.contains("[line_capturepoint]")) {
+            if (line.contains("[line_cp]") || line.contains("[line_capturepoint]")) {
                 rawDescriptionList.remove(lineIndex);
                 for (int controlPointIndex = 0; controlPointIndex < controlPointList.size(); controlPointIndex++) {
                     rawDescriptionList.add(lineIndex + controlPointIndex, capturePointLine.replaceAll("\\[index]", String.valueOf(controlPointIndex + 1)));

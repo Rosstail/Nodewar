@@ -13,7 +13,7 @@ import java.util.List;
 public class AdminTerritoryReloadRegionsCommand extends AdminTerritorySubCommand {
 
     public AdminTerritoryReloadRegionsCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TERRITORY_RELOAD_REGIONS_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -53,7 +53,7 @@ public class AdminTerritoryReloadRegionsCommand extends AdminTerritorySubCommand
         territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(args[2]);
         territory.updateRegionList();
 
-        message = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory);
+        message = AdaptMessage.getInstance().adaptTerritoryMessage(message, territory);
         sender.sendMessage(message);
     }
 

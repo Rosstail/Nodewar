@@ -3,7 +3,6 @@ package fr.rosstail.nodewar.territory.objective;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
-import fr.rosstail.nodewar.territory.battle.BattleStatus;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
 
 import java.util.Map;
@@ -24,7 +23,7 @@ public interface NwIObjective {
 
     boolean checkStart();
 
-    void start();
+    void toStart();
 
     void onGoing();
 
@@ -34,11 +33,13 @@ public interface NwIObjective {
 
     NwITeam checkWinner();
 
+    void toEnding();
+
     void ending();
 
     boolean checkEnd();
 
-    void end();
+    void toEnd();
 
     void restart();
 

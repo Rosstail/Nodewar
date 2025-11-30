@@ -2,13 +2,11 @@ package fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands
 
 import fr.rosstail.nodewar.commands.CommandManager;
 import fr.rosstail.nodewar.commands.SubCommand;
-import fr.rosstail.nodewar.commands.subcommands.admin.team.AdminTeamSubCommand;
 import fr.rosstail.nodewar.commands.subcommands.admin.team.adminteamsubcommands.edit.relation.adminteamrelationsubcommands.*;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +14,7 @@ import java.util.List;
 public class AdminTeamEditRelationCommand extends AdminTeamEditRelationSubCommand {
     public List<AdminTeamEditRelationSubCommand> subCommands = new ArrayList<>();
     public AdminTeamEditRelationCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -57,7 +55,7 @@ public class AdminTeamEditRelationCommand extends AdminTeamEditRelationSubComman
                 .findFirst().orElse(null);
 
         if (subCommand == null) {
-            sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
+            sender.sendMessage(AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
             return;
         }
 

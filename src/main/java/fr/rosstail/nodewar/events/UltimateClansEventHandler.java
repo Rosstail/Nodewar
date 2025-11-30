@@ -55,7 +55,7 @@ public class UltimateClansEventHandler implements Listener {
             TeamManager.getManager().renameTeam(nwITeam.getName(), oldName);
         } else {
             event.setCancelled(true);
-            Bukkit.getPlayer(event.getSender()).sendMessage(AdaptMessage.getAdaptMessage().adaptMessage("[prefix] Cancelled UClan renaming because not found in Nodewar. Contact the server admin or the Nodewar dev to get support."));
+            Bukkit.getPlayer(event.getSender()).sendMessage(AdaptMessage.getInstance().adaptMessage("[prefix] Cancelled UClan renaming because not found in Nodewar. Contact the server admin or the Nodewar dev to get support."));
         }
     }
 

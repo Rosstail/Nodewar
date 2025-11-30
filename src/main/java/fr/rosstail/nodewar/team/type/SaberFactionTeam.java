@@ -7,6 +7,7 @@ import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.NwTeamRelation;
+import fr.rosstail.nodewar.utils.Cache;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -25,6 +26,7 @@ public class SaberFactionTeam implements NwITeam {
     private final Faction faction;
     private final String factionTeamName;
     private final TeamModel model;
+    private final Map<String, Cache> cacheMap = new HashMap<>();
 
     public SaberFactionTeam(Faction faction) {
         this.faction = faction;
@@ -120,6 +122,38 @@ public class SaberFactionTeam implements NwITeam {
     @Override
     public void setBanner(ItemStack banner) {
         faction.setBannerPattern(banner);
+    }
+
+    @Override
+    public Map<String, Cache> getCacheMap() {
+        return cacheMap;
+    }
+
+    @Override
+    public String adaptMessage(String message) {
+        if (message == null) {
+            return null;
+        }
+
+        if (cacheMap.containsKey(message)) {
+            return cacheMap.get(message).getValue();
+        }
+
+        String newMessage = message.replaceAll("\\[team_name]", getName())
+                .replaceAll("\\[team_id]", String.valueOf(getID()))
+                .replaceAll("\\[team_display]", getDisplay())
+                .replaceAll("\\[team_color_display]", "{" + getTeamColor() + "}" + getDisplay())
+                .replaceAll("\\[team_short]", getShortName())
+                .replaceAll("\\[team_color_short]", "{" + getTeamColor() + "}" + getShortName())
+                .replaceAll("\\[team_color]", getTeamColor())
+                .replaceAll("\\[team_open]", String.valueOf(isOpen()))
+                .replaceAll("\\[team_permanent]", String.valueOf(isPermanent()))
+                .replaceAll("\\[team_creation_date]", String.valueOf(getCreationDate()));
+
+        Cache cache = new Cache(message, newMessage);
+        cacheMap.put(message, cache);
+
+        return newMessage;
     }
 
     @Override

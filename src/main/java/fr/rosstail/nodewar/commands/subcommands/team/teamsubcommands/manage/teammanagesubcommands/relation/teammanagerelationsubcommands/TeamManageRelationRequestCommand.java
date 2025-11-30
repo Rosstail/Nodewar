@@ -22,7 +22,7 @@ import java.util.List;
 public class TeamManageRelationRequestCommand extends TeamManageRelationSubCommand {
 
     public TeamManageRelationRequestCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE).replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_DESC)).replaceAll("\\[syntax]", getSyntax()));
+        help = AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE).replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_REQUEST_DESC)).replaceAll("\\[syntax]", getSyntax()));
     }
 
     @Override

@@ -1,12 +1,10 @@
 package fr.rosstail.nodewar.territory.objective.objectivereward;
 
-import fr.rosstail.nodewar.ConfigData;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.player.PlayerData;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.TeamIRelation;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
@@ -104,7 +102,7 @@ public class ObjectiveReward {
     }
 
     public void handleReward(Territory territory, NwObjective objective, Battle battle, Map<NwITeam, Integer> iTeamPositionMap) {
-        AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
+        AdaptMessage adaptMessage = AdaptMessage.getInstance();
         for (String command : getRewardModel().getCommandList()) {
             String target = getRewardModel().getTargetName();
             String finalCommand = adaptMessage.adaptTerritoryMessage(command, territory);
@@ -123,7 +121,7 @@ public class ObjectiveReward {
     }
 
     private void rewardPlayer(Player player, Battle battle, Map<NwITeam, Integer> iTeamPositionMap, Territory territory, String command) {
-        AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
+        AdaptMessage adaptMessage = AdaptMessage.getInstance();
         PlayerData playerData = PlayerDataManager.getPlayerDataMap().get(player.getName());
         NwITeam playerTeam;
         if (player.isOnline()) {
@@ -142,7 +140,7 @@ public class ObjectiveReward {
     }
 
     private void rewardITeam(NwITeam iTeam, Battle battle, Map<NwITeam, Integer> iTeamPositionMap, Territory territory, String command) {
-        AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
+        AdaptMessage adaptMessage = AdaptMessage.getInstance();
         if (shallRewardTeam(territory, battle, iTeamPositionMap, iTeam)) {
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), PlaceholderAPI.setPlaceholders(null, adaptMessage.adaptTeamMessage(command, iTeam)));
         }

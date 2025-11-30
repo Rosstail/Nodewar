@@ -6,7 +6,6 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ public class HelpCommand extends SubCommand {
 
     public HelpCommand(final CommandManager manager) {
         subCommands = manager.getSubCommands();
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_HEADER)
                         .replaceAll("\\[syntax]", getSyntax())
                         .replaceAll("\\[permission]", getPermission()));
@@ -52,7 +51,7 @@ public class HelpCommand extends SubCommand {
                 helpCommand.append("\n").append(subCommand.getHelp());
             }
         }
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(helpCommand.toString()));
+        sender.sendMessage(AdaptMessage.getInstance().adaptMessage(helpCommand.toString()));
     }
 
     @Override

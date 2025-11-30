@@ -11,7 +11,6 @@ import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.NwTeamInvite;
 import fr.rosstail.nodewar.team.TeamManager;
-import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -23,7 +22,7 @@ import java.util.Set;
 public class TeamJoinCommand extends TeamSubCommand {
 
     public TeamJoinCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_JOIN_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));

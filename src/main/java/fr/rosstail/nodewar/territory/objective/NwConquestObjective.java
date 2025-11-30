@@ -23,16 +23,16 @@ public class NwConquestObjective extends NwObjective {
 
         if (currentOwner != null) {
             if (currentOwner != winnerITeam) {
-                AdaptMessage.getAdaptMessage().alertITeam(currentOwner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DEFEAT), territory, true);
-                AdaptMessage.getAdaptMessage().alertITeam(winnerITeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_VICTORY), territory, true);
+                AdaptMessage.getInstance().alertITeam(currentOwner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DEFEAT), territory, true);
+                AdaptMessage.getInstance().alertITeam(winnerITeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_VICTORY), territory, true);
             } else {
-                AdaptMessage.getAdaptMessage().alertITeam(currentOwner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_VICTORY), territory, true);
+                AdaptMessage.getInstance().alertITeam(currentOwner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_VICTORY), territory, true);
                 territory.getCurrentBattle().getTeamScoreMap().keySet().stream().filter(nwITeam -> nwITeam != currentOwner).forEach(attackerITeam -> {
-                    AdaptMessage.getAdaptMessage().alertITeam(attackerITeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
+                    AdaptMessage.getInstance().alertITeam(attackerITeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DEFEAT), territory, true);
                 });
             }
         } else {
-            AdaptMessage.getAdaptMessage().alertITeam(winnerITeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_VICTORY), territory, true);
+            AdaptMessage.getInstance().alertITeam(winnerITeam, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_VICTORY), territory, true);
         }
     }
 
@@ -42,7 +42,7 @@ public class NwConquestObjective extends NwObjective {
         super.neutralize(winnerITeam);
 
         if (currentOwner != null) {
-            AdaptMessage.getAdaptMessage().alertITeam(currentOwner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DEFEAT), territory, true);
+            AdaptMessage.getInstance().alertITeam(currentOwner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DEFEAT), territory, true);
         }
     }
 }

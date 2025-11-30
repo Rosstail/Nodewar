@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class TeamManageRelationInvitesCommand extends TeamManageRelationSubCommand {
 
     public TeamManageRelationInvitesCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_RELATION_INVITES_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -82,7 +82,7 @@ public class TeamManageRelationInvitesCommand extends TeamManageRelationSubComma
 
 
         teamRelationInviteSet.forEach(invite -> {
-            message.append("\n").append(AdaptMessage.getAdaptMessage().adaptTeamMessage(
+            message.append("\n").append(AdaptMessage.getInstance().adaptTeamMessage(
                     LangManager.getMessage(
                                     LangMessage.COMMANDS_TEAM_MANAGE_RELATION_INVITES_RESULT_LINE
                             ).replaceAll("\\[team_line_direction]", invite.getSenderTeam() == playerNwITeam ? sentInvitationLine : receivedInvitationLine)
@@ -92,7 +92,7 @@ public class TeamManageRelationInvitesCommand extends TeamManageRelationSubComma
                             ), invite.getSenderTeam() == playerNwITeam ? invite.getTargetTeam() : invite.getSenderTeam()));
         });
 
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message.toString()));
+        sender.sendMessage(AdaptMessage.getInstance().adaptMessage(message.toString()));
     }
 
     @Override

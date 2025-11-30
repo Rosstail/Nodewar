@@ -3,7 +3,6 @@ package fr.rosstail.nodewar.territory.battle.types;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.objective.types.ObjectiveKoth;
@@ -28,7 +27,7 @@ public class BattleKoth extends Battle {
 
     @Override
     public void handleContribution() {
-        if (!isBattleStarted()) {
+        if (!isStarted()) {
             return;
         }
         if (isBattleOnEnd()) {
@@ -95,8 +94,8 @@ public class BattleKoth extends Battle {
         if (!teamHoldPointMap.isEmpty()) {
             highScore = Collections.max(getTeamHoldPointMap().entrySet(), Map.Entry.comparingByValue()).getValue();
         }
-        message = message.replaceAll("\\[territory_battle_time]", String.valueOf(highScore))
-                .replaceAll("\\[territory_battle_time_percent]", String.valueOf((int) ((float) (highScore) / objectiveKoth.getTimeToReach() * 100)));
+        message = message.replaceAll("\\[terr(iroty)?_battle_time]", String.valueOf(highScore))
+                .replaceAll("\\[terr(iroty)?_battle_time_percent]", String.valueOf((int) ((float) (highScore) / objectiveKoth.getTimeToReach() * 100)));
 
 
         List<Integer> pointPerSecondList = objectiveKoth.getCapturePointsValuePerSecond().entrySet().stream().filter(territoryListEntry ->
@@ -108,12 +107,12 @@ public class BattleKoth extends Battle {
         int timeLeft;
         String timeLeftStr = " - ";
 
-        if (getAdvantagedITeam() != null && !isBattleStarted() && pointsPerSecond != 0) {
+        if (getAdvantagedITeam() != null && !isStarted() && pointsPerSecond != 0) {
             timeLeft = (objectiveKoth.getTimeToReach() - highScore) / pointsPerSecond;
-            timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft * 1000L);
+            timeLeftStr = AdaptMessage.getInstance().countdownFormatter(timeLeft * 1000L);
         }
 
-        message = message.replaceAll("\\[territory_battle_time_left]", timeLeftStr);
+        message = message.replaceAll("\\[terr(iroty)?_battle_time_left]", timeLeftStr);
 
         return message;
     }

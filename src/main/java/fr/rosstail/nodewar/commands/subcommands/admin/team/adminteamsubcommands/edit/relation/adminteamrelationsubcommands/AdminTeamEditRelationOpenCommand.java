@@ -7,17 +7,15 @@ import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.storage.StorageManager;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class AdminTeamEditRelationOpenCommand extends AdminTeamEditRelationSubCommand {
 
     public AdminTeamEditRelationOpenCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_OPEN_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -60,7 +58,7 @@ public class AdminTeamEditRelationOpenCommand extends AdminTeamEditRelationSubCo
 
         nwITeam.setOpenRelation(true);
         StorageManager.getManager().updateTeamModel(nwITeam);
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_OPEN_RESULT)));
+        sender.sendMessage(AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_OPEN_RESULT)));
     }
 
     @Override

@@ -9,7 +9,6 @@ import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.relation.NwTeamRelationRequest;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Set;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 public class AdminTeamEditRelationInvitesCommand extends AdminTeamEditRelationSubCommand {
 
     public AdminTeamEditRelationInvitesCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_INVITES_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -69,7 +68,7 @@ public class AdminTeamEditRelationInvitesCommand extends AdminTeamEditRelationSu
         )).collect(Collectors.toSet());
 
         teamRelationInviteSet.forEach(invite -> {
-            message.append("\n").append(AdaptMessage.getAdaptMessage().adaptTeamMessage(
+            message.append("\n").append(AdaptMessage.getInstance().adaptTeamMessage(
                     LangManager.getMessage(
                                     LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_INVITES_RESULT_LINE
                             ).replaceAll("\\[TEAM_EDIT_line_direction]", invite.getSenderTeam() == baseTeam ? sentInvitationLine : receivedInvitationLine)
@@ -79,7 +78,7 @@ public class AdminTeamEditRelationInvitesCommand extends AdminTeamEditRelationSu
                     , invite.getSenderTeam() == baseTeam ? invite.getTargetTeam() : invite.getSenderTeam()
             ));
         });
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message.toString()));
+        sender.sendMessage(AdaptMessage.getInstance().adaptMessage(message.toString()));
     }
 
     @Override

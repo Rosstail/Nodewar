@@ -8,8 +8,6 @@ import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.rank.NwTeamRank;
-import fr.rosstail.nodewar.territory.TerritoryManager;
-import fr.rosstail.nodewar.webmap.WebmapManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,7 +16,7 @@ import java.util.List;
 public class TeamManageDisbandCommand extends TeamManageSubCommand {
 
     public TeamManageDisbandCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_DISBAND_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));

@@ -2,7 +2,6 @@ package fr.rosstail.nodewar.territory.objective;
 
 import fr.rosstail.nodewar.Nodewar;
 import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
-import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.territory.Territory;
@@ -98,12 +97,14 @@ public class NwObjective implements NwIObjective {
     }
 
     @Override
-    public void start() {
+    public void toStart() {
         territory.getCurrentBattle().setBattleOngoing();
+        territory.updateAllBossBarText();
     }
 
     @Override
     public void onGoing() {
+        territory.updateAllBossBarText();
     }
 
     @Override
@@ -117,7 +118,7 @@ public class NwObjective implements NwIObjective {
     }
 
     @Override
-    public void ending() {
+    public void toEnding() {
         territory.getCurrentBattle().setBattleEnding();
         NwITeam winner = checkWinner();
         if (winner != null) {
@@ -125,6 +126,12 @@ public class NwObjective implements NwIObjective {
         } else {
             neutralize(null);
         }
+        territory.updateAllBossBarText();
+    }
+
+    @Override
+    public void ending() {
+        territory.updateAllBossBarText();
     }
 
     @Override
@@ -133,41 +140,41 @@ public class NwObjective implements NwIObjective {
     }
 
     @Override
-    public void end() {
+    public void toEnd() {
         territory.getCurrentBattle().setBattleEnded();
+        territory.updateAllBossBarText();
     }
 
     @Override
     public void restart() {
         territory.setupBattle();
+        territory.updateAllBossBarText();
     }
 
     @Override
     public void progress() {
         BattleStatus status = territory.getCurrentBattle().getBattleStatus();
+        territory.updateAllBossBarText();
+
         switch (status) {
             case WAITING:
-                territory.updateAllBossBarText();
                 if (checkStart()) {
-                    start();
+                    toStart();
                 }
                 break;
             case ONGOING:
-                territory.updateAllBossBarText();
                 if (checkEnding()) {
-                    ending();
+                    toEnding();
                 } else {
                     onGoing();
                 }
                 break;
             case ENDING:
-                territory.updateAllBossBarText();
                 if (checkEnd()) {
-                    end();
+                    toEnd();
                 }
                 break;
             case ENDED:
-                territory.updateAllBossBarText();
                 long battleEndTimeAndGrace = territory.getCurrentBattle().getBattleEndTime() + getGracePeriod();
                 if (battleEndTimeAndGrace < System.currentTimeMillis()) {
                     restart();
@@ -193,9 +200,9 @@ public class NwObjective implements NwIObjective {
 
     @Override
     public String adaptMessage(String message) {
-        message = message.replaceAll("\\[territory_objective_description]", description.stream().map(String::valueOf).collect(Collectors.joining("\n")))
-                .replaceAll("\\[territory_objective_name]", getObjectiveModel().getTypeString())
-                .replaceAll("\\[territory_objective_display]", display);
+        message = message.replaceAll("\\[terr(iroty)?_obj(ective)?_desc(ription)?]", description.stream().map(String::valueOf).collect(Collectors.joining("\n")))
+                .replaceAll("\\[terr(iroty)?_obj(ective)?(_name)?]", getObjectiveModel().getTypeString())
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_disp(lay)?]", display);
         return message;
     }
 

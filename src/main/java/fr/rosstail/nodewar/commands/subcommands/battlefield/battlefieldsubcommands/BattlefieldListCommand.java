@@ -7,20 +7,15 @@ import fr.rosstail.nodewar.commands.subcommands.battlefield.BattlefieldSubComman
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
-import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.TeamManager;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BattlefieldListCommand extends BattlefieldSubCommand {
 
     public BattlefieldListCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_BATTLEFIELD_LIST_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -96,6 +91,6 @@ public class BattlefieldListCommand extends BattlefieldSubCommand {
         } else {
             message.append("\n&rP.0/0");
         }
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message.toString()));
+        sender.sendMessage(AdaptMessage.getInstance().adaptMessage(message.toString()));
     }
 }

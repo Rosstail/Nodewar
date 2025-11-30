@@ -78,27 +78,23 @@ public class ObjectiveExtermination extends NwConquestObjective {
 
         switch (currentBattle.getBattleStatus()) {
             case WAITING:
-                territory.updateAllBossBarText();
                 if (checkStart()) {
-                    start();
+                    this.toStart();
                 }
                 break;
             case ONGOING:
-                territory.updateAllBossBarText();
                 if (checkEnding()) {
-                    ending();
+                    toEnding();
                 } else {
                     onGoing();
                 }
                 break;
             case ENDING:
-                territory.updateAllBossBarText();
                 if (checkEnd()) {
-                    end();
+                    toEnd();
                 }
                 break;
             case ENDED:
-                territory.updateAllBossBarText();
                 long battleEndTimeAndGrace = currentBattle.getBattleEndTime() + getGracePeriod();
                 if (battleEndTimeAndGrace < System.currentTimeMillis()) {
                     restart();
@@ -145,8 +141,8 @@ public class ObjectiveExtermination extends NwConquestObjective {
     }
 
     @Override
-    public void start() {
-        super.start();
+    public void toStart() {
+        super.toStart();
         BattleExtermination currentBattle = (BattleExtermination) territory.getCurrentBattle();
         if (duration > 0) {
             currentBattle.setEndTime(System.currentTimeMillis() + duration);
@@ -163,13 +159,13 @@ public class ObjectiveExtermination extends NwConquestObjective {
         NwITeam newAdvantage = checkAdvantage();
 
         if (currentAdvantage != newAdvantage) {
-            if (currentBattle.isBattleStarted()) {
+            if (currentBattle.isStarted()) {
                 if (newAdvantage == territory.getOwnerITeam()) {
-                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
                 } else {
-                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
                 }
             }
             TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantage);
@@ -194,8 +190,8 @@ public class ObjectiveExtermination extends NwConquestObjective {
     }
 
     @Override
-    public void ending() {
-        super.ending();
+    public void toEnding() {
+        super.toEnding();
     }
 
     @Override
@@ -296,9 +292,9 @@ public class ObjectiveExtermination extends NwConquestObjective {
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
 
-        message = message.replaceAll("\\[territory_objective_ignore_unowned_capturepoint]", String.valueOf(ignoreUnownedSides).toUpperCase());
+        message = message.replaceAll("\\[terr(iroty)?_obj(ective)?_ignore_unowned_(cp|capturepoint)]", String.valueOf(ignoreUnownedSides).toUpperCase());
 
-        Pattern capturePointPattern = Pattern.compile("(\\[territory_objective_capturepoint)_(\\d+)(_\\w+])");
+        Pattern capturePointPattern = Pattern.compile("(\\[terr(iroty)?_obj(ective)?_(cp|capturepoint))_(\\d+)(_\\w+])");
         Matcher capturePointMatcher = capturePointPattern.matcher(message);
         List<Territory> territoryList = territorySet.stream().toList();
 
@@ -308,7 +304,7 @@ public class ObjectiveExtermination extends NwConquestObjective {
                 Territory capturePoint = territoryList.get(capturePointId - 1);
 
                 if (capturePoint != null) {
-                    message = message.replace(capturePointMatcher.group(), "[territory" + capturePointMatcher.group(3));
+                    message = message.replace(capturePointMatcher.group(), "[terr" + capturePointMatcher.group(3));
                     message = capturePoint.adaptMessage(message);
                 }
             } else {
@@ -325,7 +321,7 @@ public class ObjectiveExtermination extends NwConquestObjective {
 
         for (int lineIndex = 0; lineIndex < rawDescriptionList.size(); lineIndex++) {
             String line = rawDescriptionList.get(lineIndex);
-            if (line.contains("[line_capturepoint]")) {
+            if (line.contains("[line_cp]") || line.contains("[line_capturepoint]")) {
                 rawDescriptionList.remove(lineIndex);
                 for (int controlPointIndex = 0; controlPointIndex < territorySet.size(); controlPointIndex++) {
                     rawDescriptionList.add(lineIndex + controlPointIndex, capturePointLine.replaceAll("\\[index]", String.valueOf(controlPointIndex + 1)));

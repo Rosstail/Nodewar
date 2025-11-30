@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class TeamInvitesCheckCommand extends TeamInvitesSubCommand {
 
     public TeamInvitesCheckCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_CHECK_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -69,9 +69,9 @@ public class TeamInvitesCheckCommand extends TeamInvitesSubCommand {
         )).collect(Collectors.toSet());
 
         playerInvites.forEach(nwTeamInvite -> {
-            message.append("\n").append(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_CHECK_RESULT_LINE), nwTeamInvite.getNwTeam()));
+            message.append("\n").append(AdaptMessage.getInstance().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_CHECK_RESULT_LINE), nwTeamInvite.getNwTeam()));
         });
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message.toString()));
+        sender.sendMessage(AdaptMessage.getInstance().adaptMessage(message.toString()));
     }
 
     @Override

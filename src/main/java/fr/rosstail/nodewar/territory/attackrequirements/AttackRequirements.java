@@ -54,7 +54,7 @@ public class AttackRequirements extends AttackRequirementsModel {
                 && !ownedTerritoryList.isEmpty() // TO CHECK
                 && ownedTerritoryList.stream()
                 .filter(attackerTerritory -> attackerTerritory.getAttackRequirements().getTargetTerritorySet().contains(territory))
-                .allMatch(attackerTerritory -> attackerTerritory.getCurrentBattle().isBattleStarted())
+                .allMatch(attackerTerritory -> attackerTerritory.getCurrentBattle().isStarted())
         ) {
             return false;
         }
@@ -123,8 +123,8 @@ public class AttackRequirements extends AttackRequirementsModel {
         }
 
         message = message
-                .replaceAll("\\[territory_attackreq_startpoint]", isStartPoint() ? "yes" : "no")
-                .replaceAll("\\[territory_attackreq_checkpoint]", isCheckPoint() ? "yes" : "no");
+                .replaceAll("\\[terr(iroty)?_attackreq_startpoint]", isStartPoint() ? "yes" : "no")
+                .replaceAll("\\[terr(iroty)?_attackreq_checkpoint]", isCheckPoint() ? "yes" : "no");
 
         return message;
     }

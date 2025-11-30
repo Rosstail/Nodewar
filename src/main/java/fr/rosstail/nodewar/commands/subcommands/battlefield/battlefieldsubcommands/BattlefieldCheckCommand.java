@@ -7,20 +7,14 @@ import fr.rosstail.nodewar.commands.subcommands.battlefield.BattlefieldSubComman
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
-import fr.rosstail.nodewar.player.PlayerData;
-import fr.rosstail.nodewar.player.PlayerDataManager;
-import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.TeamManager;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BattlefieldCheckCommand extends BattlefieldSubCommand {
 
     public BattlefieldCheckCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_BATTLEFIELD_CHECK_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -64,7 +58,7 @@ public class BattlefieldCheckCommand extends BattlefieldSubCommand {
         if (battlefield != null) {
             sender.sendMessage(battlefield.adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_BATTLEFIELD_CHECK_RESULT)));
         } else {
-            sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(
+            sender.sendMessage(AdaptMessage.getInstance().adaptMessage(
                     LangManager.getMessage(LangMessage.COMMANDS_WRONG_VALUE).replaceAll("\\[value]", args[2])
             ));
         }

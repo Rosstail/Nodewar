@@ -85,7 +85,7 @@ public class BattlefieldManager {
         }
         if (battlefield.getModel().isAnnouncement()) {
             String announcement = battlefield.adaptMessage(LangManager.getMessage(LangMessage.BATTLEFIELD_ANNOUNCEMENT_OPEN));
-            Bukkit.broadcastMessage(AdaptMessage.getAdaptMessage().adaptMessage(announcement));
+            Bukkit.broadcastMessage(AdaptMessage.getInstance().adaptMessage(announcement));
         }
         battlefield.getModel().setOpen(true);
         battlefield.getTerritoryList().forEach(territory -> {
@@ -103,13 +103,13 @@ public class BattlefieldManager {
     public void closeBattlefield(Battlefield battlefield) {
         if (battlefield.getModel().isAnnouncement()) {
             String announcement = battlefield.adaptMessage(LangManager.getMessage(LangMessage.BATTLEFIELD_ANNOUNCEMENT_CLOSE));
-            Bukkit.broadcastMessage(AdaptMessage.getAdaptMessage().adaptMessage(announcement));
+            Bukkit.broadcastMessage(AdaptMessage.getInstance().adaptMessage(announcement));
         }
         battlefield.getModel().setOpen(false);
         if (battlefield.getModel().isEndBattleOnBattlefieldEnd()) {
             battlefield.getTerritoryList().forEach(territory -> {
                 if (territory.getCurrentBattle() != null) {
-                    if (territory.getCurrentBattle().isBattleStarted()) {
+                    if (territory.getCurrentBattle().isStarted()) {
                         if (territory.getOwnerITeam() != null) {
                             territory.getObjective().win(territory.getOwnerITeam());
                         } else {
@@ -243,9 +243,9 @@ public class BattlefieldManager {
 
                         if (nextAlertDelay > delay) {
                             String announcement = LangManager.getMessage(LangMessage.BATTLEFIELD_ANNOUNCEMENT_OPEN_DELAY);
-                            announcement = announcement.replaceAll("\\[delay]", AdaptMessage.getAdaptMessage().countdownFormatter(nextAlertDelay));
+                            announcement = announcement.replaceAll("\\[delay]", AdaptMessage.getInstance().countdownFormatter(nextAlertDelay));
                             announcement = battlefield.adaptMessage(announcement);
-                            Bukkit.broadcastMessage(AdaptMessage.getAdaptMessage().adaptMessage(announcement));
+                            Bukkit.broadcastMessage(AdaptMessage.getInstance().adaptMessage(announcement));
 
                             editBattlefieldAnouncementTimer(battlefield, battlefield.getModel().getOpenDateTime());
                         }
@@ -257,9 +257,9 @@ public class BattlefieldManager {
 
                         if (nextAlertDelay > delay) {
                             String announcement = LangManager.getMessage(LangMessage.BATTLEFIELD_ANNOUNCEMENT_CLOSE_DELAY);
-                            announcement = announcement.replaceAll("\\[delay]", AdaptMessage.getAdaptMessage().countdownFormatter(nextAlertDelay));
+                            announcement = announcement.replaceAll("\\[delay]", AdaptMessage.getInstance().countdownFormatter(nextAlertDelay));
                             announcement = battlefield.adaptMessage(announcement);
-                            Bukkit.broadcastMessage(AdaptMessage.getAdaptMessage().adaptMessage(announcement));
+                            Bukkit.broadcastMessage(AdaptMessage.getInstance().adaptMessage(announcement));
 
                             editBattlefieldAnouncementTimer(battlefield, battlefield.getModel().getCloseDateTime());
                         }

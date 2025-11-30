@@ -92,7 +92,7 @@ public class Nodewar extends JavaPlugin implements Listener {
 
         this.initDefaultConfigs();
 
-        AdaptMessage.initAdaptMessage(this);
+        AdaptMessage.init(this);
         TerritoryManager.init(this);
         ObjectiveManager.init(this);
         BattleManager.init(this);

@@ -18,7 +18,7 @@ import java.util.List;
 public class AdminTerritoryCommand extends AdminTerritorySubCommand {
     public List<AdminTerritorySubCommand> subCommands = new ArrayList<>();
     public AdminTerritoryCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TERRITORY_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -51,7 +51,7 @@ public class AdminTerritoryCommand extends AdminTerritorySubCommand {
                 .findFirst().orElse(null);
 
         if (subCommand == null) {
-            sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
+            sender.sendMessage(AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
             return;
         }
 

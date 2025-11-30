@@ -160,27 +160,25 @@ public class ObjectiveSiege extends NwConquestObjective {
 
         switch (currentBattle.getBattleStatus()) {
             case WAITING:
-                territory.updateAllBossBarText();
                 if (checkStart()) {
-                    start();
+                    toStart();
                 }
                 break;
             case ONGOING:
-                territory.updateAllBossBarText();
                 if (checkEnding()) {
-                    ending();
+                    toEnding();
                 } else {
                     onGoing();
                 }
                 break;
             case ENDING:
-                territory.updateAllBossBarText();
                 if (checkEnd()) {
-                    end();
+                    toEnd();
+                } else {
+                    ending();
                 }
                 break;
             case ENDED:
-                territory.updateAllBossBarText();
                 long battleEndTimeAndGrace = territory.getCurrentBattle().getBattleEndTime() + getGracePeriod();
                 if (battleEndTimeAndGrace < System.currentTimeMillis()) {
                     restart();
@@ -214,8 +212,8 @@ public class ObjectiveSiege extends NwConquestObjective {
             }
         }
 
-        AdaptMessage.getAdaptMessage().alertITeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
-        AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
+        AdaptMessage.getInstance().alertITeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
+        AdaptMessage.getInstance().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
 
         return true;
     }
@@ -228,13 +226,13 @@ public class ObjectiveSiege extends NwConquestObjective {
         NwITeam newAdvantage = checkAdvantage();
 
         if (currentAdvantage != newAdvantage) {
-            if (currentBattle.isBattleStarted()) {
+            if (currentBattle.isStarted()) {
                 if (newAdvantage == territory.getOwnerITeam()) {
-                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
                 } else {
-                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
                 }
             }
             TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantage);
@@ -359,9 +357,9 @@ public class ObjectiveSiege extends NwConquestObjective {
     @Override
     public String adaptMessage(String message) {
         message = super.adaptMessage(message)
-                .replaceAll("\\[territory_objective_maximum_health]", String.valueOf(maxHealth));
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_(maxhp|maximum_health)]", String.valueOf(maxHealth));
 
-        Pattern capturePointPattern = Pattern.compile("(\\[territory_objective_capturepoint)_(\\d+)(_\\w+])");
+        Pattern capturePointPattern = Pattern.compile("(\\[terr(iroty)?_obj(ective)?_(cp|capturepoint))_(\\d+)(_\\w+])");
         Matcher capturePointMatcher = capturePointPattern.matcher(message);
 
         while (capturePointMatcher.find()) {
@@ -370,7 +368,7 @@ public class ObjectiveSiege extends NwConquestObjective {
                 Territory capturePoint = controlPointList.get(capturePointId - 1);
 
                 if (capturePoint != null) {
-                    message = message.replace(capturePointMatcher.group(), "[territory" + capturePointMatcher.group(3));
+                    message = message.replace(capturePointMatcher.group(), "[terr" + capturePointMatcher.group(3));
                     message = capturePoint.adaptMessage(message);
                 }
             } else {
@@ -406,7 +404,7 @@ public class ObjectiveSiege extends NwConquestObjective {
 
         for (int lineIndex = 0; lineIndex < rawDescriptionList.size(); lineIndex++) {
             String line = rawDescriptionList.get(lineIndex);
-            if (line.contains("[line_capturepoint]")) {
+            if (line.contains("[line_cp]") || line.contains("[line_capturepoint]")) {
                 rawDescriptionList.remove(lineIndex);
                 for (int controlPointIndex = 0; controlPointIndex < controlPointList.size(); controlPointIndex++) {
                     rawDescriptionList.add(lineIndex + controlPointIndex, capturePointLine.replaceAll("\\[index]", String.valueOf(controlPointIndex + 1)));

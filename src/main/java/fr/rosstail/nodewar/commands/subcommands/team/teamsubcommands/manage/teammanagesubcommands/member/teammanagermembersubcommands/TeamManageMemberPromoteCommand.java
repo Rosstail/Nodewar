@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class TeamManageMemberPromoteCommand extends TeamManageMemberSubCommand {
 
     public TeamManageMemberPromoteCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_PROMOTE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -102,7 +102,7 @@ public class TeamManageMemberPromoteCommand extends TeamManageMemberSubCommand {
 
             newRank = targetTeamMemberModel.getNumRank() + 1;
             if (newRank >= playerRank.getWeight()) {
-                sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_PROMOTE_ERROR)));
+                sender.sendMessage(AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_PROMOTE_ERROR)));
                 return;
             }
 
@@ -116,7 +116,7 @@ public class TeamManageMemberPromoteCommand extends TeamManageMemberSubCommand {
             }
 
             sender.sendMessage(
-                    AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_PROMOTE_RESULT), playerNwITeam, player)
+                    AdaptMessage.getInstance().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_PROMOTE_RESULT), playerNwITeam, player)
             );
 
         }

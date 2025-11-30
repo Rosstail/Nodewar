@@ -29,7 +29,7 @@ public class NodewarEventHandler implements Listener {
         }
         territory.getPlayers().add(player);
         territory.addPlayerToBossBar(player);
-        AdaptMessage.getAdaptMessage().sendToPlayer(player, territory.adaptMessage(LangManager.getMessage(LangMessage.TERRITORY_ENTER)));
+        AdaptMessage.getInstance().sendToPlayer(player, territory.adaptMessage(LangManager.getMessage(LangMessage.TERRITORY_ENTER)));
     }
 
     @EventHandler
@@ -41,7 +41,7 @@ public class NodewarEventHandler implements Listener {
         territory.getRelationBossBarMap().forEach((s, bossBar) -> {
             bossBar.removePlayer(player);
         });
-        AdaptMessage.getAdaptMessage().sendToPlayer(player, territory.adaptMessage(LangManager.getMessage(LangMessage.TERRITORY_LEAVE)));
+        AdaptMessage.getInstance().sendToPlayer(player, territory.adaptMessage(LangManager.getMessage(LangMessage.TERRITORY_LEAVE)));
     }
 
     @EventHandler
@@ -60,7 +60,7 @@ public class NodewarEventHandler implements Listener {
         NwITeam iTeam = event.getNwITeam();
 
         if (currentOwner != null) {
-            AdaptMessage.getAdaptMessage().alertITeam(currentOwner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_VICTORY), territory, true);
+            AdaptMessage.getInstance().alertITeam(currentOwner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_VICTORY), territory, true);
         }
 
         territory.setOwnerITeam(null);

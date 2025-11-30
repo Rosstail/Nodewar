@@ -1,19 +1,17 @@
 package fr.rosstail.nodewar.commands.subcommands.admin.territory.adminterritorysubcommands.team.adminterritoryteamsubcommands;
 
 import fr.rosstail.nodewar.commands.subcommands.admin.territory.adminterritorysubcommands.team.AdminTerritoryTeamSubCommand;
-import fr.rosstail.nodewar.events.territoryevents.TerritoryOwnerNeutralizeEvent;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.TerritoryManager;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 public class AdminTerritoryTeamResetCommand extends AdminTerritoryTeamSubCommand {
 
     public AdminTerritoryTeamResetCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TERRITORY_TEAM_RESET_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -48,7 +46,7 @@ public class AdminTerritoryTeamResetCommand extends AdminTerritoryTeamSubCommand
         territory = TerritoryManager.getTerritoryManager().getTerritoryMap().get(args[2]);
         territory.getObjective().neutralize(null);
 
-        message = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory);
+        message = AdaptMessage.getInstance().adaptTerritoryMessage(message, territory);
 
         sender.sendMessage(message);
     }

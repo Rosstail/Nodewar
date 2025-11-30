@@ -2,7 +2,6 @@ package fr.rosstail.nodewar.territory.territorycommands;
 
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
@@ -40,7 +39,7 @@ public class TerritoryCommands {
 
     public void handleCommand(Territory territory) {
         NwITeam ownerITeam = territory.getOwnerITeam();
-        AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
+        AdaptMessage adaptMessage = AdaptMessage.getInstance();
 
         for (String command : getTerritoryCommandsModel().getCommandList()) {
             String target = getTerritoryCommandsModel().getTargetName();
@@ -75,20 +74,20 @@ public class TerritoryCommands {
     }
 
     private void rewardPlayer(Player player, Territory territory, String command) {
-        AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
+        AdaptMessage adaptMessage = AdaptMessage.getInstance();
         command = adaptMessage.adaptMessage(command.replaceAll("\\[player]", player.getName()));
         command = PlaceholderAPI.setPlaceholders(player, command);
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
     }
     private void rewardPlayer(String playerName, Territory territory, String command) {
-        AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
+        AdaptMessage adaptMessage = AdaptMessage.getInstance();
         command = adaptMessage.adaptMessage(command.replaceAll("\\[player]", playerName));
         command = PlaceholderAPI.setPlaceholders(null, command);
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
     }
 
     private void rewardTeam(NwITeam iTeam, Territory territory, String command) {
-        AdaptMessage adaptMessage = AdaptMessage.getAdaptMessage();
+        AdaptMessage adaptMessage = AdaptMessage.getInstance();
         command = adaptMessage.adaptTerritoryMessage(adaptMessage.adaptTeamMessage(command, iTeam), territory);
         command = PlaceholderAPI.setPlaceholders(null, command);
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);

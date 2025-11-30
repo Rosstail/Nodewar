@@ -1,21 +1,28 @@
 package fr.rosstail.nodewar.team.type;
 
-import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.permission.PermissionManager;
+import fr.rosstail.nodewar.team.NwITeam;
+import fr.rosstail.nodewar.team.RelationType;
+import fr.rosstail.nodewar.team.TeamIRelation;
+import fr.rosstail.nodewar.team.TeamModel;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.relation.NwTeamRelation;
+import fr.rosstail.nodewar.utils.Cache;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class NwTeam implements NwITeam {
 
     private final TeamModel model;
     private final Map<Player, TeamMember> onlineMemberMap = new HashMap<>();
     private final Map<NwTeam, NwTeamRelation> declaredRelationMap = new HashMap<>();
+    private final Map<String, Cache> cacheMap = new HashMap<>();
 
     public NwTeam(TeamModel model) {
         this.model = model;
@@ -120,6 +127,39 @@ public class NwTeam implements NwITeam {
     }
 
     @Override
+    public Map<String, Cache> getCacheMap() {
+        return cacheMap;
+    }
+
+    @Override
+    public String adaptMessage(String message) {
+        if (message == null) {
+            return null;
+        }
+
+        if (cacheMap.containsKey(message)) {
+            return cacheMap.get(message).getValue();
+        }
+
+        String newMessage = message
+                .replaceAll("\\[team(_name)?]", getName())
+                .replaceAll("\\[team_id]", String.valueOf(getID()))
+                .replaceAll("\\[team_disp(lay)?]", getDisplay())
+                .replaceAll("\\[team_(cdisp|color_display)]", "{" + getTeamColor() + "}" + getDisplay())
+                .replaceAll("\\[team_short]", getShortName())
+                .replaceAll("\\[team_(cshort|color_short)]", "{" + getTeamColor() + "}" + getShortName())
+                .replaceAll("\\[team_(clr|color)?]", getTeamColor())
+                .replaceAll("\\[team_open]", String.valueOf(isOpen()))
+                .replaceAll("\\[team_perm(anent)?]", String.valueOf(isPermanent()))
+                .replaceAll("\\[team_creation(_date)?]", String.valueOf(getCreationDate()));
+
+        Cache cache = new Cache(message, newMessage);
+        cacheMap.put(message, cache);
+
+        return newMessage;
+    }
+
+    @Override
     public Map<Player, TeamMember> getOnlineMemberMap() {
         return onlineMemberMap;
     }
@@ -158,8 +198,8 @@ public class NwTeam implements NwITeam {
         Map<NwITeam, TeamIRelation> alliesMap = new HashMap<>();
         declaredRelationMap.entrySet().stream().filter(nwTeamNwTeamRelationEntry -> (
                 nwTeamNwTeamRelationEntry.getValue().getType() == RelationType.ALLY
-                )).forEach(nwTeamNwTeamRelationEntry -> {
-                    alliesMap.put(nwTeamNwTeamRelationEntry.getKey(), nwTeamNwTeamRelationEntry.getValue());
+        )).forEach(nwTeamNwTeamRelationEntry -> {
+            alliesMap.put(nwTeamNwTeamRelationEntry.getKey(), nwTeamNwTeamRelationEntry.getValue());
         });
         return alliesMap;
     }

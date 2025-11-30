@@ -4,7 +4,6 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.player.PlayerDataManager;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import fr.rosstail.nodewar.territory.battle.Battle;
 import fr.rosstail.nodewar.territory.objective.types.ObjectiveControl;
@@ -43,7 +42,7 @@ public class BattleControl extends Battle {
 
     @Override
     public void handleContribution() {
-        if (!isBattleStarted()) {
+        if (!isStarted()) {
             return;
         }
         if (isBattleOnEnd()) {
@@ -245,13 +244,13 @@ public class BattleControl extends Battle {
     @Override
     public String adaptMessage(String message) {
         message = super.adaptMessage(message)
-                .replaceAll("\\[territory_battle_health]", String.valueOf(currentHealth))
-                .replaceAll("\\[territory_battle_health_percent]", String.valueOf((int) ((float) currentHealth / objectiveControl.getMaxHealth() * 100)));
+                .replaceAll("\\[terr(iroty)?_battle_(hp|health)]", String.valueOf(currentHealth))
+                .replaceAll("\\[terr(iroty)?_battle_(perchp|health_percent)]", String.valueOf((int) ((float) currentHealth / objectiveControl.getMaxHealth() * 100)));
 
         int timeLeft = 0;
         String timeLeftStr = " - ";
 
-        if (getAdvantagedITeam() != null && !isBattleStarted()) {
+        if (getAdvantagedITeam() != null && !isStarted()) {
             if (getAdvantagedITeam() == territory.getOwnerITeam()) { //defend
                 timeLeft = objectiveControl.getMaxHealth() - getCurrentHealth();
             } else if (territory.getOwnerITeam() == null) { // neutral to cap
@@ -262,10 +261,10 @@ public class BattleControl extends Battle {
                 }
                 timeLeft += getCurrentHealth();
             }
-            timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft * 1000L);
+            timeLeftStr = AdaptMessage.getInstance().countdownFormatter(timeLeft * 1000L);
         }
 
-        message = message.replaceAll("\\[territory_battle_time_left]", timeLeftStr);
+        message = message.replaceAll("\\[terr(iroty)?_battle_time_left]", timeLeftStr);
 
         return message;
     }

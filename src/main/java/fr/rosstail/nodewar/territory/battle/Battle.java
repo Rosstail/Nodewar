@@ -4,7 +4,6 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.territory.Territory;
 import org.bukkit.entity.Player;
 
@@ -72,23 +71,23 @@ public class Battle {
     }
 
     public String adaptMessage(String message) {
-        message = message.replaceAll("\\[territory_battle_description]", description.stream().map(String::valueOf).collect(Collectors.joining("\n")));
+        message = message.replaceAll("\\[terr(iroty)?_battle_desc(ription)?]", description.stream().map(String::valueOf).collect(Collectors.joining("\n")));
         switch (getBattleStatus()) {
             case WAITING:
-                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_WAITING))
-                        .replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_WAITING_SHORT));
+                message = message.replaceAll("\\[terr(iroty)?_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_WAITING))
+                        .replaceAll("\\[terr(iroty)?_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_WAITING_SHORT));
                 break;
             case ONGOING:
-                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ONGOING))
-                        .replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ONGOING_SHORT));
+                message = message.replaceAll("\\[terr(iroty)?_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ONGOING))
+                        .replaceAll("\\[terr(iroty)?_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ONGOING_SHORT));
                 break;
             case ENDING:
-                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDING))
-                        .replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDING_SHORT));
+                message = message.replaceAll("\\[terr(iroty)?_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDING))
+                        .replaceAll("\\[terr(iroty)?_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDING_SHORT));
                 break;
             case ENDED:
-                message = message.replaceAll("\\[territory_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDED))
-                        .replaceAll("\\[territory_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDED_SHORT));
+                message = message.replaceAll("\\[terr(iroty)?_battle_status]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDED))
+                        .replaceAll("\\[terr(iroty)?_battle_status_short]", LangManager.getMessage(LangMessage.TERRITORY_BATTLE_STATUS_ENDED_SHORT));
                 break;
         }
 
@@ -96,18 +95,18 @@ public class Battle {
         String endingTimeLeftStr = " - ";
         if (getBattleStatus() == BattleStatus.ENDING) {
             long deltaEndingLeft = battleEndTime + territory.getObjective().getEndingPeriod() - System.currentTimeMillis();
-            endingTimeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(deltaEndingLeft);
+            endingTimeLeftStr = AdaptMessage.getInstance().countdownFormatter(deltaEndingLeft);
         }
 
-        message = message.replaceAll("\\[territory_battle_ending_time_left]", endingTimeLeftStr);
+        message = message.replaceAll("\\[terr(iroty)?_battle_ending_time_left]", endingTimeLeftStr);
 
         String graceTimeLeftStr = " - ";
         if (getBattleStatus() == BattleStatus.ENDED) {
             long deltaGraceLeft = battleEndTime + territory.getObjective().getGracePeriod() - System.currentTimeMillis();
-            graceTimeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(deltaGraceLeft);
+            graceTimeLeftStr = AdaptMessage.getInstance().countdownFormatter(deltaGraceLeft);
         }
 
-        message = message.replaceAll("\\[territory_battle_grace_time_left]", graceTimeLeftStr);
+        message = message.replaceAll("\\[terr(iroty)?_battle_grace_time_left]", graceTimeLeftStr);
 
         String direction = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_ARROW_NO_ADVANTAGE);
 
@@ -116,11 +115,11 @@ public class Battle {
         } else if (territory.getOwnerITeam() != null && territory.getCurrentBattle().getAdvantagedITeam() != null && territory.getCurrentBattle().getAdvantagedITeam() != territory.getOwnerITeam()) {
             direction = LangManager.getMessage(LangMessage.TERRITORY_BOSSBAR_ARROW_ADVANTAGE_RIGHT_TO_LEFT);
         }
-        message = message.replaceAll("\\[territory_battle_direction]", direction)
-                .replaceAll("\\[territory_battle_advantage", "[team");
-        message = AdaptMessage.getAdaptMessage().adaptTeamMessage(message, getAdvantagedITeam())
-                .replaceAll("\\[territory_battle_winner", "[team");
-        message = AdaptMessage.getAdaptMessage().adaptTeamMessage(message, getWinnerITeam());
+        message = message.replaceAll("\\[terr(iroty)?_battle_dir(ection)]", direction)
+                .replaceAll("\\[terr(iroty)?_battle_advantage", "[team");
+        message = AdaptMessage.getInstance().adaptTeamMessage(message, getAdvantagedITeam())
+                .replaceAll("\\[terr(iroty)?_battle_winner", "[team");
+        message = AdaptMessage.getInstance().adaptTeamMessage(message, getWinnerITeam());
 
         return message;
     }
@@ -137,7 +136,7 @@ public class Battle {
         return this.battleStatus.equals(BattleStatus.WAITING);
     }
 
-    public boolean isBattleStarted() {
+    public boolean isStarted() {
         return this.battleStatus.equals(BattleStatus.ONGOING);
     }
 
@@ -145,7 +144,7 @@ public class Battle {
         return this.battleStatus.equals(BattleStatus.ENDING) || this.battleStatus.equals(BattleStatus.ENDED);
     }
 
-    public boolean isBattleEnded() {
+    public boolean isEnded() {
         return this.battleStatus.equals(BattleStatus.ENDED);
     }
 

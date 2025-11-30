@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class AdminTeamEditMemberRemoveCommand extends AdminTeamEditMemberSubCommand {
 
     public AdminTeamEditMemberRemoveCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_REMOVE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -95,7 +95,7 @@ public class AdminTeamEditMemberRemoveCommand extends AdminTeamEditMemberSubComm
         }
 
         sender.sendMessage(
-                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_REMOVE_RESULT), targetTeam, targetPlayer)
+                AdaptMessage.getInstance().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_MEMBER_REMOVE_RESULT), targetTeam, targetPlayer)
         );
     }
 

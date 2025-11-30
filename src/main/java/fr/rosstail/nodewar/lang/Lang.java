@@ -5,7 +5,6 @@ import fr.rosstail.nodewar.Nodewar;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.List;
 
 public class Lang {
 
@@ -39,20 +38,20 @@ public class Lang {
             if (langConfig != null) {
                 if (langConfig.isList(stringPath)) {
                     gotMessage = String.join("\n", langConfig.getStringList(stringPath));
-                    langMessage.setDisplayText(AdaptMessage.getAdaptMessage().adaptMessage(gotMessage));
+                    langMessage.setDisplayText(AdaptMessage.getInstance().adaptMessage(gotMessage));
                 } else {
                     gotMessage = langConfig.getString(stringPath);
                     if (gotMessage != null) {
-                        langMessage.setDisplayText(AdaptMessage.getAdaptMessage().adaptMessage(gotMessage));
+                        langMessage.setDisplayText(AdaptMessage.getInstance().adaptMessage(gotMessage));
                     }
                 }
             }
 
             if (gotMessage == null && !langMessage.isNullable()) {
                 if (defaultLangConfig.isList(stringPath)) {
-                    langMessage.setDisplayText(AdaptMessage.getAdaptMessage().adaptMessage(String.join("\n", defaultLangConfig.getStringList(stringPath))));
+                    langMessage.setDisplayText(AdaptMessage.getInstance().adaptMessage(String.join("\n", defaultLangConfig.getStringList(stringPath))));
                 } else {
-                    langMessage.setDisplayText(AdaptMessage.getAdaptMessage().adaptMessage(defaultLangConfig.getString(stringPath)));
+                    langMessage.setDisplayText(AdaptMessage.getInstance().adaptMessage(defaultLangConfig.getString(stringPath)));
                 }
             }
 

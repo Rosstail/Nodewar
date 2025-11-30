@@ -6,10 +6,8 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.team.NwITeam;
-import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +16,7 @@ import java.util.stream.Collectors;
 public class TeamListCommand extends TeamSubCommand {
 
     public TeamListCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_LIST_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -77,13 +75,13 @@ public class TeamListCommand extends TeamSubCommand {
             for (int i = page * 10; i < Math.min(size, page * 10 + 10); i++) {
                 String s = strList.get(i);
                 NwITeam nwTeam = stringNwITeamMap.get(s);
-                message.append("\n").append(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_LIST_RESULT_LINE), nwTeam));
+                message.append("\n").append(AdaptMessage.getInstance().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_LIST_RESULT_LINE), nwTeam));
             }
             message.append("\nP." + (page + 1) + "/" + maxPage);
         } else {
             message.append("\n&rP.0/0");
         }
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(message.toString()));
+        sender.sendMessage(AdaptMessage.getInstance().adaptMessage(message.toString()));
     }
 
     @Override

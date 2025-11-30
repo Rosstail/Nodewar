@@ -5,7 +5,6 @@ import fr.rosstail.nodewar.commands.SubCommand;
 import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.invites.teaminvitessubcommands.TeamInvitesCloseCommand;
 import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.invites.teaminvitessubcommands.TeamInvitesCheckCommand;
 import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.invites.teaminvitessubcommands.TeamInvitesOpenCommand;
-import fr.rosstail.nodewar.commands.subcommands.team.teamsubcommands.manage.TeamManageSubCommand;
 import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
@@ -18,7 +17,7 @@ public class TeamInvitesCommand extends TeamInvitesSubCommand {
     public List<TeamInvitesSubCommand> subCommands = new ArrayList<>();
 
     public TeamInvitesCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_INVITES_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -60,7 +59,7 @@ public class TeamInvitesCommand extends TeamInvitesSubCommand {
                 .findFirst().orElse(null);
 
         if (subCommand == null) {
-            sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
+            sender.sendMessage(AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_WRONG_COMMAND)));
             return;
         }
 

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand {
 
     public TeamManageMemberTransferCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_TRANSFER_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -128,7 +128,7 @@ public class TeamManageMemberTransferCommand extends TeamManageMemberSubCommand 
             }
 
             sender.sendMessage(
-                    AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_TRANSFER_RESULT), senderNwITeam, senderPlayer)
+                    AdaptMessage.getInstance().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_TRANSFER_RESULT), senderNwITeam, senderPlayer)
             );
 
             StorageManager.getManager().updateTeamModel(senderNwITeam);

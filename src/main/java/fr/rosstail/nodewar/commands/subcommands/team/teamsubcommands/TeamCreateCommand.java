@@ -26,7 +26,7 @@ import java.util.List;
 public class TeamCreateCommand extends TeamSubCommand {
 
     public TeamCreateCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_CREATE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));

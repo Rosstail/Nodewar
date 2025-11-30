@@ -16,7 +16,7 @@ import java.util.List;
 public class AdminTerritoryVulnerableCommand extends AdminTerritorySubCommand {
 
     public AdminTerritoryVulnerableCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TERRITORY_VULNERABLE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -61,7 +61,7 @@ public class AdminTerritoryVulnerableCommand extends AdminTerritorySubCommand {
 
         WebmapManager.getManager().addTerritoryToDraw(territory);
 
-        message = AdaptMessage.getAdaptMessage().adaptTerritoryMessage(message, territory);
+        message = AdaptMessage.getInstance().adaptTerritoryMessage(message, territory);
         sender.sendMessage(message);
     }
 

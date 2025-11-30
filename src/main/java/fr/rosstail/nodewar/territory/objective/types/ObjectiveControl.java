@@ -10,7 +10,6 @@ import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.RelationType;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.territory.Territory;
-import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.territory.battle.types.BattleControl;
 import fr.rosstail.nodewar.territory.objective.NwConquestObjective;
 import fr.rosstail.nodewar.territory.objective.objectivereward.ObjectiveReward;
@@ -91,29 +90,28 @@ public class ObjectiveControl extends NwConquestObjective {
                 teamMemberOnTerritory.put(nwITeam, memberList.size());
             }
         });
+
         switch (currentBattle.getBattleStatus()) {
             case WAITING:
-                territory.updateAllBossBarText();
                 if (checkStart()) {
-                    start();
+                    toStart();
                 }
                 break;
             case ONGOING:
-                territory.updateAllBossBarText();
                 if (checkEnding()) {
-                    ending();
+                    toEnding();
                 } else {
                     onGoing();
                 }
                 break;
             case ENDING:
-                territory.updateAllBossBarText();
                 if (checkEnd()) {
-                    end();
+                    toEnd();
+                } else {
+                    ending();
                 }
                 break;
             case ENDED:
-                territory.updateAllBossBarText();
                 long battleEndTimeAndGrace = territory.getCurrentBattle().getBattleEndTime() + getGracePeriod();
                 if (battleEndTimeAndGrace < System.currentTimeMillis()) {
                     restart();
@@ -203,8 +201,8 @@ public class ObjectiveControl extends NwConquestObjective {
             }
         }
 
-        AdaptMessage.getAdaptMessage().alertITeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
-        AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
+        AdaptMessage.getInstance().alertITeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
+        AdaptMessage.getInstance().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
         return true;
     }
 
@@ -237,13 +235,13 @@ public class ObjectiveControl extends NwConquestObjective {
         }
 
         if (currentAdvantage != newAdvantage) {
-            if (currentBattle.isBattleStarted()) {
+            if (currentBattle.isStarted()) {
                 if (newAdvantage == territory.getOwnerITeam()) {
-                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
                 } else {
-                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
                 }
             }
             currentBattle.setAdvantageITeam(newAdvantage);
@@ -287,8 +285,8 @@ public class ObjectiveControl extends NwConquestObjective {
     }
 
     @Override
-    public void ending() {
-        super.ending();
+    public void toEnding() {
+        super.toEnding();
         BattleControl currentBattle = (BattleControl) territory.getCurrentBattle();
         currentBattle.setCurrentHealth(maxHealth);
     }
@@ -336,14 +334,14 @@ public class ObjectiveControl extends NwConquestObjective {
     @Override
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
-        message = message.replaceAll("\\[territory_objective_base_capture_speed]", String.valueOf(baseCaptureSpeed))
-                .replaceAll("\\[territory_objective_bonus_capture_speed]", String.valueOf(bonusCaptureSpeedPerPlayer))
-                .replaceAll("\\[territory_objective_maximum_capture_speed]", String.valueOf(maxCaptureSpeed))
-                .replaceAll("\\[territory_objective_minimum_attacker_amount]", String.valueOf(minAttackerAmount))
-                .replaceAll("\\[territory_objective_minimum_attacker_ratio]", String.valueOf(minAttackerRatio))
-                .replaceAll("\\[territory_objective_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)))
-                .replaceAll("\\[territory_objective_maximum_health]", String.valueOf(maxHealth))
-                .replaceAll("\\[territory_objective_capture_speed]", String.valueOf(
+        message = message.replaceAll("\\[terr(iroty)?_obj(ective)?_base_capture_speed]", String.valueOf(baseCaptureSpeed))
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_bonus_capture_speed]", String.valueOf(bonusCaptureSpeedPerPlayer))
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_maximum_capture_speed]", String.valueOf(maxCaptureSpeed))
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_minimum_attacker_amount]", String.valueOf(minAttackerAmount))
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_minimum_attacker_ratio]", String.valueOf(minAttackerRatio))
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)))
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_(maxhp|max(imum)?_health)]", String.valueOf(maxHealth))
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_(cspd|capture_speed)]", String.valueOf(
                         calculateCaptureSpeed(
                                 territory.getCurrentBattle() != null ?
                                         territory.getCurrentBattle().getAdvantagedITeam()

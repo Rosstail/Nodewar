@@ -11,7 +11,6 @@ import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.team.rank.NwTeamRank;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.webmap.WebmapManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -26,7 +25,7 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
     private static final Pattern hexPattern = Pattern.compile("#[a-fA-F0-9]{6}");
 
     public TeamManageColorCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_COLOR_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -91,7 +90,7 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
 
         if (colorValue.startsWith("#")) {
             if (hexPattern.matcher(colorValue).find()) {
-                if (AdaptMessage.getAdaptMessage().getVersionNumbers().get(1) < 16) {
+                if (AdaptMessage.getInstance().getVersionNumbers().get(1) < 16) {
                     sender.sendMessage("you cannot use HEX values on 1.13 and lower.");
                     return;
                 }
@@ -108,7 +107,7 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
         playerNwITeam.setTeamColor(colorValue);
 
         sender.sendMessage(
-                AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_COLOR_RESULT), playerNwITeam, player)
+                AdaptMessage.getInstance().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_COLOR_RESULT), playerNwITeam, player)
         );
 
         StorageManager.getManager().updateTeamModel(playerNwITeam);
@@ -120,7 +119,7 @@ public class TeamManageColorCommand extends TeamManageSubCommand {
     @Override
     public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         List<String> list = new ArrayList<>();
-        if (AdaptMessage.getAdaptMessage().getVersionNumbers().get(1) >= 16) {
+        if (AdaptMessage.getInstance().getVersionNumbers().get(1) >= 16) {
             list.add("#");
         }
         Arrays.stream(ChatColor.values()).filter(ChatColor::isColor).forEach(chatColor -> {

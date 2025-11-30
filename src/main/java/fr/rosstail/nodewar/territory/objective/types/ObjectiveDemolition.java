@@ -87,27 +87,25 @@ public class ObjectiveDemolition extends NwConquestObjective {
 
         switch (currentBattle.getBattleStatus()) {
             case WAITING:
-                territory.updateAllBossBarText();
                 if (checkStart()) {
-                    start();
+                    toStart();
                 }
                 break;
             case ONGOING:
-                territory.updateAllBossBarText();
                 if (checkEnding()) {
-                    ending();
+                    this.toEnding();
                 } else {
                     onGoing();
                 }
                 break;
             case ENDING:
-                territory.updateAllBossBarText();
                 if (checkEnd()) {
-                    end();
+                    toEnd();
+                } else {
+                    ending();
                 }
                 break;
             case ENDED:
-                territory.updateAllBossBarText();
                 long battleEndTimeAndGrace = currentBattle.getBattleEndTime() + getGracePeriod();
                 if (battleEndTimeAndGrace < System.currentTimeMillis()) {
                     restart();
@@ -125,8 +123,8 @@ public class ObjectiveDemolition extends NwConquestObjective {
         message = super.adaptMessage(message);
 
         message = message
-                .replaceAll("\\[territory_objective_health_start]", String.valueOf(blockStart))
-                .replaceAll("\\[territory_objective_health_lose]", String.valueOf(blockLose));
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_(starthp|health_start)]", String.valueOf(blockStart))
+                .replaceAll("\\[terr(iroty)?_obj(ective)?_health_lose]", String.valueOf(blockLose));
 
         return message;
     }
@@ -155,8 +153,8 @@ public class ObjectiveDemolition extends NwConquestObjective {
         int health = currentBattle.getHealth();
         int maxHealth = currentBattle.getMaxHealth();
         if (maxHealth == 0) {
-            AdaptMessage.getAdaptMessage().alertITeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
-            AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
+            AdaptMessage.getInstance().alertITeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
+            AdaptMessage.getInstance().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
             return true;
         }
         float healthRatio = (float) health / maxHealth;
@@ -166,8 +164,8 @@ public class ObjectiveDemolition extends NwConquestObjective {
         }
 
         if (health < blockStart || healthRatio < blockRatioStart) {
-            AdaptMessage.getAdaptMessage().alertITeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
-            AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
+            AdaptMessage.getInstance().alertITeam(owner, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_START), territory, true);
+            AdaptMessage.getInstance().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_START), territory, true);
             return true;
         }
 
@@ -175,8 +173,8 @@ public class ObjectiveDemolition extends NwConquestObjective {
     }
 
     @Override
-    public void start() {
-        super.start();
+    public void toStart() {
+        super.toStart();
         BattleDemolition currentBattle = (BattleDemolition) territory.getCurrentBattle();
         if (duration > 0) {
             currentBattle.setEndTime(System.currentTimeMillis() + duration);
@@ -192,13 +190,13 @@ public class ObjectiveDemolition extends NwConquestObjective {
         NwITeam newAdvantage = checkAdvantage();
 
         if (currentAdvantage != newAdvantage) {
-            if (currentBattle.isBattleStarted()) {
+            if (currentBattle.isStarted()) {
                 if (newAdvantage == territory.getOwnerITeam()) {
-                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_DISADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_ADVANTAGE), territory, true);
                 } else {
-                    AdaptMessage.getAdaptMessage().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
-                    AdaptMessage.getAdaptMessage().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(newAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_DEFEND_ADVANTAGE), territory, true);
+                    AdaptMessage.getInstance().alertITeam(currentAdvantage, LangManager.getMessage(LangMessage.TERRITORY_BATTLE_ALERT_GLOBAL_ATTACK_DISADVANTAGE), territory, true);
                 }
             }
             TerritoryAdvantageChangeEvent advantageChangeEvent = new TerritoryAdvantageChangeEvent(territory, newAdvantage);
@@ -221,8 +219,8 @@ public class ObjectiveDemolition extends NwConquestObjective {
     }
 
     @Override
-    public void ending() {
-        super.ending();
+    public void toEnding() {
+        super.toEnding();
     }
 
     @Override

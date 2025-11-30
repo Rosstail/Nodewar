@@ -10,10 +10,8 @@ import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import fr.rosstail.nodewar.territory.TerritoryManager;
 import fr.rosstail.nodewar.webmap.WebmapManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +23,7 @@ public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
     private static final Pattern hexPattern = Pattern.compile("#[a-fA-F0-9]{6}");
 
     public AdminTeamEditColorCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE).replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_COLOR_DESC)).replaceAll("\\[syntax]", getSyntax()));
+        help = AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE).replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_COLOR_DESC)).replaceAll("\\[syntax]", getSyntax()));
     }
 
     @Override
@@ -74,7 +72,7 @@ public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
 
         if (colorValue.startsWith("#")) {
             if (hexPattern.matcher(colorValue).find()) {
-                if (AdaptMessage.getAdaptMessage().getVersionNumbers().get(1) < 16) {
+                if (AdaptMessage.getInstance().getVersionNumbers().get(1) < 16) {
                     sender.sendMessage("you cannot use HEX values on 1.13 and lower.");
                     return;
                 }
@@ -94,7 +92,7 @@ public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
         targetTeam.setTeamColor(colorValue);
         StorageManager.getManager().updateTeamModel(targetTeam);
 
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_COLOR_RESULT), targetTeam, null));
+        sender.sendMessage(AdaptMessage.getInstance().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_COLOR_RESULT), targetTeam, null));
 
         TerritoryManager.getTerritoryManager().getTerritoryMap().values().stream().filter(territory -> territory.getOwnerITeam() == targetTeam).forEach(territory -> {
             WebmapManager.getManager().addTerritoryToDraw(territory);
@@ -104,7 +102,7 @@ public class AdminTeamEditColorCommand extends AdminTeamEditSubCommand {
     @Override
     public List<String> getSubCommandsArguments(CommandSender sender, String[] args, String[] arguments) {
         List<String> list = new ArrayList<>();
-        if (AdaptMessage.getAdaptMessage().getVersionNumbers().get(1) >= 16) {
+        if (AdaptMessage.getInstance().getVersionNumbers().get(1) >= 16) {
             list.add("#");
         }
         Arrays.stream(ChatColor.values()).filter(ChatColor::isColor).forEach(chatColor -> {

@@ -20,7 +20,7 @@ import java.util.List;
 public class TeamManageInviteCommand extends TeamManageSubCommand {
 
     public TeamManageInviteCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_INVITE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));

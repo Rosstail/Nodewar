@@ -6,18 +6,16 @@ import fr.rosstail.nodewar.lang.AdaptMessage;
 import fr.rosstail.nodewar.lang.LangManager;
 import fr.rosstail.nodewar.lang.LangMessage;
 import fr.rosstail.nodewar.storage.StorageManager;
-import fr.rosstail.nodewar.team.NwITeam;
 import fr.rosstail.nodewar.team.type.NwTeam;
 import fr.rosstail.nodewar.team.TeamManager;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class AdminTeamEditRelationCloseCommand extends AdminTeamEditRelationSubCommand {
 
     public AdminTeamEditRelationCloseCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_CLOSE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -61,7 +59,7 @@ public class AdminTeamEditRelationCloseCommand extends AdminTeamEditRelationSubC
         nwTeam.setOpenRelation(false);
         StorageManager.getManager().updateTeamModel(nwTeam);
 
-        sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_CLOSE_RESULT)));
+        sender.sendMessage(AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_ADMIN_TEAM_EDIT_RELATION_CLOSE_RESULT)));
     }
 
     @Override

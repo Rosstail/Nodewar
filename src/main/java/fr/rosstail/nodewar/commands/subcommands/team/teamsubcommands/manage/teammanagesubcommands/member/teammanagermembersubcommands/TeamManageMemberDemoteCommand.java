@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class TeamManageMemberDemoteCommand extends TeamManageMemberSubCommand {
 
     public TeamManageMemberDemoteCommand() {
-        help = AdaptMessage.getAdaptMessage().adaptMessage(
+        help = AdaptMessage.getInstance().adaptMessage(
                 LangManager.getMessage(LangMessage.COMMANDS_HELP_LINE)
                         .replaceAll("\\[desc]", LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_DEMOTE_DESC))
                         .replaceAll("\\[syntax]", getSyntax()));
@@ -102,7 +102,7 @@ public class TeamManageMemberDemoteCommand extends TeamManageMemberSubCommand {
 
             newRank = targetTeamMemberModel.getNumRank() - 1;
             if (targetTeamMemberModel.getNumRank() >= playerRank.getWeight() || newRank == 0) {
-                sender.sendMessage(AdaptMessage.getAdaptMessage().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_DEMOTE_ERROR)));
+                sender.sendMessage(AdaptMessage.getInstance().adaptMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_DEMOTE_ERROR)));
                 return;
             }
 
@@ -116,7 +116,7 @@ public class TeamManageMemberDemoteCommand extends TeamManageMemberSubCommand {
             }
 
             sender.sendMessage(
-                    AdaptMessage.getAdaptMessage().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_DEMOTE_RESULT), playerNwITeam, player)
+                    AdaptMessage.getInstance().adaptTeamMessage(LangManager.getMessage(LangMessage.COMMANDS_TEAM_MANAGE_MEMBER_DEMOTE_RESULT), playerNwITeam, player)
             );
 
         }

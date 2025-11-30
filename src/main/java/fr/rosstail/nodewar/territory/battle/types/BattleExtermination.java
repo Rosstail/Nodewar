@@ -83,15 +83,15 @@ public class BattleExtermination extends Battle {
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
 
-        if (isBattleStarted()) {
+        if (isStarted()) {
             if (objectiveExtermination.getDuration() > 0L) {
-                message = message.replaceAll("\\[territory_battle_time_left]",
-                        AdaptMessage.getAdaptMessage().countdownFormatter(endTime - System.currentTimeMillis()));
+                message = message.replaceAll("\\[terr(iroty)?_battle_time_left]",
+                        AdaptMessage.getInstance().countdownFormatter(endTime - System.currentTimeMillis()));
             } else {
-                message = message.replaceAll("\\[territory_battle_time_left]", "∞");
+                message = message.replaceAll("\\[terr(iroty)?_battle_time_left]", "∞");
             }
         } else {
-            message = message.replaceAll("\\[territory_battle_time_left]", "-");
+            message = message.replaceAll("\\[terr(iroty)?_battle_time_left]", "-");
         }
 
         return message;

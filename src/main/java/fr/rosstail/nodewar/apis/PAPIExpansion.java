@@ -123,11 +123,11 @@ public class PAPIExpansion extends PlaceholderExpansion {
     public String onPlaceholderRequest(Player player, String identifier) {
 
         if (player != null) {
-            return AdaptMessage.getAdaptMessage().adaptPlayerMessage(player, "[" + identifier + "]");
+            return AdaptMessage.getInstance().adaptPlayerMessage(player, "[" + identifier + "]");
         }
 
         // We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)
         // was provided
-        return AdaptMessage.getAdaptMessage().adaptMessage("[" + identifier + "]");
+        return AdaptMessage.getInstance().adaptMessage("[" + identifier + "]");
     }
 }

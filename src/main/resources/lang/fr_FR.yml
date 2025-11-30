@@ -31,7 +31,7 @@ commands:
     check:
       desc: "Voir les informations de l'équipe"
       result:
-        - "[prefix][team_color_short]&r - [team_color_display]&r &8:&r"
+        - "[prefix][team_color_short]&r - [team_color_disp]&r &8:&r"
         - "* Couleur &8:&r {[team_color]}[team_color]&r"
         - "* Votre rang &8:&r [team_player_rank]"
         - "* Membres &8:&r [team_online_member]/[team_maximum_members] - [team_open]&r"
@@ -39,24 +39,24 @@ commands:
         - "* Relations &8:&r (default &8:&r [team_relation_default])"
         - "[team_result_relation_line]"
       result-other:
-        - "[prefix][team_display]&r &8:&r"
+        - "[prefix][team_disp]&r &8:&r"
         - "* Couleur &8:&r {[team_color]}[team_color]&r"
         - "* Membres &8:&r [team_online_member] - [team_open]&r"
         - "[team_result_member_line]"
         - "* Relations &8:&r (default &8:&r [team_relation_default])"
         - "[team_result_relation_line]"
       result-member-line: "   - [team_player_connected][team_player] &8:&r [team_player_rank]"
-      result-relation-line: "   - [team_display] &8:&r [team_relation]&r"
+      result-relation-line: "   - [team_disp] &8:&r [team_relation]&r"
     list:
       desc: "Affiche la liste des équipes"
       result-header: "[prefix]&bListe des équipes &8:"
-      result-line: "&a► [team_color_display]&r"
+      result-line: "&a► [team_color_disp]&r"
     invites:
       desc: "Gérez les invitations d'équipes."
       check:
         desc: "Vérifiez quelle équipe souhaite vous recruter."
         result-header: "[prefix]&bInvitations &8:"
-        result-line: "&a► [team_color_display]&r"
+        result-line: "&a► [team_color_disp]&r"
       open:
         desc: "Autorisez les invitations de recrutement"
         result: "[prefix]Vous êtes désormais ouvert au recrutement"
@@ -139,7 +139,7 @@ commands:
         invites:
           desc: "Observez la liste des requêtes de relation de votre équipe."
           result-header: "[prefix]&bRequêtes &8:"
-          result-line: "&a► [team_line_direction]&r [team_color_display] &8: [team_relation] -> [team_relation_invite]&r"
+          result-line: "&a► [team_line_dir]&r [team_color_disp] &8: [team_relation] -> [team_relation_invite]&r"
           result-line-received: "&e<<<"
           result-line-sent: "&6>>>"
       disband:
@@ -155,7 +155,7 @@ commands:
       desc: "Gestion des équipes"
       create:
         desc: "Créez une nouvelle équipe."
-        result: "[prefix]Équipe [team_color_display] créée."
+        result: "[prefix]Équipe [team_color_disp] créée."
       edit:
         desc: "Éditez l'équipe sélectionnée."
         color:
@@ -176,10 +176,10 @@ commands:
           desc: "Gérez les membres d'une équipe"
           add:
             desc: "Ajoutez un joueur à l'équipe"
-            result: "[prefix]Le joueur [player] a été ajouté à l'équipe [team_display]."
+            result: "[prefix]Le joueur [player] a été ajouté à l'équipe [team_disp]."
           remove:
             desc: "Retirez un joueur de l'équipe"
-            result: "[prefix]Le membre [player] a été retiré de l'équipe [team_display]."
+            result: "[prefix]Le membre [player] a été retiré de l'équipe [team_disp]."
           promote:
             desc: "Promouvez un membre d'équipe"
             result: "[prefix]Promotion du membre [player] au rang de [team_member_rank]."
@@ -203,7 +203,7 @@ commands:
           invites:
             desc: "Regardez la liste des requêtes de relation."
             result-header: "[prefix]&bRequêtes &8:"
-            result-line: "&a► [team_line_direction]&r [team_color_display] &8: [team_relation] -> [team_relation_invite]&r"
+            result-line: "&a► [team_line_dir]&r [team_color_disp] &8: [team_relation] -> [team_relation_invite]&r"
             result-line-received: "&e<<<"
             result-line-sent: "&6>>>"
           request:
@@ -224,29 +224,29 @@ commands:
       desc: "Éditez le territoire selectionné"
       reload-regions:
         desc: "Recharger les régions d'un territoire"
-        result: "[prefix]Les régions du territoire [territory_display] sont rechargées."
+        result: "[prefix]Les régions du territoire [terr_disp] sont rechargées."
       team:
         desc: "Changez le propriétaire d'un territoire"
         set:
           desc: "Choisissez le propriétaire du territoire"
-          result: "[prefix]Le propriétaire du territoire est désormais [team_display]"
+          result: "[prefix]Le propriétaire du territoire est désormais [team_disp]"
         reset:
           desc: "Rendez le territoire neutre"
           result: "[prefix]Le territoire est désormais neutre."
       vulnerable:
         desc: "Rendez le territoire vulnérable aux attaques"
-        result: "[prefix][territory_display] est désormais vulnérable"
+        result: "[prefix][terr_disp] est désormais vulnérable"
       protect:
         desc: "Protégez le territoire des attaques"
-        result: "[prefix][territory_display] est désormais protégé"
+        result: "[prefix][terr_disp] est désormais protégé"
   territory:
     desc: "Commandes de territoire"
     check:
       desc: "Observez l'état d'un territoire"
       result:
-        - "[territory_description]"
-        - "[territory_objective_description]"
-        - "[territory_battle_description]"
+        - "[terr_desc]"
+        - "[terr_obj_desc]"
+        - "[terr_battle_desc]"
       result-not-on-territory: "Vous ne vous tenez pas sur un territoire"
       result-on-multiple-territory: "Vous vous tenez sur plusieurs territoires à la fois. Veuillez en sélectionner un: [territories]"
   battlefield:
@@ -254,18 +254,18 @@ commands:
     check:
       desc: "Observez l'état d'un champ de bataille"
       result:
-        - "[prefix]&2[battlefield_id] &7- &6[battlefield_display]&r&d:"
+        - "[prefix]&2[bf_id] &7- &6[bf_disp]&r&d:"
         - "  &r&9Info&d:"
-        - "    &c* &6Statut &d:&r [battlefield_status] pour encore [battlefield_delay]"
-        - "    &c* &6Ouvre le &d:&r [battlefield_start_time]"
-        - "    &c* &6Ferme le &d:&r [battlefield_close_time]"
+        - "    &c* &6Statut &d:&r [bf_status] pour encore [bf_delay]"
+        - "    &c* &6Ouvre le &d:&r [bf_start_time]"
+        - "    &c* &6Ferme le &d:&r [bf_close_time]"
         - "    &c* &6Territoires &d:&r"
-        - "[battlefield_territory_list_line]"
-      result-territory-list-line: "      &5 - &r[territory_display] &r[[territory_team_color_display]&r]"
+        - "[bf_territory_list_line]"
+      result-territory-list-line: "      &5 - &r[terr_disp] &r[[terr_team_color_disp]&r]"
     list:
       desc: "Voir la liste des champs de bataille"
       result-header: "[prefix]&bChamps de bataille &8:"
-      result-line: "&a► [battlefield_display] ([battlefield_name])&r est [battlefield_status] pour encore [battlefield_delay]"
+      result-line: "&a► [bf_disp] ([bf_name])&r est [bf_status] pour encore [bf_delay]"
 
 player:
   online: "&aEN LIGNE"
@@ -293,21 +293,21 @@ battlefield:
   open: "OUVERT"
   closed: "FERMÉ"
   announcement:
-    open: "[prefix]Le champ de bataille [battlefield_display] est désormais ouvert !"
-    open-delay: "[prefix]Le champ de bataille [battlefield_display] va ouvrir dans [delay]"
-    close: "[prefix]Le champ de bataille [battlefield_display] est désormais fermé !"
-    close-delay: "[prefix]Le champ de bataille [battlefield_display] va fermer dans [delay]"
+    open: "[prefix]Le champ de bataille [bf_disp] est désormais ouvert !"
+    open-delay: "[prefix]Le champ de bataille [bf_disp] va ouvrir dans [delay]"
+    close: "[prefix]Le champ de bataille [bf_disp] est désormais fermé !"
+    close-delay: "[prefix]Le champ de bataille [bf_disp] va fermer dans [delay]"
 
 territory:
   description:
-    - "&2[territory_id] &7- &6[territory_display]&r&d:"
+    - "&2[terr_id] &7- &6[terr_disp]&r&d:"
     - "  &r&9Info&d:"
-    - "    &c* &6Monde&d:&r [territory_world]"
-    - "    &c* &6Type&d:&r [territory_preset_display]"
-    - "    &c* &6Descriptif:&r [territory_desc_line]"
-    - "    &c* &6Protégé&d:&r [territory_protected_short][territory_protected]"
-    - "    &c* &6Départ&d:&r [territory_attackreq_startpoint] / &6Checkpoint&d:&r [territory_attackreq_checkpoint]"
-    - "    &c* &6Propriétaire&d:&r {[territory_team_color]}[territory_team_display]"
+    - "    &c* &6Monde&d:&r [terr_world]"
+    - "    &c* &6Type&d:&r [terr_preset_disp]"
+    - "    &c* &6Descriptif:&r [terr_desc_line]"
+    - "    &c* &6Protégé&d:&r [terr_protected_short][terr_protected]"
+    - "    &c* &6Départ&d:&r [terr_attackreq_startpoint] / &6Checkpoint&d:&r [terr_attackreq_checkpoint]"
+    - "    &c* &6Propriétaire&d:&r {[terr_team_color]}[terr_team_disp]"
   objective:
     types:
       none:
@@ -317,26 +317,26 @@ territory:
       control:
         description:
           - "  &9Objectif&d: &9CONTRÔLE"
-          - "    &c*  &6Ratio attaquants&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
+          - "    &c*  &6Ratio attaquants&d: &f[terr_obj_minimum_attacker_ratio_percent]%"
       keep:
         description:
           - "  &9Objectif&d: &2GARDE"
-          - "    &c*  &6Attaquants minimum&d: &f[territory_objective_minimum_attackers]"
-          - "    &c*  &6Ratio attaquants&d: &f[territory_objective_minimum_attacker_ratio_percent]%"
+          - "    &c*  &6Attaquants minimum&d: &f[terr_obj_minimum_attackers]"
+          - "    &c*  &6Ratio attaquants&d: &f[terr_obj_minimum_attacker_ratio_percent]%"
       koth:
         display: "Roi de la Colline"
         description:
           - "  &9Objectif&d: &6RdlC"
           - "    &c*  &6Points de capture&d:"
-          - "[line_capturepoint]"
-        line-capturepoint: "      &5- &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
+          - "[line_cp]"
+        line-capturepoint: "      &5- &r[terr_obj_cp_[index]_disp]&d: [terr_obj_cp_[index]_team_color_disp]"
       siege:
         display: "Siège"
         description:
           - "  &9Objectif&d: &cSIÈGE"
           - "    &c*  &6Points de capture&d:"
-          - "[line_capturepoint]"
-        line-capturepoint: "      &5- &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
+          - "[line_cp]"
+        line-capturepoint: "      &5- &r[terr_obj_cp_[index]_disp]&d: [terr_obj_cp_[index]_team_color_disp]"
       demolition:
         display: "Démolition"
         description:
@@ -345,10 +345,10 @@ territory:
         display: "Extermination"
         description:
           - "  &9Objectif&d: &4Extermination"
-          - "    &c*  &6Ignore points non-possédés&d: &r[territory_objective_ignore_unowned_capturepoint]"
+          - "    &c*  &6Ignore points non-possédés&d: &r[terr_obj_ignore_unowned_cp]"
           - "    &c*  &6Points de capture&d:"
-          - "[line_capturepoint]"
-        line-capturepoint: "      &5- &r[territory_objective_capturepoint_[index]_display]&d: [territory_objective_capturepoint_[index]_team_color_display]"
+          - "[line_cp]"
+        line-capturepoint: "      &5- &r[terr_obj_cp_[index]_disp]&d: [terr_obj_cp_[index]_team_color_disp]"
   battle:
     types:
       none:
@@ -356,55 +356,55 @@ territory:
       control:
         description:
           - "  &9Bataille actuelle&d:"
-          - "    &c* &6Statut&d:&r [territory_battle_status]"
-          - "    &c* &6Avantage&d:&r [territory_battle_advantage_color_display]"
-          - "    &c* &6Santé&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
-          - "    &c* &6Temps restant&d:&r [territory_battle_time_left]"
+          - "    &c* &6Statut&d:&r [terr_battle_status]"
+          - "    &c* &6Avantage&d:&r [terr_battle_advantage_color_disp]"
+          - "    &c* &6Santé&d:&r [terr_battle_hp] / [terr_obj_maxhp]"
+          - "    &c* &6Temps restant&d:&r [terr_battle_time_left]"
           - "  &9Bataille précédente&d:"
-          - "    &c* &6Vainqueur&d:&r [territory_battle_winner_color_display]"
+          - "    &c* &6Vainqueur&d:&r [terr_battle_winner_color_disp]"
       keep:
         description:
           - "  &9Bataille actuelle&d:"
-          - "    &c* &6Statut&d:&r [territory_battle_status]"
-          - "    &c* &6Avantage&d:&r [territory_battle_advantage_color_display]"
-          - "    &c* &6Temps restant&d:&r [territory_battle_time_left]"
+          - "    &c* &6Statut&d:&r [terr_battle_status]"
+          - "    &c* &6Avantage&d:&r [terr_battle_advantage_color_disp]"
+          - "    &c* &6Temps restant&d:&r [terr_battle_time_left]"
           - "  &9Bataille précédente&d:"
-          - "    &c* &6Vainqueur&d:&r [territory_battle_winner_color_display]"
+          - "    &c* &6Vainqueur&d:&r [terr_battle_winner_color_disp]"
       koth:
         description:
           - "  &9Bataille actuelle&d:"
-          - "    &c* &6Statut&d:&r [territory_battle_status]"
-          - "    &c* &6Avantage&d:&r [territory_battle_advantage_color_display]"
-          - "    &c* &6Haut score&d:&r [territory_battle_time] / [territory_objective_time_to_reach]"
-          - "    &c* &6Temps restant&d:&r [territory_battle_time_left]"
+          - "    &c* &6Statut&d:&r [terr_battle_status]"
+          - "    &c* &6Avantage&d:&r [terr_battle_advantage_color_disp]"
+          - "    &c* &6Haut score&d:&r [terr_battle_time] / [terr_obj_time_to_reach]"
+          - "    &c* &6Temps restant&d:&r [terr_battle_time_left]"
           - "  &9Bataille précédente&d:"
-          - "    &c* &6Vainqueur&d:&r [territory_battle_winner_color_display]"
+          - "    &c* &6Vainqueur&d:&r [terr_battle_winner_color_disp]"
       siege:
         description:
           - "  &9Bataille actuelle&d:"
-          - "    &c* &6Statut&d:&r [territory_battle_status]"
-          - "    &c* &6Avantage&d:&r [territory_battle_advantage_color_display]"
-          - "    &c* &6Santé&d:&r [territory_battle_health] / [territory_objective_maximum_health]"
-          - "    &c* &6Temps restant&d:&r [territory_battle_time_left]"
+          - "    &c* &6Statut&d:&r [terr_battle_status]"
+          - "    &c* &6Avantage&d:&r [terr_battle_advantage_color_disp]"
+          - "    &c* &6Santé&d:&r [terr_battle_hp] / [terr_obj_maxhp]"
+          - "    &c* &6Temps restant&d:&r [terr_battle_time_left]"
           - "  &9Bataille précédente&d:"
-          - "    &c* &6Vainqueur&d:&r [territory_battle_winner_color_display]"
+          - "    &c* &6Vainqueur&d:&r [terr_battle_winner_color_disp]"
       demolition:
         description:
           - "  &9Bataille actuelle&d:"
-          - "    &c* &6Statut&d:&r [territory_battle_status]"
-          - "    &c* &6Avantage&d:&r [territory_battle_advantage_color_display]"
-          - "    &c* &6Santé&d:&r [territory_objective_health_lose] < &b[territory_battle_health]&r < [territory_objective_health_start]"
-          - "    &c* &6Temps restant&d:&r [territory_battle_time_left]"
+          - "    &c* &6Statut&d:&r [terr_battle_status]"
+          - "    &c* &6Avantage&d:&r [terr_battle_advantage_color_disp]"
+          - "    &c* &6Santé&d:&r [terr_obj_health_lose] < &b[terr_battle_hp]&r < [terr_obj_starthp]"
+          - "    &c* &6Temps restant&d:&r [terr_battle_time_left]"
           - "  &9Bataille précédente&d:"
-          - "    &c* &6Vainqueur&d:&r [territory_battle_winner_color_display]"
+          - "    &c* &6Vainqueur&d:&r [terr_battle_winner_color_disp]"
       extermination:
         description:
           - "  &9Bataille actuelle&d:"
-          - "    &c* &6Statut&d:&r [territory_battle_status]"
-          - "    &c* &6Avantage&d:&r [territory_battle_advantage_color_display]"
-          - "    &c* &6Temps restant&d:&r [territory_battle_time_left]"
+          - "    &c* &6Statut&d:&r [terr_battle_status]"
+          - "    &c* &6Avantage&d:&r [terr_battle_advantage_color_disp]"
+          - "    &c* &6Temps restant&d:&r [terr_battle_time_left]"
           - "  &9Bataille précédente&d:"
-          - "    &c* &6Vainqueur&d:&r [territory_battle_winner_color_display]"
+          - "    &c* &6Vainqueur&d:&r [terr_battle_winner_color_disp]"
     status:
       waiting: "&5En attente"
       ongoing: "&6En cours"
@@ -417,26 +417,26 @@ territory:
     alert:
       global:
         defend:
-          start: "&4[territory_display] est attaqué !" # server-wide
-          advantage: "&aVotre équipe est en train de repousser l'ennemi à [territory_display]" # territory-wide
-          disadvantage: "&cVotre équipe perd l'avantage à [territory_display]." # territory-wide
-          victory: "&bVotre équipe a défendu [territory_display] avec succès !" # server-wide
-          defeat: "&4Votre équipe a perdu le territoire [territory_display]..." # server-wide
+          start: "&4[terr_disp] est attaqué !" # server-wide
+          advantage: "&aVotre équipe est en train de repousser l'ennemi à [terr_disp]" # territory-wide
+          disadvantage: "&cVotre équipe perd l'avantage à [terr_disp]." # territory-wide
+          victory: "&bVotre équipe a défendu [terr_disp] avec succès !" # server-wide
+          defeat: "&4Votre équipe a perdu le territoire [terr_disp]..." # server-wide
         attack:
-          start: "&eVotre équipe attaque le territoire [territory_display] !" # server-wide
-          advantage: "&aVotre équipe est en train de capturer [territory_display]" # territory-wide
-          disadvantage: "&cVotre équipe se fait repousser à [territory_display]" # territory-wide
-          victory: "&bVotre équipe a capturé [territory_display] !" # server-wide
-          defeat: "&4Votre équipe s'est fait repousser à [territory_display]..." # server-wide
-  enter: "[msg-actionbar]Entrée dans le territoire [territory_display]."
-  leave: "[msg-actionbar]Sortie du territoire [territory_display]."
+          start: "&eVotre équipe attaque le territoire [terr_disp] !" # server-wide
+          advantage: "&aVotre équipe est en train de capturer [terr_disp]" # territory-wide
+          disadvantage: "&cVotre équipe se fait repousser à [terr_disp]" # territory-wide
+          victory: "&bVotre équipe a capturé [terr_disp] !" # server-wide
+          defeat: "&4Votre équipe s'est fait repousser à [terr_disp]..." # server-wide
+  enter: "[msg-actionbar]Entrée dans le territoire [terr_disp]."
+  leave: "[msg-actionbar]Sortie du territoire [terr_disp]."
   bossbar:
     global:
-      wild: "[territory_display] - [territory_protected_short] - [territory_battle_status_short] [territory_battle_status]"
-      occupied: "[territory_display] - [territory_protected_short] - [territory_battle_status_short] [territory_battle_status] - {[territory_team_color]}[territory_team_display]"
-      battle: "[territory_display] - [territory_protected_short][territory_battle_status_short] - {[territory_team_color]}[territory_team_display] - {[territory_battle_advantage_color]}[territory_battle_direction]&r {[territory_battle_advantage_color]}[territory_battle_advantage_display]"
-      battle-ending: "[territory_display] - [territory_protected_short] - [territory_battle_status_short] [territory_battle_status] [territory_battle_ending_time_left] - {[territory_team_color]}[territory_team_display]"
-      battle-ended: "[territory_display] - [territory_protected_short] - [territory_battle_status_short] [territory_battle_status] [territory_battle_grace_time_left] - {[territory_team_color]}[territory_team_display]"
+      wild: "[terr_disp] - [terr_protected_short] - [terr_battle_status_short] [terr_battle_status]"
+      occupied: "[terr_disp] - [terr_protected_short] - [terr_battle_status_short] [terr_battle_status] - {[terr_team_color]}[terr_team_disp]"
+      battle: "[terr_disp] - [terr_protected_short][terr_battle_status_short] - {[terr_team_color]}[terr_team_disp] - {[terr_battle_advantage_color]}[terr_battle_direction]&r {[terr_battle_advantage_color]}[terr_battle_advantage_disp]"
+      battle-ending: "[terr_disp] - [terr_protected_short] - [terr_battle_status_short] [terr_battle_status] [terr_battle_ending_time_left] - {[terr_team_color]}[terr_team_disp]"
+      battle-ended: "[terr_disp] - [terr_protected_short] - [terr_battle_status_short] [terr_battle_status] [terr_battle_grace_time_left] - {[terr_team_color]}[terr_team_disp]"
     arrow:
       no-advantage: "↔"
       left-to-right: "→"
@@ -452,19 +452,19 @@ webmap:
     global-div:
       "<div >
       <p style='font-size: x-large'>
-        <span style='padding-left: 30px; color:#00CC00'>[territory_id]</span> <span style='color:#CCCCCC'>-</span> <span style='color:#D4AF37'>[territory_display]</span>
+        <span style='padding-left: 30px; color:#00CC00'>[terr_id]</span> <span style='color:#CCCCCC'>-</span> <span style='color:#D4AF37'>[terr_disp]</span>
       </p>
-      [territory_webmap_description]
+      [terr_wmap_desc]
       </div>"
     description:
       "<p style='font-size:larger'>
         <span style='color:#AAAAFF'>Info </span><span style='color:#FFC0CB'>:</span><br/>
-        <span style='color:red'>*</span> <span style='color:#D4AF37'>World </span><span style='color:#FFC0CB'>:</span> [territory_world]<br/>
-        <span style='color:red'>*</span> <span style='color:#D4AF37'>Type </span><span style='color:#FFC0CB'>:</span> [territory_preset_display]<br/>
-        <span style='color:red'>*</span> <span style='color:#D4AF37'>Protected </span><span style='color:#FFC0CB'>:</span> [territory_webmap_protected_short][territory_webmap_protected]<br/>
-        <span style='color:red'>*</span> <span style='color:#D4AF37'>Startpoint </span><span style='color:#FFC0CB'>:</span> [territory_attackreq_startpoint] / <span style='color:#D4AF37'>Checkpoint </span><span style='color:#FFC0CB'>:</span> [territory_attackreq_checkpoint]<br/>
-        <span style='color:red'>*</span> <span style='color:#D4AF37'>Line </span> <span style='color:#FFC0CB'>:</span> [territory_desc_line]<br/>
-        <span style='color:red'>*</span> <span style='color:#D4AF37'>Owner </span><span style='color:#FFC0CB'>:</span> <span style='color:[territory_team_color]'>[territory_team_display]</span><br/>
+        <span style='color:red'>*</span> <span style='color:#D4AF37'>World </span><span style='color:#FFC0CB'>:</span> [terr_world]<br/>
+        <span style='color:red'>*</span> <span style='color:#D4AF37'>Type </span><span style='color:#FFC0CB'>:</span> [terr_preset_disp]<br/>
+        <span style='color:red'>*</span> <span style='color:#D4AF37'>Protected </span><span style='color:#FFC0CB'>:</span> [terr_wmap_protected_short][terr_wmap_protected]<br/>
+        <span style='color:red'>*</span> <span style='color:#D4AF37'>Startpoint </span><span style='color:#FFC0CB'>:</span> [terr_attackreq_startpoint] / <span style='color:#D4AF37'>Checkpoint </span><span style='color:#FFC0CB'>:</span> [terr_attackreq_checkpoint]<br/>
+        <span style='color:red'>*</span> <span style='color:#D4AF37'>Line </span> <span style='color:#FFC0CB'>:</span> [terr_desc_line]<br/>
+        <span style='color:red'>*</span> <span style='color:#D4AF37'>Owner </span><span style='color:#FFC0CB'>:</span> <span style='color:[terr_team_color]'>[terr_team_disp]</span><br/>
       </p>"
     objective:
       types:
@@ -475,26 +475,26 @@ webmap:
         control:
           description:
             - "  <span style='color:dodgerblue'>Objective </span><span style='color:magenta'>:</span> <span style='color:dodgerblue'>CONTROL</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Attackers ratio </span><span style='color:magenta'>:</span> [territory_objective_minimum_attacker_ratio_percent]%"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Attackers ratio </span><span style='color:magenta'>:</span> [terr_obj_minimum_attacker_ratio_percent]%"
         keep:
           description:
             - "  <span style='color:dodgerblue'>Objective </span><span style='color:magenta'>:</span> <span style='color:green'>KEEP</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Minimum attackers </span><span style='color:magenta'>:</span> &f[territory_objective_minimum_attackers]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Attackers ratio </span><span style='color:magenta'>:</span> [territory_objective_minimum_attacker_ratio_percent]%"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Minimum attackers </span><span style='color:magenta'>:</span> &f[terr_obj_minimum_attackers]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Attackers ratio </span><span style='color:magenta'>:</span> [terr_obj_minimum_attacker_ratio_percent]%"
         koth:
           display: "King of the Hill"
           description:
             - "  <span style='color:dodgerblue'>Objective </span><span style='color:magenta'>:</span> <span style='color:gold'>KOTH</span>"
             - "    <span style='color:red'>*</span> <span style='color:gold'>Capture points </span> <span style='color:magenta'>:</span>"
-            - "[line_capturepoint]"
-          line-capturepoint: "      <span style='color:darkmagenta'>- </span> [territory_objective_capturepoint_[index]_display]<span style='color:magenta'>:</span> [territory_objective_capturepoint_[index]_team_color_display]"
+            - "[line_cp]"
+          line-capturepoint: "      <span style='color:darkmagenta'>- </span> [terr_obj_cp_[index]_disp]<span style='color:magenta'>:</span> [terr_obj_cp_[index]_team_color_disp]"
         siege:
           display: "Siege"
           description:
             - "  <span style='color:dodgerblue'>Objective </span><span style='color:magenta'>:</span> <span style='color:firebrick'>SIEGE</span>"
             - "    <span style='color:red'>*</span> <span style='color:gold'>Capture points </span> <span style='color:magenta'>:</span>"
-            - "[line_capturepoint]"
-          line-capturepoint: "      <span style='color:darkmagenta'>- </span> [territory_objective_capturepoint_[index]_display]<span style='color:magenta'>:</span> [territory_objective_capturepoint_[index]_team_color_display]"
+            - "[line_cp]"
+          line-capturepoint: "      <span style='color:darkmagenta'>- </span> [terr_obj_cp_[index]_disp]<span style='color:magenta'>:</span> [terr_obj_cp_[index]_team_color_disp]"
         demolition:
           display: "Demolition"
           description:
@@ -503,10 +503,10 @@ webmap:
           display: "Extermination"
           description:
             - "  <span style='color:dodgerblue'>Objective </span><span style='color:magenta'>:</span> <span style='color:red'>EXTERMINATION</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Ignore unowned capture points </span><span style='color:magenta'>:</span> [territory_objective_ignore_unowned_capturepoint]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Ignore unowned capture points </span><span style='color:magenta'>:</span> [terr_obj_ignore_unowned_cp]"
             - "    <span style='color:red'>*</span> <span style='color:gold'>Capture points </span> <span style='color:magenta'>:</span>"
-            - "[line_capturepoint]"
-          line-capturepoint: "      <span style='color:darkmagenta'>- </span> [territory_objective_capturepoint_[index]_display]<span style='color:magenta'>:</span> [territory_objective_capturepoint_[index]_team_color_display]"
+            - "[line_cp]"
+          line-capturepoint: "      <span style='color:darkmagenta'>- </span> [terr_obj_cp_[index]_disp]<span style='color:magenta'>:</span> [terr_obj_cp_[index]_team_color_disp]"
     battle:
       types:
         none:
@@ -514,55 +514,55 @@ webmap:
         control:
           description:
             - "  <span style='color:dodgerblue'>Current battle </span><span style='color:magenta'>:</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [territory_battle_status]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [territory_battle_advantage_color_display]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Health </span> <span style='color:magenta'>:</span> [territory_battle_health] / [territory_objective_maximum_health]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [territory_battle_time_left]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [terr_battle_status]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [terr_battle_advantage_color_disp]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Health </span> <span style='color:magenta'>:</span> [terr_battle_hp] / [terr_obj_maxhp]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [terr_battle_time_left]"
             - "  <span style='color:dodgerblue'>Previous battle </span><span style='color:magenta'>:</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [territory_battle_winner_color_display]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [terr_battle_winner_color_disp]"
         keep:
           description:
             - "  <span style='color:dodgerblue'>Current battle </span><span style='color:magenta'>:</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [territory_battle_status]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage</span> <span style='color:magenta'>:</span> [territory_battle_advantage_color_display]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left</span> <span style='color:magenta'>:</span> [territory_battle_time_left]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [terr_battle_status]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage</span> <span style='color:magenta'>:</span> [terr_battle_advantage_color_disp]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left</span> <span style='color:magenta'>:</span> [terr_battle_time_left]"
             - "  <span style='color:dodgerblue'>Previous battle </span><span style='color:magenta'>:</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [territory_battle_winner_color_display]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [terr_battle_winner_color_disp]"
         koth:
           description:
             - "  <span style='color:dodgerblue'>Current battle </span><span style='color:magenta'>:</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [territory_battle_status]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [territory_battle_advantage_color_display]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>High score </span> <span style='color:magenta'>:</span> [territory_battle_time] / [territory_objective_time_to_reach]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [territory_battle_time_left]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [terr_battle_status]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [terr_battle_advantage_color_disp]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>High score </span> <span style='color:magenta'>:</span> [terr_battle_time] / [terr_obj_time_to_reach]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [terr_battle_time_left]"
             - "  <span style='color:dodgerblue'>Previous battle </span><span style='color:magenta'>:</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [territory_battle_winner_color_display]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [terr_battle_winner_color_disp]"
         siege:
           description:
             - "  <span style='color:dodgerblue'>Current battle </span><span style='color:magenta'>:</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [territory_battle_status]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [territory_battle_advantage_color_display]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Health </span> <span style='color:magenta'>:</span> [territory_battle_health] / [territory_objective_maximum_health]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [territory_battle_time_left]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [terr_battle_status]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [terr_battle_advantage_color_disp]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Health </span> <span style='color:magenta'>:</span> [terr_battle_hp] / [terr_obj_maxhp]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [terr_battle_time_left]"
             - "  <span style='color:dodgerblue'>Previous battle </span><span style='color:magenta'>:</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [territory_battle_winner_color_display]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [terr_battle_winner_color_disp]"
         demolition:
           description:
             - "  <span style='color:dodgerblue'>Current battle </span><span style='color:magenta'>:</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [territory_battle_status]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [territory_battle_advantage_color_display]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Health </span> <span style='color:magenta'>:</span> [territory_objective_health_lose] < <span style='color:cyan'>[territory_battle_health] < [territory_objective_health_start]</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [territory_battle_time_left]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [terr_battle_status]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [terr_battle_advantage_color_disp]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Health </span> <span style='color:magenta'>:</span> [terr_obj_health_lose] < <span style='color:cyan'>[terr_battle_hp] < [terr_obj_health_start]</span>"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [terr_battle_time_left]"
             - "  <span style='color:dodgerblue'>Previous battle </span><span style='color:magenta'>:</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [territory_battle_winner_color_display]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [terr_battle_winner_color_disp]"
         extermination:
           description:
             - "  <span style='color:dodgerblue'>Current battle </span><span style='color:magenta'>:</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [territory_battle_status]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [territory_battle_advantage_color_display]"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [territory_battle_time_left]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Status </span> <span style='color:magenta'>:</span> [terr_battle_status]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Advantage </span> <span style='color:magenta'>:</span> [terr_battle_advantage_color_disp]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Time left </span> <span style='color:magenta'>:</span> [terr_battle_time_left]"
             - "  <span style='color:dodgerblue'>Previous battle </span><span style='color:magenta'>:</span>"
-            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [territory_battle_winner_color_display]"
+            - "    <span style='color:red'>*</span> <span style='color:gold'>Winner </span> <span style='color:magenta'>:</span> [terr_battle_winner_color_disp]"
       status:
         waiting: "<span style='color:blueviolet'>Waiting</span>"
         ongoing: "<span style='color:gold'>Ongoing</span>"

@@ -7,6 +7,7 @@ import fr.rosstail.nodewar.team.*;
 import fr.rosstail.nodewar.team.member.TeamMember;
 import fr.rosstail.nodewar.team.member.TeamMemberModel;
 import fr.rosstail.nodewar.team.relation.TownyTeamRelation;
+import fr.rosstail.nodewar.utils.Cache;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,7 @@ public class TownTeam implements NwITeam {
 
     private final Town town;
     private final TeamModel model;
+    private final Map<String, Cache> cacheMap = new HashMap<>();
 
     public TownTeam(Town town) {
         this.town = town;
@@ -117,6 +119,38 @@ public class TownTeam implements NwITeam {
     @Override
     public void setBanner(ItemStack banner) {
         //TODO
+    }
+
+    @Override
+    public Map<String, Cache> getCacheMap() {
+        return cacheMap;
+    }
+
+    @Override
+    public String adaptMessage(String message) {
+        if (message == null) {
+            return null;
+        }
+
+        if (cacheMap.containsKey(message)) {
+            return cacheMap.get(message).getValue();
+        }
+
+        String newMessage = message.replaceAll("\\[team_name]", getName())
+                .replaceAll("\\[team_id]", String.valueOf(getID()))
+                .replaceAll("\\[team_display]", getDisplay())
+                .replaceAll("\\[team_color_display]", "{" + getTeamColor() + "}" + getDisplay())
+                .replaceAll("\\[team_short]", getShortName())
+                .replaceAll("\\[team_color_short]", "{" + getTeamColor() + "}" + getShortName())
+                .replaceAll("\\[team_color]", getTeamColor())
+                .replaceAll("\\[team_open]", String.valueOf(isOpen()))
+                .replaceAll("\\[team_permanent]", String.valueOf(isPermanent()))
+                .replaceAll("\\[team_creation_date]", String.valueOf(getCreationDate()));
+
+        Cache cache = new Cache(message, newMessage);
+        cacheMap.put(message, cache);
+
+        return newMessage;
     }
 
     @Override

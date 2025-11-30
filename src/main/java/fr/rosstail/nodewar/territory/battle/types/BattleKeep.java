@@ -40,7 +40,7 @@ public class BattleKeep extends Battle {
 
     @Override
     public void handleContribution() {
-        if (!isBattleStarted()) {
+        if (!isStarted()) {
             return;
         }
         if (isBattleOnEnd()) {
@@ -243,7 +243,7 @@ public class BattleKeep extends Battle {
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
 
-        message = message.replaceAll("\\[territory_battle_time_left]", " - ");
+        message = message.replaceAll("\\[terr(iroty)?_battle_time_left]", " - ");
 
         return message;
     }

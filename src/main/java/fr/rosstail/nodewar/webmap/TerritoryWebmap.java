@@ -19,6 +19,8 @@ public class TerritoryWebmap extends TerritoryWebmapModel {
     private final boolean zSet;
     private float z;
 
+    private final String genericDesc;
+
     public TerritoryWebmap(Territory territory, TerritoryWebmapModel childModel, TerritoryWebmapModel parentModel) {
         super(new TerritoryWebmapModel(childModel, parentModel));
         this.territory = territory;
@@ -31,6 +33,8 @@ public class TerritoryWebmap extends TerritoryWebmapModel {
         this.y = getyString() != null ? Float.parseFloat(getyString()) : 0F;
         this.zSet = getzString() != null;
         this.z = getzString() != null ? Float.parseFloat(getzString()) : 0F;
+
+        this.genericDesc = adaptGenericMessage(LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_DESCRIPTION));
     }
 
     public Territory getTerritory() {
@@ -77,31 +81,41 @@ public class TerritoryWebmap extends TerritoryWebmapModel {
         return zSet;
     }
 
+    public String adaptGenericMessage(String message) {
+        if (message == null) {
+            return null;
+        }
+
+        return message
+                .replaceAll("\\[terr(iroty)?_w(eb)?map_desc(ription)?]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_DESCRIPTION))
+                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_waiting]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_WAITING))
+                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_ongoing]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ONGOING))
+                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_ending]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDING))
+                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_ended]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDED))
+                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_waiting_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_WAITING_SHORT))
+                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_ongoing_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ONGOING_SHORT))
+                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_ending_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDING_SHORT))
+                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_ended_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDED_SHORT))
+        ;
+    }
+
     public String adaptMessage(String message) {
         if (message == null) {
             return null;
         }
 
-        message = message
-                .replaceAll("\\[territory_webmap_description]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_DESCRIPTION))
-                .replaceAll("\\[territory_webmap_battle_status_waiting]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_WAITING))
-                .replaceAll("\\[territory_webmap_battle_status_ongoing]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ONGOING))
-                .replaceAll("\\[territory_webmap_battle_status_ending]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDING))
-                .replaceAll("\\[territory_webmap_battle_status_ended]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDED))
-                .replaceAll("\\[territory_webmap_battle_status_waiting_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_WAITING_SHORT))
-                .replaceAll("\\[territory_webmap_battle_status_ongoing_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ONGOING_SHORT))
-                .replaceAll("\\[territory_webmap_battle_status_ending_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDING_SHORT))
-                .replaceAll("\\[territory_webmap_battle_status_ended_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDED_SHORT))
-        ;
-
         if (territory.isUnderProtection()) {
-            message = message.replaceAll("\\[territory_webmap_protected]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_PROTECTED))
-                    .replaceAll("\\[territory_webmap_protected_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_PROTECTED_SHORT));
+            message = message.replaceAll("\\[terr(iroty)?_webmap_protected]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_PROTECTED))
+                    .replaceAll("\\[terr(iroty)?_webmap_protected_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_PROTECTED_SHORT));
         } else {
-            message = message.replaceAll("\\[territory_webmap_protected]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_VULNERABLE))
-                    .replaceAll("\\[territory_webmap_protected_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_VULNERABLE_SHORT));
+            message = message.replaceAll("\\[terr(iroty)?_webmap_protected]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_VULNERABLE))
+                    .replaceAll("\\[terr(iroty)?_webmap_protected_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_VULNERABLE_SHORT));
         }
 
         return territory.adaptMessage(message);
+    }
+
+    public String getGenericDesc() {
+        return genericDesc;
     }
 }

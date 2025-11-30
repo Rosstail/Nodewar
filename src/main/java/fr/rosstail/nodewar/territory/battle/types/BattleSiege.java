@@ -33,7 +33,7 @@ public class BattleSiege extends Battle {
 
 
     public void handleContribution() {
-        if (!isBattleStarted()) {
+        if (!isStarted()) {
             return;
         }
         if (isBattleOnEnd()) {
@@ -140,8 +140,8 @@ public class BattleSiege extends Battle {
     @Override
     public String adaptMessage(String message) {
         message = super.adaptMessage(message)
-                .replaceAll("\\[territory_battle_health]", String.valueOf(currentHealth))
-                .replaceAll("\\[territory_battle_health_percent]", String.valueOf((int) ((float) currentHealth / objectiveSiege.getMaxHealth() * 100)));
+                .replaceAll("\\[terr(iroty)?_battle_(hp|health)]", String.valueOf(currentHealth))
+                .replaceAll("\\[terr(iroty)?_battle_(perchp|health_percent)]", String.valueOf((int) ((float) currentHealth / objectiveSiege.getMaxHealth() * 100)));
 
         int regenPerSecond = objectiveSiege.getCapturePointsRegenPerSecond().entrySet().stream().filter(territoryListEntry ->
                 (territoryListEntry.getKey().getOwnerITeam() == getAdvantagedITeam())
@@ -153,18 +153,18 @@ public class BattleSiege extends Battle {
         String timeLeftStr = " - ";
         int deltaHealth = regenPerSecond - damagePerSecond;
 
-        if (getAdvantagedITeam() != null && isBattleStarted()) {
+        if (getAdvantagedITeam() != null && isStarted()) {
             int timeLeft;
             if (getAdvantagedITeam() == territory.getOwnerITeam() && deltaHealth > 0) { //defend
                 timeLeft = (objectiveSiege.getMaxHealth() - getCurrentHealth()) / deltaHealth;
-                timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft * 1000L);
+                timeLeftStr = AdaptMessage.getInstance().countdownFormatter(timeLeft * 1000L);
             } else if (deltaHealth < 0) {
                 timeLeft = getCurrentHealth() / deltaHealth;
-                timeLeftStr = AdaptMessage.getAdaptMessage().countdownFormatter(timeLeft * 1000L);
+                timeLeftStr = AdaptMessage.getInstance().countdownFormatter(timeLeft * 1000L);
             }
         }
 
-        message = message.replaceAll("\\[territory_battle_time_left]", timeLeftStr);
+        message = message.replaceAll("\\[terr(iroty)?_battle_time_left]", timeLeftStr);
 
         return message;
     }
