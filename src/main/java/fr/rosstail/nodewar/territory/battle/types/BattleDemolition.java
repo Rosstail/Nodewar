@@ -77,19 +77,19 @@ public class BattleDemolition extends Battle {
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
         message = message
-                .replaceAll("\\[terr(iroty)?_battle_(hp|health)]", String.valueOf(health))
-                .replaceAll("\\[terr(iroty)?_battle_maxhp]", String.valueOf(maxHealth))
+                .replaceAll("\\[terr(itory)?_battle_(hp|health)]", String.valueOf(health))
+                .replaceAll("\\[terr(itory)?_battle_maxhp]", String.valueOf(maxHealth))
         ;
 
         if (isStarted()) {
             if (objectiveDemolition.getDuration() > 0L) {
-                message = message.replaceAll("\\[terr(iroty)?_battle_time_left]",
+                message = message.replaceAll("\\[terr(itory)?_battle_time_left]",
                         AdaptMessage.getInstance().countdownFormatter(endTime - System.currentTimeMillis()));
             } else {
-                message = message.replaceAll("\\[terr(iroty)?_battle_time_left]", "∞");
+                message = message.replaceAll("\\[terr(itory)?_battle_time_left]", "∞");
             }
         } else {
-            message = message.replaceAll("\\[terr(iroty)?_battle_time_left]", "-");
+            message = message.replaceAll("\\[terr(itory)?_battle_time_left]", "-");
         }
         return message;
     }

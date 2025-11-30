@@ -244,8 +244,8 @@ public class BattleControl extends Battle {
     @Override
     public String adaptMessage(String message) {
         message = super.adaptMessage(message)
-                .replaceAll("\\[terr(iroty)?_battle_(hp|health)]", String.valueOf(currentHealth))
-                .replaceAll("\\[terr(iroty)?_battle_(perchp|health_percent)]", String.valueOf((int) ((float) currentHealth / objectiveControl.getMaxHealth() * 100)));
+                .replaceAll("\\[terr(itory)?_battle_(hp|health)]", String.valueOf(currentHealth))
+                .replaceAll("\\[terr(itory)?_battle_(perchp|health_percent)]", String.valueOf((int) ((float) currentHealth / objectiveControl.getMaxHealth() * 100)));
 
         int timeLeft = 0;
         String timeLeftStr = " - ";
@@ -264,7 +264,7 @@ public class BattleControl extends Battle {
             timeLeftStr = AdaptMessage.getInstance().countdownFormatter(timeLeft * 1000L);
         }
 
-        message = message.replaceAll("\\[terr(iroty)?_battle_time_left]", timeLeftStr);
+        message = message.replaceAll("\\[terr(itory)?_battle_time_left]", timeLeftStr);
 
         return message;
     }

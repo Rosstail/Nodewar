@@ -292,9 +292,9 @@ public class ObjectiveExtermination extends NwConquestObjective {
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
 
-        message = message.replaceAll("\\[terr(iroty)?_obj(ective)?_ignore_unowned_(cp|capturepoint)]", String.valueOf(ignoreUnownedSides).toUpperCase());
+        message = message.replaceAll("\\[terr(itory)?_obj(ective)?_ignore_unowned_(cp|capturepoint)]", String.valueOf(ignoreUnownedSides).toUpperCase());
 
-        Pattern capturePointPattern = Pattern.compile("(\\[terr(iroty)?_obj(ective)?_(cp|capturepoint))_(\\d+)(_\\w+])");
+        Pattern capturePointPattern = Pattern.compile("(\\[terr(itory)?_obj(ective)?_(cp|capturepoint))_(\\d+)(_\\w+])");
         Matcher capturePointMatcher = capturePointPattern.matcher(message);
         List<Territory> territoryList = territorySet.stream().toList();
 

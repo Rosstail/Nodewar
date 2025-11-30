@@ -123,8 +123,8 @@ public class ObjectiveDemolition extends NwConquestObjective {
         message = super.adaptMessage(message);
 
         message = message
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_(starthp|health_start)]", String.valueOf(blockStart))
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_health_lose]", String.valueOf(blockLose));
+                .replaceAll("\\[terr(itory)?_obj(ective)?_(starthp|health_start)]", String.valueOf(blockStart))
+                .replaceAll("\\[terr(itory)?_obj(ective)?_health_lose]", String.valueOf(blockLose));
 
         return message;
     }

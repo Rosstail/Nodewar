@@ -270,12 +270,12 @@ public class ObjectiveKeep extends NwConquestObjective {
 
         int holdTime = currentBattle != null ? currentBattle.getHoldTime() : 0;
 
-        message = message.replaceAll("\\[terr(iroty)?_obj(ective)?_hold_time]", String.valueOf(holdTime))
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_seconds_to_hold]", String.valueOf(secondsToHold))
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_minimum_attacker_ratio]", String.valueOf(minAttackerRatio))
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)))
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_minimum_attackers]", String.valueOf(minAttackerAmount))
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_time_left]", AdaptMessage.getInstance().countdownFormatter(secondsToHold - holdTime));
+        message = message.replaceAll("\\[terr(itory)?_obj(ective)?_hold_time]", String.valueOf(holdTime))
+                .replaceAll("\\[terr(itory)?_obj(ective)?_seconds_to_hold]", String.valueOf(secondsToHold))
+                .replaceAll("\\[terr(itory)?_obj(ective)?_minimum_attacker_ratio]", String.valueOf(minAttackerRatio))
+                .replaceAll("\\[terr(itory)?_obj(ective)?_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)))
+                .replaceAll("\\[terr(itory)?_obj(ective)?_minimum_attackers]", String.valueOf(minAttackerAmount))
+                .replaceAll("\\[terr(itory)?_obj(ective)?_time_left]", AdaptMessage.getInstance().countdownFormatter(secondsToHold - holdTime));
 
         return message;
     }

@@ -357,9 +357,9 @@ public class ObjectiveSiege extends NwConquestObjective {
     @Override
     public String adaptMessage(String message) {
         message = super.adaptMessage(message)
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_(maxhp|maximum_health)]", String.valueOf(maxHealth));
+                .replaceAll("\\[terr(itory)?_obj(ective)?_(maxhp|maximum_health)]", String.valueOf(maxHealth));
 
-        Pattern capturePointPattern = Pattern.compile("(\\[terr(iroty)?_obj(ective)?_(cp|capturepoint))_(\\d+)(_\\w+])");
+        Pattern capturePointPattern = Pattern.compile("(\\[terr(itory)?_obj(ective)?_(cp|capturepoint))_(\\d+)(_\\w+])");
         Matcher capturePointMatcher = capturePointPattern.matcher(message);
 
         while (capturePointMatcher.find()) {

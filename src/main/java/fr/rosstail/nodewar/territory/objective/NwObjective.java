@@ -200,9 +200,9 @@ public class NwObjective implements NwIObjective {
 
     @Override
     public String adaptMessage(String message) {
-        message = message.replaceAll("\\[terr(iroty)?_obj(ective)?_desc(ription)?]", description.stream().map(String::valueOf).collect(Collectors.joining("\n")))
-                .replaceAll("\\[terr(iroty)?_obj(ective)?(_name)?]", getObjectiveModel().getTypeString())
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_disp(lay)?]", display);
+        message = message.replaceAll("\\[terr(itory)?_obj(ective)?_desc(ription)?]", description.stream().map(String::valueOf).collect(Collectors.joining("\n")))
+                .replaceAll("\\[terr(itory)?_obj(ective)?(_name)?]", getObjectiveModel().getTypeString())
+                .replaceAll("\\[terr(itory)?_obj(ective)?_disp(lay)?]", display);
         return message;
     }
 

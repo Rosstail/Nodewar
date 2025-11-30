@@ -375,16 +375,16 @@ public class Territory extends TerritoryModel {
     }
 
     public String adaptGenericMessage(String message) {
-        return message.replaceAll("\\[terr(iroty)?_desc(ription)?]", LangManager.getMessage(LangMessage.TERRITORY_DESCRIPTION))
-                .replaceAll("\\[terr(iroty)?_desc_line]", Matcher.quoteReplacement(String.join("\n", getDescription())))
-                .replaceAll("\\[terr(iroty)?_id]", String.valueOf(getId()))
-                .replaceAll("\\[terr(iroty)?_prefix]", getPrefix())
-                .replaceAll("\\[terr(iroty)?_suffix]", getSuffix())
-                .replaceAll("\\[terr(iroty)?_name]", getName())
-                .replaceAll("\\[terr(iroty)?_disp(lay)?]", getDisplay())
-                .replaceAll("\\[terr(iroty)?_world]", getWorldName())
-                .replaceAll("\\[terr(iroty)?_(preset|type)]", getPresetName())
-                .replaceAll("\\[terr(iroty)?_(preset|type)_disp(lay)?]", getPresetDisplay());
+        return message.replaceAll("\\[terr(itory)?_desc(ription)?]", LangManager.getMessage(LangMessage.TERRITORY_DESCRIPTION))
+                .replaceAll("\\[terr(itory)?_desc_line]", Matcher.quoteReplacement(String.join("\n", getDescription())))
+                .replaceAll("\\[terr(itory)?_id]", String.valueOf(getId()))
+                .replaceAll("\\[terr(itory)?_prefix]", getPrefix())
+                .replaceAll("\\[terr(itory)?_suffix]", getSuffix())
+                .replaceAll("\\[terr(itory)?_name]", getName())
+                .replaceAll("\\[terr(itory)?_disp(lay)?]", getDisplay())
+                .replaceAll("\\[terr(itory)?_world]", getWorldName())
+                .replaceAll("\\[terr(itory)?_(preset|type)]", getPresetName())
+                .replaceAll("\\[terr(itory)?_(preset|type)_disp(lay)?]", getPresetDisplay());
     }
 
     public String adaptMessage(String message) {
@@ -421,7 +421,7 @@ public class Territory extends TerritoryModel {
 
 
         newMessage = AdaptMessage.getInstance().adaptTeamMessage(
-                newMessage.replaceAll("\\[terr(iroty)?_team", "[team"),
+                newMessage.replaceAll("\\[terr(itory)?_team", "[team"),
                 getOwnerITeam()
         );
 

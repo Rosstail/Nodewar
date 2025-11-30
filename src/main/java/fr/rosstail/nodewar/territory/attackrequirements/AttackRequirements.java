@@ -123,8 +123,8 @@ public class AttackRequirements extends AttackRequirementsModel {
         }
 
         message = message
-                .replaceAll("\\[terr(iroty)?_attackreq_startpoint]", isStartPoint() ? "yes" : "no")
-                .replaceAll("\\[terr(iroty)?_attackreq_checkpoint]", isCheckPoint() ? "yes" : "no");
+                .replaceAll("\\[terr(itory)?_attackreq_startpoint]", isStartPoint() ? "yes" : "no")
+                .replaceAll("\\[terr(itory)?_attackreq_checkpoint]", isCheckPoint() ? "yes" : "no");
 
         return message;
     }

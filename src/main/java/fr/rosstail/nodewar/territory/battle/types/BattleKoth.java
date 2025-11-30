@@ -94,8 +94,8 @@ public class BattleKoth extends Battle {
         if (!teamHoldPointMap.isEmpty()) {
             highScore = Collections.max(getTeamHoldPointMap().entrySet(), Map.Entry.comparingByValue()).getValue();
         }
-        message = message.replaceAll("\\[terr(iroty)?_battle_time]", String.valueOf(highScore))
-                .replaceAll("\\[terr(iroty)?_battle_time_percent]", String.valueOf((int) ((float) (highScore) / objectiveKoth.getTimeToReach() * 100)));
+        message = message.replaceAll("\\[terr(itory)?_battle_time]", String.valueOf(highScore))
+                .replaceAll("\\[terr(itory)?_battle_time_percent]", String.valueOf((int) ((float) (highScore) / objectiveKoth.getTimeToReach() * 100)));
 
 
         List<Integer> pointPerSecondList = objectiveKoth.getCapturePointsValuePerSecond().entrySet().stream().filter(territoryListEntry ->
@@ -112,7 +112,7 @@ public class BattleKoth extends Battle {
             timeLeftStr = AdaptMessage.getInstance().countdownFormatter(timeLeft * 1000L);
         }
 
-        message = message.replaceAll("\\[terr(iroty)?_battle_time_left]", timeLeftStr);
+        message = message.replaceAll("\\[terr(itory)?_battle_time_left]", timeLeftStr);
 
         return message;
     }

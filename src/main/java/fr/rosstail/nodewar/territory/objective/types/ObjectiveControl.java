@@ -334,14 +334,14 @@ public class ObjectiveControl extends NwConquestObjective {
     @Override
     public String adaptMessage(String message) {
         message = super.adaptMessage(message);
-        message = message.replaceAll("\\[terr(iroty)?_obj(ective)?_base_capture_speed]", String.valueOf(baseCaptureSpeed))
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_bonus_capture_speed]", String.valueOf(bonusCaptureSpeedPerPlayer))
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_maximum_capture_speed]", String.valueOf(maxCaptureSpeed))
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_minimum_attacker_amount]", String.valueOf(minAttackerAmount))
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_minimum_attacker_ratio]", String.valueOf(minAttackerRatio))
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)))
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_(maxhp|max(imum)?_health)]", String.valueOf(maxHealth))
-                .replaceAll("\\[terr(iroty)?_obj(ective)?_(cspd|capture_speed)]", String.valueOf(
+        message = message.replaceAll("\\[terr(itory)?_obj(ective)?_base_capture_speed]", String.valueOf(baseCaptureSpeed))
+                .replaceAll("\\[terr(itory)?_obj(ective)?_bonus_capture_speed]", String.valueOf(bonusCaptureSpeedPerPlayer))
+                .replaceAll("\\[terr(itory)?_obj(ective)?_maximum_capture_speed]", String.valueOf(maxCaptureSpeed))
+                .replaceAll("\\[terr(itory)?_obj(ective)?_minimum_attacker_amount]", String.valueOf(minAttackerAmount))
+                .replaceAll("\\[terr(itory)?_obj(ective)?_minimum_attacker_ratio]", String.valueOf(minAttackerRatio))
+                .replaceAll("\\[terr(itory)?_obj(ective)?_minimum_attacker_ratio_percent]", String.valueOf((int) (minAttackerRatio * 100)))
+                .replaceAll("\\[terr(itory)?_obj(ective)?_(maxhp|max(imum)?_health)]", String.valueOf(maxHealth))
+                .replaceAll("\\[terr(itory)?_obj(ective)?_(cspd|capture_speed)]", String.valueOf(
                         calculateCaptureSpeed(
                                 territory.getCurrentBattle() != null ?
                                         territory.getCurrentBattle().getAdvantagedITeam()

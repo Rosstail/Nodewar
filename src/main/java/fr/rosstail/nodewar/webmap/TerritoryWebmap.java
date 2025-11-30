@@ -87,15 +87,15 @@ public class TerritoryWebmap extends TerritoryWebmapModel {
         }
 
         return message
-                .replaceAll("\\[terr(iroty)?_w(eb)?map_desc(ription)?]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_DESCRIPTION))
-                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_waiting]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_WAITING))
-                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_ongoing]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ONGOING))
-                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_ending]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDING))
-                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_ended]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDED))
-                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_waiting_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_WAITING_SHORT))
-                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_ongoing_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ONGOING_SHORT))
-                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_ending_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDING_SHORT))
-                .replaceAll("\\[terr(iroty)?_w(eb)?map_battle_status_ended_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDED_SHORT))
+                .replaceAll("\\[terr(itory)?_w(eb)?map_desc(ription)?]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_DESCRIPTION))
+                .replaceAll("\\[terr(itory)?_w(eb)?map_battle_status_waiting]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_WAITING))
+                .replaceAll("\\[terr(itory)?_w(eb)?map_battle_status_ongoing]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ONGOING))
+                .replaceAll("\\[terr(itory)?_w(eb)?map_battle_status_ending]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDING))
+                .replaceAll("\\[terr(itory)?_w(eb)?map_battle_status_ended]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDED))
+                .replaceAll("\\[terr(itory)?_w(eb)?map_battle_status_waiting_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_WAITING_SHORT))
+                .replaceAll("\\[terr(itory)?_w(eb)?map_battle_status_ongoing_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ONGOING_SHORT))
+                .replaceAll("\\[terr(itory)?_w(eb)?map_battle_status_ending_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDING_SHORT))
+                .replaceAll("\\[terr(itory)?_w(eb)?map_battle_status_ended_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_BATTLE_STATUS_ENDED_SHORT))
         ;
     }
 
@@ -105,11 +105,11 @@ public class TerritoryWebmap extends TerritoryWebmapModel {
         }
 
         if (territory.isUnderProtection()) {
-            message = message.replaceAll("\\[terr(iroty)?_webmap_protected]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_PROTECTED))
-                    .replaceAll("\\[terr(iroty)?_webmap_protected_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_PROTECTED_SHORT));
+            message = message.replaceAll("\\[terr(itory)?_webmap_protected]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_PROTECTED))
+                    .replaceAll("\\[terr(itory)?_webmap_protected_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_PROTECTED_SHORT));
         } else {
-            message = message.replaceAll("\\[terr(iroty)?_webmap_protected]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_VULNERABLE))
-                    .replaceAll("\\[terr(iroty)?_webmap_protected_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_VULNERABLE_SHORT));
+            message = message.replaceAll("\\[terr(itory)?_webmap_protected]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_VULNERABLE))
+                    .replaceAll("\\[terr(itory)?_webmap_protected_short]", LangManager.getMessage(LangMessage.WEBMAP_TERRITORY_VULNERABLE_SHORT));
         }
 
         return territory.adaptMessage(message);
